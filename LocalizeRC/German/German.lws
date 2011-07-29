@@ -1,0 +1,6 @@
+LangINI=.\German.ini
+OutputRC=.\German.rc
+Copy=1
+ObsoleteItems=0
+InputRC=..\LocalizeRC.rc
+NoSort=0

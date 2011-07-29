@@ -1,0 +1,236 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+#ifdef _WIN32
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+#pragma code_page(1251)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#include "".\\res\\SageThumbs.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 2,0,0,5
+ PRODUCTVERSION 2,0,0,5
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "Comments", "http://www.cherubicsoft.com/"
+            VALUE "CompanyName", "CherubicSoft"
+            VALUE "FileDescription", "SageThumbs Shell Extension"
+            VALUE "FileVersion", "2, 0, 0, 5"
+            VALUE "InternalName", "SageThumbs.dll"
+            VALUE "LegalCopyright", "Copyright © 2004-2011 Nikolay Raspopov"
+            VALUE "OriginalFilename", "SageThumbs.dll"
+            VALUE "ProductName", "SageThumbs Shell Extension"
+            VALUE "ProductVersion", "2, 0, 0, 5"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_SAGETHUMBS          REGISTRY                ".\\res\\SageThumbs.rgs"
+IDR_THUMB               REGISTRY                ".\\res\\Thumb.rgs"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_SAGETHUMBS          ICON                    ".\\res\\SageThumbs.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_OPTIONS DIALOGEX 0, 0, 210, 310
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "SageThumbs Options"
+FONT 8, "MS Shell Dlg", 400, 0, 0xCC
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,75,287,60,16
+    PUSHBUTTON      "Cancel",IDCANCEL,143,287,60,16
+    CONTROL         "Enable context menu in Explorer",IDC_ENABLE_MENU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,42,196,10
+    CONTROL         "Enable thumbnails in Explorer",IDC_ENABLE_THUMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,55,196,10
+    CONTROL         "Use thumbnails as icons in Explorer",IDC_ENABLE_ICONS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,67,196,10
+    CONTROL         "Prefer image file embedded thumbnails",IDC_EMBEDDED,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,80,196,10
+    EDITTEXT        IDC_FILE_SIZE,122,94,30,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_WIDTH,83,120,30,14,ES_AUTOHSCROLL | ES_NUMBER
+    EDITTEXT        IDC_HEIGHT,122,120,30,14,ES_AUTOHSCROLL | ES_NUMBER
+    CONTROL         "",IDC_TYPES_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SORTASCENDING | LVS_NOLABELWRAP | LVS_ALIGNLEFT | LVS_NOCOLUMNHEADER | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,14,154,167,70
+    CONTROL         "",IDC_SELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,188,155,8,8
+    CONTROL         "Use Windows Image/Fax Viewer",IDC_USE_FAX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,245,182,11
+    COMBOBOX        IDC_LANG,81,267,122,60,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Clear...",IDC_CLEAR,7,287,60,16
+    ICON            IDR_SAGETHUMBS,IDC_STATIC,7,7,21,20
+    LTEXT           "",IDC_COPYRIGHT,34,7,169,32
+    GROUPBOX        "Context menu preview size",IDC_STATIC,7,110,196,31
+    RTEXT           "Width x Height:",IDC_STATIC,14,123,67,8
+    CTEXT           "X",IDC_STATIC,114,123,8,8
+    LTEXT           "pixels",IDC_STATIC,155,123,41,8
+    GROUPBOX        "Supported file types",IDC_STATIC,7,143,196,88
+    GROUPBOX        "System-wide tweaks",IDC_STATIC,7,233,196,28
+    RTEXT           "Language:",IDC_STATIC,7,269,71,8
+    RTEXT           "Maximum size of image file:",IDC_STATIC,14,97,105,8
+    LTEXT           "MB",IDC_STATIC,155,97,41,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_OPTIONS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 203
+        VERTGUIDE, 14
+        VERTGUIDE, 196
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 303
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_SAGETHUMBS          BITMAP                  ".\\res\\SageThumbs.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_PROJNAME            "SageThumbs"
+    IDS_OPTIONS_HELP        "Change various SageThumbs options"
+    IDS_TYPE                "Type: "
+    IDS_DIM                 "Sizes (pixels): "
+    IDS_SIZE                "Size (bytes): "
+    IDS_DATE                "Modified: "
+    IDS_COLORS              "Colors (bits): "
+    IDS_COMPRESSION         "Compression: "
+    IDS_RESOLUTION          "Resolution: "
+    IDS_ERR_OPEN            "Can't open image file"
+    IDS_ERR_SAVE            "Can't save image file"
+    IDS_ERR_MAIL            "Can't send mail"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_OPTIONS             "SageThumbs Options..."
+    IDS_CLIPBOARD           "Copy to clipboard"
+    IDS_WALLPAPER_TILE      "Set tiled wallpaper"
+    IDS_WALLPAPER_CENTER    "Set centered wallpaper"
+    IDS_WALLPAPER_STRETCH   "Set stretched wallpaper"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_MAIL_IMAGE          "Send image by mail..."
+    IDS_MAIL_THUMBNAIL      "Send thumbnail by mail..."
+    IDS_CONVERT_JPG         "Convert to JPG"
+    IDS_CONVERT_GIF         "Convert to GIF"
+    IDS_CONVERT_BMP         "Convert to BMP"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_ERR_NOTHING         "Nothing to send"
+    IDS_ERR_CLIPBOARD       "Can't open clipboard"
+    IDS_CLEAR_PROMPT        "Please confirm database clearing."
+    IDS_DATABASE_SIZE       "Database size: %u KB"
+END
+
+#endif    // Neutral resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#include ".\res\SageThumbs.rc2"  // non-Microsoft Visual C++ edited resources
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

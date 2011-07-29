@@ -1,0 +1,292 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Neutral resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
+#ifdef _WIN32
+LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
+#pragma code_page(1251)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\LocalizeRC.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOGEX 0, 0, 235, 55
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About LocalizeRC"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "Static",IDC_ABOUT,56,7,100,41
+    DEFPUSHBUTTON   "OK",IDOK,178,20,50,14,WS_GROUP
+END
+
+IDD_LOCALIZERC_DIALOG DIALOGEX 0, 0, 410, 337
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "LocalizeRC"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Create/Actualize INI from Input RC",IDC_CREATEINI,7,257,183,15
+    PUSHBUTTON      "Open INI for Edit",IDC_OPENINI,7,282,183,15
+    PUSHBUTTON      "Create Output RC with INI",IDC_CREATEOUTPUT,7,307,183,15
+    CTEXT           "Static",IDC_ABOUT,335,12,68,34
+    CONTROL         "Copy Resource Header and ""RES"" Folder",IDC_COPY,
+                    "Button",BS_AUTOCHECKBOX | BS_NOTIFY | WS_TABSTOP,212,298,184,11
+    PUSHBUTTON      "Reverse Input and Output Language in INI",IDC_REVERSEINI,212,258,184,15
+    GROUPBOX        "Options",IDC_STATIC,202,247,201,83
+    LTEXT           "obsolete items in INI",IDC_STATIC,288,280,111,10
+    COMBOBOX        IDC_OBS_ITEMS,212,278,71,56,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Filename",IDC_STATIC,13,12,38,12,SS_CENTERIMAGE
+    PUSHBUTTON      "Open...",IDC_CHNG_WORKSPACE,189,27,80,14
+    GROUPBOX        "Workspace",IDC_STATIC,7,3,320,95
+    COMBOBOX        IDC_LANGUAGE,335,80,68,71,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Language",IDC_STATIC,335,66,68,14,SS_CENTERIMAGE
+    CONTROL         "",IDC_EDIT,"RichEdit20W",WS_VSCROLL | WS_HSCROLL | WS_TABSTOP | 0x884,7,116,396,124,WS_EX_CLIENTEDGE
+    LTEXT           "Input RC",IDC_STATIC,7,105,66,8
+    CTEXT           "Static",IDC_TEXTMODE,335,52,68,8
+    CONTROL         "New items to the end of the section (no sorting)",IDC_NOSORT,
+                    "Button",BS_AUTOCHECKBOX | BS_NOTIFY | WS_TABSTOP,212,313,188,15
+    PUSHBUTTON      "New...",IDC_NEW_WORKSPACE,70,27,80,14
+    LTEXT           "Static",IDC_WORKSPACE,70,12,250,12,SS_CENTERIMAGE | SS_PATHELLIPSIS
+    LTEXT           "Static",IDC_INPUTRC,70,52,219,14,SS_CENTERIMAGE | SS_PATHELLIPSIS
+    LTEXT           "Input RC",IDC_STATIC,13,52,53,14,SS_CENTERIMAGE
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDFRAME,14,46,306,1
+    LTEXT           "Language INI",IDC_STATIC,13,66,53,14,SS_CENTERIMAGE
+    LTEXT           "Static",IDC_LANGINI,70,66,219,14,SS_CENTERIMAGE | SS_PATHELLIPSIS
+    LTEXT           "Output RC",IDC_STATIC,13,80,53,12,SS_CENTERIMAGE
+    PUSHBUTTON      "...",IDC_CHNG_INPUTRC,296,53,24,12
+    PUSHBUTTON      "...",IDC_CHNG_LANGINI,296,67,24,12
+    LTEXT           "Static",IDC_OUTPUTRC,70,80,219,14,SS_CENTERIMAGE | SS_PATHELLIPSIS
+    PUSHBUTTON      "...",IDC_CHNG_OUTPUTRC,296,81,24,12
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,7,0,1
+ PRODUCTVERSION 1,7,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "CompanyName", "Konrad Windszus"
+            VALUE "FileDescription", "A tool for localizing/translating Resource Scripts (RC files)"
+            VALUE "FileVersion", "1, 7, 0, 1"
+            VALUE "InternalName", "LocalizeRC.exe"
+            VALUE "LegalCopyright", "Copyright (c) Konrad Windszus, 2003- 2004."
+            VALUE "OriginalFilename", "LocalizeRC.exe"
+            VALUE "ProductName", "LocalizeRC"
+            VALUE "ProductVersion", "1, 7, 0, 1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x0, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        VERTGUIDE, 38
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_LOCALIZERC_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 403
+        VERTGUIDE, 13
+        VERTGUIDE, 66
+        VERTGUIDE, 70
+        VERTGUIDE, 289
+        VERTGUIDE, 296
+        VERTGUIDE, 320
+        VERTGUIDE, 327
+        VERTGUIDE, 335
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 330
+        HORZGUIDE, 12
+        HORZGUIDE, 24
+        HORZGUIDE, 27
+        HORZGUIDE, 46
+        HORZGUIDE, 52
+        HORZGUIDE, 66
+        HORZGUIDE, 80
+        HORZGUIDE, 228
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_LOCALIZERC_DIALOG DLGINIT
+BEGIN
+    IDC_OBS_ITEMS, 0x403, 7, 0
+0x6544, 0x656c, 0x6574, "\000" 
+    IDC_OBS_ITEMS, 0x403, 14, 0
+0x614d, 0x6b72, 0x2820, 0x6977, 0x6874, 0x2320, 0x0029, 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_ABOUTBOX            "&About LocalizeRC..."
+    IDS_ERR_FILECOPY        "Could not copy file!"
+    IDS_ERR_FOLDERCREATE    "Could not create folder!"
+    IDS_RESTARTAPP          "Application must be restarted to apply the changes!"
+    IDS_EXTRC               ".rc"
+    IDS_EXTRCDESCRIPTION    "Resource Scripts(*.rc)|*.rc||"
+    IDS_EXTINI              ".ini"
+    IDS_EXTINIDESCRIPTION   "INI Files(*.ini)|*.ini||"
+    IDS_DETAILS             "Input RC: \t%s\r\nLanguage INI:\t%s\r\nOutput RC:\t%s"
+    IDS_EXTLWS              ".lws"
+    IDS_EXTLWSDESCRIPTION   "LocalizeRC Workspace(*.lws)|*.lws||"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_OLDFILEFORMAT       "The INI file contains sections, which are created with LocalizeRC before version 1.2. To make them compatible, remove all trailing and leading whitespaces from the section names (the ones within []) and try again!"
+    IDS_UNICODE             "UNICODE"
+    IDS_ANSI                "ANSI"
+    IDS_UNICODEFILE         "The file ""%s"" is in UNICODE format, but this version of LocalizeRC is only able to read ANSI format. Please convert it with an appropriate tool!"
+    IDS_ERR_FILENAMEEMPTY   "Please define all workspace files (Input RC, Lanuage INI, Output RC) first!"
+    IDS_ERR_OPENWORKSPACE   "Could not open workspace!"
+    IDS_ERR_UNKNOWN         "Unknown error %d!"
+    IDS_ERR_OPENINI         "Could not open INI file."
+    IDS_ABOUT               "Localize RC\nVersion 1.7\n© 2003-2004\nby Konrad Windszus"
+END
+
+#endif    // Neutral resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// German (Germany) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
+#ifdef _WIN32
+LANGUAGE LANG_GERMAN, SUBLANG_GERMAN
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\LocalizeRC.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+#endif    // German (Germany) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#include "res\LocalizeRC.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,132 @@
+SageThumbs - Thumbnail image shell extension.
+
+Copyright © 2004 Nikolay Raspopov
+E-Mail:        ryo-oh-ki@narod.ru
+Site web:      http://raspopov.dem.ru/
+
+========================================================================
+
+Fonctionnalités:
+
+* Affichage miniature étendu en mode dossier dans l'explorateur
+* Miniature dans le menu contextuel de l'explorateur (clic droit)
+* Bulle d'information étendue
+* Support de 131 formats d'image via la bibliothèque GFL
+* Support de 26 formats supplémentaires via les plugins de XnView (si installés)
+* Envoi par courriel
+* Conversion en GIF,JPG,BMP en un clic de souris
+* Sélection comme papier peint
+* Copie dans le presse-papiers
+
+Veuillez lire attentivement l'information ci-dessous. 
+	SageThumbs étant une extension du menu contextuel de Windows Explorer, 
+	il n'y a pas d'exécutable que vous puissiez lancer pour l'appeler.
+	Pour l'utiliser, ouvrez simplement dans Windows Explorer un dossier 
+	contenant des images et faites un clic droit sur le fichier choisi. 
+        Une miniature apparaîtra directement dans le menu contextuel. 
+
+========================================================================
+
+Exigences système
+
+* Windows 95/98/ME, Windows NT/2000/XP ou supérieur
+* Environ 2 Mo d'espace disque
+
+========================================================================
+
+Versions:
+
+1.0.0.12
++ Corrigé: aperçu absent (une clé de registre manquante)
+
+1.0.0.11
++ Corrigé: enregistrement AppID (peut être utile aux maniaques de la sécurité...)
++ Corrigé: extensions supplémentaires oubliées (!)
++ Ajouté: cache des informations d'image (base de données SQLite 3.0.8) - performance accrue!
+
+1.0.0.10
++ Corrigé: procédure d'installation
++ Corrigé: enregistrement shell
++ Corrigé: anomalie "gestionnaire de colonnes expérimental dans 1.0.0.9" 
++ Corrigé: anomalie "élément de menu contextuel en double dans le menu Fichier de Explorer"
++ Corrigé: anomalie "extensions de fichier en majuscules manquantes"
++ Corrigé: anomalie "double sélection sur clic droit"
++ Maintenant GFL thread-safe (plus stable)
++ Ajouté: cache d'extensions pour la performance
++ Ajouté: Raccourci vers les options dans le menu Démarrer et le Panneau de configuration
++ Ajouté: choix des extensions prises en compte dans les options
+
+1.0.0.9
++ Ajouté: copie dans le presse-papiers
++ Ajouté: sélection comme papier peint (centré, mosaïque, étiré)
++ Ajouté: envoi par courriel (image originale ou miniature)
++ Ajouté: conversion d'un clic de souris dans les formats JPG, GIF, BMP
+
+1.0.0.8
++ Corrigé: éléments du menu par défaut et sous-menu "Ouvrir avec..." oubliés
++ Corrigé: aperçu disparu dans le panneau gauche de l'explorateur
+
+1.0.0.7
++ Bibliothèque GFL passée en version 2.20:
+	Ajouté: GFL_ALLOCATEBITMAP_CALLBACK, GFL_PROGRESS_CALLBACK & GFL_WANTCANCEL_CALLBACK callback 
+	Ajouté: gflSetIPTCValue & gflRemoveIPTCValue pour changer la valeur IPTC 
+	Ajouté: gflLoadIPTC, gflSaveIPTC, gflBitmapSetIPTC 
+	Ajouté: gflJPEGGetComment, gflJPEGSetComment, gflPNGGetComment, gflPNGSetComment 
+	Ajouté: Support des noms longs sur Windows NT (avec \\?\) 
+	Ajouté: gflGetFileInformationFromMemory, gflLoadBitmapFromMemory, gflLoadThumbnailFromMemory 
+	Corrigé: plusieurs bugs & vitesse améliorée 
+
+1.0.0.6
++ Ajouté: langue russe
++ Ajouté: informations étendues sur l'image (info-bulle)
++ Corrigé: bords noirs autour de la miniature
+
+1.0.0.5
++ Ajouté: dialogue Options
++ Couleurs du menu changées pour celles par défaut de Windows
++ Maintenant isolation-aware activé
++ Corrigé: plantage à la déconnexion ou à la fermeture de Windows dans 32-bit Fractal Image Decoder Library:
+	"First-chance exception at 0x1101fe06 (deco_32.dll) in explorer.exe: 0xC0000005: Access violation reading location 0x02ca4bff."
++ Inclus: utilisation possible de la visionneuse Fax/Image de Windows
++ Inclus: quelques corrections mineures dans le registre pour les types d'image de XnView
+
+1.0.0.4
++ Procédure d'installation/désinstallation corrigée
+
+1.0.0.3
++ Première diffusion
+
+========================================================================
+
+Licence:
+
+Ce programme est un gratuiciel; vous pouvez le distribuer et/ou
+le modifier conformément aux termes de la "GNU General Public License"
+tels que publiés par la "Free Software Foundation", soit la version 2
+de la licence, soit toute version ultérieure (à votre convenance).
+
+Ce programme est diffusé avec l'espoir qu'il sera d'une certaine utilité,
+mais SANS AUCUNE GARANTIE, y compris la garantie implicite de VALEUR
+MARCHANDE ou d'ADAPTATION À UN USAGE PARTICULIER.  Consultez la "GNU
+General Public License" pour plus de renseignements.
+
+Vous devriez disposer d'une copie de la "GNU General Public License"
+avec ce programme; si ce n'est pas le cas, écrivez à Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+========================================================================
+
+Copyrights:
+
+GFL Library, GFL SDK and XnView
+Copyright © 1991-2004 Pierre-E Gougelet
+E-Mail:        webmaster@xnview.com
+Site web:      http://www.xnview.com/
+
+========================================================================
+
+Traduction française 2005
+DenB Traductions
+E-mail:     denb10@free.fr
+Site web:   http://denb10.free.fr
+

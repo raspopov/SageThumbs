@@ -1,0 +1,164 @@
+SageThumbs - Thumbnail image shell extension.
+
+========================================================================
+
+Features:
+
+* Extended thumbnail image view of explorer folder
+* Thumbnail image in explorer context menu (rigth-click menu)
+* Extended info tips
+* Support 162 image formats (224 extensions) via GFL Library
+* Support additional 26 image formats via XnView plugins (if installed)
+* Send by mail support
+* One-click conversion to popular image formats support
+* Wallpaper selection support
+* Copy to clipboard support
+
+Please read carefully the following information. 
+	As SageThimbs is a Windows Explorer context menu extension,
+	there is no an executable file that you should launch to bring it up.
+	To use it, just open any folder with image files in Windows Explorer,
+	and then right-click a file you want to preview. You'll see the
+	thumbnail immediately in the context menu. 
+
+========================================================================
+
+System Requirements:
+
+* Windows 95/98/ME/NT/2000/XP/2003/Vista/2008/7
+* About 2 Mb of disk space + additional space for cache
+
+========================================================================
+
+Versions:
+
+2.0.0.5
++ Added "Maximum size of image file" option to prevent processing of very large images (performance)
++ Added "Prefer image file embedded thumbnails" option (performance)
++ Improved thumbnail cache structure (performance)
++ SQLite library updated to version 3.7.7.1
++ Minor bugfixes and optimizations
+
+2.0.0.4
++ Added German translation
++ Minor bugfixes (disabled unfinished yet code for Explorer's preview plane)
+
+2.0.0.3
++ Fixed thumbnail aspect ratio
++ Fixed thumbnail quality
++ Changed SQLite database schema (database engine updated)
++ GFL Library updated to version 3.40 (now Unicode)
++ Minor bugfixes
+
+2.0.0.2
++ More complete support for Vista (menu, thumbnails, control panel)
++ Added options to turn off context menu and/or Explorer thumbnails
++ Added option to clear cache database
++ By default .ico and .cur file extensions excluded
++ Performance optimization
++ Minor bugfixes
+
+2.0.0.1
++ Added 64-bit OS support
++ GFL Library upgraded to version 3.11
++ Minor bugfixes
+
+1.0.0.13
++ GFL Library upgraded to version 2.54
++ Added support for mutiply files operations (converting, e-mailing etc.)
++ Added more descriptive version infrmation in About box
++ Added multilanguage support (selectable)
++ Fixed very long file paths
++ Modified installation process (makes attempt to avoid reboots)
+
+1.0.0.12
++ Fixed missing preview (one missing registry key)
+
+1.0.0.11
++ Fixed AppID registration (may be usefull for some security maniacs...)
++ Fixed missed additional image extensions (doh!)
++ Added image information cache (SQLite 3.0.8 database) - perfomance boost!
+
+1.0.0.10
++ Fixed installation procedure
++ Fixed shell registration
++ Fixed "experimental ColumnHandler support in 1.0.0.9" bug 
++ Fixed "duplicate context menu item insertion in Explorer File menu" bug
++ Fixed "missing uppercase file extensions" bug
++ Fixed "right-click double selection" bug
++ Now GFL thread-safe (more stable)
++ Added extensions cache for performance
++ Added Options dialog shortcut in Start Menu and Control Panel
++ Added handled extension selection in Options dialog
+
+1.0.0.9
++ Added copy to clipboard support
++ Added wallpaper selection support (centered, tiled, stretched)
++ Added send by mail support (original image and thumbnail image)
++ Added one click conversion to JPG, GIF, BMP image formats
+
+1.0.0.8
++ Fixed missed default menu items and "Open With..." submenu
++ Fixed lost preview on Explorer left panel
+
+1.0.0.7
++ GFL Library upgraded to version 2.20:
+	Added GFL_ALLOCATEBITMAP_CALLBACK, GFL_PROGRESS_CALLBACK & GFL_WANTCANCEL_CALLBACK callback 
+	Added gflSetIPTCValue & gflRemoveIPTCValue to change IPTC value 
+	Added gflLoadIPTC, gflSaveIPTC, gflBitmapSetIPTC 
+	Added gflJPEGGetComment, gflJPEGSetComment, gflPNGGetComment, gflPNGSetComment 
+	Added Support of long pathname on Windows NT (with \\?\) 
+	Added gflGetFileInformationFromMemory, gflLoadBitmapFromMemory, gflLoadThumbnailFromMemory 
+	Fixed Many bugs & improved speed 
+
+1.0.0.6
++ Added Russain language
++ Extended image info (info tips)
++ Fixed black borders around thumbnail
+
+1.0.0.5
++ Added Options dialog
++ Changed menu colors to Windows default menu colors
++ Now isolation-aware enabled
++ Fixed crash during Windows shutdown or logoff in 32-bit Fractal Image Decoder Library:
+	"First-chance exception at 0x1101fe06 (deco_32.dll) in explorer.exe: 0xC0000005: Access violation reading location 0x02ca4bff."
++ Included Windows Fax/Image Viewer switch
++ Included some minor registry fixes for XnView image file types
+
+1.0.0.4
++ Corrected installation/uninstallation procedure
+
+1.0.0.3
++ First release
+
+========================================================================
+
+License:
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License
+as published by the Free Software Foundation; either version 2
+of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+========================================================================
+
+Copyrights:
+
+SageThumbs
+Copyright (C) Nikolay Raspopov, 2004-2011.
+E-Mail: ryo-oh-ki@narod.ru
+Web site: http://www.cherubicsoft.com/projects/sagethumbs
+
+GFL Library, GFL SDK and XnView
+Copyright (C) Pierre-E Gougelet, 1991-2011.
+E-Mail: webmaster@xnview.com
+Web site: http://www.xnview.com/
