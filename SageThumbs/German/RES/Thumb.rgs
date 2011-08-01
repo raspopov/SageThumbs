@@ -69,6 +69,16 @@ HKLM
 			{
 				NoRemove CurrentVersion
 				{
+					NoRemove Explorer
+					{
+						NoRemove VolumeCaches
+						{
+							'SageThumbs Shell Extension' = s '{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}'
+							{
+								val IconPath = s '%MODULE%,0'
+							}
+						}
+					}
 					NoRemove 'PreviewHandlers'
 					{
 						Delete val '{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}' = s 'SageThumbs Shell Extension'
