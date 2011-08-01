@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "stdafx.h"
 #include <InitGuid.h>
 
+DEFINE_GUID(CLSID_WindowsThumbnailer,0x889900c3,0x59f3,0x4c2f,0xae,0x21,0xa4,0x09,0xea,0x01,0xe6,0x05);
 DEFINE_GUID(CLSID_Thumb,0x4A34B3E3,0xF50E,0x4FF6,0x89,0x79,0x7E,0x41,0x76,0x46,0x6F,0xF2);
 DEFINE_GUID(IID_IDirectDrawSurface,0x6C14DB81,0xA733,0x11CE,0xA5,0x21,0x00,0x20,0xAF,0x0B,0xE5,0x60);
 
@@ -35,11 +36,12 @@ DWORD GetRegValue(LPCTSTR szName, DWORD dwDefault, LPCTSTR szKey, HKEY hRoot)
 CString GetRegValue(LPCTSTR szName, LPCTSTR szDefault, LPCTSTR szKey, HKEY hRoot)
 {
 	CString sValue;
-	DWORD dwType = REG_SZ, dwSize = MAX_LONG_PATH * sizeof( TCHAR );
-	bool ret = SHGetValue( hRoot, szKey, szName, &dwType,
-		sValue.GetBuffer( MAX_LONG_PATH ), &dwSize ) == ERROR_SUCCESS &&
+	DWORD dwType = REG_SZ, dwSize = ( MAX_LONG_PATH - 1 )* sizeof( TCHAR );
+	LPTSTR buf = sValue.GetBuffer( MAX_LONG_PATH );
+	bool ret = SHGetValue( hRoot, szKey, szName, &dwType, buf, &dwSize ) == ERROR_SUCCESS &&
 		dwType == REG_SZ;
-	sValue.ReleaseBuffer( dwSize / sizeof( TCHAR ) );
+	buf [ dwSize / sizeof( TCHAR ) ] = _T('\0');
+	sValue.ReleaseBuffer();
 	return ret ? sValue : szDefault;
 }
 

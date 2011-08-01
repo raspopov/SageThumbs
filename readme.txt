@@ -35,9 +35,12 @@ Versions:
 2.0.0.5
 + Added "Maximum size of image file" option to prevent processing of very large images (performance)
 + Added "Prefer image file embedded thumbnails" option (performance)
++ Added "Use thumbnails as icons in Explorer" option
++ Added Windows Cleanup utility support
 + Improved thumbnail cache structure (performance)
 + SQLite library updated to version 3.7.7.1
 + Minor bugfixes and optimizations
++ Opened project on Google Code: http://code.google.com/p/sagethumbs/
 
 2.0.0.4
 + Added German translation

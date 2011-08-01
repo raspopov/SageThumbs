@@ -38,7 +38,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 CString					_ModuleFileName;
 CString					_Database;
 CString					_PlugInsPathname;
-CAtlExtMap				_ExtMap;
+CExtMap					_ExtMap;
 CRITICAL_SECTION		_GflGuard;
 //BitsDescriptionMap	_BitsMap;
 CSageThumbsModule		_AtlModule;
@@ -70,9 +70,9 @@ HRESULT CSageThumbsModule::DllRegisterServer()
 
 	HRESULT hr = CAtlDllModuleT< CSageThumbsModule >::DllRegisterServer (FALSE);
 
-	for ( POSITION pos = _ExtMap.GetStartPosition (); pos; )
+	for ( POSITION pos = _ExtMap.GetHeadPosition(); pos; )
 	{
-		if ( CAtlExtMap::CPair* p = _ExtMap.GetNext( pos ) )
+		if ( const CExtMap::CPair* p = _ExtMap.GetNext( pos ) )
 		{
 			if ( p->m_value.enabled )
 				RegisterExt( p->m_key );
@@ -80,27 +80,28 @@ HRESULT CSageThumbsModule::DllRegisterServer()
 				UnregisterExt( p->m_key );
 		}
 	}
-/*
-	const bool bEnableThumbs = GetRegValue( _T("EnableThumbs"), 1 ) != 0;
-	const bool bEnableIcons = GetRegValue( _T("EnableIcons"), 1 ) != 0;
 
-	CString sRoot( _T("SystemFileAssociations\\image\\ShellEx\\") );
-	for ( int i = 0; szHandlers[ i ]; ++i )
-	{
-		if ( ( i == 0 && ! bEnableIcons ) ||	// IExtractIcon
-			 ( i == 1 && ! bEnableThumbs ) ||	// IExtractImage
-			 ( i == 3 && ! bEnableThumbs ) )	// IThumbnailProvider
-		{
-			UnregisterValue (HKEY_CLASSES_ROOT, sRoot + szHandlers[ i ],
-				_T(""), MyCLSID, _T("SageThumbs.bak"));
-		}
-		else
-		{
-			RegisterValue( HKEY_CLASSES_ROOT, sRoot + szHandlers[ i ],
-				_T(""), MyCLSID, _T("SageThumbs.bak") );
-		}
-	}
-*/
+	//const bool bEnableThumbs = GetRegValue( _T("EnableThumbs"), 1 ) != 0;
+	//const bool bEnableIcons = GetRegValue( _T("EnableIcons"), 1 ) != 0;
+	//CString sRoot( _T("SystemFileAssociations\\image\\ShellEx\\") );
+	//for ( int i = 0; szHandlers[ i ]; ++i )
+	//{
+	//	if ( ( i == 0 && ! bEnableIcons ) ||	// IExtractIcon
+	//		 ( i == 1 && ! bEnableThumbs ) ||	// IExtractImage
+	//		 ( i == 3 && ! bEnableThumbs ) )	// IThumbnailProvider
+	//	{
+	//		UnregisterValue (HKEY_CLASSES_ROOT, sRoot + szHandlers[ i ],
+	//			_T(""), MyCLSID, _T("SageThumbs.bak"));
+	//	}
+	//	else
+	//	{
+	//		RegisterValue( HKEY_CLASSES_ROOT, sRoot + szHandlers[ i ],
+	//			_T(""), MyCLSID, _T("SageThumbs.bak") );
+	//	}
+	//}
+
+	CleanWindowsCache();
+
 	UpdateShell();
 
 	ATLTRACE ("DllRegisterServer : ");
@@ -116,9 +117,9 @@ HRESULT CSageThumbsModule::DllUnregisterServer()
 
 	HRESULT hr = CAtlDllModuleT< CSageThumbsModule >::DllUnregisterServer (FALSE);
 
-	for ( POSITION pos = _ExtMap.GetStartPosition (); pos; )
+	for ( POSITION pos = _ExtMap.GetHeadPosition(); pos; )
 	{
-		if ( CAtlExtMap::CPair* p = _ExtMap.GetNext( pos ) )
+		if ( const CExtMap::CPair* p = _ExtMap.GetNext( pos ) )
 		{
 			UnregisterExt( p->m_key );
 		}
@@ -145,7 +146,9 @@ HRESULT CSageThumbsModule::DllUnregisterServer()
 	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, _T("SystemFileAssociations\\image\\ShellEx"));	// HKLM
 	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, _T("SystemFileAssociations\\image"));	// HKCU
 	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, _T("SystemFileAssociations\\image"));	// HKLM
-	
+
+	CleanWindowsCache();
+
 	UpdateShell();
 
 	ATLTRACE ("DllUnregisterServer : ");
@@ -168,83 +171,118 @@ void CSageThumbsModule::RegisterExt(LPCTSTR szExt)
 	CString ext ( szExt );
 	key += ext;
 
-	CString DefaultKey;
-	DWORD type;
-	DWORD size = MAX_LONG_PATH * sizeof (TCHAR);
-	LONG err = SHGetValue (HKEY_CLASSES_ROOT, key, _T(""), &type,
-		DefaultKey.GetBuffer (size), &size);
-	DefaultKey.ReleaseBuffer ();
-	if ((err != ERROR_SUCCESS) || (type != REG_SZ) || (size <= 1))
+	CString DefaultKey = GetRegValue( _T(""), _T(""), key, HKEY_CLASSES_ROOT );
+	if ( DefaultKey.IsEmpty() )
 	{
-		// Fix
 		DefaultKey = _T("XnView.Image");
-		RegisterValue (HKEY_CLASSES_ROOT, key,
-			_T(""), DefaultKey, _T("SageThumbs.bak"));
+		RegisterValue( HKEY_CLASSES_ROOT, key,
+			_T(""), DefaultKey, _T("SageThumbs.bak") );
 	}
 
-	// Fix
-	SHSetValue (HKEY_CLASSES_ROOT, key, _T("PerceivedType"),
-		REG_SZ, _T("image"), 6 * sizeof (TCHAR));
+	// Perceived Type Fix
+	SetRegValue( _T("PerceivedType"), _T("image"), key, HKEY_CLASSES_ROOT );
+
+	// Content Type Fix
+	CString sContentType( _T("image/") );
+	if ( _tcsicmp( szExt, _T("jpg")  ) == 0 ||
+		 _tcsicmp( szExt, _T("jpe")  ) == 0 ||
+		 _tcsicmp( szExt, _T("jfif") ) == 0 )
+		sContentType += _T("jpeg");
+	else
+		sContentType += szExt;
+	SetRegValue( _T("Content Type"), sContentType, key, HKEY_CLASSES_ROOT );
+	SetRegValue( _T("Extension"), key, _T("MIME\\DataBase\\Content Type\\") + sContentType, HKEY_CLASSES_ROOT );
 
 	const bool bEnableThumbs = GetRegValue( _T("EnableThumbs"), 1 ) != 0;
 	const bool bEnableIcons = GetRegValue( _T("EnableIcons"), 1 ) != 0;
 
 	for ( int i = 0; szHandlers[ i ]; ++i )
 	{
-		if ( ( i == 0 && ! bEnableIcons ) ||	// IExtractIcon
-			 ( i == 1 && ! bEnableThumbs ) ||	// IExtractImage
-			 ( i == 3 && ! bEnableThumbs ) )	// IThumbnailProvider
+		switch ( i )
 		{
+		case 0:	// IExtractIcon
+		case 2:	// IQueryInfo
 			UnregisterValue( HKEY_CLASSES_ROOT,
 				key + _T("\\ShellEx\\") + szHandlers[ i ],
 				_T(""), MyCLSID, _T("SageThumbs.bak") );
-			if ( ! DefaultKey.IsEmpty() )
+			if ( ( i == 0 && bEnableIcons ) || ( i == 2 ) )
+			{
+				RegisterValue (HKEY_CLASSES_ROOT,
+					DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ],
+					_T(""), MyCLSID, _T("SageThumbs.bak"));
+			}
+			else
+			{
 				UnregisterValue( HKEY_CLASSES_ROOT,
+					DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ],
+					_T(""), MyCLSID, _T("SageThumbs.bak") );
+			}
+			break;
+		
+		default:
+			UnregisterValue( HKEY_CLASSES_ROOT,
 				DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ],
 				_T(""), MyCLSID, _T("SageThumbs.bak") );
-		}
-		else
-		{
-			RegisterValue (HKEY_CLASSES_ROOT,
-				key + _T("\\ShellEx\\") + szHandlers[ i ],
-				_T(""), MyCLSID, _T("SageThumbs.bak"));
-//			RegisterValue (HKEY_CLASSES_ROOT,
-//				DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ],
-//				_T(""), MyCLSID, _T("SageThumbs.bak"));
+			if ( ( i == 1 && bEnableThumbs ) ||	// IExtractImage
+				 ( i == 3 && bEnableThumbs ) )	// IThumbnailProvider
+			{
+				RegisterValue (HKEY_CLASSES_ROOT,
+					key + _T("\\ShellEx\\") + szHandlers[ i ],
+					_T(""), MyCLSID, _T("SageThumbs.bak"));
+			}
+			else
+			{
+				UnregisterValue( HKEY_CLASSES_ROOT,
+					key + _T("\\ShellEx\\") + szHandlers[ i ],
+					_T(""), MyCLSID, _T("SageThumbs.bak") );
+			}
 		}
 	}
 
 	// IImageDecodeFilter
-	/*const BitsDescription* bits = NULL;
-	if (_BitsMap.Lookup (ext, bits)) {
-		CString mime (_T("image/"));
-		mime += ext;
-		CString mimekey (_T("MIME\\Database\\Content Type\\"));
-		mimekey += mime;
-		BYTE* data = new BYTE [bits->size * 2 + 4];
-		*((DWORD*) data) = bits->size;
-		CopyMemory (data + 4, bits->mask, bits->size);
-		CopyMemory (data + 4 + bits->size, bits->data, bits->size);
-		RegisterValue (HKEY_CLASSES_ROOT, DefaultKey + _T("\\CLSID"),
-			_T(""), HTMLCLSID, _T("SageThumbs.bak"));
-		RegisterValue (HKEY_CLASSES_ROOT, key, _T("Content Type"),
-			mime, _T("Content Type SageThumbs.bak"));
-		RegisterValue (HKEY_CLASSES_ROOT, mimekey, _T("Image Filter CLSID"),
-			MyCLSID, _T("Image Filter CLSID SageThumbs.bak"));
-		RegisterValue (HKEY_CLASSES_ROOT, mimekey, _T("Extension"),
-			key, _T("Extension SageThumbs.bak"));
-		RegisterValue (HKEY_CLASSES_ROOT, mimekey + _T("\\Bits"), _T("0"),
-			data, bits->size * 2 + 4, _T("0 SageThumbs.bak"));
-		delete [] data;
-	}*/ /* else {
-		// Если нет значения, то установка универсального
-		BYTE foo [256];
-		DWORD size = sizeof (foo);
-		LONG err = SHGetValue (HKEY_CLASSES_ROOT, key, _T("Content Type"), &type, foo, &size);
-		if (err != ERROR_SUCCESS)
-			RegisterValue (HKEY_CLASSES_ROOT, key, _T("Content Type"),
-				_T("image/xnview"), _T("Content Type SageThumbs.bak"));
-	}*/
+	//const BitsDescription* bits = NULL;
+	//if (_BitsMap.Lookup (ext, bits)) {
+	//	CString mime (_T("image/"));
+	//	mime += ext;
+	//	CString mimekey (_T("MIME\\Database\\Content Type\\"));
+	//	mimekey += mime;
+	//	BYTE* data = new BYTE [bits->size * 2 + 4];
+	//	*((DWORD*) data) = bits->size;
+	//	CopyMemory (data + 4, bits->mask, bits->size);
+	//	CopyMemory (data + 4 + bits->size, bits->data, bits->size);
+	//	RegisterValue (HKEY_CLASSES_ROOT, DefaultKey + _T("\\CLSID"),
+	//		_T(""), HTMLCLSID, _T("SageThumbs.bak"));
+	//	RegisterValue (HKEY_CLASSES_ROOT, key, _T("Content Type"),
+	//		mime, _T("Content Type SageThumbs.bak"));
+	//	RegisterValue (HKEY_CLASSES_ROOT, mimekey, _T("Image Filter CLSID"),
+	//		MyCLSID, _T("Image Filter CLSID SageThumbs.bak"));
+	//	RegisterValue (HKEY_CLASSES_ROOT, mimekey, _T("Extension"),
+	//		key, _T("Extension SageThumbs.bak"));
+	//	RegisterValue (HKEY_CLASSES_ROOT, mimekey + _T("\\Bits"), _T("0"),
+	//		data, bits->size * 2 + 4, _T("0 SageThumbs.bak"));
+	//	delete [] data;
+	//} else {
+	//	// Если нет значения, то установка универсального
+	//	BYTE foo [256];
+	//	DWORD size = sizeof (foo);
+	//	LONG err = SHGetValue (HKEY_CLASSES_ROOT, key, _T("Content Type"), &type, foo, &size);
+	//	if (err != ERROR_SUCCESS)
+	//		RegisterValue (HKEY_CLASSES_ROOT, key, _T("Content Type"),
+	//			_T("image/xnview"), _T("Content Type SageThumbs.bak"));
+	//}
+
+	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, key + _T("\\ShellEx"));		// HKCU
+	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, key + _T("\\ShellEx"));		// HKLM
+	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, key);			// HKCU
+	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, key);			// HKLM
+
+	if ( ! DefaultKey.IsEmpty() )
+	{
+		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx"));	// HKCU
+		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx"));	// HKLM
+		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, DefaultKey);	// HKCU
+		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, DefaultKey);	// HKLM
+	}
 }
 
 void CSageThumbsModule::UnregisterExt(LPCTSTR szExt)
@@ -253,59 +291,54 @@ void CSageThumbsModule::UnregisterExt(LPCTSTR szExt)
 	CString ext ( szExt );
 	key += ext;
 
-	CString DefaultKey;
-	DWORD type;
-	DWORD size = MAX_LONG_PATH * sizeof (TCHAR);
-	LONG err = SHGetValue (HKEY_CLASSES_ROOT, key, _T(""), &type,
-		DefaultKey.GetBuffer (size), &size);
-	DefaultKey.ReleaseBuffer ();
-	if ((err != ERROR_SUCCESS) || (type != REG_SZ) || (size <= 1)) {
-		DefaultKey.Empty ();
-	}
+	CString DefaultKey = GetRegValue( _T(""), _T(""), key, HKEY_CLASSES_ROOT );
 
 	for ( int i = 0; szHandlers[ i ]; ++i )
 	{
 		UnregisterValue( HKEY_CLASSES_ROOT,
 			key + _T("\\ShellEx\\") + szHandlers[ i ],
 			_T(""), MyCLSID, _T("SageThumbs.bak") );
+
 		if ( ! DefaultKey.IsEmpty() )
+		{
 			UnregisterValue( HKEY_CLASSES_ROOT,
 				DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ],
 				_T(""), MyCLSID, _T("SageThumbs.bak") );
+		}
 	}
 	
 	// IImageDecodeFilter
-	/*const BitsDescription* bits = NULL;
-	if (_BitsMap.Lookup (ext, bits)) {
-		CString mime (_T("image/"));
-		mime += ext;
-		CString mimekey (_T("MIME\\Database\\Content Type\\"));
-		mimekey += mime;
-		BYTE* data = new BYTE [bits->size * 2 + 4];
-		*((DWORD*) data) = bits->size;
-		CopyMemory (data + 4, bits->mask, bits->size);
-		CopyMemory (data + 4 + bits->size, bits->data, bits->size);
-		if (!DefaultKey.IsEmpty ())
-			UnregisterValue (HKEY_CLASSES_ROOT, DefaultKey + _T("\\CLSID"),
-				_T(""), HTMLCLSID, _T("SageThumbs.bak"));
-		UnregisterValue (HKEY_CLASSES_ROOT, key, _T("Content Type"),
-			mime, _T("Content Type SageThumbs.bak"));
-		UnregisterValue (HKEY_CLASSES_ROOT, mimekey, _T("Image Filter CLSID"),
-			MyCLSID, _T("Image Filter CLSID SageThumbs.bak"));
-		UnregisterValue (HKEY_CLASSES_ROOT, mimekey, _T("Extension"),
-			key, _T("Extension SageThumbs.bak"));
-		UnregisterValue (HKEY_CLASSES_ROOT, mimekey + _T("\\Bits"), _T("0"),
-			data, bits->size * 2 + 4, _T("0 SageThumbs.bak"));
-		delete [] data;
+	//const BitsDescription* bits = NULL;
+	//if (_BitsMap.Lookup (ext, bits)) {
+	//	CString mime (_T("image/"));
+	//	mime += ext;
+	//	CString mimekey (_T("MIME\\Database\\Content Type\\"));
+	//	mimekey += mime;
+	//	BYTE* data = new BYTE [bits->size * 2 + 4];
+	//	*((DWORD*) data) = bits->size;
+	//	CopyMemory (data + 4, bits->mask, bits->size);
+	//	CopyMemory (data + 4 + bits->size, bits->data, bits->size);
+	//	if (!DefaultKey.IsEmpty ())
+	//		UnregisterValue (HKEY_CLASSES_ROOT, DefaultKey + _T("\\CLSID"),
+	//			_T(""), HTMLCLSID, _T("SageThumbs.bak"));
+	//	UnregisterValue (HKEY_CLASSES_ROOT, key, _T("Content Type"),
+	//		mime, _T("Content Type SageThumbs.bak"));
+	//	UnregisterValue (HKEY_CLASSES_ROOT, mimekey, _T("Image Filter CLSID"),
+	//		MyCLSID, _T("Image Filter CLSID SageThumbs.bak"));
+	//	UnregisterValue (HKEY_CLASSES_ROOT, mimekey, _T("Extension"),
+	//		key, _T("Extension SageThumbs.bak"));
+	//	UnregisterValue (HKEY_CLASSES_ROOT, mimekey + _T("\\Bits"), _T("0"),
+	//		data, bits->size * 2 + 4, _T("0 SageThumbs.bak"));
+	//	delete [] data;
 
-		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, mimekey + _T("\\Bits"));
-		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, mimekey + _T("\\Bits"));
-		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, mimekey);
-		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, mimekey);
-	}*/ /*else {
-		UnregisterValue (HKEY_CLASSES_ROOT, key, _T("Content Type"),
-			_T("image/xnview"), _T("Content Type SageThumbs.bak"));
-	}*/
+	//	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, mimekey + _T("\\Bits"));
+	//	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, mimekey + _T("\\Bits"));
+	//	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, mimekey);
+	//	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, mimekey);
+	//} else {
+	//	UnregisterValue (HKEY_CLASSES_ROOT, key, _T("Content Type"),
+	//		_T("image/xnview"), _T("Content Type SageThumbs.bak"));
+	//}
 
 	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, key + _T("\\ShellEx"));		// HKCU
 	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, key + _T("\\ShellEx"));		// HKLM
@@ -400,8 +433,6 @@ void CSageThumbsModule::FillExtMap()
 
 	if (_ExtMap.IsEmpty ())
 	{
-		_ExtMap.InitHashTable( 509 );
-
 		// Загрузка расширений через GFL
 		GFL_INT32 count = gflGetNumberOfFormat();
 		GFL_INT32 i = 0;
@@ -424,9 +455,9 @@ void CSageThumbsModule::FillExtMap()
 		// Загрузка данных о расширении
 		i = 1;
 		const CString key = CString( REG_SAGETHUMBS ) + _T("\\");
-		for ( POSITION pos = _ExtMap.GetStartPosition (); pos; ++i )
+		for ( POSITION pos = _ExtMap.GetHeadPosition(); pos; ++i )
 		{
-			CAtlExtMap::CPair* p = _ExtMap.GetNext (pos);
+			CExtMap::CPair* p = _ExtMap.GetNext (pos);
 
 			// Разрешено или нет
 			DWORD dwEnabled = GetRegValue( _T("Enabled"),
@@ -436,7 +467,7 @@ void CSageThumbsModule::FillExtMap()
 			SetRegValue( _T("Enabled"), dwEnabled, key + p->m_key );
 			p->m_value.enabled = ( dwEnabled != 0 );
 
-			//ATLTRACE( "%4d. %c %8s \"%s\"\n", i, ( p->m_value.enabled ? '+' : '-' ), (LPCSTR)CT2A( p->m_key ), (LPCSTR)CT2A( p->m_value.info ) );	
+			ATLTRACE( "%4d. %c %8s \"%s\"\n", i, ( p->m_value.enabled ? '+' : '-' ), (LPCSTR)CT2A( p->m_key ), (LPCSTR)CT2A( p->m_value.info ) );	
 		}
 
 		ATLTRACE( "Loaded %d formats, %d extensions. ", count, _ExtMap.GetCount() );
@@ -725,104 +756,112 @@ LONG APIENTRY CPlApplet(HWND hwnd, UINT uMsg, LPARAM /* lParam1 */, LPARAM lPara
 
 void RegisterValue (HKEY root, LPCTSTR key, LPCTSTR name, LPCTSTR value, LPCTSTR backup)
 {
-	// Проверка, нужно ли записывать значение
-	TCHAR buf [256];
-	DWORD type = REG_SZ;
-	DWORD size = sizeof (buf) - 1;
-	DWORD res = SHGetValue (root, key, name, &type, buf, &size);
-	if ((ERROR_SUCCESS != res) || (type != REG_SZ) ||
-		lstrcmpi (buf, value))
+	// Check for new value
+	CString buf = GetRegValue( name, _T(""), key, root );
+	if ( buf.IsEmpty() || buf.CompareNoCase( value ) != 0 )
 	{
-		// Прописывание нового значения и сохранение старого
-		SHSetValue (root, key, name, REG_SZ, value, (DWORD)lengthof (value));
+		// Set new value
+		SetRegValue( name, value, key, root );
 
-		// Сохранение старого
-		if ( res == ERROR_SUCCESS && size > 1 && type == REG_SZ )
-			SHSetValue( root, key, backup, REG_SZ, buf, size );
+		// Backup old one
+		if ( ! buf.IsEmpty() )
+			SetRegValue( backup, buf, key, root );
 	}
 }
 
 void RegisterValue(HKEY root, LPCTSTR key, LPCTSTR name, const BYTE* value, DWORD value_size, LPCTSTR backup)
 {
-	// Проверка, нужно ли записывать значение
-	BYTE buf [256] = {};
+	// Check for new value
+	BYTE buf [256];
 	DWORD type = REG_BINARY;
 	DWORD size = sizeof (buf) - 1;
 	DWORD res = SHGetValue( root, key, name, &type, buf, &size );
 	if ( ( ERROR_SUCCESS != res ) ||
 		 ( type != REG_BINARY ) ||
 		 ( size != value_size ) ||
-		 memcmp( buf, value, size ) )
+		 ( memcmp( buf, value, size ) != 0 ) )
 	{
-		// Прописывание нового значения и сохранение старого
+		// Set new value
 		SHSetValue (root, key, name, REG_BINARY, value, value_size);				
 
-		// Сохранение старого
-		if (res == ERROR_SUCCESS && size > 0 && type == REG_BINARY)
-			SHSetValue ( root, key, backup, REG_BINARY, buf, size );
+		// Backup old one
+		if ( res == ERROR_SUCCESS && size > 0 && type == REG_BINARY )
+			SHSetValue( root, key, backup, REG_BINARY, buf, size );
 	}
 }
 
 void UnregisterValue(HKEY root, LPCTSTR key, LPCTSTR name, LPCTSTR value, LPCTSTR backup)
 {
-	// Проверка, нужно ли восстанавливать значение
-	TCHAR buf [256] = {};
-	DWORD type = REG_SZ;
-	DWORD size = sizeof (buf) - 1;
-	if ( ( ERROR_SUCCESS == SHGetValue( root, key, name, &type, buf, &size ) ) &&
-		 ( type == REG_SZ ) &&
-		 ! lstrcmpi( buf, value ) )
+	// Check backup
+	CString buf = GetRegValue( name, _T(""), key, root );
+	CString backup_buf = GetRegValue( backup, _T(""), key, root );
+	if ( ! buf.IsEmpty() && buf.CompareNoCase( value ) == 0 )
 	{			
-
-		// Проверка наличия бекапа
-		type = REG_SZ;
-		size = sizeof (buf) - 1;
-		if ((ERROR_SUCCESS == SHGetValue (root, key, backup,
-			&type, buf, &size)) && (size > 1) && (type == REG_SZ))
+		// Check backup value
+		if ( ! backup_buf.IsEmpty() )
 		{
-			// Восстановление ключа из бекапа
-			SHSetValue (root, key, name, REG_SZ, buf, size);
-			SHDeleteValue (root, key, backup);
-			SHDeleteValue (root, key, backup);
+			// Restore value from backup
+			SetRegValue( name, backup_buf, key, root );
+
+			// Delete backup value
+			SHDeleteValue( root, key, backup );
+			SHDeleteValue( root, key, backup );
 		}
 		else
 		{
-			SHDeleteValue (root, key, name);
-			SHDeleteValue (root, key, name);
+			// Delete original value
+			SHDeleteValue( root, key, name );
+			SHDeleteValue( root, key, name );
 		}
 	}
-	SHDeleteEmptyKey (root, key);
-	SHDeleteEmptyKey (root, key);
+	else if ( ! backup_buf.IsEmpty() )
+	{
+		// Delete backup value
+		SHDeleteValue( root, key, backup );
+		SHDeleteValue( root, key, backup );
+	}
+
+	// Clean-up empty key
+	SHDeleteEmptyKey( root, key );
+	SHDeleteEmptyKey( root, key );
 }
 
 void UnregisterValue(HKEY root, LPCTSTR key, LPCTSTR name, const BYTE* value, DWORD value_size, LPCTSTR backup)
 {
-	// Проверка, нужно ли восстанавливать значение
-	BYTE buf [256] = {};
+	// Check backup
+	BYTE buf [256];
 	DWORD type = REG_BINARY;
 	DWORD size = sizeof (buf) - 1;
-	if ( ( ERROR_SUCCESS == SHGetValue (root, key, name, &type, buf, &size ) ) &&
+	DWORD res = SHGetValue (root, key, name, &type, buf, &size );
+	if ( ( ERROR_SUCCESS == res ) &&
 		 ( type == REG_BINARY ) &&
 		 ( size == value_size ) &&
-		 ! memcmp ( buf, value, size ) )
+		 ( memcmp( buf, value, size ) == 0 ) )
 	{
-		// Проверка наличия бекапа
+		// Check backup value
 		type = REG_BINARY;
 		size = sizeof (buf) - 1;
-		if ((ERROR_SUCCESS == SHGetValue (root, key, backup,
-			&type, buf, &size)) && (size > 0) && (type == REG_BINARY))
+		res = SHGetValue (root, key, backup, &type, buf, &size );
+		if ( ( ERROR_SUCCESS == res ) &&
+			 ( type == REG_BINARY ) &&
+			 ( size > 0 ) )
 		{
-			// Восстановление ключа из бекапа
+			// Restore value from backup
 			SHSetValue (root, key, name, REG_BINARY, buf, size);
+
+			// Delete backup value
 			SHDeleteValue (root, key, backup);
 			SHDeleteValue (root, key, backup);
 		}
 		else
 		{
+			// Delete original value
 			SHDeleteValue (root, key, name);
 			SHDeleteValue (root, key, name);
 		}
 	}
+
+	// Clean-up empty key
 	SHDeleteEmptyKey (root, key);
 	SHDeleteEmptyKey (root, key);
 }
@@ -1036,4 +1075,59 @@ bool IsGoodFile(LPCTSTR szFilename, Ext* pdata, WIN32_FIND_DATA* pfd)
 		return false;
 
 	return true;
+}
+
+BOOL LoadIcon(LPCTSTR szFilename, HICON* phSmallIcon, HICON* phLargeIcon, HICON* phHugeIcon, int nIcon)
+{
+	CString strIcon( szFilename );
+
+	if ( phSmallIcon )
+		*phSmallIcon = NULL;
+	if ( phLargeIcon )
+		*phLargeIcon = NULL;
+	if ( phHugeIcon )
+		*phHugeIcon = NULL;
+
+	int nIndex = strIcon.ReverseFind( _T(',') );
+	if ( nIndex != -1 )
+	{
+		if ( _stscanf_s( strIcon.Mid( nIndex + 1 ), _T("%i"), &nIcon ) == 1 )
+		{
+			strIcon = strIcon.Left( nIndex );
+		}
+	}
+	else
+		nIndex = 0;
+
+	if ( strIcon.GetLength() < 3 )
+		return FALSE;
+
+	if ( strIcon.GetAt( 0 ) == _T('\"') &&
+		strIcon.GetAt( strIcon.GetLength() - 1 ) == _T('\"') )
+		strIcon = strIcon.Mid( 1, strIcon.GetLength() - 2 );
+
+	if ( phLargeIcon || phSmallIcon )
+	{
+		ExtractIconEx( strIcon, nIcon, phLargeIcon, phSmallIcon, 1 );
+	}
+
+	if ( phHugeIcon )
+	{
+		UINT nLoadedID;
+		PrivateExtractIcons( strIcon, nIcon, 48, 48,
+			phHugeIcon, &nLoadedID, 1, 0 );
+	}
+
+	return ( phLargeIcon && *phLargeIcon ) || ( phSmallIcon && *phSmallIcon ) ||
+		( phHugeIcon && *phHugeIcon );
+}
+
+void CleanWindowsCache()
+{
+	CComPtr< IEmptyVolumeCache > pWindowsThumbnailer;
+	HRESULT hr = pWindowsThumbnailer.CoCreateInstance( CLSID_WindowsThumbnailer );
+	if ( SUCCEEDED( hr ) )
+	{
+		pWindowsThumbnailer->Purge( 0, NULL );
+	}	
 }

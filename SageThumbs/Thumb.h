@@ -94,7 +94,8 @@ class CThumb :
 	public IExtractIcon,
 //	public IImageDecodeFilter,
 //	public IColumnProvider
-	public IObjectWithSite
+	public IObjectWithSite,
+	public IEmptyVolumeCache2
 {
 public:
 	CThumb();
@@ -129,6 +130,8 @@ public:
 //		COM_INTERFACE_ENTRY(IImageDecodeFilter)
 //		COM_INTERFACE_ENTRY(IColumnProvider)
 		COM_INTERFACE_ENTRY(IObjectWithSite)
+		COM_INTERFACE_ENTRY(IEmptyVolumeCache)
+		COM_INTERFACE_ENTRY(IEmptyVolumeCache2)
 	END_COM_MAP()
 
 	BEGIN_CATEGORY_MAP(CThumb)
@@ -279,6 +282,38 @@ public:
 	//STDMETHOD(GetColumnInfo)(DWORD dwIndex, SHCOLUMNINFO *psci);
 	//STDMETHOD(GetItemData)(LPCSHCOLUMNID pscid, LPCSHCOLUMNDATA pscd, VARIANT *pvarData);
 
+// IEmptyVolumeCache
+	STDMETHOD(Initialize)( 
+		/* [in] */ HKEY hkRegKey,
+		/* [in] */ LPCWSTR pcwszVolume,
+		/* [out] */ LPWSTR *ppwszDisplayName,
+		/* [out] */ LPWSTR *ppwszDescription,
+		/* [out] */ DWORD *pdwFlags);
+
+	STDMETHOD(GetSpaceUsed)( 
+		/* [out] */ __RPC__out DWORDLONG *pdwlSpaceUsed,
+		/* [in] */ __RPC__in_opt IEmptyVolumeCacheCallBack *picb);
+
+	STDMETHOD(Purge)( 
+		/* [in] */ DWORDLONG dwlSpaceToFree,
+		/* [in] */ __RPC__in_opt IEmptyVolumeCacheCallBack *picb);
+
+	STDMETHOD(ShowProperties)( 
+		/* [in] */ __RPC__in HWND hwnd);
+
+	STDMETHOD(Deactivate)( 
+		/* [out] */ __RPC__out DWORD *pdwFlags);
+
+// IEmptyVolumeCache2
+	STDMETHOD(InitializeEx)( 
+		/* [in] */ HKEY hkRegKey,
+		/* [in] */ LPCWSTR pcwszVolume,
+		/* [in] */ LPCWSTR pcwszKeyName,
+		/* [out] */ LPWSTR *ppwszDisplayName,
+		/* [out] */ LPWSTR *ppwszDescription,
+		/* [out] */ LPWSTR *ppwszBtnText,
+		/* [out] */ DWORD *pdwFlags);
+
 protected:
 	CAtlList< CString >				m_Filenames;		// Имена файлов для меню
 	UINT							m_uOurItemID;		// Идентификатор пункта меню
@@ -289,6 +324,7 @@ protected:
 
 //	CComPtr< IStream >				m_pStream;			// Стрим файла
 	CString							m_sFilename;		// Имя файла
+	BOOL							m_bCleanup;		// Флаг пропуска очистки
 
 	void ConvertTo(HWND hWnd, LPCSTR ext);		// Конвертирование в нужное расширение
 	void SetWallpaper(HWND hwnd, WORD reason);	// Установка обоев

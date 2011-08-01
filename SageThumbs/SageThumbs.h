@@ -26,9 +26,7 @@ typedef struct
 	CString	info;
 } Ext;
 
-typedef CAtlMap < CString, Ext > CAtlExtMap;
-
-typedef CAtlMap < CString, CString > CAtlStrStrMap;
+typedef CRBMap < CString, Ext > CExtMap;
 
 /*typedef struct
 {
@@ -77,7 +75,7 @@ protected:
 extern CString				_ModuleFileName;
 extern CString				_Database;
 extern CString				_PlugInsPathname;
-extern CAtlExtMap			_ExtMap;
+extern CExtMap			_ExtMap;
 extern CRITICAL_SECTION		_GflGuard;
 //extern BitsDescriptionMap	_BitsMap;
 extern CSageThumbsModule	_AtlModule;
@@ -117,6 +115,10 @@ HRESULT SAFEgflFreeBitmap(GFL_BITMAP*& bitmap);
 
 // Проверка, что файл подходит для загрузки по всем параметрам
 bool IsGoodFile(LPCTSTR szFilename, Ext* pdata = NULL, WIN32_FIND_DATA* pfd = NULL);
+
+BOOL LoadIcon(LPCTSTR szFilename, HICON* phSmallIcon, HICON* phLargeIcon = NULL, HICON* phHugeIcon = NULL, int nIcon = 0);
+
+void CleanWindowsCache();
 
 // Экспортируемые функции
 STDAPI DllCanUnloadNow (void);

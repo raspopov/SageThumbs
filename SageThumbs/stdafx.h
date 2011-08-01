@@ -59,6 +59,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <ddraw.h>
 #include <richedit.h>
 #include <thumbcache.h>
+#include <emptyvc.h>
 
 #include "../gfl/libgfl.h"
 #include "../gfl/libgfle.h"
@@ -80,6 +81,9 @@ struct __declspec(uuid("000214F4-0000-0000-C000-000000000046")) IContextMenu2;
 struct __declspec(uuid("BCFCE0A0-EC17-11d0-8D10-00A0C90F2719")) IContextMenu3;
 struct __declspec(uuid("00021500-0000-0000-c000-000000000046")) IQueryInfo;
 struct __declspec(uuid("e8025004-1c42-11d2-be2c-00a0c9a83da1")) IColumnProvider;
+
+// {889900c3-59f3-4c2f-ae21-a409ea01e605}
+DEFINE_GUID(CLSID_WindowsThumbnailer,0x889900c3,0x59f3,0x4c2f,0xae,0x21,0xa4,0x09,0xea,0x01,0xe6,0x05);
 
 #define REG_SAGETHUMBS		_T("Software\\SageThumbs")
 #define ShellImagePreview	_T("SystemFileAssociations\\image\\ShellEx\\ContextMenuHandlers\\ShellImagePreview")
@@ -132,14 +136,16 @@ DEFINE_GUID(CLSID_Thumb,0x4A34B3E3,0xF50E,0x4FF6,0x89,0x79,0x7E,0x41,0x76,0x46,0
 
 using namespace ATL;
 
-DWORD   GetRegValue(LPCTSTR szName, DWORD dwDefault, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
+DWORD GetRegValue(LPCTSTR szName, DWORD dwDefault, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
 CString GetRegValue(LPCTSTR szName, LPCTSTR szDefault = _T(""), LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
 void SetRegValue(LPCTSTR szName, DWORD dwValue, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
 void SetRegValue(LPCTSTR szName, LPCTSTR szValue, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
 void SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
 int MsgBox(HWND hWnd, UINT nText, UINT nType = MB_OK | MB_ICONEXCLAMATION, UINT nTitle = IDS_PROJNAME);
+
 // —оздание пути (со всеми директори€ми которых нет)
 void MakeDirectory(LPCTSTR dir);
+
 // ѕолучение системного пути
 CString GetSpecialFolderPath(int csidl);
 

@@ -79,7 +79,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				RegisterOutput="true"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib"
 				LinkIncremental="2"
@@ -110,7 +109,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				Description="Registering..."
+				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -173,7 +173,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				RegisterOutput="true"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib"
 				LinkIncremental="2"
@@ -204,7 +203,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				Description="Registering..."
+				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -273,7 +273,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				RegisterOutput="true"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib"
 				AdditionalLibraryDirectories="..\gfl\libW"
@@ -305,7 +304,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				Description="Registering..."
+				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;"
 			/>
 		</Configuration>
 		<Configuration
@@ -374,7 +374,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				RegisterOutput="true"
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib"
 				AdditionalLibraryDirectories="..\gfl\lib64W"
@@ -406,7 +405,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine=""
+				Description="Registering..."
+				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -536,11 +536,11 @@
 				>
 			</File>
 			<File
-				RelativePath="SageThumbs.ico"
+				RelativePath=".\res\SageThumbs.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\res\SageThumbs.ico"
+				RelativePath="SageThumbs.ico"
 				>
 			</File>
 			<File

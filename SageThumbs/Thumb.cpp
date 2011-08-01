@@ -21,11 +21,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "stdafx.h"
 #include "SageThumbs.h"
 #include "Thumb.h"
-	
+#include "SQLite.h"
+
 CThumb::CThumb() :
 	m_uOurItemID( 0 ),
 	m_cx( THUMB_STORE_SIZE ),
-	m_cy( THUMB_STORE_SIZE )
+	m_cy( THUMB_STORE_SIZE ),
+	m_bCleanup( FALSE )
 {
 }
 
@@ -87,8 +89,10 @@ STDMETHODIMP CThumb::Initialize(LPCITEMIDLIST, IDataObject* pDO, HKEY)
 	for ( UINT i = 0; i < count; i++ )
 	{
 		CString filename;
-		filename.ReleaseBuffer( DragQueryFile( hDrop, i, filename.GetBuffer( MAX_LONG_PATH ),
-			MAX_LONG_PATH ) );
+		LPTSTR buf = filename.GetBuffer( MAX_LONG_PATH );
+		DWORD len = DragQueryFile( hDrop, i, buf, MAX_LONG_PATH - 1 );
+		buf[ len ] = _T('\0');
+		filename.ReleaseBuffer();
 
 		if ( IsGoodFile( filename ) )
 		{
@@ -384,12 +388,12 @@ void CThumb::SetWallpaper(HWND hWnd, WORD reason)
 			_T("\\SageThumbs wallpaper.bmp");
 		if ( gflSaveBitmapW( (LPTSTR)(LPCTSTR)save_path, hBitmap, &params) == GFL_NO_ERROR)
 		{
-			SHSetValue (HKEY_CURRENT_USER,
-				_T("Control Panel\\Desktop"), _T("TileWallpaper"), REG_SZ,
-				((reason == ID_WALLPAPER_TILE_ITEM) ? _T("1") : _T("0")), 2 * sizeof (TCHAR));
-			SHSetValue (HKEY_CURRENT_USER,
-				_T("Control Panel\\Desktop"), _T("WallpaperStyle"), REG_SZ,
-				((reason == ID_WALLPAPER_STRETCH_ITEM) ? _T("2") : _T("0")), 2 * sizeof (TCHAR));
+			SetRegValue( _T("TileWallpaper"),
+				((reason == ID_WALLPAPER_TILE_ITEM) ? _T("1") : _T("0")),
+				_T("Control Panel\\Desktop"), HKEY_CURRENT_USER );
+			SetRegValue( _T("WallpaperStyle"),
+				((reason == ID_WALLPAPER_STRETCH_ITEM) ? _T("2") : _T("0")),
+				_T("Control Panel\\Desktop"), HKEY_CURRENT_USER );
 			SystemParametersInfo (SPI_SETDESKWALLPAPER, 0,
 				(LPVOID) (LPCTSTR) save_path, SPIF_SENDCHANGE | SPIF_UPDATEINIFILE);
 		}
@@ -1207,7 +1211,36 @@ STDMETHODIMP CThumb::Extract(LPCTSTR /*pszFile*/, UINT /*nIconIndex*/,
 	if ( FAILED( hr ) )
 	{
 		ATLTRACE( "0x%08x::IExtractIcon::Extract() : S_FALSE (Load failed)\n", this );
-		return S_FALSE;
+	
+		// Attempt to load default icon
+		CString sExt = PathFindExtension( m_sFilename );
+		if ( sExt.IsEmpty() )
+			// No extension
+			return S_FALSE;
+
+		CString sDefaultIcon;
+		CString sDefaultKey = GetRegValue( _T(""), _T(""), sExt, HKEY_CLASSES_ROOT );
+		if ( sDefaultKey.IsEmpty() )
+		{
+			sDefaultIcon = GetRegValue( _T(""), _T(""), sExt + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT );
+		}
+		else
+		{
+			sDefaultIcon = GetRegValue( _T(""), _T(""), sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT );
+		}
+		if ( sDefaultIcon.IsEmpty() )
+			// No icon
+			return S_FALSE;
+
+		if ( ! LoadIcon( sDefaultIcon,
+			( cxSmall == 16 ) ? phiconSmall : ( ( cxLarge == 16 ) ? phiconLarge : NULL ),
+			( cxSmall == 32 ) ? phiconSmall : ( ( cxLarge == 32 ) ? phiconLarge : NULL ),
+			( cxSmall == 48 ) ? phiconSmall : ( ( cxLarge == 48 ) ? phiconLarge : NULL ) ) )
+			// Found no icon
+			return S_FALSE;
+
+		ATLTRACE( "0x%08x::IExtractIcon::Extract() : S_OK (Default)\n", this );
+		return S_OK;
 	}
 
 	if ( cxLarge )
@@ -1605,3 +1638,112 @@ STDMETHODIMP CThumb::GetSite(REFIID riid, void **ppvSite)
 //{
 //	ATLTRACENOTIMPL( _T("IParentAndItem::GetParentAndItem") );
 //}
+
+// IEmptyVolumeCache
+
+STDMETHODIMP CThumb::Initialize( 
+	/* [in] */ HKEY /*hkRegKey*/,
+	/* [in] */ LPCWSTR pcwszVolume,
+	/* [out] */ LPWSTR *ppwszDisplayName,
+	/* [out] */ LPWSTR *ppwszDescription,
+	/* [out] */ DWORD *pdwFlags)
+{
+	if ( ppwszDisplayName )
+	{
+		CString foo;
+		foo.LoadString( IDS_CACHE );
+		size_t len = ( foo.GetLength() + 1 ) * sizeof( TCHAR );
+		*ppwszDisplayName = (LPWSTR)CoTaskMemAlloc( len );
+		CopyMemory( *ppwszDisplayName, (LPCTSTR)foo, len );
+	}
+
+	if ( ppwszDescription )
+	{
+		CString foo;
+		foo.LoadString( IDS_DESCRIPTION );
+		size_t len = ( foo.GetLength() + 1 ) * sizeof( TCHAR );
+		*ppwszDescription = (LPWSTR)CoTaskMemAlloc( len );
+		CopyMemory( *ppwszDescription, (LPCTSTR)foo, len );
+	}
+
+	m_bCleanup = ( _Database.GetAt( 0 ) == *pcwszVolume );
+
+	if ( m_bCleanup ) 
+	{
+		return S_OK;
+	}
+
+	if ( pdwFlags )
+	{
+		*pdwFlags |= EVCF_DONTSHOWIFZERO;
+	}
+
+	return S_FALSE;
+}
+
+STDMETHODIMP CThumb::GetSpaceUsed( 
+	/* [out] */ __RPC__out DWORDLONG *pdwlSpaceUsed,
+	/* [in] */ __RPC__in_opt IEmptyVolumeCacheCallBack* /*picb*/)
+{
+	if ( ! m_bCleanup )
+	{
+		if ( pdwlSpaceUsed )
+		{
+			*pdwlSpaceUsed = 0;
+		}
+		return S_OK;
+	}
+
+	WIN32_FILE_ATTRIBUTE_DATA wfadDatabase = {};
+	GetFileAttributesEx( _Database, GetFileExInfoStandard, &wfadDatabase );
+	if ( pdwlSpaceUsed )
+	{
+		*pdwlSpaceUsed = MAKEQWORD( wfadDatabase.nFileSizeLow, wfadDatabase.nFileSizeHigh );
+	}
+
+	return S_OK;
+}
+
+STDMETHODIMP CThumb::Purge( 
+	/* [in] */ DWORDLONG /*dwlSpaceToFree*/,
+	/* [in] */ __RPC__in_opt IEmptyVolumeCacheCallBack * /*picb*/)
+{
+	CDatabase db( _Database );
+	if ( db )
+	{
+		db.Exec( RECREATE_DATABASE );
+	}
+
+	return S_OK;
+}
+
+STDMETHODIMP CThumb::ShowProperties( 
+	/* [in] */ __RPC__in HWND /*hwnd*/)
+{
+	ATLTRACENOTIMPL( _T("IEmptyVolumeCache::ShowProperties") );
+}
+
+STDMETHODIMP CThumb::Deactivate( 
+	/* [out] */ __RPC__out DWORD* /*pdwFlags*/)
+{
+	return S_OK;
+}
+
+// IEmptyVolumeCache2
+
+STDMETHODIMP CThumb::InitializeEx( 
+	/* [in] */ HKEY hkRegKey,
+	/* [in] */ LPCWSTR pcwszVolume,
+	/* [in] */ LPCWSTR /*pcwszKeyName*/,
+	/* [out] */ LPWSTR *ppwszDisplayName,
+	/* [out] */ LPWSTR *ppwszDescription,
+	/* [out] */ LPWSTR *ppwszBtnText,
+	/* [out] */ DWORD *pdwFlags)
+{
+	if ( ppwszBtnText )
+	{
+		*ppwszBtnText = NULL;
+	}
+
+	return Initialize( hkRegKey, pcwszVolume, ppwszDisplayName, ppwszDescription, pdwFlags );
+}

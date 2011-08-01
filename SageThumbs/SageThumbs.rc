@@ -215,8 +215,10 @@ STRINGTABLE
 BEGIN
     IDS_ERR_NOTHING         "Nothing to send"
     IDS_ERR_CLIPBOARD       "Can't open clipboard"
-    IDS_CLEAR_PROMPT        "Please confirm database clearing."
-    IDS_DATABASE_SIZE       "Database size: %u KB"
+    IDS_CLEAR_PROMPT        "Please confirm thumbnail cache clearing."
+    IDS_DATABASE_SIZE       "Thumbnail cache size: %u KB"
+    IDS_CACHE               "SageThumbs thumbnail cache"
+    IDS_DESCRIPTION         "Clean SageThumbs thumbnail cache. No user data will be affected."
 END
 
 #endif    // Neutral resources
