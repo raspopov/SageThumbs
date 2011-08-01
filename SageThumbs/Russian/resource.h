@@ -20,6 +20,8 @@
 #define IDS_ERR_CLIPBOARD               113
 #define IDS_CLEAR_PROMPT                114
 #define IDS_DATABASE_SIZE               115
+#define IDS_CACHE                       116
+#define IDS_DESCRIPTION                 117
 #define IDC_WIDTH                       201
 #define IDC_HEIGHT                      202
 #define IDD_OPTIONS                     202
@@ -43,7 +45,6 @@
 #define IDC_CLEAR                       213
 #define IDC_FILE_SIZE                   214
 #define IDC_EMBEDDED                    215
-#define IDC_ENABLE_THUMBS2              216
 #define IDC_ENABLE_ICONS                216
 
 // Next default values for new objects
