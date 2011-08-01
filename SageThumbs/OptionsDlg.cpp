@@ -155,9 +155,10 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 	}
 
 	ListView_DeleteAllItems( pList );
-	for ( POSITION pos = _ExtMap.GetStartPosition(); pos; )
+	for ( POSITION pos = _ExtMap.GetHeadPosition(); pos; )
 	{
-		const CAtlExtMap::CPair* p = _ExtMap.GetNext( pos );
+		const CExtMap::CPair* p = _ExtMap.GetNext( pos );
+
 		LVITEM lvi = {};
 		lvi.mask = LVIF_TEXT;
 		lvi.pszText = (LPTSTR)(LPCTSTR)p->m_key;
@@ -272,8 +273,13 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 		CString ext;
 		ListView_GetItemText( pList, index, 0, ext.GetBuffer( 65 ), 64 );
 		ext.ReleaseBuffer ();
-		_ExtMap[ ext ].enabled = ListView_GetCheckState( pList, index ) != 0;
-		SetRegValue( _T("Enabled"), _ExtMap [ext].enabled ? 1 : 0, key + ext );
+
+		bool bEnabled = ListView_GetCheckState( pList, index ) != 0;
+		if ( CExtMap::CPair* p = _ExtMap.Lookup( ext ) )
+		{
+			p->m_value.enabled = bEnabled;
+		}
+		SetRegValue( _T("Enabled"), bEnabled ? 1 : 0, key + ext );
 	}
 
 	_AtlModule.LoadLang( GetLanguage () );
@@ -316,20 +322,22 @@ LRESULT COptionsDialog::OnSelect(WORD /* wNotifyCode */, WORD /* wID */, HWND /*
 
 LRESULT COptionsDialog::OnClear(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWndCtl */, BOOL& bHandled)
 {
-	CWaitCursor wc;
-
 	bHandled = TRUE;
 
 	if ( MsgBox( m_hWnd, IDS_CLEAR_PROMPT, MB_OKCANCEL | MB_ICONQUESTION ) == IDOK )
 	{
+		CWaitCursor wc;
+
+		// Clean SageThumbs cache
 		CDatabase db( _Database );
 		if ( db )
 		{
-			// Удаление таблицы и сжатие базы
 			db.Exec( RECREATE_DATABASE );
 		}
 
-		// Обновление
+		// Clean Windows cache
+		CleanWindowsCache();
+
 		OnInitDialog( 0, 0, 0, bHandled );
 	}
 
