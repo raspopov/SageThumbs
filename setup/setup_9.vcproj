@@ -20,8 +20,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="10"
 			CharacterSet="2"
 			>
@@ -61,8 +61,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
+			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="10"
 			CharacterSet="2"
 			WholeProgramOptimization="1"
@@ -107,7 +107,8 @@
 	</References>
 	<Files>
 		<File
-			RelativePath=".\setup32.nsi"
+			RelativePath=".\setup.nsi"
+			DeploymentContent="true"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
@@ -115,7 +116,8 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
+					Description="Creaintg Installer..."
+					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; /X&quot;!define BITS 32&quot; /X&quot;!define SOURCE ..\Win32\release\&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
 					AdditionalDependencies="$(OutDir)\SageThumbs.dll"
 					Outputs="$(InputName).trg"
 				/>
@@ -126,9 +128,10 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
-					AdditionalDependencies="$(InputPath)"
-					Outputs="setup32.trg"
+					Description="Creaintg Installer..."
+					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; /DBITS=64 /DSOURCE=..\x64\release\ &quot;$(InputPath)&quot;"
+					AdditionalDependencies="$(OutDir)\SageThumbs.dll"
+					Outputs="$(InputName).trg"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -136,55 +139,8 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
-					AdditionalDependencies="$(OutDir)\SageThumbs.dll"
-					Outputs="$(InputName).trg"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|x64"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
-					AdditionalDependencies="$(InputPath)"
-					Outputs="setup32.trg"
-				/>
-			</FileConfiguration>
-		</File>
-		<File
-			RelativePath=".\setup64.nsi"
-			>
-			<FileConfiguration
-				Name="Debug|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
-					AdditionalDependencies="$(OutDir)\SageThumbs.dll"
-					Outputs="$(InputName).trg"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Debug|x64"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
-					AdditionalDependencies="$(InputPath)"
-					Outputs="setup64.trg"
-				/>
-			</FileConfiguration>
-			<FileConfiguration
-				Name="Release|Win32"
-				ExcludedFromBuild="true"
-				>
-				<Tool
-					Name="VCCustomBuildTool"
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
+					Description="Creaintg Installer..."
+					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; /DBITS=32 /DSOURCE=..\Win32\release\ &quot;$(InputPath)&quot;&#x0D;&#x0A;"
 					AdditionalDependencies="$(OutDir)\SageThumbs.dll"
 					Outputs="$(InputName).trg"
 				/>
@@ -194,9 +150,10 @@
 				>
 				<Tool
 					Name="VCCustomBuildTool"
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
-					AdditionalDependencies="$(InputPath)"
-					Outputs="setup64.trg"
+					Description="Creaintg Installer..."
+					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; /DBITS=64 /DSOURCE=..\x64\release\ &quot;$(InputPath)&quot;"
+					AdditionalDependencies="$(OutDir)\SageThumbs.dll"
+					Outputs="$(InputName).trg"
 				/>
 			</FileConfiguration>
 		</File>

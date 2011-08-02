@@ -21,7 +21,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="0"
@@ -31,7 +31,7 @@
 			<Tool
 				Name="VCPreBuildEventTool"
 				Description="Copy DLLs..."
-				CommandLine="copy /b /y &quot;$(SolutionDir)gfl\libW\*.dll&quot; &quot;$(SolutionDir)$(PlatformName)\$(ConfigurationName)&quot;"
+				CommandLine="copy /b /y &quot;$(SolutionDir)..\gfl\libW\*.dll&quot; &quot;$(OutDir)&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -83,8 +83,8 @@
 				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\gfl\libW"
-				ModuleDefinitionFile="$(InputName).def"
-				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll;ole32.dll;oleaut32.dll;shlwapi.dll;shell32.dll;version.dll"
+				ModuleDefinitionFile="$(ProjectName).def"
+				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="1"
@@ -110,12 +110,12 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Registering..."
-				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;"
+				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="0"
@@ -125,7 +125,7 @@
 			<Tool
 				Name="VCPreBuildEventTool"
 				Description="Copy DLLs..."
-				CommandLine="copy /b /y &quot;$(SolutionDir)gfl\lib64W\*.dll&quot; &quot;$(SolutionDir)$(PlatformName)\$(ConfigurationName)&quot;"
+				CommandLine="copy /b /y &quot;$(SolutionDir)..\gfl\lib64W\*.dll&quot; &quot;$(OutDir)&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -177,8 +177,8 @@
 				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\gfl\lib64W"
-				ModuleDefinitionFile="$(InputName).def"
-				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll;ole32.dll;oleaut32.dll;shlwapi.dll;shell32.dll;version.dll"
+				ModuleDefinitionFile="$(ProjectName).def"
+				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				TargetMachine="17"
@@ -204,12 +204,12 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Registering..."
-				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;"
+				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="0"
@@ -220,7 +220,7 @@
 			<Tool
 				Name="VCPreBuildEventTool"
 				Description="Copy DLLs..."
-				CommandLine="copy /b /y &quot;$(SolutionDir)gfl\libW\*.dll&quot; &quot;$(SolutionDir)$(PlatformName)\$(ConfigurationName)&quot;"
+				CommandLine="copy /b /y &quot;$(SolutionDir)..\gfl\libW\*.dll&quot; &quot;$(OutDir)&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -276,8 +276,8 @@
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib"
 				AdditionalLibraryDirectories="..\gfl\libW"
-				ModuleDefinitionFile="$(InputName).def"
-				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll;ole32.dll;oleaut32.dll;shlwapi.dll;shell32.dll;version.dll"
+				ModuleDefinitionFile="$(ProjectName).def"
+				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -305,12 +305,12 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Registering..."
-				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;"
+				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="0"
@@ -321,7 +321,7 @@
 			<Tool
 				Name="VCPreBuildEventTool"
 				Description="Copy DLLs..."
-				CommandLine="copy /b /y &quot;$(SolutionDir)gfl\lib64W\*.dll&quot; &quot;$(SolutionDir)$(PlatformName)\$(ConfigurationName)&quot;"
+				CommandLine="copy /b /y &quot;$(SolutionDir)..\gfl\lib64W\*.dll&quot; &quot;$(OutDir)&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -377,8 +377,8 @@
 				IgnoreImportLibrary="true"
 				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib"
 				AdditionalLibraryDirectories="..\gfl\lib64W"
-				ModuleDefinitionFile="$(InputName).def"
-				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll;ole32.dll;oleaut32.dll;shlwapi.dll;shell32.dll;version.dll"
+				ModuleDefinitionFile="$(ProjectName).def"
+				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -406,7 +406,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Registering..."
-				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;"
+				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>
@@ -536,11 +536,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\res\SageThumbs.ico"
+				RelativePath="SageThumbs.ico"
 				>
 			</File>
 			<File
-				RelativePath="SageThumbs.ico"
+				RelativePath=".\res\SageThumbs.ico"
 				>
 			</File>
 			<File
@@ -567,10 +567,6 @@
 		</File>
 		<File
 			RelativePath="..\ReadMe.txt"
-			>
-		</File>
-		<File
-			RelativePath="..\todo.txt"
 			>
 		</File>
 	</Files>

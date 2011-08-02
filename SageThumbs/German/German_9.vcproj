@@ -21,7 +21,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="0"
@@ -31,7 +31,7 @@
 			<Tool
 				Name="VCPreBuildEventTool"
 				Description="Localization..."
-				CommandLine="$(SolutionDir)Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(InputName).lws&quot;"
+				CommandLine="$(SolutionDir)..\Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(ProjectName).lws&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -104,7 +104,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="0"
@@ -114,7 +114,7 @@
 			<Tool
 				Name="VCPreBuildEventTool"
 				Description="Localization..."
-				CommandLine="$(SolutionDir)Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(InputName).lws&quot;"
+				CommandLine="$(SolutionDir)..\Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(ProjectName).lws&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -188,7 +188,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="0"
@@ -199,7 +199,7 @@
 			<Tool
 				Name="VCPreBuildEventTool"
 				Description="Localization..."
-				CommandLine="$(SolutionDir)Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(InputName).lws&quot;"
+				CommandLine="$(SolutionDir)..\Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(ProjectName).lws&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -269,7 +269,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="0"
@@ -280,7 +280,7 @@
 			<Tool
 				Name="VCPreBuildEventTool"
 				Description="Localization..."
-				CommandLine="$(SolutionDir)Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(InputName).lws&quot;"
+				CommandLine="$(SolutionDir)..\Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(ProjectName).lws&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"

@@ -92,8 +92,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,7,0,1
- PRODUCTVERSION 1,7,0,1
+ FILEVERSION 1,7,0,2
+ PRODUCTVERSION 1,7,0,2
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -110,12 +110,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Konrad Windszus"
             VALUE "FileDescription", "A tool for localizing/translating Resource Scripts (RC files)"
-            VALUE "FileVersion", "1, 7, 0, 1"
+            VALUE "FileVersion", "1, 7, 0, 2"
             VALUE "InternalName", "LocalizeRC.exe"
             VALUE "LegalCopyright", "Copyright (c) Konrad Windszus, 2003- 2004."
             VALUE "OriginalFilename", "LocalizeRC.exe"
             VALUE "ProductName", "LocalizeRC"
-            VALUE "ProductVersion", "1, 7, 0, 1"
+            VALUE "ProductVersion", "1, 7, 0, 2"
         END
     END
     BLOCK "VarFileInfo"

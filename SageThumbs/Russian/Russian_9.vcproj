@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="French"
-	ProjectGUID="{8FBC691B-D1E0-40F9-8943-4B45A8BEF1ED}"
-	RootNamespace="French"
+	Name="Russian"
+	ProjectGUID="{DCD6131E-89F0-4123-9831-8E1A515F745C}"
+	RootNamespace="Russian"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -21,7 +21,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="0"
@@ -31,7 +31,7 @@
 			<Tool
 				Name="VCPreBuildEventTool"
 				Description="Localization..."
-				CommandLine="$(SolutionDir)Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(InputName).lws&quot;"
+				CommandLine="$(SolutionDir)..\Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(ProjectName).lws&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -48,7 +48,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;French_EXPORTS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;RUSSIAN_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -69,15 +69,15 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="$(OutDir)\$(SolutionName)0c.dll"
+				OutputFile="$(OutDir)\$(SolutionName)19.dll"
 				LinkIncremental="1"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				ResourceOnlyDLL="true"
 				SetChecksum="true"
-				BaseAddress=""
-				ImportLibrary=""
+				BaseAddress="0x1F000000"
+				ImportLibrary="$(OutDir)/Russian.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -104,7 +104,7 @@
 		</Configuration>
 		<Configuration
 			Name="Debug|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="0"
@@ -114,7 +114,7 @@
 			<Tool
 				Name="VCPreBuildEventTool"
 				Description="Localization..."
-				CommandLine="$(SolutionDir)Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(InputName).lws&quot;"
+				CommandLine="$(SolutionDir)..\Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(ProjectName).lws&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -132,7 +132,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;French_EXPORTS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;RUSSIAN_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -153,7 +153,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="$(OutDir)\$(SolutionName)0c.dll"
+				OutputFile="$(OutDir)\$(SolutionName)19.dll"
 				LinkIncremental="1"
 				SubSystem="2"
 				OptimizeReferences="2"
@@ -161,7 +161,7 @@
 				ResourceOnlyDLL="true"
 				SetChecksum="true"
 				BaseAddress=""
-				ImportLibrary=""
+				ImportLibrary="$(OutDir)/Russian.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -188,7 +188,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="0"
@@ -199,7 +199,7 @@
 			<Tool
 				Name="VCPreBuildEventTool"
 				Description="Localization..."
-				CommandLine="$(SolutionDir)Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(InputName).lws&quot;"
+				CommandLine="$(SolutionDir)..\Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(ProjectName).lws&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -215,7 +215,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;French_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;RUSSIAN_EXPORTS"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -234,7 +234,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="$(OutDir)\$(SolutionName)0c.dll"
+				OutputFile="$(OutDir)\$(SolutionName)19.dll"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -269,7 +269,7 @@
 		</Configuration>
 		<Configuration
 			Name="Release|x64"
-			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)..\$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
 			ConfigurationType="2"
 			UseOfATL="0"
@@ -280,7 +280,7 @@
 			<Tool
 				Name="VCPreBuildEventTool"
 				Description="Localization..."
-				CommandLine="$(SolutionDir)Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(InputName).lws&quot;"
+				CommandLine="$(SolutionDir)..\Win32\$(ConfigurationName)\LocalizeRC.exe /Automation &quot;$(InputDir)$(ProjectName).lws&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -297,7 +297,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;French_EXPORTS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;RUSSIAN_EXPORTS"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -316,7 +316,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				OutputFile="$(OutDir)\$(SolutionName)0c.dll"
+				OutputFile="$(OutDir)\$(SolutionName)19.dll"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -375,7 +375,7 @@
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
 			<File
-				RelativePath=".\French.rc"
+				RelativePath=".\Russian.rc"
 				>
 			</File>
 			<File
@@ -392,11 +392,11 @@
 			</File>
 		</Filter>
 		<File
-			RelativePath=".\French.ini"
+			RelativePath=".\Russian.ini"
 			>
 		</File>
 		<File
-			RelativePath=".\French.lws"
+			RelativePath=".\Russian.lws"
 			>
 			<FileConfiguration
 				Name="Debug|Win32"
