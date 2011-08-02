@@ -20,22 +20,23 @@ Parameters:
 
 System Requirements:
 
-* Windows 95/98/ME/NT/2000/XP/2003/Vista/2008/7
-* About 1 Mb of disk space
+  * Windows 95/98/ME/NT/2000/XP/2003/Vista/2008/7
+  * About 1 Mb of disk space
 
 ========================================================================
 
 Versions:
 
-1.7.0.1
+1.7.0.2
+  * Project updated up to VS2010
 
-+ Added command-line support
-+ Project updated up to VS2008
-+ Minor bug fixes
+1.7.0.1
+  * Added command-line support
+  * Project updated up to VS2008
+  * Minor bug fixes
 
 1.6.0.1
-
-+ Initial version by Konrad Windszus
+  * Initial version by Konrad Windszus
 
 ========================================================================
 
