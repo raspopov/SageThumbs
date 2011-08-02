@@ -89,8 +89,16 @@ void MakeDirectory(LPCTSTR dir)
 CString GetSpecialFolderPath(int csidl)
 {
 	CString buf;
-	SHGetSpecialFolderPath( GetDesktopWindow (), 
-		buf.GetBuffer( MAX_LONG_PATH ), csidl, TRUE );
-	buf.ReleaseBuffer();
+
+	// Avoid SHGetSpecialFolderPath()
+	PIDLIST_ABSOLUTE pidl = NULL;
+	if ( SUCCEEDED( SHGetSpecialFolderLocation( GetDesktopWindow (), csidl, &pidl ) ) )
+	{
+		SHGetPathFromIDList( pidl, buf.GetBuffer( MAX_LONG_PATH ) );
+		buf.ReleaseBuffer();
+
+		CoTaskMemFree( pidl );
+	}
+	
 	return buf;
 }

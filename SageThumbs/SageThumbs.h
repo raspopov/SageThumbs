@@ -75,12 +75,13 @@ protected:
 extern CString				_ModuleFileName;
 extern CString				_Database;
 extern CString				_PlugInsPathname;
-extern CExtMap			_ExtMap;
+extern CExtMap				_ExtMap;
 extern CRITICAL_SECTION		_GflGuard;
 //extern BitsDescriptionMap	_BitsMap;
 extern CSageThumbsModule	_AtlModule;
 
 typedef ULONG (FAR PASCAL *tMAPISendMail)(LHANDLE, ULONG_PTR, lpMapiMessage, FLAGS, ULONG);
+typedef UINT (WINAPI *tPrivateExtractIconsT)(LPCTSTR, int, int, int, HICON*, UINT*, UINT, UINT);
 
 // Макросы для измерения времени
 #ifdef _DEBUG

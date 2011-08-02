@@ -43,7 +43,7 @@ struct sqlite3_stmt;
 class CDatabase
 {
 public:
-	CDatabase(LPCWSTR szDatabase);
+	CDatabase(LPCTSTR szDatabase);
 	~CDatabase();
 
 	// Return true if database successfully opened

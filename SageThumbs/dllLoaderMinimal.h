@@ -242,7 +242,7 @@ public:
 			  fNameStr		// name of function
 			);
 		if (!fPtr) {
-			ATLTRACE (_T("ERROR: cannot locate function name (%s) from dll\n"),fNameStr);
+			ATLTRACE ( "ERROR: cannot locate function name (%s) from dll\n", fNameStr );
 			/// return a pointer to a base generic function would be good. ie: ERROR prompt
 			return (FuncTTT) NULL;
 		}

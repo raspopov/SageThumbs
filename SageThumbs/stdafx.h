@@ -25,7 +25,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define STRICT
 
 #ifndef _SECURE_ATL
-#define _SECURE_ATL 1
+	#define _SECURE_ATL 1
 #endif
 
 #define _ATL_APARTMENT_THREADED
@@ -35,11 +35,26 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _ATL_ALL_WARNINGS
 
 #ifdef _DEBUG
-//#define _ATL_DEBUG_INTERFACES
-#define _ATL_DEBUG_QI
+	//#define _ATL_DEBUG_INTERFACES
+	#define _ATL_DEBUG_QI
 #endif
 
 #define ISOLATION_AWARE_ENABLED 1
+
+#if UNICODE
+	#define gflLoadBitmapT			gflLoadBitmapW
+	#define gflSaveBitmapT			gflSaveBitmapW
+	#define gflLoadThumbnailT		gflLoadThumbnailW
+	#define gflSetPluginsPathnameT	gflSetPluginsPathnameW
+	#define gflGetFileInformationT	gflGetFileInformationW
+#else
+	#pragma warning( disable: 4127 )
+	#define gflLoadBitmapT			gflLoadBitmap
+	#define gflSaveBitmapT			gflSaveBitmap
+	#define gflLoadThumbnailT		gflLoadThumbnail
+	#define gflSetPluginsPathnameT	gflSetPluginsPathname
+	#define gflGetFileInformationT	gflGetFileInformation
+#endif
 
 #include "resource.h"
 
@@ -69,7 +84,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define LIB_SQLITE			"sqlite3.dll"	// Название SQLite dll-ки
 
 #ifndef QWORD
-typedef ULONGLONG QWORD;
+	typedef ULONGLONG QWORD;
 #endif
 
 #define MAKEQWORD(l,h) ((QWORD)(l)|((QWORD)(h)<<32))

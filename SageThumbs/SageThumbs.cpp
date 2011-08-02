@@ -423,7 +423,7 @@ BOOL CSageThumbsModule::LoadLangIDDLL (LANGID LangID)
 		m_LangDLL = hInstance;
 		return TRUE;
 	}
-	ATLTRACE (_T("LoadLangIDDLL(%.2x) failed: %d\n"), LangID, GetLastError ());
+	ATLTRACE ( "LoadLangIDDLL(%.2x) failed: %d\n", LangID, GetLastError ());
 	return FALSE;
 }
 
@@ -574,7 +574,7 @@ BOOL CSageThumbsModule::Initialize()
 	if ( ! _PlugInsPathname.IsEmpty ())
 		MakeDirectory( _PlugInsPathname );
 	if ( !_PlugInsPathname.IsEmpty() )
-		gflSetPluginsPathnameW( _PlugInsPathname );
+		gflSetPluginsPathnameT( _PlugInsPathname );
 	ATLTRACE( "gflSetPluginsPathnameW : \"%s\"\n", (LPCSTR)CT2A( _PlugInsPathname ) );
 
 	// Инициализация GFL
@@ -600,10 +600,11 @@ BOOL CSageThumbsModule::Initialize()
 
 void CSageThumbsModule::UnInitialize ()
 {
-	ATLTRACE (_T("CSageThumbsModule::UnInitialize ()\n"));
+	ATLTRACE ( "CSageThumbsModule::UnInitialize ()\n" );
 
-	if (_libgfl) {
-		ATLTRACE (_T("gflLibraryExit\n"));
+	if ( _libgfl )
+	{
+		ATLTRACE( "gflLibraryExit\n" );
 		gflLibraryExit ();
 	}
 
@@ -650,11 +651,14 @@ void CSageThumbsModule::UnInitialize ()
 
 extern "C" BOOL WINAPI DllMain(HINSTANCE /* hInstance */, DWORD dwReason, LPVOID lpReserved)
 {
+	ATLTRACE( "Calling ::DllMain()...\n" );
+
 	if ( _AtlModule.DllMain( dwReason, lpReserved ) )
 	{
 		switch ( dwReason )
 		{
 		case DLL_PROCESS_ATTACH:
+			ATLTRACE( "DllMain::DLL_PROCESS_ATTACH\n" );
 			__try
 			{
 				if ( ! _AtlModule.Initialize() )
@@ -662,19 +666,20 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE /* hInstance */, DWORD dwReason, LPVOID
 			}
 			__except ( EXCEPTION_EXECUTE_HANDLER )
 			{
-				ATLTRACE( "Exception in Initialize\n" );
+				ATLTRACE( "Exception in CSageThumbsModule::Initialize()\n" );
 				return FALSE;
 			}
 			break;
 
 		case DLL_PROCESS_DETACH:
+			ATLTRACE( "DllMain::DLL_PROCESS_DETACH\n" );
 			__try
 			{
 				_AtlModule.UnInitialize();
 			}
 			__except ( EXCEPTION_EXECUTE_HANDLER )
 			{
-				ATLTRACE( "Exception in UnInitialize\n" );
+				ATLTRACE( "Exception in CSageThumbsModule::UnInitialize()\n" );
 			}
 			break;
 		}
@@ -682,28 +687,36 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE /* hInstance */, DWORD dwReason, LPVOID
 	}
 	else
 	{
-		ATLTRACE( "FALSE in _AtlModule.DllMain () call\n" );
+		ATLTRACE( "Failed CSageThumbsModule::DllMain() call\n" );
 		return FALSE;
 	}
 }
 
 STDAPI DllCanUnloadNow(void)
 {
+	ATLTRACE( "Calling ::DllCanUnloadNow()...\n" );
+
 	return _AtlModule.DllCanUnloadNow();
 }
 
 STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv)
 {
+	ATLTRACE( "Calling ::DllGetClassObject()...\n" );
+
 	return _AtlModule.DllGetClassObject(rclsid, riid, ppv);
 }
 
 STDAPI DllRegisterServer(void)
 {
+	ATLTRACE( "Calling ::DllRegisterServer()...\n" );
+
 	return _AtlModule.DllRegisterServer();
 }
 
 STDAPI DllUnregisterServer(void)
 {
+	ATLTRACE( "Calling ::DllUnregisterServer()...\n" );
+
 	return _AtlModule.DllUnregisterServer();
 }
 
@@ -726,7 +739,7 @@ void CALLBACK Options (HWND hwnd, HINSTANCE /* hinst */, LPSTR /* lpszCmdLine */
 
 LONG APIENTRY CPlApplet(HWND hwnd, UINT uMsg, LPARAM /* lParam1 */, LPARAM lParam2)
 {
-	ATLTRACE (_T("CPlApplet (0x%08x, %d)\n"), hwnd, uMsg);
+	ATLTRACE( "Calling ::CPlApplet()...\n" );
 
 	switch ( uMsg )
 	{
@@ -874,7 +887,7 @@ HRESULT SAFEgflGetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info)
 	__try
 	{
 		GFL_INT32 index = -1;
-		err = gflGetFileInformationW( filename, index, info );
+		err = gflGetFileInformationT( filename, index, info );
 		if ( err == GFL_NO_ERROR )
 			hr = S_OK;
 		else
@@ -901,12 +914,12 @@ HRESULT SAFEgflLoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap)
 		gflGetDefaultLoadParams( &params );
 
 		*bitmap = NULL;
-		err = gflLoadBitmapW( filename, bitmap, &params, NULL);
+		err = gflLoadBitmapT( filename, bitmap, &params, NULL);
 		if ( err == GFL_ERROR_FILE_READ )
 		{
 			params.Flags |= GFL_LOAD_IGNORE_READ_ERROR;
 
-			err = gflLoadBitmapW( filename, bitmap, &params, NULL );
+			err = gflLoadBitmapT( filename, bitmap, &params, NULL );
 		}
 		if ( err == GFL_NO_ERROR )
 			hr = S_OK;
@@ -940,12 +953,12 @@ HRESULT SAFEgflLoadThumbnail(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height
 			( ( ::GetRegValue( _T("UseEmbedded"), (DWORD)0 ) != 0 ) ? GFL_LOAD_EMBEDDED_THUMBNAIL : 0 ) |
 			GFL_LOAD_PREVIEW_NO_CANVAS_RESIZE;
 
-		err = gflLoadThumbnailW( filename, width, height, bitmap, &params, NULL );
+		err = gflLoadThumbnailT( filename, width, height, bitmap, &params, NULL );
 		if ( err == GFL_ERROR_FILE_READ )
 		{
 			params.Flags |= GFL_LOAD_IGNORE_READ_ERROR;
 
-			err = gflLoadThumbnailW( filename, width, height, bitmap, &params, NULL );
+			err = gflLoadThumbnailT( filename, width, height, bitmap, &params, NULL );
 		}
 		if ( err == GFL_NO_ERROR )
 			hr = S_OK;
@@ -1113,9 +1126,22 @@ BOOL LoadIcon(LPCTSTR szFilename, HICON* phSmallIcon, HICON* phLargeIcon, HICON*
 
 	if ( phHugeIcon )
 	{
-		UINT nLoadedID;
-		PrivateExtractIcons( strIcon, nIcon, 48, 48,
-			phHugeIcon, &nLoadedID, 1, 0 );
+		if ( HMODULE hUser32 = LoadLibrary( _T("user32.dll") ) )
+		{
+			tPrivateExtractIconsT pPrivateExtractIconsT = (tPrivateExtractIconsT)GetProcAddress( hUser32,
+#if UNICODE
+				"PrivateExtractIconsW"
+#else
+				"PrivateExtractIconsA"
+#endif
+				 );
+			if ( pPrivateExtractIconsT )
+			{
+				UINT nLoadedID;
+				pPrivateExtractIconsT( strIcon, nIcon, 48, 48, phHugeIcon, &nLoadedID, 1, 0 );
+			}
+			FreeLibrary( hUser32 );
+		}
 	}
 
 	return ( phLargeIcon && *phLargeIcon ) || ( phSmallIcon && *phSmallIcon ) ||

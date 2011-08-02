@@ -131,7 +131,7 @@ STDMETHODIMP CThumb::Initialize(LPCITEMIDLIST, IDataObject* pDO, HKEY)
 
 STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst, UINT uidCmdLast, UINT uFlags)
 {
-	ATLTRACE (_T("0x%08x::IContextMenu::QueryContextMenu (hmenu=0x%08x, index=%d, first=%d, last=%d, flags=0x%08x)\n"), this, hMenu, uIndex, uidCmdFirst, uidCmdLast, uFlags);
+	ATLTRACE( "0x%08x::IContextMenu::QueryContextMenu (hmenu=0x%08x, index=%d, first=%d, last=%d, flags=0x%08x)\n", this, hMenu, uIndex, uidCmdFirst, uidCmdLast, uFlags);
 
 	bool bEnableMenu = GetRegValue( _T("EnableMenu"), (DWORD)1 ) != 0;
 	if ( ! bEnableMenu )
@@ -264,8 +264,7 @@ STDMETHODIMP CThumb::GetCommandString (
 	UINT_PTR uCmd, UINT uFlags, UINT* /*puReserved*/,
 	LPSTR pszName, UINT cchMax )
 {
-	ATLTRACE (_T("0x%08x::IContextMenu::GetCommandString (%d, %d, 0x%08x \"%s\", %d) "),
-		this, uCmd, uFlags, pszName, pszName, cchMax);
+	ATLTRACE( "0x%08x::IContextMenu::GetCommandString (%d, %d, 0x%08x \"%s\", %d) ", this, uCmd, uFlags, pszName, pszName, cchMax);
 
 	CString tmp;
 	switch ( uFlags )
@@ -319,18 +318,18 @@ STDMETHODIMP CThumb::GetCommandString (
 			tmp.LoadString (IDS_CONVERT_BMP);
 			break;
 		default:
-			ATLTRACE (_T("E_INVALIDARG\n") );
+			ATLTRACE( "E_INVALIDARG\n" );
 			return E_INVALIDARG;
 		}
 		break;
 
 	case GCS_VALIDATEA:
 	case GCS_VALIDATEW:
-		ATLTRACE (_T("S_OK\n") );
+		ATLTRACE( "S_OK\n" );
 		return S_OK;
 
 	default:
-		ATLTRACE (_T("E_INVALIDARG\n") );
+		ATLTRACE( "E_INVALIDARG\n" );
 		return E_INVALIDARG;
 	}
 
@@ -339,7 +338,7 @@ STDMETHODIMP CThumb::GetCommandString (
 	else
 		strncpy_s( (LPSTR)pszName, cchMax, (LPCSTR)CT2A( tmp ), cchMax );
 
-	ATLTRACE (_T("S_OK\n") );
+	ATLTRACE( "S_OK\n" );
 	return S_OK;
 }
 
@@ -357,7 +356,7 @@ void CThumb::ConvertTo(HWND hWnd, LPCSTR ext)
 			params.Flags = GFL_SAVE_REPLACE_EXTENSION | GFL_SAVE_ANYWAY;
 			params.FormatIndex = gflGetFormatIndexByName( ext );
 
-			if ( gflSaveBitmapW( (LPTSTR)(LPCTSTR)filename, hBitmap, &params ) != GFL_NO_ERROR )
+			if ( gflSaveBitmapT( (LPTSTR)(LPCTSTR)filename, hBitmap, &params ) != GFL_NO_ERROR )
 			{
 				MsgBox( hWnd, IDS_ERR_SAVE );
 				break;
@@ -386,7 +385,7 @@ void CThumb::SetWallpaper(HWND hWnd, WORD reason)
 		params.FormatIndex = gflGetFormatIndexByName( "bmp" );
 		CString save_path = GetSpecialFolderPath( CSIDL_APPDATA ).TrimRight( _T("\\") ) +
 			_T("\\SageThumbs wallpaper.bmp");
-		if ( gflSaveBitmapW( (LPTSTR)(LPCTSTR)save_path, hBitmap, &params) == GFL_NO_ERROR)
+		if ( gflSaveBitmapT( (LPTSTR)(LPCTSTR)save_path, hBitmap, &params) == GFL_NO_ERROR)
 		{
 			SetRegValue( _T("TileWallpaper"),
 				((reason == ID_WALLPAPER_TILE_ITEM) ? _T("1") : _T("0")),
@@ -414,11 +413,9 @@ void CThumb::SendByMail(HWND hwnd, WORD reason)
 	DWORD height = GetRegValue( _T("Height"), THUMB_STORE_SIZE );
 
 	// Инициализация MAPI
-	HMODULE hLibrary = LoadLibrary( _T("MAPI32.DLL") );
-	if ( hLibrary )
+	if ( HMODULE hLibrary = LoadLibrary( _T("MAPI32.DLL") ) )
 	{
-		tMAPISendMail pMAPISendMail =
-			(tMAPISendMail)GetProcAddress( hLibrary, "MAPISendMail" );
+		tMAPISendMail pMAPISendMail = (tMAPISendMail)GetProcAddress( hLibrary, "MAPISendMail" );
 		if ( pMAPISendMail )
 		{
 			// Подготовка изображений к отсылке
@@ -445,7 +442,7 @@ void CThumb::SendByMail(HWND hwnd, WORD reason)
 						TCHAR tmp [ MAX_PATH ] = {};
 						GetTempPath( MAX_PATH, tmp );
 						GetTempFileName( tmp, _T("tmb"), 0, tmp );
-						if ( gflSaveBitmapW( tmp, hGflBitmap, &params ) == GFL_NO_ERROR )
+						if ( gflSaveBitmapT( tmp, hGflBitmap, &params ) == GFL_NO_ERROR )
 						{
 							save_names.Add( CT2CA( PathFindFileName( filename ) ) );
 							save_filenames.Add( CT2CA( tmp ) );
@@ -528,7 +525,7 @@ void CThumb::CopyToClipboard(HWND hwnd)
 
 STDMETHODIMP CThumb::InvokeCommand(LPCMINVOKECOMMANDINFO pInfo)
 {
-	ATLTRACE (_T("0x%08x::IContextMenu::InvokeCommand\n"), this);
+	ATLTRACE ( "0x%08x::IContextMenu::InvokeCommand\n", this);
 
 	// If lpVerb really points to a string, ignore this function call and bail out.
 	if (0 != HIWORD (pInfo->lpVerb))
@@ -587,7 +584,7 @@ STDMETHODIMP CThumb::InvokeCommand(LPCMINVOKECOMMANDINFO pInfo)
 
 STDMETHODIMP CThumb::HandleMenuMsg(UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	ATLTRACE (_T("0x%08x::IContextMenu2::HandleMenuMsg\n"), this);
+	ATLTRACE( "0x%08x::IContextMenu2::HandleMenuMsg\n", this);
 	LRESULT res = 0;
 	return MenuMessageHandler (uMsg, wParam, lParam, &res);
 }
@@ -596,7 +593,7 @@ STDMETHODIMP CThumb::HandleMenuMsg(UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 STDMETHODIMP CThumb::HandleMenuMsg2(UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT* pResult)
 {
-	ATLTRACE (_T("0x%08x::IContextMenu3::HandleMenuMsg2\n"), this);
+	ATLTRACE( "0x%08x::IContextMenu3::HandleMenuMsg2\n", this);
 	LRESULT res = 0;
 	return MenuMessageHandler (uMsg, wParam, lParam, (pResult ? pResult : &res));
 }
@@ -606,23 +603,23 @@ STDMETHODIMP CThumb::MenuMessageHandler(UINT uMsg, WPARAM /*wParam*/, LPARAM lPa
 	switch (uMsg)
 	{
 	case WM_INITMENUPOPUP:
-		ATLTRACE (_T("0x%08x::WM_INITMENUPOPUP\n"), this);
+		ATLTRACE ( "0x%08x::WM_INITMENUPOPUP\n", this);
 		break;
 
 	case WM_MEASUREITEM:
-		ATLTRACE (_T("0x%08x::WM_MEASUREITEM\n"), this);
+		ATLTRACE ( "0x%08x::WM_MEASUREITEM\n", this);
 		return OnMeasureItem ((MEASUREITEMSTRUCT*) lParam, pResult);
 
 	case WM_DRAWITEM:
-		ATLTRACE (_T("0x%08x::WM_DRAWITEM\n"), this);
+		ATLTRACE ( "0x%08x::WM_DRAWITEM\n", this);
 		return OnDrawItem ((DRAWITEMSTRUCT*) lParam, pResult);
 
 	case WM_MENUCHAR:
-		ATLTRACE (_T("0x%08x::WM_MENUCHAR\n"), this);
+		ATLTRACE ( "0x%08x::WM_MENUCHAR\n", this);
 		break;
 
 	default:
-		ATLTRACE (_T("0x%08x::Unknown message\n"), this);
+		ATLTRACE ( "0x%08x::Unknown message\n", this);
 	}
 	return S_OK;
 }
@@ -733,7 +730,7 @@ STDMETHODIMP CThumb::Load(LPCOLESTR wszFile, DWORD /*dwMode*/)
 		return E_POINTER;
 	}
 
-	if ( ! IsGoodFile( wszFile ) )
+	if ( ! IsGoodFile( (LPCTSTR)CW2CT( wszFile ) ) )
 	{
 		ATLTRACE( "0x%08x::IPersistFile::Load(\"%s\") : E_FAIL (Bad File)\n", this, (LPCSTR)CW2A( wszFile ) );
 		return E_FAIL;
@@ -997,7 +994,7 @@ STDMETHODIMP CThumb::GetLocation (
 		if ( ! m_sFilename.IsEmpty() )
 		{
 			int len = min( m_sFilename.GetLength() + 1, (int)cch );
-			_tcsncpy_s( pszPathBuffer, cch, m_sFilename.Right( len - 1 ), (size_t)len );
+			wcsncpy_s( pszPathBuffer, cch, (LPCWSTR)CT2CW( m_sFilename.Right( len - 1 ) ), (size_t)len );
 		}
 		//else if ( ! m_pStream )
 		//{
