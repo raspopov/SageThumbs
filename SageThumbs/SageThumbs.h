@@ -58,10 +58,18 @@ public:
 	// Обновление настроек Explorer'a
 	void UpdateShell();
 
+	HRESULT SAFEgflGetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info);
+	HRESULT SAFEgflLoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap);
+	HRESULT SAFEgflLoadThumbnail(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap);
+	HRESULT SAFEgflLoadThumbnailFromMemory(const GFL_UINT8 * data, GFL_UINT32 data_length, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap);
+	HRESULT SAFEgflConvertBitmapIntoDDB(const GFL_BITMAP *bitmap, HBITMAP *hBitmap);
+	HRESULT SAFEgflFreeBitmap(GFL_BITMAP*& bitmap);
+
 protected:
-	HINSTANCE	m_LangDLL;
-	LANGID		m_CurLangID;
-//	HANDLE		m_hWatchThread;
+	HINSTANCE				m_LangDLL;
+	LANGID					m_CurLangID;
+//	HANDLE					m_hWatchThread;
+	CComAutoCriticalSection m_pSection;
 
 //	static DWORD WINAPI WatchThread (LPVOID param);
 	void UnLoadLang ();
@@ -76,7 +84,6 @@ extern CString				_ModuleFileName;
 extern CString				_Database;
 extern CString				_PlugInsPathname;
 extern CExtMap				_ExtMap;
-extern CRITICAL_SECTION		_GflGuard;
 //extern BitsDescriptionMap	_BitsMap;
 extern CSageThumbsModule	_AtlModule;
 
@@ -106,13 +113,6 @@ void RegisterValue(HKEY root, LPCTSTR key, LPCTSTR name, const BYTE* value, DWOR
 void UnregisterValue(HKEY root, LPCTSTR key, LPCTSTR name, LPCTSTR value, LPCTSTR backup);
 void UnregisterValue(HKEY root, LPCTSTR key, LPCTSTR name, const BYTE* value, DWORD value_size, LPCTSTR backup);
 void MakeDirectory(LPCTSTR dir);
-
-HRESULT SAFEgflGetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info);
-HRESULT SAFEgflLoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap);
-HRESULT SAFEgflLoadThumbnail(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap);
-HRESULT SAFEgflLoadThumbnailFromMemory(const GFL_UINT8 * data, GFL_UINT32 data_length, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap);
-HRESULT SAFEgflConvertBitmapIntoDDB(const GFL_BITMAP *bitmap, HBITMAP *hBitmap);
-HRESULT SAFEgflFreeBitmap(GFL_BITMAP*& bitmap);
 
 // Проверка, что файл подходит для загрузки по всем параметрам
 bool IsGoodFile(LPCTSTR szFilename, Ext* pdata = NULL, WIN32_FIND_DATA* pfd = NULL);

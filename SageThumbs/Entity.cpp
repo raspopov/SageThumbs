@@ -32,10 +32,11 @@ CEntity::CEntity ()
 
 CEntity::~CEntity()
 {
-	SAFEgflFreeBitmap( m_hGflBitmap );
+	_AtlModule.SAFEgflFreeBitmap( m_hGflBitmap );
 
 	gflFreeFileInformation( &m_ImageInfo );
 }
+
 /*
 STATSTG stat = {};
 hr = pstream->Stat( &stat, STATFLAG_DEFAULT );
@@ -51,6 +52,8 @@ CoTaskMemFree( stat.pwcsName );
 
 HRESULT CEntity::LoadInfo(const CString& sFilename)
 {
+	CLock oLock( m_pSection );
+
 	Ext data;
 	if ( ! IsGoodFile( sFilename, &data, &m_FileData ) )
 	{
@@ -58,13 +61,13 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 		return E_FAIL;
 	}
 
-	ATLTRACE( "CEntity::LoadInfo() : It's probably \"%s\". Load info ", (LPCSTR)CT2A( data.info ) );
+	ATLTRACE( "CEntity::LoadInfo(\"%s\") : It's \"%s\". Load info ", (LPCSTR)CT2A( sFilename ), (LPCSTR)CT2A( data.info ) );
 
 	__int64 nPathID = 0;
-	m_sName = PathFindFileName( sFilename );
-	m_sPath = sFilename.Left( sFilename.GetLength() - m_sName.GetLength() );
-	m_sName.MakeLower();
-	m_sPath.MakeLower();
+	CString sName = PathFindFileName( sFilename );
+	CString sPath = sFilename.Left( sFilename.GetLength() - sName.GetLength() );
+	sName.MakeLower();
+	sPath.MakeLower();
 
 	QWORD nLastWriteTime = MAKEQWORD( m_FileData.ftLastWriteTime.dwLowDateTime, m_FileData.ftLastWriteTime.dwHighDateTime );
 	QWORD nCreationTime = MAKEQWORD( m_FileData.ftCreationTime.dwLowDateTime, m_FileData.ftCreationTime.dwHighDateTime );
@@ -88,7 +91,7 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 			db.Exec( RECREATE_DATABASE );
 		}
 		if ( i < 2 &&
-			db.Bind( 1, m_sPath ) &&
+			db.Bind( 1, sPath ) &&
 			db.Step() &&
 			db.GetCount() == 1 )
 		{
@@ -107,7 +110,7 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 				db.Exec( RECREATE_DATABASE );
 			}
 			if ( i < 2 &&
-				 db.Bind( 1, m_sName ) &&
+				 db.Bind( 1, sName ) &&
 				 db.Bind( 2, nPathID ) &&
 				 db.Step() &&
 				 db.GetCount() == 6 )
@@ -154,14 +157,14 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 		if ( db && ! bNew )
 		{
 			db.Prepare( _T("DELETE FROM Entities WHERE Filename==? AND PathID==?;") ) &&
-			db.Bind( 1, m_sName ) &&
+			db.Bind( 1, sName ) &&
 			db.Bind( 2, nPathID ) &&
 			db.Step();
 		}
 
 		// Считывание данных об изображении из файла
 		ATLTRACE( "from disk " );
-		if ( FAILED( SAFEgflGetFileInformation( sFilename, &m_ImageInfo ) ) )
+		if ( FAILED( _AtlModule.SAFEgflGetFileInformation( sFilename, &m_ImageInfo ) ) )
 		{
 			return E_FAIL;
 		}
@@ -170,18 +173,18 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 		if ( db )
 		{
 			db.Prepare( _T("INSERT INTO Pathes ( Pathname ) VALUES ( ? );") ) &&
-			db.Bind( 1, m_sPath ) &&
+			db.Bind( 1, sPath ) &&
 			db.Step();
 
 			if ( db.Prepare( _T("SELECT PathID FROM Pathes WHERE Pathname==?;") ) &&
-				 db.Bind( 1, m_sPath ) &&
+				 db.Bind( 1, sPath ) &&
 				 db.Step() &&
 				 db.GetCount() == 1 &&
 				 ( nPathID = db.GetInt64( _T("PathID") ) ) != 0 )
 			{
 				db.Prepare( _T("INSERT INTO Entities ( PathID, Filename, LastWriteTime, CreationTime, FileSize, ImageInfo ) VALUES ( ?, ?, ?, ?, ?, ? );") ) &&
 				db.Bind( 1, nPathID ) &&
-				db.Bind( 2, m_sName ) &&
+				db.Bind( 2, sName ) &&
 				db.Bind( 3, (__int64)nLastWriteTime ) &&
 				db.Bind( 4, (__int64)nCreationTime ) &&
 				db.Bind( 5, (__int64)nFileSize ) &&
@@ -266,32 +269,42 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 
 HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 {
+	CLock oLock( m_pSection );
+
+	if ( m_hGflBitmap &&
+		 m_hGflBitmap->Width  >= (GFL_INT32)cx && 
+		 m_hGflBitmap->Height >= (GFL_INT32)cy )
+	{
+		ATLTRACE( "CEntity::LoadImage(\"%s\",%d,%d) : S_FALSE (Bitmap already loaded)\n", (LPCSTR)CT2A( sFilename ), cx, cy );
+		return S_FALSE;
+	}
+
+	_AtlModule.SAFEgflFreeBitmap( m_hGflBitmap );
+
 	HRESULT hr = LoadInfo( sFilename );
 	if ( FAILED( hr ) )
 		return hr;
 
-	if ( m_hGflBitmap )
-	{
-		ATLTRACE( "CEntity::LoadImage() : S_FALSE (Bitmap already loaded)\n" );
-		return S_FALSE;
-	}
-
-	ATLTRACE( "CEntity::LoadImage() : Load image " );
+	ATLTRACE( "CEntity::LoadImage(\"%s\",%d,%d) : Load image ", (LPCSTR)CT2A( sFilename ), cx, cy );
 
 	__int64 nPathID = 0;
+	CString sName = PathFindFileName( sFilename );
+	CString sPath = sFilename.Left( sFilename.GetLength() - sName.GetLength() );
+	sName.MakeLower();
+	sPath.MakeLower();
 
 	// Выбор нужного изображения из базы по размерам
 	CDatabase db( _Database );
 	if ( db )
 	{
 		if ( db.Prepare( _T("SELECT PathID FROM Pathes WHERE Pathname==?;") ) &&
-			 db.Bind( 1, m_sPath ) &&
+			 db.Bind( 1, sPath ) &&
 			 db.Step() &&
 			 db.GetCount() == 1 &&
 			 ( nPathID = db.GetInt64( _T("PathID") ) ) != 0 )
 		{
 			if ( db.Prepare( _T("SELECT Image, Width, Height FROM Entities WHERE Filename==? AND PathID==?;") ) &&
-				 db.Bind( 1, m_sName ) &&
+				 db.Bind( 1, sName ) &&
 				 db.Bind( 2, nPathID ) &&
 				 db.Step() &&
 				 db.GetCount() == 3 )
@@ -305,7 +318,7 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 					int nImageSize;
 					if ( LPCVOID pImage = db.GetBlob( _T("Image"), &nImageSize ) )
 					{
-						SAFEgflLoadThumbnailFromMemory( (const GFL_UINT8*)pImage, nImageSize, cx, cy, &m_hGflBitmap );
+						_AtlModule.SAFEgflLoadThumbnailFromMemory( (const GFL_UINT8*)pImage, nImageSize, cx, cy, &m_hGflBitmap );
 						ATLTRACE ( "from database " );
 					}
 				}
@@ -320,11 +333,11 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 
 	if ( ! m_hGflBitmap )
 	{
-		cx = max( cx, GetRegValue( _T("Width"), THUMB_STORE_SIZE ) );
-		cy = max( cy, GetRegValue( _T("Height"), THUMB_STORE_SIZE ) );
+		cx = max( cx, max( GetRegValue( _T("Width"), THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) );
+		cy = max( cy, max( GetRegValue( _T("Height"), THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) );
 
 		// Загрузка из файла
-		SAFEgflLoadThumbnail( sFilename, cx, cy, &m_hGflBitmap );
+		_AtlModule.SAFEgflLoadThumbnail( sFilename, cx, cy, &m_hGflBitmap );
 		ATLTRACE ( "from disk " );
 		if ( ! m_hGflBitmap )
 		{
@@ -352,7 +365,7 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 				db.Bind( 1, data, data_length ) &&
 				db.Bind( 2, (__int32)cx ) &&
 				db.Bind( 3, (__int32)cy ) &&
-				db.Bind( 4, m_sName ) &&
+				db.Bind( 4, sName ) &&
 				db.Bind( 5, nPathID ) &&
 				db.Step();
 			}
@@ -368,8 +381,10 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 	return S_OK;
 }
 
-HBITMAP CEntity::GetImage(UINT cx, UINT cy) const
+HBITMAP CEntity::GetImage(UINT cx, UINT cy)
 {
+	CLock oLock( m_pSection );
+
 	HBITMAP hBitmap = NULL;
 	if ( m_hGflBitmap )
 	{
@@ -380,15 +395,17 @@ HBITMAP CEntity::GetImage(UINT cx, UINT cy) const
 		gflResize( m_hGflBitmap, &pResizedBitmap, dx, dy, GFL_RESIZE_LANCZOS, 0 );
 		if ( pResizedBitmap )
 		{
-			SAFEgflConvertBitmapIntoDDB( pResizedBitmap, &hBitmap );
-			SAFEgflFreeBitmap( pResizedBitmap );
+			_AtlModule.SAFEgflConvertBitmapIntoDDB( pResizedBitmap, &hBitmap );
+			_AtlModule.SAFEgflFreeBitmap( pResizedBitmap );
 		}
 	}
 	return hBitmap;
 }
 
-HICON CEntity::GetIcon(UINT cx) const
+HICON CEntity::GetIcon(UINT cx)
 {
+	CLock oLock( m_pSection );
+
 	HICON hIcon = NULL;
 	if ( HBITMAP hBitmap = GetImage( cx, cx ) )
 	{
@@ -458,8 +475,10 @@ HICON CEntity::GetIcon(UINT cx) const
 	return hIcon;
 }
 
-void CEntity::CalcSize(UINT& tx, UINT& ty, UINT width, UINT height) const
+void CEntity::CalcSize(UINT& tx, UINT& ty, UINT width, UINT height)
 {
+	CLock oLock( m_pSection );
+
 	if ( (UINT)m_ImageInfo.Width < width && (UINT)m_ImageInfo.Height < height )
 	{
 		tx = (UINT)m_ImageInfo.Width;

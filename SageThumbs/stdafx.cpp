@@ -102,3 +102,33 @@ CString GetSpecialFolderPath(int csidl)
 	
 	return buf;
 }
+
+// CRC 32
+
+static DWORD crc32_table[ 256 ];
+
+class CCRC32
+{
+public:
+	inline CCRC32()
+	{
+		const DWORD CRC32_POLY = 0x04c11db7;	// AUTODIN II, Ethernet, & FDDI
+		for (int i = 0; i < 256; ++i) {
+			DWORD c = i << 24;
+			for (int j = 8; j > 0; --j)
+				c = c & 0x80000000 ? (c << 1) ^ CRC32_POLY : (c << 1);
+			crc32_table[i] = c;
+		}
+	}
+
+};
+
+static CCRC32 _CRC32;
+
+DWORD CRC32(const char *buf, int len)
+{
+	DWORD crc = 0xffffffff;
+	for (const BYTE *p = (const BYTE *) buf; len > 0; ++p, --len)
+		crc = (crc << 8) ^ crc32_table[(crc >> 24) ^ *p];
+	return ~crc;
+}

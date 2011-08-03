@@ -1,7 +1,7 @@
 //
 // SQLite.cpp
 //
-// Copyright (c) Shareaza Development Team, 2008-2010.
+// Copyright (c) Shareaza Development Team, 2008-2011.
 // This file is part of SHAREAZA (shareaza.sourceforge.net)
 //
 // Shareaza is free software; you can redistribute it
@@ -42,7 +42,13 @@ CDatabase::CDatabase(LPCTSTR szDatabase)
 {
 	sqlite3_enable_shared_cache( 1 );
 
-	if ( sqlite3_open16( szDatabase, &m_db ) == SQLITE_OK )
+#if UNICODE
+	int res = sqlite3_open16( szDatabase, &m_db );
+#else
+	int res = sqlite3_open( szDatabase, &m_db );
+#endif
+
+	if ( res == SQLITE_OK )
 	{
 		sqlite3_busy_timeout( m_db, 100 ); // 0.1 s
 	}
@@ -68,7 +74,13 @@ CDatabase::operator bool() const
 
 CString CDatabase::GetLastErrorMessage() const
 {
-	return ( m_db ? CString( (LPCWSTR)sqlite3_errmsg16( m_db ) ) : CString() );
+	return ( m_db ? CString( 
+#if UNICODE
+		(LPCWSTR)sqlite3_errmsg16( m_db )
+#else
+		sqlite3_errmsg( m_db )
+#endif
+		) : CString() );
 }
 
 bool CDatabase::IsBusy() const
@@ -123,9 +135,11 @@ bool CDatabase::PrepareHelper()
 	for ( ; ; )
 	{
 		LPCWSTR pszTail = NULL;
-		CT2CW szQueryW( m_sQuery );
-		int res = sqlite3_prepare16_v2( m_db, (LPCVOID)(LPCWSTR)szQueryW,
-			-1, &m_st, (LPCVOID*)&pszTail );
+#if UNICODE
+		int res = sqlite3_prepare16_v2( m_db, (LPCVOID)(LPCWSTR)m_sQuery, -1, &m_st, (LPCVOID*)&pszTail );
+#else
+		int res = sqlite3_prepare_v2( m_db, (LPCSTR)m_sQuery, -1, &m_st, (LPCVOID*)&pszTail );
+#endif
 		switch ( res )
 		{
 		case SQLITE_OK:
@@ -198,7 +212,11 @@ bool CDatabase::Step()
 	int count = sqlite3_data_count( m_st );
 	for ( int i = 0; i < count; i++ )
 	{
-		m_raw.SetAt( (LPCTSTR)CW2CT( (LPCWSTR)sqlite3_column_name16( m_st, i ) ), i );
+#if UNICODE
+		m_raw.SetAt( (LPCWSTR)sqlite3_column_name16( m_st, i ), i );
+#else
+		m_raw.SetAt( (LPCSTR)sqlite3_column_name( m_st, i ), i );
+#endif
 	}
 	return true;
 }
@@ -206,10 +224,7 @@ bool CDatabase::Step()
 int CDatabase::GetColumn(LPCTSTR szName) const
 {
 	int column;
-	return ( m_st &&
-		m_raw.Lookup( szName, column ) &&
-		column >= 0 &&
-		column < sqlite3_data_count( m_st ) ) ? column : -1;
+	return ( m_st && m_raw.Lookup( szName, column ) ) ? column : -1;
 }
 
 int CDatabase::GetType(LPCTSTR pszName) const
@@ -257,23 +272,28 @@ CString CDatabase::GetString(LPCTSTR pszName) const
 	int column = GetColumn( pszName );
 	if ( column != -1 )
 	{
+#if UNICODE
 		return CString( (LPCWSTR)sqlite3_column_text16( m_st, column ) );
+#else
+		return CString( sqlite3_column_text( m_st, column ) );
+#endif
 	}
 	return CString();
 }
 
 LPCVOID CDatabase::GetBlob(LPCTSTR pszName, int* pnLength) const
 {
+	LPCVOID pBlob = NULL;
 	if ( pnLength )
 		*pnLength = 0;
 	int column = GetColumn( pszName );
 	if ( column != -1 )
 	{
+		pBlob = sqlite3_column_blob( m_st, column );
 		if ( pnLength )
 			*pnLength = sqlite3_column_bytes( m_st, column );
-		return sqlite3_column_blob( m_st, column );
 	}
-	return NULL;
+	return pBlob;
 }
 
 bool CDatabase::Bind(int nIndex, __int32 nData)
@@ -291,15 +311,17 @@ bool CDatabase::Bind(int nIndex, double dData)
 	return m_st && sqlite3_bind_double( m_st, nIndex, dData ) == SQLITE_OK;
 }
 
-bool CDatabase::Bind(int nIndex, LPCTSTR szData)
+bool CDatabase::Bind(int nIndex, LPCSTR szData)
 {
-	CT2CW szDataW( szData );
-	return m_st && sqlite3_bind_text16( m_st, nIndex, (LPVOID)(LPCWSTR)szDataW,
-		(int)( wcslen( (LPCWSTR)szDataW ) * sizeof( WCHAR ) ), SQLITE_STATIC ) == SQLITE_OK;
+	return m_st && sqlite3_bind_text( m_st, nIndex, szData, -1, SQLITE_STATIC ) == SQLITE_OK;
+}
+
+bool CDatabase::Bind(int nIndex, LPCWSTR szData)
+{
+	return m_st && sqlite3_bind_text16( m_st, nIndex, (LPVOID)szData, -1, SQLITE_STATIC ) == SQLITE_OK;
 }
 
 bool CDatabase::Bind(int nIndex, LPCVOID pData, int nLength)
 {
-	return m_st && sqlite3_bind_blob( m_st, nIndex,
-		pData, nLength, SQLITE_STATIC ) == SQLITE_OK;
+	return m_st && sqlite3_bind_blob( m_st, nIndex, pData, nLength, SQLITE_STATIC ) == SQLITE_OK;
 }

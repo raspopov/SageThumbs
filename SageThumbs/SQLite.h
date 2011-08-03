@@ -1,7 +1,7 @@
 //
 // SQLite.h
 //
-// Copyright (c) Shareaza Development Team, 2008-2010.
+// Copyright (c) Shareaza Development Team, 2008-2011.
 // This file is part of SHAREAZA (shareaza.sourceforge.net)
 //
 // Shareaza is free software; you can redistribute it
@@ -75,7 +75,8 @@ public:
 	bool			Bind(int nIndex, __int32 nData);
 	bool			Bind(int nIndex, __int64 nData);
 	bool			Bind(int nIndex, double dData);
-	bool			Bind(int nIndex, LPCTSTR sData);
+	bool			Bind(int nIndex, LPCSTR sData);
+	bool			Bind(int nIndex, LPCWSTR sData);
 	bool			Bind(int nIndex, LPCVOID pData, int nLength);
 
 protected:

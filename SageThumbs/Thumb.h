@@ -20,7 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 /*
 Shortcut Menu Handlers:
-	1. Construct
+	1. IClassFactory
 	2. IShellExtInit::Initialize
 	3. IObjectWithSite::SetSite(pExplorer)
 	4. IContextMenu::QueryContextMenu	-> Load info and image
@@ -33,37 +33,44 @@ Shortcut Menu Handlers:
 	6. IObjectWithSite::SetSite(NULL)
 	7. Release
 
+Shell item load:
+	1. IInitializeWithStream (Windows Vista)
+	2. IPersistStream (Windows 7)
+	3. IInitializeWithItem (Windows Vista)
+	4. IInitializeWithFile (Windows Vista)
+	5. IPersistFile (Windows 2000)
+
 InfoTip Handler:
-	1. Construct
-	2. [IInitializeWithStream|IInitializeWithItem|IInitializeWithFile]::Initialize [IPersistFile::Load]
+	1. IClassFactory
+	2. Shell item load
 	3. ICustomizeInfoTip::?				- ???
 	4. IQueryInfo::GetInfoTip			-> Load info only
 	5. IQueryInfo::GetInfoFlags			- ???
 	4. Release
 
 Thumbnail Image Handler WinXP:
-	1. Construct
-	2. [IInitializeWithStream|IInitializeWithItem|IInitializeWithFile]::Initialize [IPersistFile::Load]
+	1. IClassFactory
+	2. Shell item load
 	3. IExtractImage::GetLocation		-> Load info and image
 	4. IExtractImage2:GetDateStamp
 	5. IExtractImage::Extract
 	6. Release
 
 Thumbnail Image Handler Vista:
-	1. Construct
-	2. [IInitializeWithStream|IInitializeWithItem|IInitializeWithFile]::Initialize [IPersistFile::Load]
+	1. IClassFactory
+	2. Shell item load
 	3. IExtractImage::GetLocation		-> Load info and image
 	4. IThumbnailProvider::GetThumbnail
 	5. Release
 
 Data Handler:
-	1. Construct
+	1. IClassFactory
 	2. IPersistFile::Load
 	3. Release
 
 Icon Handler:
-	1. Construct
-	2.[IInitializeWithStream|IInitializeWithItem|IInitializeWithFile]::Initialize [IPersistFile::Load]
+	1. IClassFactory
+	2. Shell item load
 	3. IExtractIcon::GetIconLocation
 	4. IExtractIcon::Extract			-> Load info and image
 	5. Release
@@ -73,8 +80,8 @@ Icon Handler:
 
 #include "Entity.h"
 
-class CThumb :
-	public CComObjectRootEx< CComSingleThreadModel >,
+class ATL_NO_VTABLE CThumb :
+	public CComObjectRootEx< CComMultiThreadModel >,
 	public CComCoClass< CThumb, &CLSID_Thumb >,
 	public IObjectSafetyImpl< CThumb, INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA >,
 	public IShellExtInit,
@@ -91,7 +98,8 @@ class CThumb :
 //	public IRunnableTask,
 	public IQueryInfo,
 //	public IDataObject,
-	public IExtractIcon,
+	public IExtractIconA,
+	public IExtractIconW,
 //	public IImageDecodeFilter,
 //	public IColumnProvider
 	public IObjectWithSite,
@@ -103,8 +111,6 @@ public:
 	DECLARE_REGISTRY_RESOURCEID(IDR_THUMB)
 
 	DECLARE_PROTECT_FINAL_CONSTRUCT()
-
-	DECLARE_NOT_AGGREGATABLE(CThumb)
 
 	BEGIN_COM_MAP(CThumb)
 		COM_INTERFACE_ENTRY(IObjectSafety)
@@ -126,7 +132,8 @@ public:
 //		COM_INTERFACE_ENTRY(IRunnableTask)
 		COM_INTERFACE_ENTRY(IQueryInfo)
 //		COM_INTERFACE_ENTRY(IDataObject)
-		COM_INTERFACE_ENTRY(IExtractIcon)
+		COM_INTERFACE_ENTRY(IExtractIconA)
+		COM_INTERFACE_ENTRY(IExtractIconW)
 //		COM_INTERFACE_ENTRY(IImageDecodeFilter)
 //		COM_INTERFACE_ENTRY(IColumnProvider)
 		COM_INTERFACE_ENTRY(IObjectWithSite)
@@ -230,11 +237,33 @@ public:
 	STDMETHOD(GetInfoFlags)(DWORD*);
 	STDMETHOD(GetInfoTip)(DWORD, LPWSTR*);
 
-// IExtractIcon
-	STDMETHOD(GetIconLocation)(UINT uFlags, LPTSTR szIconFile, UINT cchMax,
-		int* piIndex, UINT* pwFlags);
-	STDMETHOD(Extract)(LPCTSTR pszFile, UINT nIconIndex, HICON* phiconLarge,
-		HICON* phiconSmall, UINT nIconSize);
+// IExtractIconA
+	STDMETHOD(GetIconLocation)(
+		UINT uFlags,
+		__out_ecount(cch) LPSTR szIconFile,
+		UINT cch,
+		__out int* piIndex,
+		__out UINT* pwFlags);
+	STDMETHOD(Extract)(
+		LPCSTR pszFile,
+		UINT nIconIndex,
+		__out_opt HICON* phiconLarge,
+		__out_opt HICON* phiconSmall,
+		UINT nIconSize);
+
+// IExtractIconW
+	STDMETHOD(GetIconLocation)(
+		UINT uFlags,
+		__out_ecount(cch) LPWSTR szIconFile,
+		UINT cch,
+		__out int* piIndex,
+		__out UINT* pwFlags);
+	STDMETHOD(Extract)(
+		LPCWSTR pszFile,
+		UINT nIconIndex,
+		__out_opt HICON* phiconLarge,
+		__out_opt HICON* phiconSmall,
+		UINT nIconSize);
 
 // IDataObject
 	//STDMETHOD(GetData)( 

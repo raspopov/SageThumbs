@@ -39,7 +39,6 @@ CString					_ModuleFileName;
 CString					_Database;
 CString					_PlugInsPathname;
 CExtMap					_ExtMap;
-CRITICAL_SECTION		_GflGuard;
 //BitsDescriptionMap	_BitsMap;
 CSageThumbsModule		_AtlModule;
 DllLoader				_libgfl  (_T(LIB_GFL), false);
@@ -55,12 +54,13 @@ CSageThumbsModule::CSageThumbsModule()
 
 static const LPCTSTR szHandlers[] =
 {
-	_T("IconHandler"),								// IExtractIcon
-	_T("{BB2E617C-0920-11D1-9A0B-00C04FC2D6C1}"),	// IExtractImage
-	_T("{00021500-0000-0000-C000-000000000046}"),	// IQueryInfo
-	_T("{E357FCCD-A995-4576-B01F-234630154E96}"),	// IThumbnailProvider
-//	_T("DataHandler"),								// IDataObject
-//	_T("{8895B1C6-B41F-4C1C-A562-0D564250836F}"),	// IPreviewHandler
+	_T("IconHandler"),								// IExtractIconA and IExtractIconW (Windows 2000)
+	_T("{BB2E617C-0920-11D1-9A0B-00C04FC2D6C1}"),	// IExtractImage (Windows 2000)
+	_T("{00021500-0000-0000-C000-000000000046}"),	// IQueryInfo (Windows 2000)
+	_T("{E357FCCD-A995-4576-B01F-234630154E96}"),	// IThumbnailProvider (Windows Vista)
+//	_T("{000214fa-0000-0000-c000-000000000046}"),	// IExtractIconW (Windows Vista)
+//	_T("DataHandler"),								// IDataObject (Windows 2000)
+//	_T("{8895B1C6-B41F-4C1C-A562-0D564250836F}"),	// IPreviewHandler (Windows Vista)
 	NULL
 };
 
@@ -467,7 +467,7 @@ void CSageThumbsModule::FillExtMap()
 			SetRegValue( _T("Enabled"), dwEnabled, key + p->m_key );
 			p->m_value.enabled = ( dwEnabled != 0 );
 
-			ATLTRACE( "%4d. %c %8s \"%s\"\n", i, ( p->m_value.enabled ? '+' : '-' ), (LPCSTR)CT2A( p->m_key ), (LPCSTR)CT2A( p->m_value.info ) );	
+			//ATLTRACE( "%4d. %c %8s \"%s\"\n", i, ( p->m_value.enabled ? '+' : '-' ), (LPCSTR)CT2A( p->m_key ), (LPCSTR)CT2A( p->m_value.info ) );	
 		}
 
 		ATLTRACE( "Loaded %d formats, %d extensions. ", count, _ExtMap.GetCount() );
@@ -478,8 +478,6 @@ void CSageThumbsModule::FillExtMap()
 BOOL CSageThumbsModule::Initialize()
 {
 	ATLTRACE ( "CSageThumbsModule::Initialize ()\n" );
-
-	InitializeCriticalSection (&_GflGuard);
 
 	// Получение полного пути модуля
 	GetModuleFileName(_AtlBaseModule.GetModuleInstance (),
@@ -592,8 +590,8 @@ BOOL CSageThumbsModule::Initialize()
 	CHECKPOINT(GFLInit)
 
 	// Инициализация карты битовых масок форматов файлов
-//	for (int i = 0; _Bits [i].ext; ++i)
-//		_BitsMap.SetAt (_Bits [i].ext, &_Bits [i]);
+	//for (int i = 0; _Bits [i].ext; ++i)
+	//	_BitsMap.SetAt (_Bits [i].ext, &_Bits [i]);
 
 	return TRUE;
 }
@@ -610,29 +608,27 @@ void CSageThumbsModule::UnInitialize ()
 
 	UnLoadLang ();
 
-	/*ATLTRACE (_T("CSageThumbsModule::UnInitialize () -> begin\n"));
-	if (m_hWatchThread)
-	{
-		HANDLE hWatchEvent = CreateEvent (NULL, TRUE, TRUE, _T("SageThumbsWatch"));
-		if (hWatchEvent)
-		{
-			for (int count = 0;
-				(WaitForSingleObject (m_hWatchThread, 100) == WAIT_TIMEOUT) &&
-				count < 20; count++)
-				SetEvent (hWatchEvent);
-			if (WaitForSingleObject (m_hWatchThread, 0) == WAIT_TIMEOUT)
-			{
-				ATLTRACE (_T("CSageThumbsModule::UnInitialize () -> TerminateThread\n"));
-				TerminateThread (m_hWatchThread, 0);
-			}
-			CloseHandle (m_hWatchThread);
-			m_hWatchThread = NULL;
-			CloseHandle (hWatchEvent);
-		}
-	}
-	ATLTRACE (_T("CSageThumbsModule::UnInitialize () -> end\n"));*/
-
-	DeleteCriticalSection (&_GflGuard);
+	//ATLTRACE (_T("CSageThumbsModule::UnInitialize () -> begin\n"));
+	//if (m_hWatchThread)
+	//{
+	//	HANDLE hWatchEvent = CreateEvent (NULL, TRUE, TRUE, _T("SageThumbsWatch"));
+	//	if (hWatchEvent)
+	//	{
+	//		for (int count = 0;
+	//			(WaitForSingleObject (m_hWatchThread, 100) == WAIT_TIMEOUT) &&
+	//			count < 20; count++)
+	//			SetEvent (hWatchEvent);
+	//		if (WaitForSingleObject (m_hWatchThread, 0) == WAIT_TIMEOUT)
+	//		{
+	//			ATLTRACE (_T("CSageThumbsModule::UnInitialize () -> TerminateThread\n"));
+	//			TerminateThread (m_hWatchThread, 0);
+	//		}
+	//		CloseHandle (m_hWatchThread);
+	//		m_hWatchThread = NULL;
+	//		CloseHandle (hWatchEvent);
+	//	}
+	//}
+	//ATLTRACE (_T("CSageThumbsModule::UnInitialize () -> end\n"));
 }
 
 /*DWORD WINAPI CSageThumbsModule::WatchThread(LPVOID)
@@ -651,8 +647,6 @@ void CSageThumbsModule::UnInitialize ()
 
 extern "C" BOOL WINAPI DllMain(HINSTANCE /* hInstance */, DWORD dwReason, LPVOID lpReserved)
 {
-	ATLTRACE( "Calling ::DllMain()...\n" );
-
 	if ( _AtlModule.DllMain( dwReason, lpReserved ) )
 	{
 		switch ( dwReason )
@@ -879,11 +873,13 @@ void UnregisterValue(HKEY root, LPCTSTR key, LPCTSTR name, const BYTE* value, DW
 	SHDeleteEmptyKey (root, key);
 }
 
-HRESULT SAFEgflGetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info)
+HRESULT CSageThumbsModule::SAFEgflGetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info)
 {
+//	CLock oLock( m_pSection );
+
 	GFL_ERROR err;
 	HRESULT hr = E_FAIL;
-	EnterCriticalSection (&_GflGuard);
+
 	__try
 	{
 		GFL_INT32 index = -1;
@@ -899,15 +895,16 @@ HRESULT SAFEgflGetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info)
 	{
 		ATLTRACE ("E_FAIL (gflGetFileInformationW exception)\n");
 	}
-	LeaveCriticalSection (&_GflGuard);
+
 	return hr;
 }
 
-HRESULT SAFEgflLoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::SAFEgflLoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap)
 {
+//	CLock oLock( m_pSection );
+
 	GFL_ERROR err;
 	HRESULT hr = E_FAIL;
-	EnterCriticalSection (&_GflGuard);
 	__try
 	{
 		GFL_LOAD_PARAMS params = {};
@@ -932,15 +929,16 @@ HRESULT SAFEgflLoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap)
 	{
 		ATLTRACE ("E_FAIL (gflLoadBitmapW exception)\n");
 	}
-	LeaveCriticalSection (&_GflGuard);
+
 	return hr;
 }
 
-HRESULT SAFEgflLoadThumbnail(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::SAFEgflLoadThumbnail(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap)
 {
+//	CLock oLock( m_pSection );
+
 	GFL_ERROR err;
 	HRESULT hr = E_FAIL;
-	EnterCriticalSection (&_GflGuard);
 	__try
 	{
 		*bitmap = NULL;
@@ -971,15 +969,16 @@ HRESULT SAFEgflLoadThumbnail(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height
 	{
 		ATLTRACE ("E_FAIL (gflLoadThumbnailW exception)\n");
 	}
-	LeaveCriticalSection (&_GflGuard);
+
 	return hr;
 }
 
-HRESULT SAFEgflLoadThumbnailFromMemory(const GFL_UINT8* data, GFL_UINT32 data_length, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::SAFEgflLoadThumbnailFromMemory(const GFL_UINT8* data, GFL_UINT32 data_length, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap)
 {
+//	CLock oLock( m_pSection );
+
 	GFL_ERROR err;
 	HRESULT hr = E_FAIL;
-	EnterCriticalSection (&_GflGuard);
 	__try
 	{
 		*bitmap = NULL;
@@ -1002,15 +1001,16 @@ HRESULT SAFEgflLoadThumbnailFromMemory(const GFL_UINT8* data, GFL_UINT32 data_le
 	{
 		ATLTRACE ("E_FAIL (gflLoadBitmapFromMemory exception)\n");
 	}
-	LeaveCriticalSection (&_GflGuard);
+
 	return hr;
 }
 
-HRESULT SAFEgflConvertBitmapIntoDDB(const GFL_BITMAP *bitmap, HBITMAP *hBitmap)
+HRESULT CSageThumbsModule::SAFEgflConvertBitmapIntoDDB(const GFL_BITMAP *bitmap, HBITMAP *hBitmap)
 {
+//	CLock oLock( m_pSection );
+
 	GFL_ERROR err;
 	HRESULT hr = E_FAIL;
-	EnterCriticalSection (&_GflGuard);
 	__try
 	{
 		*hBitmap = NULL;
@@ -1027,27 +1027,30 @@ HRESULT SAFEgflConvertBitmapIntoDDB(const GFL_BITMAP *bitmap, HBITMAP *hBitmap)
 	{
 		ATLTRACE ("E_FAIL (gflConvertBitmapIntoDDB exception)\n");
 	}
-	LeaveCriticalSection (&_GflGuard);
+
 	return hr;
 }
 
-HRESULT SAFEgflFreeBitmap(GFL_BITMAP*& bitmap)
+HRESULT CSageThumbsModule::SAFEgflFreeBitmap(GFL_BITMAP*& bitmap)
 {
 	if ( ! bitmap )
 		return S_FALSE;
 
+//	CLock oLock( m_pSection );
+
 	HRESULT hr = E_FAIL;
-	EnterCriticalSection (&_GflGuard);
 	__try
 	{
 		gflFreeBitmap( bitmap );
+		hr = S_OK;
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
 		ATLTRACE ("E_FAIL (gflFreeBitmap exception)\n");
 	}
-	LeaveCriticalSection (&_GflGuard);
+
 	bitmap = NULL;
+
 	return hr;
 }
 

@@ -349,7 +349,7 @@ void CThumb::ConvertTo(HWND hWnd, LPCSTR ext)
 		CString filename( m_Filenames.GetNext( pos ) );
 
 		GFL_BITMAP* hBitmap = NULL;
-		if ( SUCCEEDED( SAFEgflLoadBitmap( filename, &hBitmap ) ) )
+		if ( SUCCEEDED( _AtlModule.SAFEgflLoadBitmap( filename, &hBitmap ) ) )
 		{
 			GFL_SAVE_PARAMS params = {};
 			gflGetDefaultSaveParams( &params );
@@ -376,7 +376,7 @@ void CThumb::SetWallpaper(HWND hWnd, WORD reason)
 	CString filename( m_Filenames.GetHead() );
 
 	GFL_BITMAP* hBitmap = NULL;
-	if ( SUCCEEDED( SAFEgflLoadBitmap( filename, &hBitmap ) ) )
+	if ( SUCCEEDED( _AtlModule.SAFEgflLoadBitmap( filename, &hBitmap ) ) )
 	{
 		GFL_SAVE_PARAMS params = {};
 		gflGetDefaultSaveParams( &params );
@@ -432,7 +432,7 @@ void CThumb::SendByMail(HWND hwnd, WORD reason)
 				else
 				{
 					GFL_BITMAP* hGflBitmap = NULL;
-					hr = SAFEgflLoadThumbnail( filename, width, height, &hGflBitmap );
+					hr = _AtlModule.SAFEgflLoadThumbnail( filename, width, height, &hGflBitmap );
 					if ( SUCCEEDED( hr ) )
 					{
 						GFL_SAVE_PARAMS params = {};
@@ -505,8 +505,8 @@ void CThumb::CopyToClipboard(HWND hwnd)
 
 	GFL_BITMAP* pBitmap = NULL;
 	HBITMAP hBitmap = NULL;
-	if ( SUCCEEDED( SAFEgflLoadBitmap( filename, &pBitmap ) ) &&
-		 SUCCEEDED( SAFEgflConvertBitmapIntoDDB( pBitmap, &hBitmap ) ) )
+	if ( SUCCEEDED( _AtlModule.SAFEgflLoadBitmap( filename, &pBitmap ) ) &&
+		 SUCCEEDED( _AtlModule.SAFEgflConvertBitmapIntoDDB( pBitmap, &hBitmap ) ) )
 	{
 		if ( OpenClipboard ( hwnd ) )
 		{
@@ -807,7 +807,7 @@ STDMETHODIMP CThumb::Initialize(
 {
 	if ( ! psi  )
 	{
-		ATLTRACE( "0x%08x::IInitializeWithItem::Initialize() : E_POINTER\n", this );
+		ATLTRACE( "CThumb - IInitializeWithItem::Initialize() : E_POINTER\n" );
 		return E_POINTER;
 	}
 
@@ -815,20 +815,13 @@ STDMETHODIMP CThumb::Initialize(
 	HRESULT hr = psi->GetDisplayName( SIGDN_FILESYSPATH, &pszFilePath );
 	if ( FAILED( hr ) )
 	{
-		ATLTRACE( "0x%08x::IInitializeWithItem::Initialize() : E_FAIL (Unknown path)\n", this );
+		ATLTRACE( "CThumb - IInitializeWithItem::Initialize() : E_FAIL (Unknown path)\n" );
 		return E_FAIL;
 	}
 
-	//if ( ! IsGoodFile( pszFilePath ) )
-	//{
-	//	ATLTRACE( "0x%08x::IInitializeWithItem::Initialize(\"%s\") : E_FAIL (Bad File)\n", this, (LPCSTR)CW2A( pszFilePath ) );
-	//	CoTaskMemFree( pszFilePath );
-	//	return E_FAIL;
-	//}
-
 	m_sFilename = pszFilePath;
 
-	ATLTRACE( "0x%08x::IInitializeWithItem::Initialize(\"%s\") : S_OK\n", this, (LPCSTR)CW2A( pszFilePath ) );
+	ATLTRACE( "CThumb - IInitializeWithItem::Initialize(\"%s\") : S_OK\n", (LPCSTR)CW2A( pszFilePath ) );
 	CoTaskMemFree( pszFilePath );
 	return S_OK;
 }
@@ -863,14 +856,14 @@ STDMETHODIMP CThumb::GetThumbnail(UINT cx, HBITMAP *phbmp, WTS_ALPHATYPE *pdwAlp
 {
 	if ( ! phbmp )
 	{
-		ATLTRACE( "0x%08x::IThumbnailProvider::GetThumbnail(%d) : E_POINTER\n", this, cx );
+		ATLTRACE( "CThumb - IThumbnailProvider::GetThumbnail(%d) : E_POINTER\n", cx );
 		return E_POINTER;
 	}
 	*phbmp = NULL;
 
 	if ( ! GetRegValue( _T("EnableThumbs"), 1 ) )
 	{
-		ATLTRACE( "0x%08x::IThumbnailProvider::GetThumbnail(%d) : E_FAIL (Disabled)\n", this, cx );
+		ATLTRACE( "CThumb - IThumbnailProvider::GetThumbnail(%d) : E_FAIL (Disabled)\n", cx );
 		return E_FAIL;
 	}
 
@@ -892,11 +885,11 @@ STDMETHODIMP CThumb::GetThumbnail(UINT cx, HBITMAP *phbmp, WTS_ALPHATYPE *pdwAlp
 	*phbmp = m_Preview.GetImage( cx, cx );
 	if ( ! *phbmp )
 	{
-		ATLTRACE( "0x%08x::IThumbnailProvider::GetThumbnail(%d) : E_FAIL (Load failed)\n", this, cx );
+		ATLTRACE( "CThumb - IThumbnailProvider::GetThumbnail(%d) : E_FAIL (Load failed)\n", cx );
 		return E_FAIL;
 	}
 
-	ATLTRACE( "0x%08x::IThumbnailProvider::GetThumbnail(%d) : S_OK\n", this, cx );
+	ATLTRACE( "CThumb - IThumbnailProvider::GetThumbnail(%d) : S_OK\n", cx );
 	return S_OK;
 }
 
@@ -974,12 +967,12 @@ STDMETHODIMP CThumb::GetThumbnail(UINT cx, HBITMAP *phbmp, WTS_ALPHATYPE *pdwAlp
 STDMETHODIMP CThumb::GetLocation ( 
     /* [size_is][out] */ LPWSTR pszPathBuffer,
     /* [in] */ DWORD cch,
-    /* [unique][out][in] */ DWORD* pdwPriority,
+    /* [unique][out][in] */ DWORD* /* pdwPriority */,
     /* [in] */ const SIZE* prgSize,
-    /* [in] */ DWORD /*dwRecClrDepth*/,
-    /* [in] */ DWORD* pdwFlags)
+    /* [in] */ DWORD /* dwRecClrDepth */,
+    /* [in] */ DWORD* /* pdwFlags */)
 {
-	ATLTRACE( "0x%08x::IExtractImage::GetLocation(size=%d, priority=%d, cx=%d, cy=%d, flags=0x%08x) : ", this, cch, (pdwPriority ? *pdwPriority : 0), (prgSize ? prgSize->cx : 0), (prgSize ? prgSize->cy : 0), (pdwFlags ? *pdwFlags : 0));
+	ATLTRACE( "CThumb - IExtractImage::GetLocation(%dx%d) : ", (prgSize ? prgSize->cx : 0), (prgSize ? prgSize->cy : 0) );
 
 	if ( ! GetRegValue( _T("EnableThumbs"), 1 ) )
 	{
@@ -993,8 +986,9 @@ STDMETHODIMP CThumb::GetLocation (
 
 		if ( ! m_sFilename.IsEmpty() )
 		{
-			int len = min( m_sFilename.GetLength() + 1, (int)cch );
-			wcsncpy_s( pszPathBuffer, cch, (LPCWSTR)CT2CW( m_sFilename.Right( len - 1 ) ), (size_t)len );
+			CT2CW szFilenameW( m_sFilename );
+			DWORD len = min( (DWORD)( m_sFilename.GetLength() + 1 ), cch );
+			wcsncpy_s( pszPathBuffer, cch, (LPCWSTR)szFilenameW, len );
 		}
 		//else if ( ! m_pStream )
 		//{
@@ -1008,12 +1002,8 @@ STDMETHODIMP CThumb::GetLocation (
 		m_cy = prgSize->cy;
 	}
 
-	if ( pdwPriority )
-		*pdwPriority = IEIT_PRIORITY_NORMAL;
+	// NOTE: IEIFLAG_CACHE - flag on Windows 7 produces "black images" on refresh
 
-	if ( pdwFlags )
-		*pdwFlags = ( *pdwFlags & ~IEIFLAG_ASYNC ) | IEIFLAG_CACHE | IEIFLAG_REFRESH;
-	
 	HRESULT hr = E_FAIL;
 	if ( ! m_sFilename.IsEmpty() )
 	{
@@ -1031,24 +1021,24 @@ STDMETHODIMP CThumb::Extract (
 {
 	if ( ! GetRegValue( _T("EnableThumbs"), 1 ) )
 	{
-		ATLTRACE( "0x%08x::IExtractImage::Extract() : E_FAIL (Disabled)\n", this );
+		ATLTRACE( "CThumb - IExtractImage::Extract() : E_FAIL (Disabled)\n" );
 		return E_FAIL;
 	}
 
 	if ( ! phBmpThumbnail )
 	{
-		ATLTRACE( "0x%08x::IExtractImage::Extract() : E_POINTER\n", this );
+		ATLTRACE( "CThumb - IExtractImage::Extract() : E_POINTER\n" );
 		return E_POINTER;
 	}
 
 	*phBmpThumbnail = m_Preview.GetImage( m_cx, m_cy );
 	if ( ! *phBmpThumbnail )
 	{
-		ATLTRACE( "0x%08x::IExtractImage::Extract() : E_FAIL (Load failed)\n", this );
+		ATLTRACE( "CThumb - IExtractImage::Extract() : E_FAIL (Load failed)\n" );
 		return E_FAIL;
 	}
 
-	ATLTRACE( "0x%08x::IExtractImage::Extract() : S_OK\n", this );
+	ATLTRACE( "CThumb - IExtractImage::Extract() : S_OK\n" );
 	return S_OK;
 }
 
@@ -1059,19 +1049,19 @@ STDMETHODIMP CThumb::GetDateStamp (
 {
 	if ( ! GetRegValue( _T("EnableThumbs"), 1 ) )
 	{
-		ATLTRACE( "0x%08x::IExtractImage2:GetDateStamp() : E_FAIL (Disabled)\n", this );
+		ATLTRACE( "CThumb - IExtractImage2:GetDateStamp() : E_FAIL (Disabled)\n" );
 		return E_FAIL;
 	}
 
 	if ( ! pDateStamp )
 	{
-		ATLTRACE( "0x%08x::IExtractImage2:GetDateStamp() : E_POINTER\n", this );
+		ATLTRACE( "CThumb - IExtractImage2:GetDateStamp() : E_POINTER\n" );
 		return E_POINTER;
 	}
 
 	m_Preview.GetLastWriteTime( pDateStamp );
 
-	ATLTRACE( "0x%08x::IExtractImage2:GetDateStamp() : S_OK\n", this );
+	ATLTRACE( "CThumb - IExtractImage2:GetDateStamp() : S_OK\n" );
 	return S_OK;
 }
 
@@ -1159,32 +1149,56 @@ STDMETHODIMP CThumb::GetInfoTip(DWORD, LPWSTR* ppwszTip)
 	return S_OK;
 }
 
-// IExtractIcon
+// IExtractIconA
 
-STDMETHODIMP CThumb::GetIconLocation(UINT /* uFlags */, LPTSTR /* szIconFile */,
-	UINT /* cchMax */, int* piIndex, UINT* pwFlags)
+STDMETHODIMP CThumb::GetIconLocation(UINT uFlags, LPSTR szIconFile, UINT cch, int* piIndex, UINT* pwFlags)
+{
+	WCHAR szIconFileW[ MAX_LONG_PATH ] = {};
+	HRESULT hr = GetIconLocation( uFlags, szIconFileW, MAX_LONG_PATH, piIndex, pwFlags );
+	strcpy_s( szIconFile, cch, (LPCSTR)CW2A( szIconFileW ) );
+	return hr;
+}
+
+STDMETHODIMP CThumb::Extract(LPCSTR pszFile, UINT nIconIndex, HICON* phiconLarge, HICON* phiconSmall, UINT nIconSize)
+{
+	return Extract( (LPCWSTR)CA2W( pszFile ), nIconIndex, phiconLarge, phiconSmall,nIconSize );
+}
+
+// IExtractIconW
+
+STDMETHODIMP CThumb::GetIconLocation(UINT /* uFlags */, LPWSTR szIconFile, UINT cch, int* piIndex, UINT* pwFlags)
 {
 	if ( ! pwFlags || ! piIndex )
 	{
-		ATLTRACE( "0x%08x::IExtractIcon::GetIconLocation() : S_FALSE (Pointer error)\n", this );
-		return S_FALSE;
+		ATLTRACE( "CThumb - IExtractIcon::GetIconLocation() : E_POINTER\n" );
+		return E_POINTER;
 	}
 
 	// Этот индекс Explorer использует для идентификации и кешировании иконок:
 	// Делаем его уникальным
-	LARGE_INTEGER count;
-	QueryPerformanceCounter( &count );
-	*piIndex = (int)count.LowPart;
+	//LARGE_INTEGER count;
+	//QueryPerformanceCounter( &count );
+	//*piIndex = (int)count.LowPart;
+
+	if ( szIconFile )
+	{
+		CT2CW szFilenameW( m_sFilename );
+		DWORD len = min( (DWORD)( m_sFilename.GetLength() + 1 ), cch );
+		wcsncpy_s( szIconFile, cch, (LPCWSTR)szFilenameW, len );
+	}
+
+	*piIndex = (int)CRC32( (LPCSTR)(LPCTSTR)m_sFilename, m_sFilename.GetLength() * sizeof( TCHAR ) );
 
 	*pwFlags = GIL_NOTFILENAME | GIL_PERINSTANCE;
 
-	ATLTRACE( "0x%08x::IExtractIcon::GetIconLocation() : S_OK\n", this );
+	ATLTRACE( "CThumb - IExtractIcon::GetIconLocation(\"%s\",0x%08x,0x%08x) : S_OK\n", (LPCSTR)CT2A( m_sFilename ), (DWORD)*piIndex, *pwFlags );
 	return S_OK;
 }
 
-STDMETHODIMP CThumb::Extract(LPCTSTR /*pszFile*/, UINT /*nIconIndex*/,
-	HICON* phiconLarge, HICON* phiconSmall, UINT nIconSize)
+STDMETHODIMP CThumb::Extract(LPCWSTR /*pszFile*/, UINT nIconIndex, HICON* phiconLarge, HICON* phiconSmall, UINT nIconSize)
 {
+	nIconIndex;
+
 	if ( phiconLarge ) *phiconLarge = NULL;
 	if ( phiconSmall ) *phiconSmall = NULL;
 
@@ -1193,9 +1207,11 @@ STDMETHODIMP CThumb::Extract(LPCTSTR /*pszFile*/, UINT /*nIconIndex*/,
 	m_cx = m_cy = max( cxLarge, cxSmall );
 	if ( ! m_cx )
 	{
-		ATLTRACE( "0x%08x::IExtractIcon::Extract() : S_FALSE (No size)\n", this );
-		return S_FALSE;
+		ATLTRACE( "CThumb - IExtractIcon::Extract() : E_FAIL (No size)\n" );
+		return E_FAIL;
 	}
+
+	ATLTRACE( "CThumb - IExtractIcon::Extract(0x%08x,%d,%d) : ", nIconIndex, cxLarge, cxSmall );
 
 	HRESULT hr = E_FAIL;
 	if ( ! m_Preview )
@@ -1207,13 +1223,14 @@ STDMETHODIMP CThumb::Extract(LPCTSTR /*pszFile*/, UINT /*nIconIndex*/,
 	}
 	if ( FAILED( hr ) )
 	{
-		ATLTRACE( "0x%08x::IExtractIcon::Extract() : S_FALSE (Load failed)\n", this );
-	
 		// Attempt to load default icon
 		CString sExt = PathFindExtension( m_sFilename );
 		if ( sExt.IsEmpty() )
+		{
 			// No extension
-			return S_FALSE;
+			ATLTRACE( "CThumb - IExtractIcon::Extract() : E_FAIL (No extension)\n" );
+			return E_FAIL;
+		}
 
 		CString sDefaultIcon;
 		CString sDefaultKey = GetRegValue( _T(""), _T(""), sExt, HKEY_CLASSES_ROOT );
@@ -1226,17 +1243,23 @@ STDMETHODIMP CThumb::Extract(LPCTSTR /*pszFile*/, UINT /*nIconIndex*/,
 			sDefaultIcon = GetRegValue( _T(""), _T(""), sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT );
 		}
 		if ( sDefaultIcon.IsEmpty() )
+		{
 			// No icon
-			return S_FALSE;
+			ATLTRACE( "CThumb - IExtractIcon::Extract() : E_FAIL (No icon)\n" );
+			return E_FAIL;
+		}
 
 		if ( ! LoadIcon( sDefaultIcon,
 			( cxSmall == 16 ) ? phiconSmall : ( ( cxLarge == 16 ) ? phiconLarge : NULL ),
 			( cxSmall == 32 ) ? phiconSmall : ( ( cxLarge == 32 ) ? phiconLarge : NULL ),
 			( cxSmall == 48 ) ? phiconSmall : ( ( cxLarge == 48 ) ? phiconLarge : NULL ) ) )
+		{
 			// Found no icon
-			return S_FALSE;
+			ATLTRACE( "CThumb - IExtractIcon::Extract() : E_FAIL (Found no icon)\n" );
+			return E_FAIL;
+		}
 
-		ATLTRACE( "0x%08x::IExtractIcon::Extract() : S_OK (Default)\n", this );
+		ATLTRACE( "CThumb - IExtractIcon::Extract() : S_OK (Default)\n" );
 		return S_OK;
 	}
 
@@ -1250,7 +1273,7 @@ STDMETHODIMP CThumb::Extract(LPCTSTR /*pszFile*/, UINT /*nIconIndex*/,
 		*phiconSmall = m_Preview.GetIcon( cxSmall );
 	}
 
-	ATLTRACE( "0x%08x::IExtractIcon::Extract() : S_OK\n", this );
+	ATLTRACE( "CThumb - IExtractIcon::Extract() : S_OK\n" );
 	return S_OK;
 }
 
@@ -1580,19 +1603,23 @@ STDMETHODIMP CThumb::Extract(LPCTSTR /*pszFile*/, UINT /*nIconIndex*/,
 
 STDMETHODIMP CThumb::SetSite(IUnknown *pUnkSite)
 {
-	ATLTRACE( _T("0x%08x::IObjectWithSite::SetSite(0x%08x)\n"), this, pUnkSite );
+	ATLTRACE( "CThumb - IObjectWithSite::SetSite(0x%08x)\n", pUnkSite );
 
-	m_pSite = pUnkSite;
+	if ( pUnkSite )
+		m_pSite = pUnkSite;
+	else
+		m_pSite.Release();
 
 	return S_OK;
 }
 
 STDMETHODIMP CThumb::GetSite(REFIID riid, void **ppvSite)
 {
-	ATLTRACE (_T("0x%08x::IObjectWithSite::GetSite()\n"), this);
+	ATLTRACE ( "CThumb - IObjectWithSite::GetSite()\n" );
 
 	if ( ! ppvSite )
 		return E_POINTER;
+
 	*ppvSite = NULL;
 
 	if ( ! m_pSite )

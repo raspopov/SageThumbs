@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
+
 #pragma once
 
 class CEntity
@@ -32,10 +33,10 @@ public:
 	HRESULT LoadImage(const CString& sFilename, UINT cx, UINT cy);
 
 	// Получение битмэпа
-	HBITMAP GetImage(UINT cx, UINT cy) const;
+	HBITMAP GetImage(UINT cx, UINT cy);
 
 	// Получение иконки
-	HICON GetIcon(UINT cx) const;
+	HICON GetIcon(UINT cx);
 
 	inline operator bool() const
 	{
@@ -73,15 +74,14 @@ public:
 	}
 
 	// Расчёт размеров изображения исходя из заданных размеров подложки
-	void CalcSize(UINT& tx, UINT& ty, UINT width, UINT height) const;
+	void CalcSize(UINT& tx, UINT& ty, UINT width, UINT height);
 
 protected:
-	CString					m_sName;			// Имя файла
-	CString					m_sPath;			// Путь файла
 	WIN32_FIND_DATA			m_FileData;			// Данные о файле на диске
 	GFL_FILE_INFORMATION	m_ImageInfo;		// Информация о изображении
 	GFL_BITMAP*				m_hGflBitmap;		// Загруженный эскиз (NULL - не загружен)
 	CString					m_TitleString;		// Текст подписи под эскизом
 	CString					m_InfoTipString;	// Текст для всплывающей подсказки
 	CString					m_MenuTipString;	// Текст для подсказки пункта меню
+	CComAutoCriticalSection m_pSection;
 };
