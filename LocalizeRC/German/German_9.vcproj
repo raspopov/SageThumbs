@@ -76,6 +76,7 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				OutputFile="$(OutDir)\LocalizeRC07.dll"
+				LinkIncremental="1"
 				ProgramDatabaseFile="..\Release/LocalizeRC07.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"

@@ -194,7 +194,7 @@
 			UseOfATL="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
+			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -235,10 +235,10 @@
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
 				OutputFile="$(OutDir)\$(SolutionName)0c.dll"
+				LinkIncremental="1"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				LinkTimeCodeGeneration="0"
 				ResourceOnlyDLL="true"
 				SetChecksum="true"
 				BaseAddress="0x1F000000"
@@ -275,7 +275,7 @@
 			UseOfATL="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
+			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"

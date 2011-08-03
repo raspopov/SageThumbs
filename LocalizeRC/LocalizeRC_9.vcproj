@@ -132,7 +132,11 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="1"
+				Optimization="3"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
+				OmitFramePointers="true"
 				PreprocessorDefinitions="WIN32,_WINDOWS,NDEBUG"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -140,8 +144,7 @@
 				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
-				SuppressStartupBanner="true"
-				DebugInformationFormat="3"
+				DebugInformationFormat="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"

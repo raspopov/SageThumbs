@@ -33,7 +33,8 @@ System Requirements:
 Versions:
 
 2.0.0.6
-  * Project converted to MS VS2010 (minimum - Windows XP)
+  * Fixed Windows 7 "black thumbnail" bug
+  * Project converted to MS VS2010 (if compiled minimum system requirements will be Windows XP)
   * Optimized distributive file (smaller)
 
 2.0.0.5
