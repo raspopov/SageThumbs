@@ -4,7 +4,7 @@
 !echo "Bits = ${BITS}, Source = ${SOURCE}"
 
 !define TITLE		"SageThumbs ${BITS}-bit"
-!define VERSION		"2.0.0.6"
+!define VERSION		"2.0.0.7"
 !define COMPANY		"Cherubic Software"
 !define FILENAME	"sagethumbs_${VERSION}_${BITS}_setup.exe"
 !define COPYRIGHT	"Copyright © 2004-2011 Nikolay Raspopov"

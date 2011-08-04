@@ -35,21 +35,39 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //	"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" \
 //	"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
 
-CString					_ModuleFileName;
-CString					_Database;
-CString					_PlugInsPathname;
-CExtMap					_ExtMap;
 //BitsDescriptionMap	_BitsMap;
-CSageThumbsModule		_AtlModule;
-DllLoader				_libgfl  (_T(LIB_GFL), false);
-DllLoader				_libgfle (_T(LIB_GFLE), false);
-DllLoader				_libsqlite (_T(LIB_SQLITE), false);
+CSageThumbsModule		_Module;
 
 CSageThumbsModule::CSageThumbsModule()
-	: m_CurLangID( STANDARD_LANGID )
-	, m_LangDLL( NULL )
-//	, m_hWatchThread (NULL)
+	: m_CurLangID	( STANDARD_LANGID )
+	, m_hGFL		( NULL )
+	, m_hGFLe		( NULL )
+	, m_hSQLite		( NULL )
+	, m_hLangDLL	( NULL )
+//	, m_hWatchThread( NULL )
 {
+	GetModuleFileName( _AtlBaseModule.GetModuleInstance(),
+		m_sModuleFileName.GetBuffer( MAX_LONG_PATH ), MAX_LONG_PATH );
+	m_sModuleFileName.ReleaseBuffer();
+	ATLTRACE( "Module path: %s\n", (LPCSTR)CT2A( m_sModuleFileName ) );
+
+	m_sHome = m_sModuleFileName.Left( m_sModuleFileName.ReverseFind( _T('\\') ) + 1 );
+
+	// Get database filename
+	m_sDatabase = GetRegValue( _T("Database") );
+	if ( m_sDatabase.IsEmpty() )
+	{
+		m_sDatabase = GetSpecialFolderPath( CSIDL_LOCAL_APPDATA );
+		if ( m_sDatabase.IsEmpty() )
+		{
+			GetWindowsDirectory( m_sDatabase.GetBuffer( MAX_LONG_PATH ), MAX_LONG_PATH );
+			m_sDatabase.ReleaseBuffer();
+		}
+		m_sDatabase.TrimRight (_T("\\"));
+		m_sDatabase += _T("\\SageThumbs.db3");
+		SetRegValue( _T("Database"), m_sDatabase );
+	}
+	ATLTRACE( "Database path: %s\n", (LPCSTR)CT2A( m_sDatabase ) );
 }
 
 static const LPCTSTR szHandlers[] =
@@ -70,9 +88,9 @@ HRESULT CSageThumbsModule::DllRegisterServer()
 
 	HRESULT hr = CAtlDllModuleT< CSageThumbsModule >::DllRegisterServer (FALSE);
 
-	for ( POSITION pos = _ExtMap.GetHeadPosition(); pos; )
+	for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; )
 	{
-		if ( const CExtMap::CPair* p = _ExtMap.GetNext( pos ) )
+		if ( const CExtMap::CPair* p = m_oExtMap.GetNext( pos ) )
 		{
 			if ( p->m_value.enabled )
 				RegisterExt( p->m_key );
@@ -117,9 +135,9 @@ HRESULT CSageThumbsModule::DllUnregisterServer()
 
 	HRESULT hr = CAtlDllModuleT< CSageThumbsModule >::DllUnregisterServer (FALSE);
 
-	for ( POSITION pos = _ExtMap.GetHeadPosition(); pos; )
+	for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; )
 	{
-		if ( const CExtMap::CPair* p = _ExtMap.GetNext( pos ) )
+		if ( const CExtMap::CPair* p = m_oExtMap.GetNext( pos ) )
 		{
 			UnregisterExt( p->m_key );
 		}
@@ -160,8 +178,8 @@ HRESULT CSageThumbsModule::DllUnregisterServer()
 
 void CSageThumbsModule::UpdateShell()
 {
-	SHChangeNotify (SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL);
-	SendMessageTimeout (HWND_BROADCAST, WM_SETTINGCHANGE, 0, NULL, SMTO_ABORTIFHUNG, 1000, NULL);
+	SHChangeNotify( SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL );
+	SystemParametersInfo( SPI_SETICONS, 0, NULL, SPIF_SENDCHANGE );
 	CoFreeUnusedLibraries ();
 }
 
@@ -193,8 +211,8 @@ void CSageThumbsModule::RegisterExt(LPCTSTR szExt)
 	SetRegValue( _T("Content Type"), sContentType, key, HKEY_CLASSES_ROOT );
 	SetRegValue( _T("Extension"), key, _T("MIME\\DataBase\\Content Type\\") + sContentType, HKEY_CLASSES_ROOT );
 
-	const bool bEnableThumbs = GetRegValue( _T("EnableThumbs"), 1 ) != 0;
-	const bool bEnableIcons = GetRegValue( _T("EnableIcons"), 1 ) != 0;
+	const bool bEnableThumbs = GetRegValue( _T("EnableThumbs"), 1ul ) != 0;
+	const bool bEnableIcons = GetRegValue( _T("EnableIcons"), 1ul ) != 0;
 
 	for ( int i = 0; szHandlers[ i ]; ++i )
 	{
@@ -354,7 +372,7 @@ void CSageThumbsModule::UnregisterExt(LPCTSTR szExt)
 	}
 }
 
-LANGID CSageThumbsModule::GetLang ()
+LANGID CSageThumbsModule::GetLang()
 {
 	return m_CurLangID;
 }
@@ -363,7 +381,7 @@ BOOL CSageThumbsModule::LoadLang(LANGID LangID)
 {
 	if ( LangID == 0 )
 		// Использование предыдущей настройки языка
-		LangID = (LANGID)(DWORD)GetRegValue( _T("Lang"), (DWORD)0 );
+		LangID = (LANGID)(DWORD)GetRegValue( _T("Lang"), 0ul );
 
 	if ( LangID == m_CurLangID )
 		// Загрузка того же самого языка
@@ -388,10 +406,10 @@ BOOL CSageThumbsModule::LoadLang(LANGID LangID)
 void CSageThumbsModule::UnLoadLang ()
 {
 	// Выгрузка языка
-	if ( m_LangDLL )
+	if ( m_hLangDLL )
 	{
-		FreeLibrary( m_LangDLL );
-		m_LangDLL = NULL;
+		FreeLibrary( m_hLangDLL );
+		m_hLangDLL = NULL;
 	}
 
 	// Установка стандартного языка
@@ -402,7 +420,7 @@ void CSageThumbsModule::UnLoadLang ()
 BOOL CSageThumbsModule::LoadLangIDDLL (LANGID LangID)
 {
 	ATLASSERT( LangID != 0 );
-	ATLASSERT( m_LangDLL == NULL );
+	ATLASSERT( m_hLangDLL == NULL );
 
 	if ( LangID == STANDARD_LANGID )
 	{
@@ -412,15 +430,13 @@ BOOL CSageThumbsModule::LoadLangIDDLL (LANGID LangID)
 	}
 
 	CString strLangIDDLL;
-	strLangIDDLL.Format( _T("%sSageThumbs%.2x.dll"),
-		(LPCTSTR)_ModuleFileName.Left ( _ModuleFileName.ReverseFind (_T('\\')) + 1),
-		LangID );
-	HINSTANCE hInstance = LoadLibrary( strLangIDDLL );
+	strLangIDDLL.Format( _T("%sSageThumbs%.2x.dll"), (LPCTSTR)m_sHome, LangID );
+	HMODULE hInstance = LoadLibrary( strLangIDDLL );
 	if ( hInstance )
 	{
 		_AtlBaseModule.SetResourceInstance (hInstance);
 		m_CurLangID = LangID;
-		m_LangDLL = hInstance;
+		m_hLangDLL = hInstance;
 		return TRUE;
 	}
 	ATLTRACE ( "LoadLangIDDLL(%.2x) failed: %d\n", LangID, GetLastError ());
@@ -431,7 +447,7 @@ void CSageThumbsModule::FillExtMap()
 {
 	CHECKPOINT_BEGIN( FillExtMap )
 
-	if (_ExtMap.IsEmpty ())
+	if (m_oExtMap.IsEmpty ())
 	{
 		// Загрузка расширений через GFL
 		GFL_INT32 count = gflGetNumberOfFormat();
@@ -447,7 +463,7 @@ void CSageThumbsModule::FillExtMap()
 				{
 					CString sExt = (LPCTSTR)CA2T( info.Extension [ j ] );
 					sExt.MakeLower();
-					_ExtMap.SetAt( sExt, data );
+					m_oExtMap.SetAt( sExt, data );
 				}
 			}
 		}
@@ -455,13 +471,13 @@ void CSageThumbsModule::FillExtMap()
 		// Загрузка данных о расширении
 		i = 1;
 		const CString key = CString( REG_SAGETHUMBS ) + _T("\\");
-		for ( POSITION pos = _ExtMap.GetHeadPosition(); pos; ++i )
+		for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; ++i )
 		{
-			CExtMap::CPair* p = _ExtMap.GetNext (pos);
+			CExtMap::CPair* p = m_oExtMap.GetNext (pos);
 
 			// Разрешено или нет
 			DWORD dwEnabled = GetRegValue( _T("Enabled"),
-				( ( p->m_key == _T("ico") || p->m_key == _T("cur") ) ? 0 : 1 ),
+				( ( p->m_key == _T("ico") || p->m_key == _T("cur") ) ? 0ul : 1ul ),
 				key + p->m_key );
 			SetRegValue( _T(""), p->m_value.info, key + p->m_key );
 			SetRegValue( _T("Enabled"), dwEnabled, key + p->m_key );
@@ -470,7 +486,7 @@ void CSageThumbsModule::FillExtMap()
 			//ATLTRACE( "%4d. %c %8s \"%s\"\n", i, ( p->m_value.enabled ? '+' : '-' ), (LPCSTR)CT2A( p->m_key ), (LPCSTR)CT2A( p->m_value.info ) );	
 		}
 
-		ATLTRACE( "Loaded %d formats, %d extensions. ", count, _ExtMap.GetCount() );
+		ATLTRACE( "Loaded %d formats, %d extensions. ", count, m_oExtMap.GetCount() );
 		CHECKPOINT( FillExtMap )
 	}
 }
@@ -479,50 +495,31 @@ BOOL CSageThumbsModule::Initialize()
 {
 	ATLTRACE ( "CSageThumbsModule::Initialize ()\n" );
 
-	// Получение полного пути модуля
-	GetModuleFileName(_AtlBaseModule.GetModuleInstance (),
-		_ModuleFileName.GetBuffer( MAX_LONG_PATH ), MAX_LONG_PATH );
-	_ModuleFileName.ReleaseBuffer();
-	ATLTRACE( "Module path: %s\n", (LPCSTR)CT2A( _ModuleFileName ) );
-
 	//DWORD id;
 	//m_hWatchThread = CreateThread( NULL, 0, WatchThread, (LPVOID) this, 0, &id );
 	//Sleep( 0 );
 
 	CHECKPOINT_BEGIN(LoadLibrarySQLite)
-	if ( ! _libsqlite.LoadLibrary ( _AtlBaseModule.GetModuleInstance() ) )
+	m_hSQLite = ::LoadLibrary( m_sHome + LIB_SQLITE );
+	if ( ! m_hSQLite )
 		// Ошибка загрузки
 		return FALSE;
 	CHECKPOINT(LoadLibrarySQLite)
 
 	// Загрузка библиотек
 	CHECKPOINT_BEGIN(LoadLibraryGFL)
-	if ( ! _libgfl.LoadLibrary  ( _AtlBaseModule.GetModuleInstance() ) )
+	m_hGFL = ::LoadLibrary( m_sHome + LIB_GFL );
+	if ( ! m_hGFL )
 		// Ошибка загрузки
 		return FALSE;
 	CHECKPOINT(LoadLibraryGFL)
 
 	CHECKPOINT_BEGIN(LoadLibraryGFLE)
-	if ( ! _libgfle.LoadLibrary ( _AtlBaseModule.GetModuleInstance() ) )
+	m_hGFLe = ::LoadLibrary( m_sHome + LIB_GFLE );
+	if ( ! m_hGFLe )
 		// Ошибка загрузки
 		return FALSE;
 	CHECKPOINT(LoadLibraryGFLE)
-
-	// Получение пути до базы данных
-	_Database = GetRegValue( _T("Database") );
-	if ( _Database.IsEmpty() )
-	{
-		_Database = GetSpecialFolderPath( CSIDL_LOCAL_APPDATA );
-		if ( _Database.IsEmpty() )
-		{
-			GetWindowsDirectory( _Database.GetBuffer( MAX_LONG_PATH ), MAX_LONG_PATH );
-			_Database.ReleaseBuffer();
-		}
-		_Database.TrimRight (_T("\\"));
-		_Database += _T("\\SageThumbs.db3");
-		SetRegValue( _T("Database"), _Database );
-	}
-	ATLTRACE( "Database path: %s\n", (LPCSTR)CT2A( _Database ) );
 
 	// Загрузка локализации
 	CHECKPOINT_BEGIN(LoadLangs)
@@ -532,6 +529,7 @@ BOOL CSageThumbsModule::Initialize()
 	CHECKPOINT_BEGIN(GFLInit)
 
 	// Получение папки с плагинами
+	CString sPlugins;
 	CString buf = GetRegValue( REG_XNVIEW_PATH1, _T(""),
 		REG_XNVIEW_KEY, HKEY_LOCAL_MACHINE );
 	if ( ! buf.IsEmpty() )
@@ -542,7 +540,7 @@ BOOL CSageThumbsModule::Initialize()
 		if (n > 0)
 		{
 			buf = buf.Left (n) + _T("\\PlugIns");
-			_PlugInsPathname = buf;
+			sPlugins = buf;
 		}
 	}
 	else
@@ -555,7 +553,7 @@ BOOL CSageThumbsModule::Initialize()
 			buf.Trim (_T("\""));
 			buf.TrimRight (_T("\\"));
 			buf += _T("\\PlugIns");
-			_PlugInsPathname = buf;
+			sPlugins = buf;
 		}
 		else
 		{
@@ -565,15 +563,15 @@ BOOL CSageThumbsModule::Initialize()
 			{
 				buf.TrimRight (_T("\\"));
 				buf += _T("\\XnView\\PlugIns");
-				_PlugInsPathname = buf;
+				sPlugins = buf;
 			}
 		}
 	}
-	if ( ! _PlugInsPathname.IsEmpty ())
-		MakeDirectory( _PlugInsPathname );
-	if ( !_PlugInsPathname.IsEmpty() )
-		gflSetPluginsPathnameT( _PlugInsPathname );
-	ATLTRACE( "gflSetPluginsPathnameW : \"%s\"\n", (LPCSTR)CT2A( _PlugInsPathname ) );
+	if ( ! sPlugins.IsEmpty ())
+		MakeDirectory( sPlugins );
+	if ( !sPlugins.IsEmpty() )
+		gflSetPluginsPathnameT( sPlugins );
+	ATLTRACE( "gflSetPluginsPathnameW : \"%s\"\n", (LPCSTR)CT2A( sPlugins ) );
 
 	// Инициализация GFL
 	GFL_ERROR err = gflLibraryInit();
@@ -599,11 +597,28 @@ BOOL CSageThumbsModule::Initialize()
 void CSageThumbsModule::UnInitialize ()
 {
 	ATLTRACE ( "CSageThumbsModule::UnInitialize ()\n" );
-
-	if ( _libgfl )
+	
+	if ( m_hGFLe )
 	{
-		ATLTRACE( "gflLibraryExit\n" );
-		gflLibraryExit ();
+		FreeLibrary( m_hGFLe );
+		m_hGFLe = NULL;
+		__FUnloadDelayLoadedDLL2( LIB_GFLE );
+	}
+
+	if ( m_hGFL )
+	{
+		gflLibraryExit();
+
+		FreeLibrary( m_hGFL );
+		m_hGFL = NULL;
+		__FUnloadDelayLoadedDLL2( LIB_GFL );
+	}
+
+	if ( m_hSQLite )
+	{
+		FreeLibrary( m_hSQLite );
+		m_hSQLite = NULL;
+		__FUnloadDelayLoadedDLL2( LIB_SQLITE );
 	}
 
 	UnLoadLang ();
@@ -647,7 +662,7 @@ void CSageThumbsModule::UnInitialize ()
 
 extern "C" BOOL WINAPI DllMain(HINSTANCE /* hInstance */, DWORD dwReason, LPVOID lpReserved)
 {
-	if ( _AtlModule.DllMain( dwReason, lpReserved ) )
+	if ( _Module.DllMain( dwReason, lpReserved ) )
 	{
 		switch ( dwReason )
 		{
@@ -655,7 +670,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE /* hInstance */, DWORD dwReason, LPVOID
 			ATLTRACE( "DllMain::DLL_PROCESS_ATTACH\n" );
 			__try
 			{
-				if ( ! _AtlModule.Initialize() )
+				if ( ! _Module.Initialize() )
 					return FALSE;
 			}
 			__except ( EXCEPTION_EXECUTE_HANDLER )
@@ -669,7 +684,7 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE /* hInstance */, DWORD dwReason, LPVOID
 			ATLTRACE( "DllMain::DLL_PROCESS_DETACH\n" );
 			__try
 			{
-				_AtlModule.UnInitialize();
+				_Module.UnInitialize();
 			}
 			__except ( EXCEPTION_EXECUTE_HANDLER )
 			{
@@ -690,28 +705,28 @@ STDAPI DllCanUnloadNow(void)
 {
 	ATLTRACE( "Calling ::DllCanUnloadNow()...\n" );
 
-	return _AtlModule.DllCanUnloadNow();
+	return _Module.DllCanUnloadNow();
 }
 
 STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv)
 {
 	ATLTRACE( "Calling ::DllGetClassObject()...\n" );
 
-	return _AtlModule.DllGetClassObject(rclsid, riid, ppv);
+	return _Module.DllGetClassObject(rclsid, riid, ppv);
 }
 
 STDAPI DllRegisterServer(void)
 {
 	ATLTRACE( "Calling ::DllRegisterServer()...\n" );
 
-	return _AtlModule.DllRegisterServer();
+	return _Module.DllRegisterServer();
 }
 
 STDAPI DllUnregisterServer(void)
 {
 	ATLTRACE( "Calling ::DllUnregisterServer()...\n" );
 
-	return _AtlModule.DllUnregisterServer();
+	return _Module.DllUnregisterServer();
 }
 
 void CALLBACK Options (HWND hwnd, HINSTANCE /* hinst */, LPSTR /* lpszCmdLine */, int /* nCmdShow */)
@@ -800,6 +815,7 @@ void RegisterValue(HKEY root, LPCTSTR key, LPCTSTR name, const BYTE* value, DWOR
 void UnregisterValue(HKEY root, LPCTSTR key, LPCTSTR name, LPCTSTR value, LPCTSTR backup)
 {
 	// Check backup
+	LSTATUS res;
 	CString buf = GetRegValue( name, _T(""), key, root );
 	CString backup_buf = GetRegValue( backup, _T(""), key, root );
 	if ( ! buf.IsEmpty() && buf.CompareNoCase( value ) == 0 )
@@ -811,26 +827,26 @@ void UnregisterValue(HKEY root, LPCTSTR key, LPCTSTR name, LPCTSTR value, LPCTST
 			SetRegValue( name, backup_buf, key, root );
 
 			// Delete backup value
-			SHDeleteValue( root, key, backup );
-			SHDeleteValue( root, key, backup );
+			res = SHDeleteValue( root, key, backup );
+			res = SHDeleteValue( root, key, backup );
 		}
 		else
 		{
 			// Delete original value
-			SHDeleteValue( root, key, name );
-			SHDeleteValue( root, key, name );
+			res = SHDeleteValue( root, key, name );
+			res = SHDeleteValue( root, key, name );
 		}
 	}
 	else if ( ! backup_buf.IsEmpty() )
 	{
 		// Delete backup value
-		SHDeleteValue( root, key, backup );
-		SHDeleteValue( root, key, backup );
+		res = SHDeleteValue( root, key, backup );
+		res = SHDeleteValue( root, key, backup );
 	}
 
 	// Clean-up empty key
-	SHDeleteEmptyKey( root, key );
-	SHDeleteEmptyKey( root, key );
+	res = SHDeleteEmptyKey( root, key );
+	res = SHDeleteEmptyKey( root, key );
 }
 
 void UnregisterValue(HKEY root, LPCTSTR key, LPCTSTR name, const BYTE* value, DWORD value_size, LPCTSTR backup)
@@ -873,7 +889,7 @@ void UnregisterValue(HKEY root, LPCTSTR key, LPCTSTR name, const BYTE* value, DW
 	SHDeleteEmptyKey (root, key);
 }
 
-HRESULT CSageThumbsModule::SAFEgflGetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info)
+HRESULT CSageThumbsModule::GetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info)
 {
 //	CLock oLock( m_pSection );
 
@@ -899,7 +915,7 @@ HRESULT CSageThumbsModule::SAFEgflGetFileInformation(LPCTSTR filename, GFL_FILE_
 	return hr;
 }
 
-HRESULT CSageThumbsModule::SAFEgflLoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::LoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap)
 {
 //	CLock oLock( m_pSection );
 
@@ -907,10 +923,12 @@ HRESULT CSageThumbsModule::SAFEgflLoadBitmap(LPCTSTR filename, GFL_BITMAP **bitm
 	HRESULT hr = E_FAIL;
 	__try
 	{
+		*bitmap = NULL;
+
 		GFL_LOAD_PARAMS params = {};
 		gflGetDefaultLoadParams( &params );
-
-		*bitmap = NULL;
+		params.Flags = GFL_LOAD_FORCE_COLOR_MODEL;
+		params.ColorModel = GFL_RGBA;
 		err = gflLoadBitmapT( filename, bitmap, &params, NULL);
 		if ( err == GFL_ERROR_FILE_READ )
 		{
@@ -933,7 +951,7 @@ HRESULT CSageThumbsModule::SAFEgflLoadBitmap(LPCTSTR filename, GFL_BITMAP **bitm
 	return hr;
 }
 
-HRESULT CSageThumbsModule::SAFEgflLoadThumbnail(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::LoadThumbnail(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap)
 {
 //	CLock oLock( m_pSection );
 
@@ -948,9 +966,10 @@ HRESULT CSageThumbsModule::SAFEgflLoadThumbnail(LPCTSTR filename, GFL_INT32 widt
 		params.Flags =
 			GFL_LOAD_ONLY_FIRST_FRAME |
 			GFL_LOAD_HIGH_QUALITY_THUMBNAIL |
-			( ( ::GetRegValue( _T("UseEmbedded"), (DWORD)0 ) != 0 ) ? GFL_LOAD_EMBEDDED_THUMBNAIL : 0 ) |
-			GFL_LOAD_PREVIEW_NO_CANVAS_RESIZE;
-
+			( ( ::GetRegValue( _T("UseEmbedded"), 0ul ) != 0 ) ? GFL_LOAD_EMBEDDED_THUMBNAIL : 0 ) |
+			GFL_LOAD_PREVIEW_NO_CANVAS_RESIZE |
+			GFL_LOAD_FORCE_COLOR_MODEL;
+		params.ColorModel = GFL_RGBA;
 		err = gflLoadThumbnailT( filename, width, height, bitmap, &params, NULL );
 		if ( err == GFL_ERROR_FILE_READ )
 		{
@@ -973,7 +992,7 @@ HRESULT CSageThumbsModule::SAFEgflLoadThumbnail(LPCTSTR filename, GFL_INT32 widt
 	return hr;
 }
 
-HRESULT CSageThumbsModule::SAFEgflLoadThumbnailFromMemory(const GFL_UINT8* data, GFL_UINT32 data_length, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::LoadBitmapFromMemory(LPCVOID data, GFL_UINT32 data_length, GFL_BITMAP **bitmap)
 {
 //	CLock oLock( m_pSection );
 
@@ -985,11 +1004,9 @@ HRESULT CSageThumbsModule::SAFEgflLoadThumbnailFromMemory(const GFL_UINT8* data,
 
 		GFL_LOAD_PARAMS params = {};
 		gflGetDefaultThumbnailParams (&params);
-		params.Flags =
-			GFL_LOAD_HIGH_QUALITY_THUMBNAIL |
-			GFL_LOAD_PREVIEW_NO_CANVAS_RESIZE;
-
-		err = gflLoadThumbnailFromMemory( data, data_length, width, height, bitmap, &params, NULL );
+		params.Flags = GFL_LOAD_FORCE_COLOR_MODEL;
+		params.ColorModel = GFL_RGBA;
+		err = gflLoadBitmapFromMemory( (const GFL_UINT8*)data, data_length, bitmap, &params, NULL );
 		if ( err == GFL_NO_ERROR )
 			hr = S_OK;
 		else
@@ -1005,7 +1022,7 @@ HRESULT CSageThumbsModule::SAFEgflLoadThumbnailFromMemory(const GFL_UINT8* data,
 	return hr;
 }
 
-HRESULT CSageThumbsModule::SAFEgflConvertBitmapIntoDDB(const GFL_BITMAP *bitmap, HBITMAP *hBitmap)
+HRESULT CSageThumbsModule::ConvertBitmap(const GFL_BITMAP *bitmap, HBITMAP *phBitmap)
 {
 //	CLock oLock( m_pSection );
 
@@ -1013,11 +1030,14 @@ HRESULT CSageThumbsModule::SAFEgflConvertBitmapIntoDDB(const GFL_BITMAP *bitmap,
 	HRESULT hr = E_FAIL;
 	__try
 	{
-		*hBitmap = NULL;
+		*phBitmap = NULL;
 
-		err = gflConvertBitmapIntoDDB( bitmap, hBitmap );
+		GFL_COLOR bg = { 255, 255, 255, 0 };
+		err = gflConvertBitmapIntoDDBEx( bitmap, phBitmap, &bg );
 		if ( err == GFL_NO_ERROR )
+		{
 			hr = S_OK;
+		}
 		else
 		{
 			ATLTRACE ("E_FAIL (gflConvertBitmapIntoDDB) : %s\n", gflGetErrorString (err));
@@ -1031,7 +1051,7 @@ HRESULT CSageThumbsModule::SAFEgflConvertBitmapIntoDDB(const GFL_BITMAP *bitmap,
 	return hr;
 }
 
-HRESULT CSageThumbsModule::SAFEgflFreeBitmap(GFL_BITMAP*& bitmap)
+HRESULT CSageThumbsModule::FreeBitmap(GFL_BITMAP*& bitmap)
 {
 	if ( ! bitmap )
 		return S_FALSE;
@@ -1054,7 +1074,7 @@ HRESULT CSageThumbsModule::SAFEgflFreeBitmap(GFL_BITMAP*& bitmap)
 	return hr;
 }
 
-bool IsGoodFile(LPCTSTR szFilename, Ext* pdata, WIN32_FIND_DATA* pfd)
+bool CSageThumbsModule::IsGoodFile(LPCTSTR szFilename, Ext* pdata, WIN32_FIND_DATA* pfd) const
 {
 	CString sExt = PathFindExtension( szFilename );
 	if ( sExt.GetLength() < 2 )
@@ -1065,7 +1085,7 @@ bool IsGoodFile(LPCTSTR szFilename, Ext* pdata, WIN32_FIND_DATA* pfd)
 	Ext foo_data;
 	if ( ! pdata )
 		pdata = &foo_data;
-	if ( ! _ExtMap.Lookup( (LPCTSTR)sExt + 1, *pdata ) )
+	if ( ! m_oExtMap.Lookup( (LPCTSTR)sExt + 1, *pdata ) )
 		// Unsupported extension
 		return false;
 

@@ -60,14 +60,6 @@ void SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey, HKEY hRoo
 	SHSetValue( hRoot, szKey, szName, REG_SZ, (LPCTSTR)sValue, (DWORD)lengthof( sValue ) );
 }
 
-int MsgBox(HWND hWnd, UINT nText, UINT nType, UINT nTitle)
-{
-	CString sTitle, sText;
-	sTitle.LoadString( nTitle );
-	sText.LoadString( nText );
-	return MessageBox( hWnd, sText, sTitle, nType );
-}
-
 void MakeDirectory(LPCTSTR dir)
 {
 	TCHAR path [MAX_PATH];
@@ -101,6 +93,29 @@ CString GetSpecialFolderPath(int csidl)
 	}
 	
 	return buf;
+}
+
+BOOL IsProcessElevated()
+{
+	HANDLE hToken = NULL;
+	if ( ! OpenProcessToken( GetCurrentProcess(), TOKEN_QUERY, &hToken ) )
+	{
+		ATLTRACE( "OpenProcessToken error: %d\n", GetLastError() );
+		return FALSE;
+	}
+
+	TOKEN_ELEVATION elevation = {};
+	DWORD dwSize = 0;
+	if ( ! GetTokenInformation( hToken, TokenElevation, &elevation, 
+		sizeof( elevation ), &dwSize ) )
+	{
+		ATLTRACE( "GetTokenInformation error: %d\n", GetLastError() );
+		CloseHandle( hToken );
+		return FALSE;
+	}
+
+	CloseHandle( hToken );
+	return ( elevation.TokenIsElevated != FALSE );
 }
 
 // CRC 32

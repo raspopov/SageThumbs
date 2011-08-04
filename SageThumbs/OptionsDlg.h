@@ -38,6 +38,7 @@ protected:
 
 	LRESULT AddLanguage(LANGID lang, LANGID selected);
 	LANGID GetLanguage();
+	void ShowAbout();
 
 	LRESULT OnInitDialog(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled);
 	LRESULT OnOK(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);

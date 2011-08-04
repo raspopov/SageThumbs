@@ -87,6 +87,7 @@
 				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				SupportUnloadOfDelayLoadedDLL="true"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -181,6 +182,7 @@
 				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				SupportUnloadOfDelayLoadedDLL="true"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -252,13 +254,11 @@
 				OmitFramePointers="true"
 				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;_USRDLL"
 				StringPooling="true"
-				ExceptionHandling="1"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
-				DebugInformationFormat="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -282,6 +282,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				SetChecksum="true"
+				SupportUnloadOfDelayLoadedDLL="true"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -353,13 +354,11 @@
 				OmitFramePointers="true"
 				PreprocessorDefinitions="WIN64;_WINDOWS;NDEBUG;_USRDLL"
 				StringPooling="true"
-				ExceptionHandling="1"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="2"
 				WarningLevel="4"
-				DebugInformationFormat="0"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -383,6 +382,7 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				SetChecksum="true"
+				SupportUnloadOfDelayLoadedDLL="true"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -483,10 +483,6 @@
 			Filter="h;hpp;hxx;hm;inl;inc"
 			>
 			<File
-				RelativePath=".\dllLoaderMinimal.h"
-				>
-			</File>
-			<File
 				RelativePath="Entity.h"
 				>
 			</File>
@@ -536,11 +532,11 @@
 				>
 			</File>
 			<File
-				RelativePath="SageThumbs.ico"
+				RelativePath=".\res\SageThumbs.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\res\SageThumbs.ico"
+				RelativePath="SageThumbs.ico"
 				>
 			</File>
 			<File

@@ -32,7 +32,7 @@ CEntity::CEntity ()
 
 CEntity::~CEntity()
 {
-	_AtlModule.SAFEgflFreeBitmap( m_hGflBitmap );
+	_Module.FreeBitmap( m_hGflBitmap );
 
 	gflFreeFileInformation( &m_ImageInfo );
 }
@@ -55,7 +55,7 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 	CLock oLock( m_pSection );
 
 	Ext data;
-	if ( ! IsGoodFile( sFilename, &data, &m_FileData ) )
+	if ( ! _Module.IsGoodFile( sFilename, &data, &m_FileData ) )
 	{
 		ATLTRACE( "CEntity::LoadInfo() : E_FAIL (Bad File)\n" );
 		return E_FAIL;
@@ -75,41 +75,24 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 
 	// Поиск файла в базе данных
 	bool bFound = false, bNew = false;
-	CDatabase db( _Database );
+	CDatabase db( _Module.m_sDatabase );
 	if ( db )
 	{
-		// Получение папки
-		int i = 0;
-		for ( ;; )
+		bool result = db.Prepare( _T("SELECT PathID FROM Pathes WHERE Pathname==?;") );
+		if ( ! result )
 		{
-			if ( db.Prepare( _T("SELECT PathID FROM Pathes WHERE Pathname==?;") ) )
-				// Ok
-				break;
-			if ( ++i > 1 )
-				// Error
-				break;
 			db.Exec( RECREATE_DATABASE );
 		}
-		if ( i < 2 &&
-			db.Bind( 1, sPath ) &&
-			db.Step() &&
-			db.GetCount() == 1 )
+
+		// Получение папки
+		if ( result &&
+			 db.Bind( 1, sPath ) &&
+			 db.Step() &&
+			 db.GetCount() == 1 )
 		{
 			nPathID = db.GetInt64( _T("PathID") );
 
-			// Получение файла
-			i = 0;
-			for ( ;; )
-			{
-				if ( db.Prepare( _T("SELECT FileSize, LastWriteTime, CreationTime, ImageInfo, Width, Height FROM Entities WHERE Filename==? AND PathID==?;") ) )
-					// Ok
-					break;
-				if ( ++i > 1 )
-					// Error
-					break;
-				db.Exec( RECREATE_DATABASE );
-			}
-			if ( i < 2 &&
+			if ( db.Prepare( _T("SELECT FileSize, LastWriteTime, CreationTime, ImageInfo, Width, Height FROM Entities WHERE Filename==? AND PathID==?;") ) &&
 				 db.Bind( 1, sName ) &&
 				 db.Bind( 2, nPathID ) &&
 				 db.Step() &&
@@ -164,7 +147,7 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 
 		// Считывание данных об изображении из файла
 		ATLTRACE( "from disk " );
-		if ( FAILED( _AtlModule.SAFEgflGetFileInformation( sFilename, &m_ImageInfo ) ) )
+		if ( FAILED( _Module.GetFileInformation( sFilename, &m_ImageInfo ) ) )
 		{
 			return E_FAIL;
 		}
@@ -279,7 +262,7 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 		return S_FALSE;
 	}
 
-	_AtlModule.SAFEgflFreeBitmap( m_hGflBitmap );
+	_Module.FreeBitmap( m_hGflBitmap );
 
 	HRESULT hr = LoadInfo( sFilename );
 	if ( FAILED( hr ) )
@@ -294,7 +277,7 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 	sPath.MakeLower();
 
 	// Выбор нужного изображения из базы по размерам
-	CDatabase db( _Database );
+	CDatabase db( _Module.m_sDatabase );
 	if ( db )
 	{
 		if ( db.Prepare( _T("SELECT PathID FROM Pathes WHERE Pathname==?;") ) &&
@@ -318,7 +301,7 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 					int nImageSize;
 					if ( LPCVOID pImage = db.GetBlob( _T("Image"), &nImageSize ) )
 					{
-						_AtlModule.SAFEgflLoadThumbnailFromMemory( (const GFL_UINT8*)pImage, nImageSize, cx, cy, &m_hGflBitmap );
+						_Module.LoadBitmapFromMemory( pImage, nImageSize, &m_hGflBitmap );
 						ATLTRACE ( "from database " );
 					}
 				}
@@ -333,11 +316,11 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 
 	if ( ! m_hGflBitmap )
 	{
-		cx = max( cx, max( GetRegValue( _T("Width"), THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) );
-		cy = max( cy, max( GetRegValue( _T("Height"), THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) );
+		cx = max( cx, max( GetRegValue( _T("Width"), (DWORD)THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) );
+		cy = max( cy, max( GetRegValue( _T("Height"), (DWORD)THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) );
 
 		// Загрузка из файла
-		_AtlModule.SAFEgflLoadThumbnail( sFilename, cx, cy, &m_hGflBitmap );
+		_Module.LoadThumbnail( sFilename, cx, cy, &m_hGflBitmap );
 		ATLTRACE ( "from disk " );
 		if ( ! m_hGflBitmap )
 		{
@@ -349,10 +332,11 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 		GFL_SAVE_PARAMS params = {};
 		gflGetDefaultSaveParams( &params );
 		params.Flags = GFL_SAVE_ANYWAY;
-		params.Quality = 70;
-		params.Progressive = GFL_TRUE;
-		params.OptimizeHuffmanTable = GFL_TRUE;
-		params.FormatIndex = gflGetFormatIndexByName( "jpeg" );
+		params.CompressionLevel = 9;
+		//params.Quality = 70;
+		//params.Progressive = GFL_TRUE;
+		//params.OptimizeHuffmanTable = GFL_TRUE;
+		params.FormatIndex = gflGetFormatIndexByName( "png" /* "jpeg" */ );
 
 		GFL_UINT8* data = NULL;
 		GFL_UINT32 data_length = 0;
@@ -395,8 +379,8 @@ HBITMAP CEntity::GetImage(UINT cx, UINT cy)
 		gflResize( m_hGflBitmap, &pResizedBitmap, dx, dy, GFL_RESIZE_LANCZOS, 0 );
 		if ( pResizedBitmap )
 		{
-			_AtlModule.SAFEgflConvertBitmapIntoDDB( pResizedBitmap, &hBitmap );
-			_AtlModule.SAFEgflFreeBitmap( pResizedBitmap );
+			_Module.ConvertBitmap( pResizedBitmap, &hBitmap );
+			_Module.FreeBitmap( pResizedBitmap );
 		}
 	}
 	return hBitmap;

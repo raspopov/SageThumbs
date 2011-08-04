@@ -15,7 +15,7 @@ Features:
   * Copy to clipboard support
 
 Please read carefully the following information. 
-	As SageThimbs is a Windows Explorer context menu extension,
+	As SageThumbs is a Windows Explorer context menu extension,
 	there is no an executable file that you should launch to bring it up.
 	To use it, just open any folder with image files in Windows Explorer,
 	and then right-click a file you want to preview. You'll see the
@@ -31,6 +31,10 @@ System Requirements:
 ========================================================================
 
 Versions:
+
+2.0.0.7
+  * Performance optimizations
+  * Fixed SageThumbs files unloading from parent process
 
 2.0.0.6
   * Fixed Windows 7 "black thumbnail" bug
@@ -73,9 +77,9 @@ Versions:
 
 1.0.0.13
   * GFL Library upgraded to version 2.54
-  * Added support for mutiply files operations (converting, e-mailing etc.)
-  * Added more descriptive version infrmation in About box
-  * Added multilanguage support (selectable)
+  * Added support for multiply files operations (converting, e-mailing etc.)
+  * Added more descriptive version information in About box
+  * Added multi language support (selectable)
   * Fixed very long file paths
   * Modified installation process (makes attempt to avoid reboots)
 
@@ -83,9 +87,9 @@ Versions:
   * Fixed missing preview (one missing registry key)
 
 1.0.0.11
-  * Fixed AppID registration (may be usefull for some security maniacs...)
+  * Fixed AppID registration (may be useful for some security maniacs...)
   * Fixed missed additional image extensions (doh!)
-  * Added image information cache (SQLite 3.0.8 database) - perfomance boost!
+  * Added image information cache (SQLite 3.0.8 database) - performance boost!
 
 1.0.0.10
   * Fixed installation procedure
@@ -120,7 +124,7 @@ Versions:
   * Fixed Many bugs & improved speed 
 
 1.0.0.6
-  * Added Russain language
+  * Added Russian language
   * Extended image info (info tips)
   * Fixed black borders around thumbnail
 

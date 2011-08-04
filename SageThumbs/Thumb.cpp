@@ -53,7 +53,7 @@ STDMETHODIMP CThumb::Initialize(LPCITEMIDLIST, IDataObject* pDO, HKEY)
 {
 	ATLTRACE( "0x%08x::IShellExtInit::Initialize() : ", this );
 
-	bool bEnableMenu = GetRegValue( _T("EnableMenu"), (DWORD)1 ) != 0;
+	bool bEnableMenu = GetRegValue( _T("EnableMenu"), 1ul ) != 0;
 	if ( ! bEnableMenu )
 	{
 		ATLTRACE( "E_INVALIDARG (Menu disabled)\n" );
@@ -69,14 +69,14 @@ STDMETHODIMP CThumb::Initialize(LPCITEMIDLIST, IDataObject* pDO, HKEY)
 	// Получение данных о выделенных элементах
 	FORMATETC fe = { CF_HDROP, NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
 	STGMEDIUM med = { TYMED_HGLOBAL, NULL, NULL };
-	HRESULT hr = pDO->GetData (&fe, &med);
+	HRESULT hr = pDO->GetData( &fe, &med );
 	if ( FAILED( hr ) )
 	{
 		ATLTRACE( "E_INVALIDARG (No data)\n" );
 		return E_INVALIDARG;
 	}
 
-    HDROP hDrop = (HDROP)GlobalLock (med.hGlobal);
+    HDROP hDrop = (HDROP)GlobalLock( med.hGlobal );
     if ( ! hDrop )
 	{
 		ReleaseStgMedium (&med);
@@ -94,7 +94,7 @@ STDMETHODIMP CThumb::Initialize(LPCITEMIDLIST, IDataObject* pDO, HKEY)
 		buf[ len ] = _T('\0');
 		filename.ReleaseBuffer();
 
-		if ( IsGoodFile( filename ) )
+		if ( _Module.IsGoodFile( filename ) )
 		{
 			m_Filenames.AddTail( filename );
 		}
@@ -133,7 +133,7 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 {
 	ATLTRACE( "0x%08x::IContextMenu::QueryContextMenu (hmenu=0x%08x, index=%d, first=%d, last=%d, flags=0x%08x)\n", this, hMenu, uIndex, uidCmdFirst, uidCmdLast, uFlags);
 
-	bool bEnableMenu = GetRegValue( _T("EnableMenu"), (DWORD)1 ) != 0;
+	bool bEnableMenu = GetRegValue( _T("EnableMenu"), 1ul ) != 0;
 	if ( ! bEnableMenu )
 		// Меню выключено
 		return E_FAIL;
@@ -239,7 +239,7 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 		}
 	}
 
-	text.LoadString (IDS_PROJNAME);
+	text = _Module.GetAppName();
 
 	MENUITEMINFO mii = { sizeof( MENUITEMINFO ) };
 	mii.fMask  = MIIM_STRING | MIIM_SUBMENU | MIIM_STATE | MIIM_ID | MIIM_BITMAP;
@@ -282,7 +282,7 @@ STDMETHODIMP CThumb::GetCommandString (
 		switch ( uCmd )
 		{
 		case ID_SUBMENU_ITEM:
-			tmp.LoadString (IDS_PROJNAME);
+			tmp = _Module.GetAppName();
 			break;
 		case ID_THUMBNAIL_ITEM:
 			tmp = m_Preview.GetMenuTipString ();
@@ -349,7 +349,7 @@ void CThumb::ConvertTo(HWND hWnd, LPCSTR ext)
 		CString filename( m_Filenames.GetNext( pos ) );
 
 		GFL_BITMAP* hBitmap = NULL;
-		if ( SUCCEEDED( _AtlModule.SAFEgflLoadBitmap( filename, &hBitmap ) ) )
+		if ( SUCCEEDED( _Module.LoadBitmap( filename, &hBitmap ) ) )
 		{
 			GFL_SAVE_PARAMS params = {};
 			gflGetDefaultSaveParams( &params );
@@ -358,14 +358,14 @@ void CThumb::ConvertTo(HWND hWnd, LPCSTR ext)
 
 			if ( gflSaveBitmapT( (LPTSTR)(LPCTSTR)filename, hBitmap, &params ) != GFL_NO_ERROR )
 			{
-				MsgBox( hWnd, IDS_ERR_SAVE );
+				_Module.MsgBox( hWnd, IDS_ERR_SAVE );
 				break;
 			}
 			DeleteObject( hBitmap );
 		}
 		else
 		{
-			MsgBox( hWnd, IDS_ERR_OPEN );
+			_Module.MsgBox( hWnd, IDS_ERR_OPEN );
 			break;
 		}
 	}
@@ -376,7 +376,7 @@ void CThumb::SetWallpaper(HWND hWnd, WORD reason)
 	CString filename( m_Filenames.GetHead() );
 
 	GFL_BITMAP* hBitmap = NULL;
-	if ( SUCCEEDED( _AtlModule.SAFEgflLoadBitmap( filename, &hBitmap ) ) )
+	if ( SUCCEEDED( _Module.LoadBitmap( filename, &hBitmap ) ) )
 	{
 		GFL_SAVE_PARAMS params = {};
 		gflGetDefaultSaveParams( &params );
@@ -397,11 +397,11 @@ void CThumb::SetWallpaper(HWND hWnd, WORD reason)
 				(LPVOID) (LPCTSTR) save_path, SPIF_SENDCHANGE | SPIF_UPDATEINIFILE);
 		}
 		else
-			MsgBox( hWnd, IDS_ERR_SAVE );
+			_Module.MsgBox( hWnd, IDS_ERR_SAVE );
 		DeleteObject( hBitmap );
 	}
 	else
-		MsgBox( hWnd, IDS_ERR_OPEN );
+		_Module.MsgBox( hWnd, IDS_ERR_OPEN );
 }
 
 void CThumb::SendByMail(HWND hwnd, WORD reason)
@@ -409,8 +409,8 @@ void CThumb::SendByMail(HWND hwnd, WORD reason)
 	HRESULT hr;
 
 	// Загрузка размеров из реестра
-	DWORD width = GetRegValue( _T("Width"), THUMB_STORE_SIZE );
-	DWORD height = GetRegValue( _T("Height"), THUMB_STORE_SIZE );
+	DWORD width = GetRegValue( _T("Width"), (DWORD)THUMB_STORE_SIZE );
+	DWORD height = GetRegValue( _T("Height"), (DWORD)THUMB_STORE_SIZE );
 
 	// Инициализация MAPI
 	if ( HMODULE hLibrary = LoadLibrary( _T("MAPI32.DLL") ) )
@@ -432,7 +432,7 @@ void CThumb::SendByMail(HWND hwnd, WORD reason)
 				else
 				{
 					GFL_BITMAP* hGflBitmap = NULL;
-					hr = _AtlModule.SAFEgflLoadThumbnail( filename, width, height, &hGflBitmap );
+					hr = _Module.LoadThumbnail( filename, width, height, &hGflBitmap );
 					if ( SUCCEEDED( hr ) )
 					{
 						GFL_SAVE_PARAMS params = {};
@@ -473,11 +473,11 @@ void CThumb::SendByMail(HWND hwnd, WORD reason)
 					ULONG err = pMAPISendMail (0, (ULONG_PTR)hwnd, &mm,
 						MAPI_DIALOG | MAPI_LOGON_UI | MAPI_NEW_SESSION, 0);
 					if (MAPI_E_USER_ABORT != err && SUCCESS_SUCCESS != err)
-						MsgBox( hwnd, IDS_ERR_MAIL );
+						_Module.MsgBox( hwnd, IDS_ERR_MAIL );
 					delete [] mfd;
 				}
 				else
-					MsgBox( hwnd, IDS_ERR_MAIL );
+					_Module.MsgBox( hwnd, IDS_ERR_MAIL );
 
 				// Удаление временных изображений
 				if ( reason != ID_MAIL_IMAGE_ITEM )
@@ -489,14 +489,14 @@ void CThumb::SendByMail(HWND hwnd, WORD reason)
 				}
 			}
 			else
-				MsgBox( hwnd, IDS_ERR_NOTHING );
+				_Module.MsgBox( hwnd, IDS_ERR_NOTHING );
 		}
 		else
-			MsgBox( hwnd, IDS_ERR_MAIL );
+			_Module.MsgBox( hwnd, IDS_ERR_MAIL );
 		FreeLibrary (hLibrary);
 	}
 	else
-		MsgBox( hwnd, IDS_ERR_MAIL );
+		_Module.MsgBox( hwnd, IDS_ERR_MAIL );
 }
 
 void CThumb::CopyToClipboard(HWND hwnd)
@@ -505,8 +505,8 @@ void CThumb::CopyToClipboard(HWND hwnd)
 
 	GFL_BITMAP* pBitmap = NULL;
 	HBITMAP hBitmap = NULL;
-	if ( SUCCEEDED( _AtlModule.SAFEgflLoadBitmap( filename, &pBitmap ) ) &&
-		 SUCCEEDED( _AtlModule.SAFEgflConvertBitmapIntoDDB( pBitmap, &hBitmap ) ) )
+	if ( SUCCEEDED( _Module.LoadBitmap( filename, &pBitmap ) ) &&
+		 SUCCEEDED( _Module.ConvertBitmap( pBitmap, &hBitmap ) ) )
 	{
 		if ( OpenClipboard ( hwnd ) )
 		{
@@ -515,12 +515,12 @@ void CThumb::CopyToClipboard(HWND hwnd)
 			CloseClipboard();
 		}
 		else
-			MsgBox( hwnd, IDS_ERR_CLIPBOARD );
+			_Module.MsgBox( hwnd, IDS_ERR_CLIPBOARD );
 
 		DeleteObject( hBitmap );
 	}
 	else
-		MsgBox(hwnd, IDS_ERR_OPEN );
+		_Module.MsgBox(hwnd, IDS_ERR_OPEN );
 }
 
 STDMETHODIMP CThumb::InvokeCommand(LPCMINVOKECOMMANDINFO pInfo)
@@ -631,8 +631,8 @@ STDMETHODIMP CThumb::OnMeasureItem(MEASUREITEMSTRUCT* pmis, LRESULT* pResult)
 		return S_OK;
 
 	// Загрузка размеров из реестра
-	DWORD width = GetRegValue( _T("Width"), THUMB_STORE_SIZE );
-	DWORD height = GetRegValue( _T("Height"), THUMB_STORE_SIZE );
+	DWORD width = GetRegValue( _T("Width"), (DWORD)THUMB_STORE_SIZE );
+	DWORD height = GetRegValue( _T("Height"), (DWORD)THUMB_STORE_SIZE );
 
 	// Расчет всех размеров
 	m_Preview.CalcSize( pmis->itemWidth, pmis->itemHeight, width, height );
@@ -650,8 +650,8 @@ STDMETHODIMP CThumb::OnDrawItem(DRAWITEMSTRUCT* pdis, LRESULT* pResult)
 		return S_OK;
 
 	// Загрузка размеров из реестра
-	DWORD width = GetRegValue( _T("Width"), THUMB_STORE_SIZE );
-	DWORD height = GetRegValue( _T("Height"), THUMB_STORE_SIZE );
+	DWORD width = GetRegValue( _T("Width"), (DWORD)THUMB_STORE_SIZE );
+	DWORD height = GetRegValue( _T("Height"), (DWORD)THUMB_STORE_SIZE );
 
 	UINT cx, cy;
 	m_Preview.CalcSize( cx, cy, width, height );
@@ -730,7 +730,7 @@ STDMETHODIMP CThumb::Load(LPCOLESTR wszFile, DWORD /*dwMode*/)
 		return E_POINTER;
 	}
 
-	if ( ! IsGoodFile( (LPCTSTR)CW2CT( wszFile ) ) )
+	if ( ! _Module.IsGoodFile( (LPCTSTR)CW2CT( wszFile ) ) )
 	{
 		ATLTRACE( "0x%08x::IPersistFile::Load(\"%s\") : E_FAIL (Bad File)\n", this, (LPCSTR)CW2A( wszFile ) );
 		return E_FAIL;
@@ -861,14 +861,11 @@ STDMETHODIMP CThumb::GetThumbnail(UINT cx, HBITMAP *phbmp, WTS_ALPHATYPE *pdwAlp
 	}
 	*phbmp = NULL;
 
-	if ( ! GetRegValue( _T("EnableThumbs"), 1 ) )
+	if ( ! GetRegValue( _T("EnableThumbs"), 1ul ) )
 	{
 		ATLTRACE( "CThumb - IThumbnailProvider::GetThumbnail(%d) : E_FAIL (Disabled)\n", cx );
 		return E_FAIL;
 	}
-
-	if ( pdwAlpha )
-		*pdwAlpha = WTSAT_RGB;
 
 	if ( ! m_Preview )
 	{
@@ -889,7 +886,14 @@ STDMETHODIMP CThumb::GetThumbnail(UINT cx, HBITMAP *phbmp, WTS_ALPHATYPE *pdwAlp
 		return E_FAIL;
 	}
 
-	ATLTRACE( "CThumb - IThumbnailProvider::GetThumbnail(%d) : S_OK\n", cx );
+	if ( pdwAlpha )
+		*pdwAlpha = WTSAT_UNKNOWN;
+
+#ifdef _DEBUG
+	BITMAP bm = {};
+	GetObject( *phbmp, sizeof( BITMAP ), &bm );
+	ATLTRACE( "CThumb - IThumbnailProvider::GetThumbnail(%d) : S_OK (%d planes, %d bits)\n", cx, bm.bmPlanes, bm.bmBitsPixel );
+#endif
 	return S_OK;
 }
 
@@ -970,11 +974,11 @@ STDMETHODIMP CThumb::GetLocation (
     /* [unique][out][in] */ DWORD* /* pdwPriority */,
     /* [in] */ const SIZE* prgSize,
     /* [in] */ DWORD /* dwRecClrDepth */,
-    /* [in] */ DWORD* /* pdwFlags */)
+    /* [in] */ DWORD* pdwFlags)
 {
 	ATLTRACE( "CThumb - IExtractImage::GetLocation(%dx%d) : ", (prgSize ? prgSize->cx : 0), (prgSize ? prgSize->cy : 0) );
 
-	if ( ! GetRegValue( _T("EnableThumbs"), 1 ) )
+	if ( ! GetRegValue( _T("EnableThumbs"), 1ul ) )
 	{
 		ATLTRACE( "E_FAIL (Disabled)\n" );
 		return E_FAIL;
@@ -1002,7 +1006,13 @@ STDMETHODIMP CThumb::GetLocation (
 		m_cy = prgSize->cy;
 	}
 
-	// NOTE: IEIFLAG_CACHE - flag on Windows 7 produces "black images" on refresh
+	if ( pdwFlags )
+	{
+		if ( GetRegValue( _T("WinCache"), 1ul ) != 0 )
+			*pdwFlags = IEIFLAG_CACHE;
+		else
+			*pdwFlags = 0;
+	}
 
 	HRESULT hr = E_FAIL;
 	if ( ! m_sFilename.IsEmpty() )
@@ -1019,7 +1029,7 @@ STDMETHODIMP CThumb::GetLocation (
 STDMETHODIMP CThumb::Extract ( 
 	/* [out] */ HBITMAP *phBmpThumbnail)
 {
-	if ( ! GetRegValue( _T("EnableThumbs"), 1 ) )
+	if ( ! GetRegValue( _T("EnableThumbs"), 1ul ) )
 	{
 		ATLTRACE( "CThumb - IExtractImage::Extract() : E_FAIL (Disabled)\n" );
 		return E_FAIL;
@@ -1047,7 +1057,7 @@ STDMETHODIMP CThumb::Extract (
 STDMETHODIMP CThumb::GetDateStamp ( 
 	/* [out] */ FILETIME *pDateStamp)
 {
-	if ( ! GetRegValue( _T("EnableThumbs"), 1 ) )
+	if ( ! GetRegValue( _T("EnableThumbs"), 1ul ) )
 	{
 		ATLTRACE( "CThumb - IExtractImage2:GetDateStamp() : E_FAIL (Disabled)\n" );
 		return E_FAIL;
@@ -1690,7 +1700,7 @@ STDMETHODIMP CThumb::Initialize(
 		CopyMemory( *ppwszDescription, (LPCTSTR)foo, len );
 	}
 
-	m_bCleanup = ( _Database.GetAt( 0 ) == *pcwszVolume );
+	m_bCleanup = ( _Module.m_sDatabase.GetAt( 0 ) == *pcwszVolume );
 
 	if ( m_bCleanup ) 
 	{
@@ -1719,7 +1729,7 @@ STDMETHODIMP CThumb::GetSpaceUsed(
 	}
 
 	WIN32_FILE_ATTRIBUTE_DATA wfadDatabase = {};
-	GetFileAttributesEx( _Database, GetFileExInfoStandard, &wfadDatabase );
+	GetFileAttributesEx( _Module.m_sDatabase, GetFileExInfoStandard, &wfadDatabase );
 	if ( pdwlSpaceUsed )
 	{
 		*pdwlSpaceUsed = MAKEQWORD( wfadDatabase.nFileSizeLow, wfadDatabase.nFileSizeHigh );
@@ -1732,9 +1742,10 @@ STDMETHODIMP CThumb::Purge(
 	/* [in] */ DWORDLONG /*dwlSpaceToFree*/,
 	/* [in] */ __RPC__in_opt IEmptyVolumeCacheCallBack * /*picb*/)
 {
-	CDatabase db( _Database );
+	CDatabase db( _Module.m_sDatabase );
 	if ( db )
 	{
+		db.Exec( DROP_DATABASE );
 		db.Exec( RECREATE_DATABASE );
 	}
 

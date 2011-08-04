@@ -41,10 +41,14 @@ typedef CAtlMap < CString, const BitsDescription* > BitsDescriptionMap;*/
 class CSageThumbsModule : public CAtlDllModuleT< CSageThumbsModule >
 {
 public:
-	DECLARE_REGISTRY_APPID_RESOURCEID (IDR_SAGETHUMBS,
-		"{B04F3D73-C8D6-4473-B47C-B942CAE19B45}")
+	DECLARE_REGISTRY_APPID_RESOURCEID( IDR_SAGETHUMBS, "{B04F3D73-C8D6-4473-B47C-B942CAE19B45}" )
 
 	CSageThumbsModule();
+
+	CString					m_sModuleFileName;		// This module filename
+	CString					m_sHome;				// Installation folder
+	CString					m_sDatabase;			// Database filename
+	CExtMap					m_oExtMap;				// Supported image extensions
 
 	HRESULT DllRegisterServer();
 	HRESULT DllUnregisterServer();
@@ -58,18 +62,42 @@ public:
 	// Обновление настроек Explorer'a
 	void UpdateShell();
 
-	HRESULT SAFEgflGetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info);
-	HRESULT SAFEgflLoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap);
-	HRESULT SAFEgflLoadThumbnail(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap);
-	HRESULT SAFEgflLoadThumbnailFromMemory(const GFL_UINT8 * data, GFL_UINT32 data_length, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap);
-	HRESULT SAFEgflConvertBitmapIntoDDB(const GFL_BITMAP *bitmap, HBITMAP *hBitmap);
-	HRESULT SAFEgflFreeBitmap(GFL_BITMAP*& bitmap);
+	HRESULT GetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info);
+	HRESULT LoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap);
+	HRESULT LoadThumbnail(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap);
+	HRESULT LoadBitmapFromMemory(LPCVOID data, GFL_UINT32 data_length, GFL_BITMAP **bitmap);
+	HRESULT ConvertBitmap(const GFL_BITMAP* bitmap, HBITMAP* phBitmap);
+	HRESULT FreeBitmap(GFL_BITMAP*& bitmap);
+
+	// Проверка, что файл подходит для загрузки по всем параметрам
+	bool IsGoodFile(LPCTSTR szFilename, Ext* pdata = NULL, WIN32_FIND_DATA* pfd = NULL) const;
+
+	inline CString GetAppName() const
+	{
+		CString sTitle;
+		sTitle.LoadString( IDS_PROJNAME );
+#ifdef WIN64
+		return sTitle + _T(" 64-bit");
+#else
+		return sTitle + _T(" 32-bit");
+#endif
+	}
+
+	inline int MsgBox(HWND hWnd, UINT nText, UINT nType = MB_OK | MB_ICONEXCLAMATION)
+	{
+		CString sText;
+		sText.LoadString( nText );
+		return MessageBox( hWnd, sText, GetAppName(), nType );
+	}
 
 protected:
-	HINSTANCE				m_LangDLL;
+	HMODULE					m_hGFL;
+	HMODULE					m_hGFLe;
+	HMODULE					m_hSQLite;
+	HINSTANCE				m_hLangDLL;
 	LANGID					m_CurLangID;
 //	HANDLE					m_hWatchThread;
-	CComAutoCriticalSection m_pSection;
+//	CComAutoCriticalSection m_pSection;
 
 //	static DWORD WINAPI WatchThread (LPVOID param);
 	void UnLoadLang ();
@@ -80,12 +108,8 @@ protected:
 	void FillExtMap ();
 };
 
-extern CString				_ModuleFileName;
-extern CString				_Database;
-extern CString				_PlugInsPathname;
-extern CExtMap				_ExtMap;
 //extern BitsDescriptionMap	_BitsMap;
-extern CSageThumbsModule	_AtlModule;
+extern CSageThumbsModule	_Module;
 
 typedef ULONG (FAR PASCAL *tMAPISendMail)(LHANDLE, ULONG_PTR, lpMapiMessage, FLAGS, ULONG);
 typedef UINT (WINAPI *tPrivateExtractIconsT)(LPCTSTR, int, int, int, HICON*, UINT*, UINT, UINT);
@@ -113,9 +137,6 @@ void RegisterValue(HKEY root, LPCTSTR key, LPCTSTR name, const BYTE* value, DWOR
 void UnregisterValue(HKEY root, LPCTSTR key, LPCTSTR name, LPCTSTR value, LPCTSTR backup);
 void UnregisterValue(HKEY root, LPCTSTR key, LPCTSTR name, const BYTE* value, DWORD value_size, LPCTSTR backup);
 void MakeDirectory(LPCTSTR dir);
-
-// Проверка, что файл подходит для загрузки по всем параметрам
-bool IsGoodFile(LPCTSTR szFilename, Ext* pdata = NULL, WIN32_FIND_DATA* pfd = NULL);
 
 BOOL LoadIcon(LPCTSTR szFilename, HICON* phSmallIcon, HICON* phLargeIcon = NULL, HICON* phHugeIcon = NULL, int nIcon = 0);
 

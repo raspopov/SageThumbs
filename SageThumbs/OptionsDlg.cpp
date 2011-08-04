@@ -53,50 +53,25 @@ LANGID COptionsDialog::GetLanguage()
 		if ( lang != CB_ERR )
 			return lang;
 	}
-	return _AtlModule.GetLang();
+	return _Module.GetLang();
 }
 
-LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARAM /* lParam */, BOOL& bHandled)
+void COptionsDialog::ShowAbout()
 {
-	bHandled = TRUE;
-
-	// Загрузка списка доступных языков
-	SendDlgItemMessage( IDC_LANG, CB_RESETCONTENT );
-	AddLanguage( STANDARD_LANGID, _AtlModule.GetLang() );
-	WIN32_FIND_DATA wfd = {};
-	HANDLE ff = FindFirstFile( _ModuleFileName.Left(
-		_ModuleFileName.ReverseFind( _T('\\') ) + 1 ) + _T("SageThumbs??.dll"), &wfd );
-	if ( ff != INVALID_HANDLE_VALUE )
-	{
-		do
-		{
-			if ( ! ( wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) &&
-				wfd.cFileName [10] != '.' &&
-				wfd.cFileName [11] != '.' &&
-				wfd.cFileName [12] == '.' )
-			{
-				AddLanguage( ( hs2b( wfd.cFileName [10] ) << 4 ) |
-					hs2b( wfd.cFileName [11] ), _AtlModule.GetLang() );
-			}
-		}
-		while ( FindNextFile( ff, &wfd ) );
-		FindClose( ff );
-	}
-
 	// Загрузка информации о базе данных
 	WIN32_FILE_ATTRIBUTE_DATA wfadDatabase = {};
-	GetFileAttributesEx( _Database, GetFileExInfoStandard, &wfadDatabase );
+	GetFileAttributesEx( _Module.m_sDatabase, GetFileExInfoStandard, &wfadDatabase );
 	CString sDatabaseSize, sDatabaseSizeFmt;
 	sDatabaseSizeFmt.LoadString( IDS_DATABASE_SIZE );
 	sDatabaseSize.Format( sDatabaseSizeFmt, ( wfadDatabase.nFileSizeLow >> 10 ) );
 
 	// Загрузка информации о версии
 	DWORD handle = NULL;
-	if ( DWORD size = GetFileVersionInfoSize( _ModuleFileName, &handle ) )
+	if ( DWORD size = GetFileVersionInfoSize( _Module.m_sModuleFileName, &handle ) )
 	{
 		if ( char* ver = (char*)GlobalAlloc( GPTR, size ) )
 		{
-			if ( GetFileVersionInfo( _ModuleFileName, handle, size, ver ) )
+			if ( GetFileVersionInfo( _Module.m_sModuleFileName, handle, size, ver ) )
 			{
 				UINT len;
 				VS_FIXEDFILEINFO* fix;
@@ -125,7 +100,36 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 			}
 			GlobalFree (ver);
 		}
-	}		
+	}
+}
+
+LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARAM /* lParam */, BOOL& bHandled)
+{
+	bHandled = TRUE;
+
+	// Загрузка списка доступных языков
+	SendDlgItemMessage( IDC_LANG, CB_RESETCONTENT );
+	AddLanguage( STANDARD_LANGID, _Module.GetLang() );
+	WIN32_FIND_DATA wfd = {};
+	HANDLE ff = FindFirstFile( _Module.m_sHome + _T("SageThumbs??.dll"), &wfd );
+	if ( ff != INVALID_HANDLE_VALUE )
+	{
+		do
+		{
+			if ( ! ( wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) &&
+				wfd.cFileName [10] != '.' &&
+				wfd.cFileName [11] != '.' &&
+				wfd.cFileName [12] == '.' )
+			{
+				AddLanguage( ( hs2b( wfd.cFileName [10] ) << 4 ) |
+					hs2b( wfd.cFileName [11] ), _Module.GetLang() );
+			}
+		}
+		while ( FindNextFile( ff, &wfd ) );
+		FindClose( ff );
+	}
+
+	ShowAbout();
 
 	const DWORD max_size = GetRegValue( _T("MaxSize"), (DWORD)FILE_MAX_SIZE );
 	SetDlgItemInt( IDC_FILE_SIZE, max_size, FALSE );
@@ -155,9 +159,9 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 	}
 
 	ListView_DeleteAllItems( pList );
-	for ( POSITION pos = _ExtMap.GetHeadPosition(); pos; )
+	for ( POSITION pos = _Module.m_oExtMap.GetHeadPosition(); pos; )
 	{
-		const CExtMap::CPair* p = _ExtMap.GetNext( pos );
+		const CExtMap::CPair* p = _Module.m_oExtMap.GetNext( pos );
 
 		LVITEM lvi = {};
 		lvi.mask = LVIF_TEXT;
@@ -168,21 +172,26 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 		ListView_SetCheckState( pList, index, p->m_value.enabled ? TRUE : FALSE );
 	}
 
-	const bool bEnableMenu = GetRegValue( _T("EnableMenu"), 1 ) != 0;
+	const bool bEnableMenu = GetRegValue( _T("EnableMenu"), 1ul ) != 0;
 	CheckDlgButton( IDC_ENABLE_MENU, bEnableMenu ? BST_CHECKED : BST_UNCHECKED );
 
-	const bool bEnableThumbs = GetRegValue( _T("EnableThumbs"), 1 ) != 0;
+	const bool bEnableThumbs = GetRegValue( _T("EnableThumbs"), 1ul ) != 0;
 	CheckDlgButton( IDC_ENABLE_THUMBS, bEnableThumbs ? BST_CHECKED : BST_UNCHECKED );
 
-	const bool bEnableIcons = GetRegValue( _T("EnableIcons"), 1 ) != 0;
+	const bool bEnableIcons = GetRegValue( _T("EnableIcons"), 1ul ) != 0;
 	CheckDlgButton( IDC_ENABLE_ICONS, bEnableIcons ? BST_CHECKED : BST_UNCHECKED );
 
-	const bool bUseEmbedded = GetRegValue( _T("UseEmbedded"), (DWORD)0 ) != 0;
+	const bool bUseEmbedded = GetRegValue( _T("UseEmbedded"), 0ul ) != 0;
 	CheckDlgButton( IDC_EMBEDDED, bUseEmbedded ? BST_CHECKED : BST_UNCHECKED );
+
+	const bool bWinCache = GetRegValue( _T("WinCache"), 1ul ) != 0;
+	CheckDlgButton( IDC_ENABLE_WINCACHE, bWinCache ? BST_CHECKED : BST_UNCHECKED );
 
 	const bool bUseFax = GetRegValue( _T(""), _T(""), ShellImagePreview,
 		HKEY_CLASSES_ROOT ).CompareNoCase( FaxCLSID ) == 0;
 	CheckDlgButton( IDC_USE_FAX, bUseFax ? BST_CHECKED : BST_UNCHECKED );
+
+	SendDlgItemMessage( IDOK, BCM_SETSHIELD, 0, ! IsProcessElevated() );
 
 	return TRUE;
 }
@@ -245,16 +254,19 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 	SetRegValue( _T("Height"), height );
 
 	const bool bEnableMenu = IsDlgButtonChecked( IDC_ENABLE_MENU ) == BST_CHECKED;
-	SetRegValue( _T("EnableMenu"), bEnableMenu ? 1 : 0 );
+	SetRegValue( _T("EnableMenu"), bEnableMenu ? 1ul : 0ul );
 
 	const bool bEnableThumbs = IsDlgButtonChecked( IDC_ENABLE_THUMBS ) == BST_CHECKED;
-	SetRegValue( _T("EnableThumbs"), bEnableThumbs ? 1 : 0 );
+	SetRegValue( _T("EnableThumbs"), bEnableThumbs ? 1ul : 0ul );
 
 	const bool bEnableIcons = IsDlgButtonChecked( IDC_ENABLE_ICONS ) == BST_CHECKED;
-	SetRegValue( _T("EnableIcons"), bEnableIcons ? 1 : 0 );
+	SetRegValue( _T("EnableIcons"), bEnableIcons ? 1ul : 0ul );
 
 	const bool bUseEmbedded = IsDlgButtonChecked( IDC_EMBEDDED ) == BST_CHECKED;
-	SetRegValue( _T("UseEmbedded"), bUseEmbedded ? 1 : 0 );
+	SetRegValue( _T("UseEmbedded"), bUseEmbedded ? 1ul : 0ul );
+
+	const bool bWinCache = IsDlgButtonChecked( IDC_ENABLE_WINCACHE ) == BST_CHECKED;
+	SetRegValue( _T("WinCache"), bWinCache ? 1ul : 0ul );
 
 	const bool bUseFax = IsDlgButtonChecked( IDC_USE_FAX ) == BST_CHECKED;
 	if ( bUseFax )
@@ -275,23 +287,44 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 		ext.ReleaseBuffer ();
 
 		bool bEnabled = ListView_GetCheckState( pList, index ) != 0;
-		if ( CExtMap::CPair* p = _ExtMap.Lookup( ext ) )
+		if ( CExtMap::CPair* p = _Module.m_oExtMap.Lookup( ext ) )
 		{
 			p->m_value.enabled = bEnabled;
 		}
-		SetRegValue( _T("Enabled"), bEnabled ? 1 : 0, key + ext );
+		SetRegValue( _T("Enabled"), bEnabled ? 1ul : 0u, key + ext );
 	}
 
-	_AtlModule.LoadLang( GetLanguage () );
-	_AtlModule.DllRegisterServer();
+	_Module.LoadLang( GetLanguage () );
 
-	CDatabase db( _Database );
+	CDatabase db( _Module.m_sDatabase );
 	if ( db )
 	{
 		db.Exec( VACUUM_DATABASE );
 	}
 
-	EndDialog( IDOK );
+	if ( IsProcessElevated() )
+	{
+		_Module.DllRegisterServer();
+
+		EndDialog( IDOK );
+	}
+	else
+	{
+		// Run as admin
+		CString sParams = _T("/s \"");
+		sParams += _Module.m_sModuleFileName + _T("\"");
+		SHELLEXECUTEINFO sei = { sizeof( SHELLEXECUTEINFO ) };
+		sei.lpVerb = _T("runas");
+		sei.lpFile = _T("regsvr32.exe");
+		sei.lpParameters = sParams;
+		sei.hwnd = m_hWnd;
+		sei.nShow = SW_NORMAL;
+		if ( ShellExecuteEx( &sei ) )
+		{
+			// Success
+			EndDialog( IDOK );
+		}
+	}	
 
 	return TRUE;
 }
@@ -324,21 +357,18 @@ LRESULT COptionsDialog::OnClear(WORD /* wNotifyCode */, WORD /* wID */, HWND /* 
 {
 	bHandled = TRUE;
 
-	if ( MsgBox( m_hWnd, IDS_CLEAR_PROMPT, MB_OKCANCEL | MB_ICONQUESTION ) == IDOK )
+	if ( _Module.MsgBox( m_hWnd, IDS_CLEAR_PROMPT, MB_OKCANCEL | MB_ICONQUESTION ) == IDOK )
 	{
 		CWaitCursor wc;
 
 		// Clean SageThumbs cache
-		CDatabase db( _Database );
+		CDatabase db( _Module.m_sDatabase );
 		if ( db )
 		{
-			db.Exec( RECREATE_DATABASE );
+			db.Exec( DROP_DATABASE );
 		}
 
-		// Clean Windows cache
-		CleanWindowsCache();
-
-		OnInitDialog( 0, 0, 0, bHandled );
+		ShowAbout();
 	}
 
 	return TRUE;

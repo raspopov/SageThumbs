@@ -59,29 +59,32 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "resource.h"
 
 #include <atlbase.h>
-#include <atlwin.h>
-#include <atlcom.h>
-#include <atlstr.h>
 #include <atlcoll.h>
-#include <atlenc.h>
+#include <atlcom.h>
 #include <atlctl.h>
+#include <atlenc.h>
+#include <atlstr.h>
+#include <atlwin.h>
+#include <accctrl.h>
+#include <aclapi.h>
 #include <comdef.h>
-#include <shlobj.h>
 #include <commctrl.h>
-#include <ocmm.h>
-#include <mapi.h>
 #include <cpl.h>
 #include <ddraw.h>
-#include <richedit.h>
-#include <thumbcache.h>
+#include <delayimp.h>
 #include <emptyvc.h>
+#include <mapi.h>
+#include <ocmm.h>
+#include <richedit.h>
+#include <shlobj.h>
+#include <thumbcache.h>
 
 #include "../gfl/libgfl.h"
 #include "../gfl/libgfle.h"
 
-#define LIB_GFL				"libgfl340.dll"	// Название GFL dll-ки
-#define LIB_GFLE			"libgfle340.dll"// Название GFLe dll-ки
-#define LIB_SQLITE			"sqlite3.dll"	// Название SQLite dll-ки
+#define LIB_GFL				"libgfl340.dll"	// Name of GFL library (case sensitive)
+#define LIB_GFLE			"libgfle340.dll"// Name of GFLe library (case sensitive)
+#define LIB_SQLITE			"sqlite3.dll"	// Name of SQLite library (case sensitive)
 
 #ifndef QWORD
 	typedef ULONGLONG QWORD;
@@ -117,15 +120,11 @@ DEFINE_GUID(CLSID_WindowsThumbnailer,0x889900c3,0x59f3,0x4c2f,0xae,0x21,0xa4,0x0
 const LPCTSTR RECREATE_DATABASE =
 	_T("PRAGMA foreign_keys = ON;")
 	_T("BEGIN TRANSACTION;")
-		_T("DROP INDEX IF EXISTS EntitiesIndex;")
-		_T("DROP TABLE IF EXISTS Entities;")
-		_T("DROP INDEX IF EXISTS PathesIndex;")
-		_T("DROP TABLE IF EXISTS Pathes;")
-		_T("CREATE TABLE Pathes ( ")
+		_T("CREATE TABLE IF NOT EXISTS Pathes ( ")
 			_T("PathID INTEGER NOT NULL PRIMARY KEY, ")
 			_T("Pathname TEXT NOT NULL UNIQUE );")
-		_T("CREATE INDEX PathesIndex ON Pathes( Pathname );")
-		_T("CREATE TABLE Entities ( ")
+		_T("CREATE INDEX IF NOT EXISTS PathesIndex ON Pathes( Pathname );")
+		_T("CREATE TABLE IF NOT EXISTS Entities ( ")
 			_T("PathID INTEGER NOT NULL, ")
 			_T("Filename TEXT NOT NULL, ")
 			_T("LastWriteTime INTEGER, ")
@@ -133,11 +132,20 @@ const LPCTSTR RECREATE_DATABASE =
 			_T("FileSize INTEGER, ")
 			_T("ImageInfo BLOB, ")
 			_T("Image BLOB, ")
-			_T("Width INTEGER, ")
-			_T("Height INTEGER, ")
+			_T("Width INTEGER DEFAULT 0, ")
+			_T("Height INTEGER DEFAULT 0, ")
 			_T("PRIMARY KEY ( PathID, Filename ),")
 			_T("FOREIGN KEY ( PathID ) REFERENCES Pathes( PathID ) );")
-		_T("CREATE INDEX EntitiesIndex ON Entities( PathID );")
+		_T("CREATE INDEX IF NOT EXISTS EntitiesIndex ON Entities( PathID );")
+	_T("COMMIT;")
+	_T("VACUUM;");
+
+const LPCTSTR DROP_DATABASE =
+	_T("BEGIN TRANSACTION;")
+		_T("DROP INDEX IF EXISTS EntitiesIndex;")
+		_T("DROP TABLE IF EXISTS Entities;")
+		_T("DROP INDEX IF EXISTS PathesIndex;")
+		_T("DROP TABLE IF EXISTS Pathes;")
 	_T("COMMIT;")
 	_T("VACUUM;");
 
@@ -158,7 +166,9 @@ CString GetRegValue(LPCTSTR szName, LPCTSTR szDefault = _T(""), LPCTSTR szKey = 
 void SetRegValue(LPCTSTR szName, DWORD dwValue, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
 void SetRegValue(LPCTSTR szName, LPCTSTR szValue, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
 void SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
-int MsgBox(HWND hWnd, UINT nText, UINT nType = MB_OK | MB_ICONEXCLAMATION, UINT nTitle = IDS_PROJNAME);
+
+BOOL IsProcessElevated();
+
 DWORD CRC32(const char *buf, int len);
 
 // Создание пути (со всеми директориями которых нет)
@@ -183,8 +193,6 @@ inline size_t lengthof(const CString& sString)
 {
 	return (size_t)( sString.GetLength() + 1 ) * sizeof( TCHAR );
 }
-
-#include "dllLoaderMinimal.h"
 
 #ifdef _UNICODE
 #if defined _M_IX86
