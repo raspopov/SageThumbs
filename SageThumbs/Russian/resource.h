@@ -3,6 +3,7 @@
 // Used by SageThumbs.rc
 //
 #define IDS_PROJNAME                    100
+#define AFX_IDS_APP_TITLE               100
 #define IDR_SAGETHUMBS                  101
 #define IDS_OPTIONS_HELP                101
 #define IDR_THUMB                       102
@@ -46,6 +47,7 @@
 #define IDC_FILE_SIZE                   214
 #define IDC_EMBEDDED                    215
 #define IDC_ENABLE_ICONS                216
+#define IDC_ENABLE_WINCACHE             217
 
 // Next default values for new objects
 // 
