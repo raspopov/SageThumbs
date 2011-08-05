@@ -221,6 +221,7 @@ BEGIN
     IDS_DATABASE_SIZE       "Thumbnail cache size: %u KB"
     IDS_CACHE               "SageThumbs thumbnail cache"
     IDS_DESCRIPTION         "Clean SageThumbs thumbnail cache. No user data will be affected."
+    IDS_ACCESS_DENIED       "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
 END
 
 #endif    // Neutral resources

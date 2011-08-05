@@ -41,6 +41,31 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #define ISOLATION_AWARE_ENABLED 1
 
+#include "resource.h"
+
+#include <atlbase.h>
+#include <atlcoll.h>
+#include <atlcom.h>
+#include <atlctl.h>
+#include <atlenc.h>
+#include <atlstr.h>
+#include <atlwin.h>
+#include <accctrl.h>
+#include <aclapi.h>
+#include <comdef.h>
+#include <commctrl.h>
+#include <cpl.h>
+#include <delayimp.h>
+#include <emptyvc.h>
+#include <mapi.h>
+#include <ocmm.h>
+#include <richedit.h>
+#include <shlobj.h>
+#include <thumbcache.h>
+
+#include "../gfl/libgfl.h"
+#include "../gfl/libgfle.h"
+
 #if UNICODE
 	#define gflLoadBitmapT			gflLoadBitmapW
 	#define gflSaveBitmapT			gflSaveBitmapW
@@ -56,125 +81,46 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	#define gflGetFileInformationT	gflGetFileInformation
 #endif
 
-#include "resource.h"
-
-#include <atlbase.h>
-#include <atlcoll.h>
-#include <atlcom.h>
-#include <atlctl.h>
-#include <atlenc.h>
-#include <atlstr.h>
-#include <atlwin.h>
-#include <accctrl.h>
-#include <aclapi.h>
-#include <comdef.h>
-#include <commctrl.h>
-#include <cpl.h>
-#include <ddraw.h>
-#include <delayimp.h>
-#include <emptyvc.h>
-#include <mapi.h>
-#include <ocmm.h>
-#include <richedit.h>
-#include <shlobj.h>
-#include <thumbcache.h>
-
-#include "../gfl/libgfl.h"
-#include "../gfl/libgfle.h"
-
-#define LIB_GFL				"libgfl340.dll"	// Name of GFL library (case sensitive)
-#define LIB_GFLE			"libgfle340.dll"// Name of GFLe library (case sensitive)
-#define LIB_SQLITE			"sqlite3.dll"	// Name of SQLite library (case sensitive)
-
 #ifndef QWORD
 	typedef ULONGLONG QWORD;
 #endif
 
+typedef ULONG (FAR PASCAL *tMAPISendMail)(LHANDLE, ULONG_PTR, lpMapiMessage, FLAGS, ULONG);
+typedef UINT (WINAPI *tPrivateExtractIconsT)(LPCTSTR, int, int, int, HICON*, UINT*, UINT, UINT);
+
 #define MAKEQWORD(l,h) ((QWORD)(l)|((QWORD)(h)<<32))
 
 // SDK Fix
-struct __declspec(uuid("85788d00-6807-11d0-b810-00c04fd706ec")) IRunnableTask;
+struct __declspec(uuid("85788D00-6807-11D0-B810-00C04FD706EC")) IRunnableTask;
 struct __declspec(uuid("000214E4-0000-0000-C000-000000000046")) IContextMenu;
 struct __declspec(uuid("000214F4-0000-0000-C000-000000000046")) IContextMenu2;
 struct __declspec(uuid("BCFCE0A0-EC17-11d0-8D10-00A0C90F2719")) IContextMenu3;
 struct __declspec(uuid("00021500-0000-0000-c000-000000000046")) IQueryInfo;
-struct __declspec(uuid("e8025004-1c42-11d2-be2c-00a0c9a83da1")) IColumnProvider;
+struct __declspec(uuid("E8025004-1C42-11D2-BE2C-00A0C9A83DA1")) IColumnProvider;
 
 // {889900c3-59f3-4c2f-ae21-a409ea01e605}
 DEFINE_GUID(CLSID_WindowsThumbnailer,0x889900c3,0x59f3,0x4c2f,0xae,0x21,0xa4,0x09,0xea,0x01,0xe6,0x05);
 
-#define REG_SAGETHUMBS		_T("Software\\SageThumbs")
 #define ShellImagePreview	_T("SystemFileAssociations\\image\\ShellEx\\ContextMenuHandlers\\ShellImagePreview")
 #define REG_XNVIEW_KEY		_T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\XnView_is1")
 #define REG_XNVIEW_PATH1	_T("UninstallString")
 #define REG_XNVIEW_PATH2	_T("Inno Setup: App Path")
-#define FaxCLSID			_T("{e84fda7c-1d6a-45f6-b725-cb260c236066}")
-#define THUMB_STORE_SIZE	256
-#define THUMB_MIN_SIZE		32				// Минимальный размер просмотра в пикселях
-#define THUMB_MAX_SIZE		512				// Максимальный размер просмотра в пикселях 
-#define FILE_MAX_SIZE		10				// Максимальный размер файла в Мб
-#define MAX_LONG_PATH		1024			// Длина строк с файловыми путями
-#define STANDARD_LANGID		0x09			// Стандартный встроенный язык - English
-
-// SQL для создания базы данных
-const LPCTSTR RECREATE_DATABASE =
-	_T("PRAGMA foreign_keys = ON;")
-	_T("BEGIN TRANSACTION;")
-		_T("CREATE TABLE IF NOT EXISTS Pathes ( ")
-			_T("PathID INTEGER NOT NULL PRIMARY KEY, ")
-			_T("Pathname TEXT NOT NULL UNIQUE );")
-		_T("CREATE INDEX IF NOT EXISTS PathesIndex ON Pathes( Pathname );")
-		_T("CREATE TABLE IF NOT EXISTS Entities ( ")
-			_T("PathID INTEGER NOT NULL, ")
-			_T("Filename TEXT NOT NULL, ")
-			_T("LastWriteTime INTEGER, ")
-			_T("CreationTime INTEGER, ")
-			_T("FileSize INTEGER, ")
-			_T("ImageInfo BLOB, ")
-			_T("Image BLOB, ")
-			_T("Width INTEGER DEFAULT 0, ")
-			_T("Height INTEGER DEFAULT 0, ")
-			_T("PRIMARY KEY ( PathID, Filename ),")
-			_T("FOREIGN KEY ( PathID ) REFERENCES Pathes( PathID ) );")
-		_T("CREATE INDEX IF NOT EXISTS EntitiesIndex ON Entities( PathID );")
-	_T("COMMIT;")
-	_T("VACUUM;");
-
-const LPCTSTR DROP_DATABASE =
-	_T("BEGIN TRANSACTION;")
-		_T("DROP INDEX IF EXISTS EntitiesIndex;")
-		_T("DROP TABLE IF EXISTS Entities;")
-		_T("DROP INDEX IF EXISTS PathesIndex;")
-		_T("DROP TABLE IF EXISTS Pathes;")
-	_T("COMMIT;")
-	_T("VACUUM;");
-
-const LPCTSTR VACUUM_DATABASE =
-	_T("VACUUM;");
-
-// Без IDL
-class DECLSPEC_UUID("4A34B3E3-F50E-4FF6-8979-7E4176466FF2") Thumb;
-DEFINE_GUID(CLSID_Thumb,0x4A34B3E3,0xF50E,0x4FF6,0x89,0x79,0x7E,0x41,0x76,0x46,0x6F,0xF2);
-#define MyCLSID _T("{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}")
+#define FaxCLSID			_T("{E84FDA7C-1D6A-45F6-B725-CB260C236066}")
+#define MAX_LONG_PATH		(MAX_PATH * 2)
 
 using namespace ATL;
 
 typedef CComCritSecLock < CComAutoCriticalSection > CLock;
 
-DWORD GetRegValue(LPCTSTR szName, DWORD dwDefault, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
-CString GetRegValue(LPCTSTR szName, LPCTSTR szDefault = _T(""), LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
-void SetRegValue(LPCTSTR szName, DWORD dwValue, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
-void SetRegValue(LPCTSTR szName, LPCTSTR szValue, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
-void SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
-
 BOOL IsProcessElevated();
-
+void CleanWindowsCache();
+BOOL LoadIcon(LPCTSTR szFilename, HICON* phSmallIcon, HICON* phLargeIcon = NULL, HICON* phHugeIcon = NULL, int nIcon = 0);
 DWORD CRC32(const char *buf, int len);
 
-// Создание пути (со всеми директориями которых нет)
+// Recreate folder including all sub-folders
 void MakeDirectory(LPCTSTR dir);
 
-// Получение системного пути
+// Get system folder path
 CString GetSpecialFolderPath(int csidl);
 
 inline BYTE hs2b(TCHAR s)

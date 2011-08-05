@@ -187,11 +187,11 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 	const bool bWinCache = GetRegValue( _T("WinCache"), 1ul ) != 0;
 	CheckDlgButton( IDC_ENABLE_WINCACHE, bWinCache ? BST_CHECKED : BST_UNCHECKED );
 
-	const bool bUseFax = GetRegValue( _T(""), _T(""), ShellImagePreview,
-		HKEY_CLASSES_ROOT ).CompareNoCase( FaxCLSID ) == 0;
+	const bool bUseFax = GetRegValue( _T(""), _T(""), ShellImagePreview, HKEY_CLASSES_ROOT ).CompareNoCase( FaxCLSID ) == 0;
 	CheckDlgButton( IDC_USE_FAX, bUseFax ? BST_CHECKED : BST_UNCHECKED );
 
-	SendDlgItemMessage( IDOK, BCM_SETSHIELD, 0, ! IsProcessElevated() );
+	if ( _Module.m_OSVersion.dwMajorVersion >= 6 && ! IsProcessElevated() )
+		SendDlgItemMessage( IDOK, BCM_SETSHIELD, 0, 1 );
 
 	return TRUE;
 }
@@ -302,29 +302,32 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 		db.Exec( VACUUM_DATABASE );
 	}
 
-	if ( IsProcessElevated() )
+	if ( ! _Module.RegisterExtensions() )
 	{
-		_Module.DllRegisterServer();
-
-		EndDialog( IDOK );
+		if ( ( _Module.m_OSVersion.dwMajorVersion >= 6 && ! IsProcessElevated() ) ||
+			_Module.MsgBox( m_hWnd, IDS_ACCESS_DENIED, MB_OKCANCEL | MB_ICONEXCLAMATION ) == IDOK )
+		{
+			// Run as admin
+			CString sParams = _T("/s \"");
+			sParams += _Module.m_sModuleFileName + _T("\"");
+			SHELLEXECUTEINFO sei = { sizeof( SHELLEXECUTEINFO ) };
+			sei.lpVerb = _T("runas");
+			sei.lpFile = _T("regsvr32.exe");
+			sei.lpParameters = sParams;
+			sei.hwnd = m_hWnd;
+			sei.nShow = SW_NORMAL;
+			if ( ShellExecuteEx( &sei ) )
+			{
+				// Success
+				EndDialog( IDOK );
+			}
+		}
 	}
 	else
 	{
-		// Run as admin
-		CString sParams = _T("/s \"");
-		sParams += _Module.m_sModuleFileName + _T("\"");
-		SHELLEXECUTEINFO sei = { sizeof( SHELLEXECUTEINFO ) };
-		sei.lpVerb = _T("runas");
-		sei.lpFile = _T("regsvr32.exe");
-		sei.lpParameters = sParams;
-		sei.hwnd = m_hWnd;
-		sei.nShow = SW_NORMAL;
-		if ( ShellExecuteEx( &sei ) )
-		{
-			// Success
-			EndDialog( IDOK );
-		}
-	}	
+		// Success
+		EndDialog( IDOK );
+	}
 
 	return TRUE;
 }

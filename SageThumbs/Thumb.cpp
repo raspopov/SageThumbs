@@ -22,6 +22,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SageThumbs.h"
 #include "Thumb.h"
 #include "SQLite.h"
+#include <InitGuid.h>
+
+DEFINE_GUID(CLSID_Thumb,0x4A34B3E3,0xF50E,0x4FF6,0x89,0x79,0x7E,0x41,0x76,0x46,0x6F,0xF2);
 
 CThumb::CThumb() :
 	m_uOurItemID( 0 ),
@@ -152,7 +155,7 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 	// WM_MEASUREITEM/WM_DRAWITEM are sent. 
 	m_uOurItemID = uidCmdFirst;
 
-	CString text;
+	CString tmp;
 
 	// Creating submenu items
 	HMENU hSubMenu = CreateMenu ();
@@ -160,71 +163,66 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 	// Clipboard operation items
 	if ( bSingleFile )
 	{
-		text.LoadString (IDS_CLIPBOARD);
+		tmp.LoadString (IDS_CLIPBOARD);
 		if ( ! InsertMenu( hSubMenu, 0, MF_BYPOSITION | MF_STRING,
-			uidCmdFirst + ID_CLIPBOARD_ITEM, text))
+			uidCmdFirst + ID_CLIPBOARD_ITEM, tmp))
 			return E_FAIL;
-		if ( ! InsertMenu( hSubMenu, 1, MF_BYPOSITION | MF_SEPARATOR,
-			0, 0))
+		if ( ! InsertMenu( hSubMenu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
 			return E_FAIL;
 	}
 
 	// Wallpaper operation items
 	if ( bSingleFile )
 	{
-		text.LoadString (IDS_WALLPAPER_STRETCH);
+		tmp.LoadString (IDS_WALLPAPER_STRETCH);
 		if ( ! InsertMenu( hSubMenu, 2, MF_BYPOSITION | MF_STRING,
-			uidCmdFirst + ID_WALLPAPER_STRETCH_ITEM, text))
+			uidCmdFirst + ID_WALLPAPER_STRETCH_ITEM, tmp))
 			return E_FAIL;
-		text.LoadString (IDS_WALLPAPER_TILE);
+		tmp.LoadString (IDS_WALLPAPER_TILE);
 		if ( ! InsertMenu( hSubMenu, 3, MF_BYPOSITION | MF_STRING,
-			uidCmdFirst + ID_WALLPAPER_TILE_ITEM, text))
+			uidCmdFirst + ID_WALLPAPER_TILE_ITEM, tmp))
 			return E_FAIL;
-		text.LoadString (IDS_WALLPAPER_CENTER);
+		tmp.LoadString (IDS_WALLPAPER_CENTER);
 		if ( ! InsertMenu( hSubMenu, 4, MF_BYPOSITION | MF_STRING,
-			uidCmdFirst + ID_WALLPAPER_CENTER_ITEM, text))
+			uidCmdFirst + ID_WALLPAPER_CENTER_ITEM, tmp))
 			return E_FAIL;
-		if ( ! InsertMenu( hSubMenu, 5, MF_BYPOSITION | MF_SEPARATOR,
-			0, 0))
+		if ( ! InsertMenu( hSubMenu, 5, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
 			return E_FAIL;
 	}
 
-	text.LoadString (IDS_MAIL_IMAGE);
+	tmp.LoadString (IDS_MAIL_IMAGE);
 	if ( ! InsertMenu( hSubMenu, 6, MF_BYPOSITION | MF_STRING,
-		uidCmdFirst + ID_MAIL_IMAGE_ITEM, text))
+		uidCmdFirst + ID_MAIL_IMAGE_ITEM, tmp))
 		return E_FAIL;
-	text.LoadString (IDS_MAIL_THUMBNAIL);
+	tmp.LoadString (IDS_MAIL_THUMBNAIL);
 	if ( ! InsertMenu( hSubMenu, 7, MF_BYPOSITION | MF_STRING,
-		uidCmdFirst + ID_MAIL_THUMBNAIL_ITEM, text))
+		uidCmdFirst + ID_MAIL_THUMBNAIL_ITEM, tmp))
 		return E_FAIL;
-	if ( ! InsertMenu( hSubMenu, 8, MF_BYPOSITION | MF_SEPARATOR,
-		0, 0))
+	if ( ! InsertMenu( hSubMenu, 8, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
 		return E_FAIL;
 
-	text.LoadString (IDS_CONVERT_JPG);
+	tmp.LoadString (IDS_CONVERT_JPG);
 	if ( ! InsertMenu( hSubMenu, 9, MF_BYPOSITION | MF_STRING,
-		uidCmdFirst + ID_CONVERT_JPG_ITEM, text))
+		uidCmdFirst + ID_CONVERT_JPG_ITEM, tmp))
 		return E_FAIL;
-	text.LoadString (IDS_CONVERT_GIF);
+	tmp.LoadString (IDS_CONVERT_GIF);
 	if ( ! InsertMenu( hSubMenu, 10, MF_BYPOSITION | MF_STRING,
-		uidCmdFirst + ID_CONVERT_GIF_ITEM, text))
+		uidCmdFirst + ID_CONVERT_GIF_ITEM, tmp))
 		return E_FAIL;
-	text.LoadString (IDS_CONVERT_BMP);
+	tmp.LoadString (IDS_CONVERT_BMP);
 	if ( ! InsertMenu( hSubMenu, 11, MF_BYPOSITION | MF_STRING,
-		uidCmdFirst + ID_CONVERT_BMP_ITEM, text))
+		uidCmdFirst + ID_CONVERT_BMP_ITEM, tmp))
 		return E_FAIL;
-	if ( ! InsertMenu( hSubMenu, 12, MF_BYPOSITION | MF_SEPARATOR,
-		0, 0))
+	if ( ! InsertMenu( hSubMenu, 12, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
 		return E_FAIL;
 
-	text.LoadString (IDS_OPTIONS);
+	tmp.LoadString (IDS_OPTIONS);
 	if ( ! InsertMenu( hSubMenu, 13, MF_BYPOSITION | MF_STRING,
-		uidCmdFirst + ID_OPTIONS_ITEM, text))
+		uidCmdFirst + ID_OPTIONS_ITEM, tmp))
 		return E_FAIL;
 
 	// Creating main menu items
-	if ( ! InsertMenu( hMenu, uIndex++, MF_BYPOSITION | MF_SEPARATOR,
-		0, 0 ) )
+	if ( ! InsertMenu( hMenu, uIndex++, MF_BYPOSITION | MF_SEPARATOR, 0, 0 ) )
 		return E_FAIL;
 
 	// Preview menu item
@@ -239,21 +237,21 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 		}
 	}
 
-	text = _Module.GetAppName();
+	tmp = _Module.GetAppName();
 
 	MENUITEMINFO mii = { sizeof( MENUITEMINFO ) };
-	mii.fMask  = MIIM_STRING | MIIM_SUBMENU | MIIM_STATE | MIIM_ID | MIIM_BITMAP;
+	mii.fMask  = MIIM_STRING | MIIM_SUBMENU | MIIM_ID | MIIM_BITMAP;
 	mii.wID = uidCmdFirst + ID_SUBMENU_ITEM;
 	mii.hSubMenu = hSubMenu;
-	mii.dwTypeData = (LPTSTR)(LPCTSTR)text;
-	mii.cch = (UINT)_tcslen( mii.dwTypeData );
-	mii.hbmpItem = LoadBitmap( _AtlBaseModule.GetResourceInstance(),
-		MAKEINTRESOURCE( IDR_SAGETHUMBS ) );
+	mii.dwTypeData = (LPTSTR)(LPCTSTR)tmp;
+	mii.cch = (UINT)tmp.GetLength();
+	mii.hbmpItem = (HBITMAP)LoadImage( _AtlBaseModule.GetResourceInstance(),
+		MAKEINTRESOURCE( IDR_SAGETHUMBS ), IMAGE_BITMAP, 16, 16, LR_SHARED );
+
 	if ( ! InsertMenuItem ( hMenu, uIndex++, TRUE, &mii ) )
 		return E_FAIL;
 
-	if ( ! InsertMenu (hMenu, uIndex++, MF_BYPOSITION | MF_SEPARATOR,
-		0, 0 ) )
+	if ( ! InsertMenu (hMenu, uIndex++, MF_BYPOSITION | MF_SEPARATOR, 0, 0 ) )
 		return E_FAIL;
 
 	// Tell the shell we added top-level menu items

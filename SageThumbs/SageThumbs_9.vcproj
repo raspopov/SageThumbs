@@ -44,15 +44,6 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="false"
-				TargetEnvironment="1"
-				GenerateStublessProxies="true"
-				TypeLibraryName="$(IntDir)/SageThumbs.tlb"
-				HeaderFileName="SageThumbs.h"
-				DLLDataFileName=""
-				InterfaceIdentifierFileName="SageThumbs_i.c"
-				ProxyFileName="SageThumbs_p.c"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -139,15 +130,6 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="false"
-				TargetEnvironment="3"
-				GenerateStublessProxies="true"
-				TypeLibraryName="$(IntDir)/SageThumbs.tlb"
-				HeaderFileName="SageThumbs.h"
-				DLLDataFileName=""
-				InterfaceIdentifierFileName="SageThumbs_i.c"
-				ProxyFileName="SageThumbs_p.c"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -235,15 +217,6 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="false"
-				TargetEnvironment="1"
-				GenerateStublessProxies="true"
-				TypeLibraryName="$(IntDir)/SageThumbs.tlb"
-				HeaderFileName="SageThumbs.h"
-				DLLDataFileName=""
-				InterfaceIdentifierFileName="SageThumbs_i.c"
-				ProxyFileName="SageThumbs_p.c"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -335,15 +308,6 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="false"
-				TargetEnvironment="3"
-				GenerateStublessProxies="true"
-				TypeLibraryName="$(IntDir)/SageThumbs.tlb"
-				HeaderFileName="SageThumbs.h"
-				DLLDataFileName=""
-				InterfaceIdentifierFileName="SageThumbs_i.c"
-				ProxyFileName="SageThumbs_p.c"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -418,7 +382,7 @@
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm"
 			>
 			<File
-				RelativePath="Entity.cpp"
+				RelativePath=".\Entity.cpp"
 				>
 			</File>
 			<File
@@ -426,11 +390,11 @@
 				>
 			</File>
 			<File
-				RelativePath="SageThumbs.cpp"
+				RelativePath=".\SageThumbs.cpp"
 				>
 			</File>
 			<File
-				RelativePath="SageThumbs.def"
+				RelativePath=".\SageThumbs.def"
 				>
 			</File>
 			<File
@@ -438,7 +402,7 @@
 				>
 			</File>
 			<File
-				RelativePath="stdafx.cpp"
+				RelativePath=".\stdafx.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -474,7 +438,7 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="Thumb.cpp"
+				RelativePath=".\Thumb.cpp"
 				>
 			</File>
 		</Filter>
@@ -483,7 +447,7 @@
 			Filter="h;hpp;hxx;hm;inl;inc"
 			>
 			<File
-				RelativePath="Entity.h"
+				RelativePath=".\Entity.h"
 				>
 			</File>
 			<File
@@ -495,11 +459,11 @@
 				>
 			</File>
 			<File
-				RelativePath="OptionsDlg.h"
+				RelativePath=".\OptionsDlg.h"
 				>
 			</File>
 			<File
-				RelativePath="Resource.h"
+				RelativePath=".\Resource.h"
 				>
 			</File>
 			<File
@@ -511,11 +475,11 @@
 				>
 			</File>
 			<File
-				RelativePath="stdafx.h"
+				RelativePath=".\stdafx.h"
 				>
 			</File>
 			<File
-				RelativePath="Thumb.h"
+				RelativePath=".\Thumb.h"
 				>
 			</File>
 		</Filter>
@@ -523,10 +487,6 @@
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 			>
-			<File
-				RelativePath=".\res\bitmap1.bmp"
-				>
-			</File>
 			<File
 				RelativePath=".\res\SageThumbs.bmp"
 				>
@@ -536,11 +496,7 @@
 				>
 			</File>
 			<File
-				RelativePath="SageThumbs.ico"
-				>
-			</File>
-			<File
-				RelativePath="SageThumbs.rc"
+				RelativePath=".\SageThumbs.rc"
 				>
 			</File>
 			<File

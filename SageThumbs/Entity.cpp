@@ -329,7 +329,7 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 		}
 
 		// Сохранение изображения в базе если нужно
-		GFL_SAVE_PARAMS params = {};
+		GFL_SAVE_PARAMS params;
 		gflGetDefaultSaveParams( &params );
 		params.Flags = GFL_SAVE_ANYWAY;
 		params.CompressionLevel = 9;
@@ -376,8 +376,8 @@ HBITMAP CEntity::GetImage(UINT cx, UINT cy)
 		CalcSize( dx, dy, cx, cy );
 
 		GFL_BITMAP* pResizedBitmap = NULL;
-		gflResize( m_hGflBitmap, &pResizedBitmap, dx, dy, GFL_RESIZE_LANCZOS, 0 );
-		if ( pResizedBitmap )
+		if ( SUCCEEDED( _Module.Resize( m_hGflBitmap, &pResizedBitmap, dx, dy ) ) &&
+			 pResizedBitmap )
 		{
 			_Module.ConvertBitmap( pResizedBitmap, &hBitmap );
 			_Module.FreeBitmap( pResizedBitmap );

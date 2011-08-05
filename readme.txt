@@ -33,8 +33,11 @@ System Requirements:
 Versions:
 
 2.0.0.7
+  * Added option "Enable Windows thumbnail cache" (as Win7 "black thumbnail" bug workaround)
+  * Added support for work under restricted account privileges (UAC)
   * Performance optimizations
-  * Fixed SageThumbs files unloading from parent process
+  * Fixed SageThumbs modules stuck inside parent process
+  * Excluded by default "wmz" extension (used by "Windows Media Player Skin Package")
 
 2.0.0.6
   * Fixed Windows 7 "black thumbnail" bug

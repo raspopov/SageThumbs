@@ -3,7 +3,6 @@
 // Used by SageThumbs.rc
 //
 #define IDS_PROJNAME                    100
-#define AFX_IDS_APP_TITLE               100
 #define IDR_SAGETHUMBS                  101
 #define IDS_OPTIONS_HELP                101
 #define IDR_THUMB                       102
@@ -23,6 +22,7 @@
 #define IDS_DATABASE_SIZE               115
 #define IDS_CACHE                       116
 #define IDS_DESCRIPTION                 117
+#define IDS_ACCESS_DENIED               118
 #define IDC_WIDTH                       201
 #define IDC_HEIGHT                      202
 #define IDD_OPTIONS                     202

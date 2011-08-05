@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "stdafx.h"
 #include "SageThumbs.h"
+#include "Thumb.h"
 #include "OptionsDlg.h"
 
 //#define HTMLCLSID		_T("{25336920-03F9-11cf-8FD0-00AA00686F13}")
@@ -39,13 +40,17 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 CSageThumbsModule		_Module;
 
 CSageThumbsModule::CSageThumbsModule()
-	: m_CurLangID	( STANDARD_LANGID )
+	: m_OSVersion	()
 	, m_hGFL		( NULL )
 	, m_hGFLe		( NULL )
 	, m_hSQLite		( NULL )
 	, m_hLangDLL	( NULL )
+	, m_CurLangID	( STANDARD_LANGID )
 //	, m_hWatchThread( NULL )
 {
+	m_OSVersion.dwOSVersionInfoSize = sizeof( m_OSVersion );
+	GetVersionEx( &m_OSVersion );
+
 	GetModuleFileName( _AtlBaseModule.GetModuleInstance(),
 		m_sModuleFileName.GetBuffer( MAX_LONG_PATH ), MAX_LONG_PATH );
 	m_sModuleFileName.ReleaseBuffer();
@@ -86,16 +91,47 @@ HRESULT CSageThumbsModule::DllRegisterServer()
 {
 	CHECKPOINT_BEGIN(DllRegisterServer)
 
-	HRESULT hr = CAtlDllModuleT< CSageThumbsModule >::DllRegisterServer (FALSE);
+	HRESULT hr = CAtlDllModuleT< CSageThumbsModule >::DllRegisterServer( FALSE );
+
+	ATLVERIFY ( RegisterExtensions() );
+
+	ATLTRACE ("DllRegisterServer : ");
+	CHECKPOINT(DllRegisterServer)
+	ATLTRACE ("\n");
+
+	return hr;
+}
+
+HRESULT CSageThumbsModule::DllUnregisterServer()
+{
+	CHECKPOINT_BEGIN(DllUnregisterServer)
+
+	HRESULT hr = CAtlDllModuleT< CSageThumbsModule >::DllUnregisterServer( FALSE );
+
+	ATLVERIFY ( UnregisterExtensions() );
+
+	ATLTRACE ("DllUnregisterServer : ");
+	CHECKPOINT(DllUnregisterServer)
+	ATLTRACE ("\n");
+
+	return hr;
+}
+
+BOOL CSageThumbsModule::RegisterExtensions()
+{
+	BOOL bOK = TRUE;
+
+	const bool bEnableThumbs = GetRegValue( _T("EnableThumbs"), 1ul ) != 0;
+	const bool bEnableIcons = GetRegValue( _T("EnableIcons"), 1ul ) != 0;
 
 	for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; )
 	{
 		if ( const CExtMap::CPair* p = m_oExtMap.GetNext( pos ) )
 		{
 			if ( p->m_value.enabled )
-				RegisterExt( p->m_key );
+				bOK = RegisterExt( p->m_key, bEnableThumbs, bEnableIcons ) && bOK;
 			else
-				UnregisterExt( p->m_key );
+				bOK = UnregisterExt( p->m_key ) && bOK;
 		}
 	}
 
@@ -109,12 +145,12 @@ HRESULT CSageThumbsModule::DllRegisterServer()
 	//		 ( i == 3 && ! bEnableThumbs ) )	// IThumbnailProvider
 	//	{
 	//		UnregisterValue (HKEY_CLASSES_ROOT, sRoot + szHandlers[ i ],
-	//			_T(""), MyCLSID, _T("SageThumbs.bak"));
+	//			_T(""), MyCLSID, REG_SAGETHUMBS_BAK);
 	//	}
 	//	else
 	//	{
 	//		RegisterValue( HKEY_CLASSES_ROOT, sRoot + szHandlers[ i ],
-	//			_T(""), MyCLSID, _T("SageThumbs.bak") );
+	//			_T(""), MyCLSID, REG_SAGETHUMBS_BAK );
 	//	}
 	//}
 
@@ -122,24 +158,18 @@ HRESULT CSageThumbsModule::DllRegisterServer()
 
 	UpdateShell();
 
-	ATLTRACE ("DllRegisterServer : ");
-	CHECKPOINT(DllRegisterServer)
-	ATLTRACE ("\n");
-
-	return hr;
+	return bOK;
 }
 
-HRESULT CSageThumbsModule::DllUnregisterServer()
+BOOL CSageThumbsModule::UnregisterExtensions()
 {
-	CHECKPOINT_BEGIN(DllUnregisterServer)
-
-	HRESULT hr = CAtlDllModuleT< CSageThumbsModule >::DllUnregisterServer (FALSE);
+	BOOL bOK = TRUE;
 
 	for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; )
 	{
 		if ( const CExtMap::CPair* p = m_oExtMap.GetNext( pos ) )
 		{
-			UnregisterExt( p->m_key );
+			bOK = UnregisterExt( p->m_key ) && bOK;
 		}
 	}
 
@@ -156,24 +186,17 @@ HRESULT CSageThumbsModule::DllUnregisterServer()
 	CString sRoot( _T("SystemFileAssociations\\image\\ShellEx\\") );
 	for ( int i = 0; szHandlers[ i ]; ++i )
 	{
-		UnregisterValue (HKEY_CLASSES_ROOT, sRoot + szHandlers[ i ],
-			_T(""), MyCLSID, _T("SageThumbs.bak"));
+		bOK = UnregisterValue( HKEY_CLASSES_ROOT, sRoot + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
 	}
 
-	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, _T("SystemFileAssociations\\image\\ShellEx"));	// HKCU
-	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, _T("SystemFileAssociations\\image\\ShellEx"));	// HKLM
-	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, _T("SystemFileAssociations\\image"));	// HKCU
-	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, _T("SystemFileAssociations\\image"));	// HKLM
+	bOK = DeleteRegKey( HKEY_CLASSES_ROOT, _T("SystemFileAssociations\\image\\ShellEx") ) && bOK;
+	bOK = DeleteRegKey( HKEY_CLASSES_ROOT, _T("SystemFileAssociations\\image") ) && bOK;
 
 	CleanWindowsCache();
 
 	UpdateShell();
 
-	ATLTRACE ("DllUnregisterServer : ");
-	CHECKPOINT(DllUnregisterServer)
-	ATLTRACE ("\n");
-
-	return hr;
+	return bOK;
 }
 
 void CSageThumbsModule::UpdateShell()
@@ -183,8 +206,10 @@ void CSageThumbsModule::UpdateShell()
 	CoFreeUnusedLibraries ();
 }
 
-void CSageThumbsModule::RegisterExt(LPCTSTR szExt)
+BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, bool bEnableThumbs, bool bEnableIcons)
 {
+	BOOL bOK = TRUE;
+
 	CString key ( _T(".") );
 	CString ext ( szExt );
 	key += ext;
@@ -193,26 +218,22 @@ void CSageThumbsModule::RegisterExt(LPCTSTR szExt)
 	if ( DefaultKey.IsEmpty() )
 	{
 		DefaultKey = _T("XnView.Image");
-		RegisterValue( HKEY_CLASSES_ROOT, key,
-			_T(""), DefaultKey, _T("SageThumbs.bak") );
+		RegisterValue( HKEY_CLASSES_ROOT, key, _T(""), DefaultKey );
 	}
 
 	// Perceived Type Fix
 	SetRegValue( _T("PerceivedType"), _T("image"), key, HKEY_CLASSES_ROOT );
 
 	// Content Type Fix
-	CString sContentType( _T("image/") );
+	CString sExtension;
 	if ( _tcsicmp( szExt, _T("jpg")  ) == 0 ||
 		 _tcsicmp( szExt, _T("jpe")  ) == 0 ||
 		 _tcsicmp( szExt, _T("jfif") ) == 0 )
-		sContentType += _T("jpeg");
+		sExtension = _T("jpeg");
 	else
-		sContentType += szExt;
-	SetRegValue( _T("Content Type"), sContentType, key, HKEY_CLASSES_ROOT );
-	SetRegValue( _T("Extension"), key, _T("MIME\\DataBase\\Content Type\\") + sContentType, HKEY_CLASSES_ROOT );
-
-	const bool bEnableThumbs = GetRegValue( _T("EnableThumbs"), 1ul ) != 0;
-	const bool bEnableIcons = GetRegValue( _T("EnableIcons"), 1ul ) != 0;
+		sExtension = szExt;
+	SetRegValue( _T("Content Type"), _T("image/") + sExtension, key, HKEY_CLASSES_ROOT );
+	SetRegValue( _T("Extension"), sExtension, _T("MIME\\DataBase\\Content Type\\image/") + sExtension, HKEY_CLASSES_ROOT );
 
 	for ( int i = 0; szHandlers[ i ]; ++i )
 	{
@@ -220,39 +241,27 @@ void CSageThumbsModule::RegisterExt(LPCTSTR szExt)
 		{
 		case 0:	// IExtractIcon
 		case 2:	// IQueryInfo
-			UnregisterValue( HKEY_CLASSES_ROOT,
-				key + _T("\\ShellEx\\") + szHandlers[ i ],
-				_T(""), MyCLSID, _T("SageThumbs.bak") );
+			bOK = UnregisterValue( HKEY_CLASSES_ROOT, key + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
 			if ( ( i == 0 && bEnableIcons ) || ( i == 2 ) )
 			{
-				RegisterValue (HKEY_CLASSES_ROOT,
-					DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ],
-					_T(""), MyCLSID, _T("SageThumbs.bak"));
+				bOK = RegisterValue( HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
 			}
 			else
 			{
-				UnregisterValue( HKEY_CLASSES_ROOT,
-					DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ],
-					_T(""), MyCLSID, _T("SageThumbs.bak") );
+				bOK = UnregisterValue( HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
 			}
 			break;
 		
 		default:
-			UnregisterValue( HKEY_CLASSES_ROOT,
-				DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ],
-				_T(""), MyCLSID, _T("SageThumbs.bak") );
+			bOK = UnregisterValue( HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
 			if ( ( i == 1 && bEnableThumbs ) ||	// IExtractImage
 				 ( i == 3 && bEnableThumbs ) )	// IThumbnailProvider
 			{
-				RegisterValue (HKEY_CLASSES_ROOT,
-					key + _T("\\ShellEx\\") + szHandlers[ i ],
-					_T(""), MyCLSID, _T("SageThumbs.bak"));
+				bOK = RegisterValue( HKEY_CLASSES_ROOT, key + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
 			}
 			else
 			{
-				UnregisterValue( HKEY_CLASSES_ROOT,
-					key + _T("\\ShellEx\\") + szHandlers[ i ],
-					_T(""), MyCLSID, _T("SageThumbs.bak") );
+				bOK = UnregisterValue( HKEY_CLASSES_ROOT, key + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
 			}
 		}
 	}
@@ -269,7 +278,7 @@ void CSageThumbsModule::RegisterExt(LPCTSTR szExt)
 	//	CopyMemory (data + 4, bits->mask, bits->size);
 	//	CopyMemory (data + 4 + bits->size, bits->data, bits->size);
 	//	RegisterValue (HKEY_CLASSES_ROOT, DefaultKey + _T("\\CLSID"),
-	//		_T(""), HTMLCLSID, _T("SageThumbs.bak"));
+	//		_T(""), HTMLCLSID, REG_SAGETHUMBS_BAK);
 	//	RegisterValue (HKEY_CLASSES_ROOT, key, _T("Content Type"),
 	//		mime, _T("Content Type SageThumbs.bak"));
 	//	RegisterValue (HKEY_CLASSES_ROOT, mimekey, _T("Image Filter CLSID"),
@@ -289,22 +298,22 @@ void CSageThumbsModule::RegisterExt(LPCTSTR szExt)
 	//			_T("image/xnview"), _T("Content Type SageThumbs.bak"));
 	//}
 
-	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, key + _T("\\ShellEx"));		// HKCU
-	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, key + _T("\\ShellEx"));		// HKLM
-	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, key);			// HKCU
-	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, key);			// HKLM
+	bOK = DeleteRegKey( HKEY_CLASSES_ROOT, key + _T("\\ShellEx") ) && bOK;
+	bOK = DeleteRegKey( HKEY_CLASSES_ROOT, key ) && bOK;
 
 	if ( ! DefaultKey.IsEmpty() )
 	{
-		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx"));	// HKCU
-		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx"));	// HKLM
-		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, DefaultKey);	// HKCU
-		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, DefaultKey);	// HKLM
+		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx") ) && bOK;
+		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, DefaultKey ) && bOK;
 	}
+
+	return bOK;
 }
 
-void CSageThumbsModule::UnregisterExt(LPCTSTR szExt)
+BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt)
 {
+	BOOL bOK = TRUE;
+
 	CString key ( _T(".") );
 	CString ext ( szExt );
 	key += ext;
@@ -313,15 +322,11 @@ void CSageThumbsModule::UnregisterExt(LPCTSTR szExt)
 
 	for ( int i = 0; szHandlers[ i ]; ++i )
 	{
-		UnregisterValue( HKEY_CLASSES_ROOT,
-			key + _T("\\ShellEx\\") + szHandlers[ i ],
-			_T(""), MyCLSID, _T("SageThumbs.bak") );
+		bOK = UnregisterValue( HKEY_CLASSES_ROOT, key + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
 
 		if ( ! DefaultKey.IsEmpty() )
 		{
-			UnregisterValue( HKEY_CLASSES_ROOT,
-				DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ],
-				_T(""), MyCLSID, _T("SageThumbs.bak") );
+			bOK = UnregisterValue( HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
 		}
 	}
 	
@@ -338,7 +343,7 @@ void CSageThumbsModule::UnregisterExt(LPCTSTR szExt)
 	//	CopyMemory (data + 4 + bits->size, bits->data, bits->size);
 	//	if (!DefaultKey.IsEmpty ())
 	//		UnregisterValue (HKEY_CLASSES_ROOT, DefaultKey + _T("\\CLSID"),
-	//			_T(""), HTMLCLSID, _T("SageThumbs.bak"));
+	//			_T(""), HTMLCLSID, REG_SAGETHUMBS_BAK);
 	//	UnregisterValue (HKEY_CLASSES_ROOT, key, _T("Content Type"),
 	//		mime, _T("Content Type SageThumbs.bak"));
 	//	UnregisterValue (HKEY_CLASSES_ROOT, mimekey, _T("Image Filter CLSID"),
@@ -358,18 +363,16 @@ void CSageThumbsModule::UnregisterExt(LPCTSTR szExt)
 	//		_T("image/xnview"), _T("Content Type SageThumbs.bak"));
 	//}
 
-	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, key + _T("\\ShellEx"));		// HKCU
-	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, key + _T("\\ShellEx"));		// HKLM
-	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, key);			// HKCU
-	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, key);			// HKLM
+	bOK = DeleteRegKey( HKEY_CLASSES_ROOT, key + _T("\\ShellEx") ) && bOK;
+	bOK = DeleteRegKey( HKEY_CLASSES_ROOT, key ) && bOK;
 
 	if ( ! DefaultKey.IsEmpty() )
 	{
-		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx"));	// HKCU
-		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx"));	// HKLM
-		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, DefaultKey);	// HKCU
-		SHDeleteEmptyKey (HKEY_CLASSES_ROOT, DefaultKey);	// HKLM
+		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx") ) && bOK;
+		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, DefaultKey ) && bOK;
 	}
+
+	return bOK;
 }
 
 LANGID CSageThumbsModule::GetLang()
@@ -445,50 +448,56 @@ BOOL CSageThumbsModule::LoadLangIDDLL (LANGID LangID)
 
 void CSageThumbsModule::FillExtMap()
 {
+#ifdef GFL_THREAD_SAFE
+	CLock oLock( m_pSection );
+#endif // GFL_THREAD_SAFE
+
 	CHECKPOINT_BEGIN( FillExtMap )
 
-	if (m_oExtMap.IsEmpty ())
+	m_oExtMap.RemoveAll();
+
+	// Загрузка расширений через GFL
+	GFL_INT32 count = gflGetNumberOfFormat();
+	GFL_INT32 i = 0;
+	for ( ; i < count; ++i )
 	{
-		// Загрузка расширений через GFL
-		GFL_INT32 count = gflGetNumberOfFormat();
-		GFL_INT32 i = 0;
-		for ( ; i < count; ++i )
+		GFL_FORMAT_INFORMATION info = {};
+		GFL_ERROR err = gflGetFormatInformationByIndex (i, &info);
+		if ( err == GFL_NO_ERROR && ( info.Status & GFL_READ ) )
 		{
-			GFL_FORMAT_INFORMATION info = {};
-			GFL_ERROR err = gflGetFormatInformationByIndex (i, &info);
-			if ( err == GFL_NO_ERROR && ( info.Status & GFL_READ ) )
+			Ext data = { true, (LPCTSTR)CA2T( info.Description ) };
+			for ( GFL_UINT32 j = 0; j < info.NumberOfExtension; ++j )
 			{
-				Ext data = { true, (LPCTSTR)CA2T( info.Description ) };
-				for ( GFL_UINT32 j = 0; j < info.NumberOfExtension; ++j )
-				{
-					CString sExt = (LPCTSTR)CA2T( info.Extension [ j ] );
-					sExt.MakeLower();
-					m_oExtMap.SetAt( sExt, data );
-				}
+				CString sExt = (LPCTSTR)CA2T( info.Extension [ j ] );
+				sExt.MakeLower();
+				m_oExtMap.SetAt( sExt, data );
 			}
 		}
-        							
-		// Загрузка данных о расширении
-		i = 1;
-		const CString key = CString( REG_SAGETHUMBS ) + _T("\\");
-		for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; ++i )
-		{
-			CExtMap::CPair* p = m_oExtMap.GetNext (pos);
-
-			// Разрешено или нет
-			DWORD dwEnabled = GetRegValue( _T("Enabled"),
-				( ( p->m_key == _T("ico") || p->m_key == _T("cur") ) ? 0ul : 1ul ),
-				key + p->m_key );
-			SetRegValue( _T(""), p->m_value.info, key + p->m_key );
-			SetRegValue( _T("Enabled"), dwEnabled, key + p->m_key );
-			p->m_value.enabled = ( dwEnabled != 0 );
-
-			//ATLTRACE( "%4d. %c %8s \"%s\"\n", i, ( p->m_value.enabled ? '+' : '-' ), (LPCSTR)CT2A( p->m_key ), (LPCSTR)CT2A( p->m_value.info ) );	
-		}
-
-		ATLTRACE( "Loaded %d formats, %d extensions. ", count, m_oExtMap.GetCount() );
-		CHECKPOINT( FillExtMap )
 	}
+    							
+	// Загрузка данных о расширении
+	i = 1;
+	const CString key = CString( REG_SAGETHUMBS ) + _T("\\");
+	for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; ++i )
+	{
+		CExtMap::CPair* p = m_oExtMap.GetNext (pos);
+
+		// Exclude bad extensions
+		DWORD dwEnabled = GetRegValue( _T("Enabled"),
+			( ( p->m_key == _T("ico") ||	// Icon
+				p->m_key == _T("ani") ||	// Animated cursor
+				p->m_key == _T("cur") ||	// Cursor
+				p->m_key == _T("wmz")		// Windows Media Player Skin Package
+			) ? 0ul : 1ul ), key + p->m_key );
+		SetRegValue( _T(""), p->m_value.info, key + p->m_key );
+		SetRegValue( _T("Enabled"), dwEnabled, key + p->m_key );
+		p->m_value.enabled = ( dwEnabled != 0 );
+
+		//ATLTRACE( "%4d. %c %8s \"%s\"\n", i, ( p->m_value.enabled ? '+' : '-' ), (LPCSTR)CT2A( p->m_key ), (LPCSTR)CT2A( p->m_value.info ) );	
+	}
+
+	ATLTRACE( "Loaded %d formats, %d extensions. ", count, m_oExtMap.GetCount() );
+	CHECKPOINT( FillExtMap )
 }
 
 BOOL CSageThumbsModule::Initialize()
@@ -776,22 +785,121 @@ LONG APIENTRY CPlApplet(HWND hwnd, UINT uMsg, LPARAM /* lParam1 */, LPARAM lPara
 	return FALSE;
 }
 
-void RegisterValue (HKEY root, LPCTSTR key, LPCTSTR name, LPCTSTR value, LPCTSTR backup)
+DWORD GetRegValue(LPCTSTR szName, DWORD dwDefault, LPCTSTR szKey, HKEY hRoot)
+{
+	DWORD dwValue, dwType = REG_DWORD, dwSize = sizeof( DWORD );
+	LSTATUS res = SHGetValue( hRoot, szKey, szName, &dwType, &dwValue, &dwSize );
+	return ( res == ERROR_SUCCESS &&
+		dwType == REG_DWORD &&
+		dwSize == sizeof( DWORD ) ) ? dwValue : dwDefault;
+}
+
+CString GetRegValue(LPCTSTR szName, LPCTSTR szDefault, LPCTSTR szKey, HKEY hRoot)
+{
+	CString sValue;
+	DWORD dwType = REG_SZ;
+	DWORD dwSize = ( MAX_LONG_PATH - 1 )* sizeof( TCHAR );
+	LPTSTR buf = sValue.GetBuffer( MAX_LONG_PATH );
+	bool ret = SHGetValue( hRoot, szKey, szName, &dwType, buf, &dwSize ) == ERROR_SUCCESS &&
+		( dwType == REG_SZ || dwType == REG_EXPAND_SZ );
+	buf [ dwSize / sizeof( TCHAR ) ] = _T('\0');
+	if ( dwType == REG_EXPAND_SZ )
+	{
+		DoEnvironmentSubst( buf, MAX_LONG_PATH );
+	}
+	sValue.ReleaseBuffer();
+	return ret ? sValue : szDefault;
+}
+
+BOOL SetRegValue(LPCTSTR szName, DWORD dwValue, LPCTSTR szKey, HKEY hRoot)
+{
+	DWORD dwCurrent, dwType = REG_DWORD, dwSize = sizeof( DWORD );
+	LSTATUS res = SHGetValue( hRoot, szKey, szName, &dwType, &dwCurrent, &dwSize );
+	if ( res == ERROR_SUCCESS &&
+		 dwType == REG_DWORD &&
+		 dwSize == sizeof( DWORD ) &&
+		 dwCurrent == dwValue )
+	{
+		// Already set
+		return TRUE;
+	}
+
+	// Remove wrong type value if any
+	SHDeleteValue( hRoot, szKey, szName );
+
+	res = SHSetValue( hRoot, szKey, szName, REG_DWORD, &dwValue, sizeof( DWORD ) );
+	if ( res != ERROR_SUCCESS )
+	{
+		ATLTRACE( "Got %s during value setting: %s : %s = %d\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), dwValue );
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+BOOL SetRegValue(LPCTSTR szName, LPCTSTR szValue, LPCTSTR szKey, HKEY hRoot)
+{
+	LSTATUS res;
+
+	CString sCurrent = GetRegValue( szName, _T(""), szKey, hRoot );
+	if ( sCurrent.CompareNoCase( szValue ) == 0 )
+	{
+		// Already set
+		return TRUE;
+	}
+
+	// Remove wrong type value if any
+	SHDeleteValue( hRoot, szKey, szName );
+
+	if ( _istalpha( szValue[ 0 ] ) && szValue[ 1 ] == _T(':') && szValue[ 2 ] == _T('\\') )
+	{
+		CString sCompact;
+		BOOL bCompact = PathUnExpandEnvStrings( szValue, sCompact.GetBuffer( MAX_LONG_PATH ), MAX_LONG_PATH );
+		sCompact.ReleaseBuffer();
+		if ( bCompact )
+		{
+			res = SHSetValue( hRoot, szKey, szName, REG_EXPAND_SZ, sCompact, (DWORD)lengthof( sCompact ) );
+			if ( res != ERROR_SUCCESS )
+			{
+				ATLTRACE( "Got %s during value setting: %s : %s = %d\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sCompact ) );
+				return FALSE;
+			}
+
+			return TRUE;
+		}
+	}
+
+	res = SHSetValue( hRoot, szKey, szName, REG_SZ, szValue, (DWORD)lengthof( szValue ) );
+	if ( res != ERROR_SUCCESS )
+	{
+		ATLTRACE( "Got %s during value setting: %s : %s = %s\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( szValue ) );
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+BOOL RegisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue)
 {
 	// Check for new value
-	CString buf = GetRegValue( name, _T(""), key, root );
-	if ( buf.IsEmpty() || buf.CompareNoCase( value ) != 0 )
+	CString buf = GetRegValue( szName, _T(""), szKey, hRoot );
+	if ( buf.CompareNoCase( szValue ) != 0 )
 	{
 		// Set new value
-		SetRegValue( name, value, key, root );
+		if ( ! SetRegValue( szName, szValue, szKey, hRoot ) )
+			return FALSE;
 
 		// Backup old one
 		if ( ! buf.IsEmpty() )
-			SetRegValue( backup, buf, key, root );
+		{
+			if ( ! SetRegValue( REG_SAGETHUMBS_BAK, buf, szKey, hRoot ) )
+				return FALSE;
+		}
 	}
+	return TRUE;
 }
 
-void RegisterValue(HKEY root, LPCTSTR key, LPCTSTR name, const BYTE* value, DWORD value_size, LPCTSTR backup)
+/*void RegisterValue(HKEY hRoot, LPCTSTR key, LPCTSTR name, const BYTE* value, DWORD value_size, LPCTSTR backup)
 {
 	// Check for new value
 	BYTE buf [256];
@@ -810,46 +918,57 @@ void RegisterValue(HKEY root, LPCTSTR key, LPCTSTR name, const BYTE* value, DWOR
 		if ( res == ERROR_SUCCESS && size > 0 && type == REG_BINARY )
 			SHSetValue( root, key, backup, REG_BINARY, buf, size );
 	}
-}
+}*/
 
-void UnregisterValue(HKEY root, LPCTSTR key, LPCTSTR name, LPCTSTR value, LPCTSTR backup)
+BOOL UnregisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue)
 {
+	BOOL bOK = TRUE;
+
 	// Check backup
-	LSTATUS res;
-	CString buf = GetRegValue( name, _T(""), key, root );
-	CString backup_buf = GetRegValue( backup, _T(""), key, root );
-	if ( ! buf.IsEmpty() && buf.CompareNoCase( value ) == 0 )
+	CString buf = GetRegValue( szName, _T(""), szKey, hRoot );
+	CString backup_buf = GetRegValue( REG_SAGETHUMBS_BAK, _T(""), szKey, hRoot );
+	if ( buf.CompareNoCase( szValue ) == 0 )
 	{			
 		// Check backup value
 		if ( ! backup_buf.IsEmpty() )
 		{
 			// Restore value from backup
-			SetRegValue( name, backup_buf, key, root );
-
-			// Delete backup value
-			res = SHDeleteValue( root, key, backup );
-			res = SHDeleteValue( root, key, backup );
+			bOK = SetRegValue( szName, backup_buf, szKey, hRoot ) && bOK;
 		}
 		else
 		{
 			// Delete original value
-			res = SHDeleteValue( root, key, name );
-			res = SHDeleteValue( root, key, name );
+			LSTATUS res = SHDeleteValue( hRoot, szKey, szName );
+			if ( res == ERROR_SUCCESS )
+				res = SHDeleteValue( hRoot, szKey, szName );
+			if ( res == ERROR_ACCESS_DENIED )
+			{
+				bOK = FALSE;
+				ATLTRACE( "Got \"Access Denied\" during value deletion: %s : %s\n", (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
+			}
 		}
 	}
-	else if ( ! backup_buf.IsEmpty() )
+
+	if ( ! backup_buf.IsEmpty() )
 	{
 		// Delete backup value
-		res = SHDeleteValue( root, key, backup );
-		res = SHDeleteValue( root, key, backup );
+		LSTATUS res = SHDeleteValue( hRoot, szKey, REG_SAGETHUMBS_BAK );
+		if ( res == ERROR_SUCCESS )
+			res = SHDeleteValue( hRoot, szKey, REG_SAGETHUMBS_BAK );
+		if ( res == ERROR_ACCESS_DENIED )
+		{
+			ATLTRACE( "Got \"Access Denied\" during value deletion: %s : %s\n", (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
+			bOK = FALSE;
+		}
 	}
 
 	// Clean-up empty key
-	res = SHDeleteEmptyKey( root, key );
-	res = SHDeleteEmptyKey( root, key );
+	bOK = DeleteRegKey( hRoot, szKey ) && bOK;
+
+	return bOK;
 }
 
-void UnregisterValue(HKEY root, LPCTSTR key, LPCTSTR name, const BYTE* value, DWORD value_size, LPCTSTR backup)
+/*void UnregisterValue(HKEY hRoot, LPCTSTR key, LPCTSTR name, const BYTE* value, DWORD value_size, LPCTSTR backup)
 {
 	// Check backup
 	BYTE buf [256];
@@ -887,12 +1006,24 @@ void UnregisterValue(HKEY root, LPCTSTR key, LPCTSTR name, const BYTE* value, DW
 	// Clean-up empty key
 	SHDeleteEmptyKey (root, key);
 	SHDeleteEmptyKey (root, key);
+}*/
+
+BOOL DeleteRegKey(HKEY hRoot, LPCTSTR szSubKey)
+{
+	SHDeleteEmptyKey( hRoot, szSubKey );	// HKCU
+	SHDeleteEmptyKey( hRoot, szSubKey );	// HKLM
+	return TRUE;
 }
 
 HRESULT CSageThumbsModule::GetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info)
 {
-//	CLock oLock( m_pSection );
-
+#ifdef GFL_THREAD_SAFE
+	CLock oLock( m_pSection );
+	return GetFileInformationE( filename, info );
+}
+HRESULT CSageThumbsModule::GetFileInformationE(LPCTSTR filename, GFL_FILE_INFORMATION* info)
+{
+#endif // GFL_THREAD_SAFE
 	GFL_ERROR err;
 	HRESULT hr = E_FAIL;
 
@@ -917,17 +1048,21 @@ HRESULT CSageThumbsModule::GetFileInformation(LPCTSTR filename, GFL_FILE_INFORMA
 
 HRESULT CSageThumbsModule::LoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap)
 {
-//	CLock oLock( m_pSection );
-
+#ifdef GFL_THREAD_SAFE
+	CLock oLock( m_pSection );
+	return LoadBitmapE( filename, bitmap );
+}
+HRESULT CSageThumbsModule::LoadBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap)
+{
+#endif // GFL_THREAD_SAFE
 	GFL_ERROR err;
 	HRESULT hr = E_FAIL;
 	__try
 	{
 		*bitmap = NULL;
 
-		GFL_LOAD_PARAMS params = {};
+		GFL_LOAD_PARAMS params;
 		gflGetDefaultLoadParams( &params );
-		params.Flags = GFL_LOAD_FORCE_COLOR_MODEL;
 		params.ColorModel = GFL_RGBA;
 		err = gflLoadBitmapT( filename, bitmap, &params, NULL);
 		if ( err == GFL_ERROR_FILE_READ )
@@ -937,7 +1072,13 @@ HRESULT CSageThumbsModule::LoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap)
 			err = gflLoadBitmapT( filename, bitmap, &params, NULL );
 		}
 		if ( err == GFL_NO_ERROR )
+		{
+			if ( (*bitmap)->Type != GFL_RGBA )
+			{
+				gflChangeColorDepth( *bitmap, NULL, GFL_MODE_TO_RGBA, GFL_MODE_ADAPTIVE );
+			}
 			hr = S_OK;
+		}
 		else
 		{
 			ATLTRACE ("E_FAIL (gflLoadBitmapW) : %s\n", gflGetErrorString (err));
@@ -953,22 +1094,26 @@ HRESULT CSageThumbsModule::LoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap)
 
 HRESULT CSageThumbsModule::LoadThumbnail(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap)
 {
-//	CLock oLock( m_pSection );
-
+#ifdef GFL_THREAD_SAFE
+	CLock oLock( m_pSection );
+	return LoadThumbnailE( filename, width, height, bitmap );
+}
+HRESULT CSageThumbsModule::LoadThumbnailE(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap)
+{
+#endif // GFL_THREAD_SAFE
 	GFL_ERROR err;
 	HRESULT hr = E_FAIL;
 	__try
 	{
 		*bitmap = NULL;
 
-		GFL_LOAD_PARAMS params = {};
+		GFL_LOAD_PARAMS params;
 		gflGetDefaultThumbnailParams( &params );
 		params.Flags =
 			GFL_LOAD_ONLY_FIRST_FRAME |
 			GFL_LOAD_HIGH_QUALITY_THUMBNAIL |
 			( ( ::GetRegValue( _T("UseEmbedded"), 0ul ) != 0 ) ? GFL_LOAD_EMBEDDED_THUMBNAIL : 0 ) |
-			GFL_LOAD_PREVIEW_NO_CANVAS_RESIZE |
-			GFL_LOAD_FORCE_COLOR_MODEL;
+			GFL_LOAD_PREVIEW_NO_CANVAS_RESIZE;
 		params.ColorModel = GFL_RGBA;
 		err = gflLoadThumbnailT( filename, width, height, bitmap, &params, NULL );
 		if ( err == GFL_ERROR_FILE_READ )
@@ -978,7 +1123,13 @@ HRESULT CSageThumbsModule::LoadThumbnail(LPCTSTR filename, GFL_INT32 width, GFL_
 			err = gflLoadThumbnailT( filename, width, height, bitmap, &params, NULL );
 		}
 		if ( err == GFL_NO_ERROR )
+		{
+			if ( (*bitmap)->Type != GFL_RGBA )
+			{
+				gflChangeColorDepth( *bitmap, NULL, GFL_MODE_TO_RGBA, GFL_MODE_ADAPTIVE );
+			}
 			hr = S_OK;
+		}
 		else
 		{
 			ATLTRACE ("E_FAIL (gflLoadThumbnailW) : %s\n", gflGetErrorString (err));
@@ -994,16 +1145,21 @@ HRESULT CSageThumbsModule::LoadThumbnail(LPCTSTR filename, GFL_INT32 width, GFL_
 
 HRESULT CSageThumbsModule::LoadBitmapFromMemory(LPCVOID data, GFL_UINT32 data_length, GFL_BITMAP **bitmap)
 {
-//	CLock oLock( m_pSection );
-
+#ifdef GFL_THREAD_SAFE
+	CLock oLock( m_pSection );
+	return LoadBitmapFromMemoryE( data, data_length, bitmap );
+}
+HRESULT CSageThumbsModule::LoadBitmapFromMemoryE(LPCVOID data, GFL_UINT32 data_length, GFL_BITMAP **bitmap)
+{
+#endif // GFL_THREAD_SAFE
 	GFL_ERROR err;
 	HRESULT hr = E_FAIL;
 	__try
 	{
 		*bitmap = NULL;
 
-		GFL_LOAD_PARAMS params = {};
-		gflGetDefaultThumbnailParams (&params);
+		GFL_LOAD_PARAMS params;
+		gflGetDefaultLoadParams( &params );
 		params.Flags = GFL_LOAD_FORCE_COLOR_MODEL;
 		params.ColorModel = GFL_RGBA;
 		err = gflLoadBitmapFromMemory( (const GFL_UINT8*)data, data_length, bitmap, &params, NULL );
@@ -1024,16 +1180,22 @@ HRESULT CSageThumbsModule::LoadBitmapFromMemory(LPCVOID data, GFL_UINT32 data_le
 
 HRESULT CSageThumbsModule::ConvertBitmap(const GFL_BITMAP *bitmap, HBITMAP *phBitmap)
 {
-//	CLock oLock( m_pSection );
-
+#ifdef GFL_THREAD_SAFE
+	CLock oLock( m_pSection );
+	return ConvertBitmapE( bitmap, phBitmap );
+}
+HRESULT CSageThumbsModule::ConvertBitmapE(const GFL_BITMAP *bitmap, HBITMAP *phBitmap)
+{
+#endif // GFL_THREAD_SAFE
 	GFL_ERROR err;
 	HRESULT hr = E_FAIL;
 	__try
 	{
 		*phBitmap = NULL;
 
-		GFL_COLOR bg = { 255, 255, 255, 0 };
-		err = gflConvertBitmapIntoDDBEx( bitmap, phBitmap, &bg );
+		//GFL_COLOR bg = { 255, 255, 255, 0 };
+		//err = gflConvertBitmapIntoDDBEx( bitmap, phBitmap, &bg );
+		err = gflConvertBitmapIntoDIBSection( bitmap, phBitmap );
 		if ( err == GFL_NO_ERROR )
 		{
 			hr = S_OK;
@@ -1051,12 +1213,50 @@ HRESULT CSageThumbsModule::ConvertBitmap(const GFL_BITMAP *bitmap, HBITMAP *phBi
 	return hr;
 }
 
+HRESULT CSageThumbsModule::Resize(GFL_BITMAP* src, GFL_BITMAP** dst, GFL_INT32 width, GFL_INT32 height)
+{
+#ifdef GFL_THREAD_SAFE
+	CLock oLock( m_pSection );
+	return ResizeE( src, dst, width, height );
+}
+HRESULT CSageThumbsModule::ResizeE(GFL_BITMAP* src, GFL_BITMAP** dst, GFL_INT32 width, GFL_INT32 height)
+{
+#endif // GFL_THREAD_SAFE
+	GFL_ERROR err;
+	HRESULT hr = E_FAIL;
+	__try
+	{
+		*dst = NULL;
+
+		err = gflResize( src, dst, width, height, GFL_RESIZE_HERMITE, 0 );
+		if ( err == GFL_NO_ERROR )
+		{
+			hr = S_OK;
+		}
+		else
+		{
+			ATLTRACE ("E_FAIL (gflResize) : %s\n", gflGetErrorString (err));
+		}
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		ATLTRACE ("E_FAIL (gflResize exception)\n");
+	}
+
+	return hr;
+}
+
 HRESULT CSageThumbsModule::FreeBitmap(GFL_BITMAP*& bitmap)
 {
+#ifdef GFL_THREAD_SAFE
+	CLock oLock( m_pSection );
+	return FreeBitmapE( bitmap );
+}
+HRESULT CSageThumbsModule::FreeBitmapE(GFL_BITMAP*& bitmap)
+{
+#endif // GFL_THREAD_SAFE
 	if ( ! bitmap )
 		return S_FALSE;
-
-//	CLock oLock( m_pSection );
 
 	HRESULT hr = E_FAIL;
 	__try
@@ -1111,72 +1311,4 @@ bool CSageThumbsModule::IsGoodFile(LPCTSTR szFilename, Ext* pdata, WIN32_FIND_DA
 		return false;
 
 	return true;
-}
-
-BOOL LoadIcon(LPCTSTR szFilename, HICON* phSmallIcon, HICON* phLargeIcon, HICON* phHugeIcon, int nIcon)
-{
-	CString strIcon( szFilename );
-
-	if ( phSmallIcon )
-		*phSmallIcon = NULL;
-	if ( phLargeIcon )
-		*phLargeIcon = NULL;
-	if ( phHugeIcon )
-		*phHugeIcon = NULL;
-
-	int nIndex = strIcon.ReverseFind( _T(',') );
-	if ( nIndex != -1 )
-	{
-		if ( _stscanf_s( strIcon.Mid( nIndex + 1 ), _T("%i"), &nIcon ) == 1 )
-		{
-			strIcon = strIcon.Left( nIndex );
-		}
-	}
-	else
-		nIndex = 0;
-
-	if ( strIcon.GetLength() < 3 )
-		return FALSE;
-
-	if ( strIcon.GetAt( 0 ) == _T('\"') &&
-		strIcon.GetAt( strIcon.GetLength() - 1 ) == _T('\"') )
-		strIcon = strIcon.Mid( 1, strIcon.GetLength() - 2 );
-
-	if ( phLargeIcon || phSmallIcon )
-	{
-		ExtractIconEx( strIcon, nIcon, phLargeIcon, phSmallIcon, 1 );
-	}
-
-	if ( phHugeIcon )
-	{
-		if ( HMODULE hUser32 = LoadLibrary( _T("user32.dll") ) )
-		{
-			tPrivateExtractIconsT pPrivateExtractIconsT = (tPrivateExtractIconsT)GetProcAddress( hUser32,
-#if UNICODE
-				"PrivateExtractIconsW"
-#else
-				"PrivateExtractIconsA"
-#endif
-				 );
-			if ( pPrivateExtractIconsT )
-			{
-				UINT nLoadedID;
-				pPrivateExtractIconsT( strIcon, nIcon, 48, 48, phHugeIcon, &nLoadedID, 1, 0 );
-			}
-			FreeLibrary( hUser32 );
-		}
-	}
-
-	return ( phLargeIcon && *phLargeIcon ) || ( phSmallIcon && *phSmallIcon ) ||
-		( phHugeIcon && *phHugeIcon );
-}
-
-void CleanWindowsCache()
-{
-	CComPtr< IEmptyVolumeCache > pWindowsThumbnailer;
-	HRESULT hr = pWindowsThumbnailer.CoCreateInstance( CLSID_WindowsThumbnailer );
-	if ( SUCCEEDED( hr ) )
-	{
-		pWindowsThumbnailer->Purge( 0, NULL );
-	}	
 }

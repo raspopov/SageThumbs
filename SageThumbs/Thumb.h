@@ -80,6 +80,11 @@ Icon Handler:
 
 #include "Entity.h"
 
+// Without IDL-file
+#define CLSID_THUMB _T("{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}")
+class DECLSPEC_UUID    ("4A34B3E3-F50E-4FF6-8979-7E4176466FF2") Thumb;
+DEFINE_GUID(CLSID_Thumb,0x4A34B3E3,0xF50E,0x4FF6,0x89,0x79,0x7E,0x41,0x76,0x46,0x6F,0xF2);
+
 class ATL_NO_VTABLE CThumb :
 	public CComObjectRootEx< CComMultiThreadModel >,
 	public CComCoClass< CThumb, &CLSID_Thumb >,
