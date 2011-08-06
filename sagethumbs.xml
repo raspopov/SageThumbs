@@ -150,18 +150,7 @@
       <Char_Desc_80>SageThumbs is a shell extension allowing to preview many image formats.</Char_Desc_80>
       <Char_Desc_250>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author).</Char_Desc_250>
       <Char_Desc_450>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author).</Char_Desc_450>
-      <Char_Desc_2000>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author).
-
-Features:
-    Extended thumbnail image view of Explorer folder
-    Thumbnail image in explorer context menu (rigth-click menu)
-    Extended info tips
-    Support 162 image formats (224 extensions) via GFL Library
-    Support additional 26 image formats via XnView plugins (if installed)
-    Send by mail support
-    One-click conversion to popular image formats support
-    Wallpaper selection support
-    Copy to clipboard support</Char_Desc_2000>
+      <Char_Desc_2000>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author). Features: 1) Extended thumbnail image view of Explorer folder; 2) Thumbnail image in explorer context menu (rigth-click menu); 3) Extended info tips; 4) Support 162 image formats (224 extensions) via GFL Library; 5) Support additional 26 image formats via XnView plugins (if installed); 6) Send by mail support; 7) One-click conversion to popular image formats support; 8)  Wallpaper selection support; 9) Copy to clipboard support.</Char_Desc_2000>
     </English>
   </Program_Descriptions>
 </XML_DIZ_INFO>
