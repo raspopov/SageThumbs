@@ -1,78 +1,156 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <XML_DIZ_INFO>
-	<MASTER_PAD_VERSION_INFO>
-		<MASTER_PAD_VERSION>3.11</MASTER_PAD_VERSION>
-		<MASTER_PAD_EDITOR>PADGen 3.1.1.47 http://www.padgen.org</MASTER_PAD_EDITOR>
-		<MASTER_PAD_INFO>Portable Application Description, or PAD for short, is a data set that is used by shareware authors to disseminate information to anyone interested in their software products. To find out more go to http://pad.asp-software.org</MASTER_PAD_INFO>
-	</MASTER_PAD_VERSION_INFO>
-	<Company_Info>
-		<Company_Name>CherubicSoft</Company_Name>
-		<Address_1 />
-		<Address_2 />
-		<City_Town>Sarov</City_Town>
-		<State_Province />
-		<Zip_Postal_Code />
-		<Country>Russian Federation</Country>
-		<Company_WebSite_URL>http://www.cherubicsoft.com/</Company_WebSite_URL>
-		<Contact_Info>
-			<Author_First_Name>Nikolay</Author_First_Name>
-			<Author_Last_Name>Raspopov</Author_Last_Name>
-			<Author_Email>raspopov@cherubicsoft.com</Author_Email>
-			<Contact_First_Name>Nikolay</Contact_First_Name>
-			<Contact_Last_Name>Raspopov</Contact_Last_Name>
-			<Contact_Email>raspopov@cherubicsoft.com</Contact_Email>
-		</Contact_Info>
-		<Support_Info>
-			<Sales_Email>raspopov@cherubicsoft.com</Sales_Email>
-			<Support_Email>raspopov@cherubicsoft.com</Support_Email>
-			<General_Email>raspopov@cherubicsoft.com</General_Email>
-			<Sales_Phone />
-			<Support_Phone />
-			<General_Phone />
-			<Fax_Phone />
-		</Support_Info>
-	</Company_Info>
-	<Program_Info>
-		<Program_Name>SageThumbs 32-bit</Program_Name>
-		<Program_Version>2.0.0.7</Program_Version>
-		<Program_Release_Month>08</Program_Release_Month>
-		<Program_Release_Day>05</Program_Release_Day>
-		<Program_Release_Year>2011</Program_Release_Year>
-		<Program_Cost_Dollars>0</Program_Cost_Dollars>
-		<Program_Cost_Other_Code />
-		<Program_Cost_Other />
-		<Program_Type>Freeware</Program_Type>
-		<Program_Release_Status>New Release</Program_Release_Status>
-		<Program_Install_Support>Install and Uninstall</Program_Install_Support>
-		<Program_OS_Support>Win2000,Win7 x32,Win7 x64,WinServer,WinVista,WinVista x64,WinXP</Program_OS_Support>
-		<Program_Language>English,French,German,Russian</Program_Language>
-		<Program_Change_Info>Added support for work under restricted account privileges (UAC). Performance optimizations. Fixed SageThumbs modules stuck inside parent process.</Program_Change_Info>
-		<Program_Specific_Category>Graphics</Program_Specific_Category>
-		<Program_Category_Class>Graphic Apps::Viewers</Program_Category_Class>
-		<Program_System_Requirements>About 2 Mb of disk space + additional space for cache</Program_System_Requirements>
-		<File_Info>
-			<File_Size_Bytes>898569</File_Size_Bytes>
-			<File_Size_K>877</File_Size_K>
-			<File_Size_MB>0.86</File_Size_MB>
-		</File_Info>
-		<Expire_Info>
-			<Has_Expire_Info>N</Has_Expire_Info>
-			<Expire_Count />
-			<Expire_Based_On />
-			<Expire_Other_Info />
-			<Expire_Month />
-			<Expire_Day />
-			<Expire_Year />
-		</Expire_Info>
-	</Program_Info>
-	<Program_Descriptions>
-		<English>
-			<Keywords>thumbnails,shell extension,explorer extension, windows extension</Keywords>
-			<Char_Desc_45>SageThumbs is a shell extension.</Char_Desc_45>
-			<Char_Desc_80>SageThumbs is a shell extension allowing to preview many image formats.</Char_Desc_80>
-			<Char_Desc_250>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author). </Char_Desc_250>
-			<Char_Desc_450>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author).</Char_Desc_450>
-			<Char_Desc_2000>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author).
+  <MASTER_PAD_VERSION_INFO>
+    <MASTER_PAD_VERSION>3.11</MASTER_PAD_VERSION>
+    <MASTER_PAD_EDITOR>RoboSoft 4.0.738</MASTER_PAD_EDITOR>
+    <MASTER_PAD_EDITOR_URL>http://robosoft.rudenko.com</MASTER_PAD_EDITOR_URL>
+    <MASTER_PAD_INFO>Portable Application Description, or PAD for short, is a data set that is used by shareware authors to disseminate information to anyone interested in their software products. To find out more go to http://www.asp-shareware.org/pad</MASTER_PAD_INFO>
+  </MASTER_PAD_VERSION_INFO>
+  <RoboSoft>
+    <Company_UIN>CMP-00B806AA130</Company_UIN>
+    <Company_Description>CherbicSoft was founded by Nikolay Raspopov in 2004.</Company_Description>
+    <Product_UIN>APP-00B8069D71A</Product_UIN>
+    <Search_String>SageThumbs 32-bit</Search_String>
+    <Publish_on_CD>FALSE</Publish_on_CD>
+    <RSProductType></RSProductType>
+    <Press_Release_Search_String></Press_Release_Search_String>
+    <NewsFeed_Search_String></NewsFeed_Search_String>
+    <Search_Engine_Search_String></Search_Engine_Search_String>
+    <Web_Directories_Search_String></Web_Directories_Search_String>
+    <Search_String_Unique></Search_String_Unique>
+    <Comments_For_Reviewer></Comments_For_Reviewer>
+    <Backlink></Backlink>
+  </RoboSoft>
+  <Company_Info>
+    <Company_Name>CherubicSoft</Company_Name>
+    <Address_1>Pushkina 22-9</Address_1>
+    <Address_2></Address_2>
+    <City_Town>Sarov</City_Town>
+    <State_Province>Nizhegorodskaya oblast</State_Province>
+    <Zip_Postal_Code>607188</Zip_Postal_Code>
+    <Country>Russian Federation</Country>
+    <Company_WebSite_URL>http://www.cherubicsoft.com</Company_WebSite_URL>
+    <Contact_Info>
+      <Contact_First_Name>Nikolay</Contact_First_Name>
+      <Contact_Last_Name>Raspopov</Contact_Last_Name>
+      <Contact_Email>raspopov@cherubicsoft.com</Contact_Email>
+      <Author_First_Name>Nikolay</Author_First_Name>
+      <Author_Last_Name>Raspopov</Author_Last_Name>
+      <Author_Email>raspopov@cherubicsoft.com</Author_Email>
+    </Contact_Info>
+    <Support_Info>
+      <Sales_Email>raspopov@cherubicsoft.com</Sales_Email>
+      <Support_Email>raspopov@cherubicsoft.com</Support_Email>
+      <General_Email>raspopov@cherubicsoft.com</General_Email>
+      <Sales_Phone></Sales_Phone>
+      <Support_Phone></Support_Phone>
+      <General_Phone></General_Phone>
+      <Fax_Phone></Fax_Phone>
+    </Support_Info>
+  </Company_Info>
+  <NewsFeed>
+    <NewsFeed_FORM>Y</NewsFeed_FORM>
+    <NewsFeed_VERSION>1.0</NewsFeed_VERSION>
+    <NewsFeed_URL>http://Submit-Everywhere.com/extensions/NewsFeed.htm</NewsFeed_URL>
+    <NewsFeed_DESCRIPTION>This PAD extension allows you to add your RSS and Atom news feeds info into your PAD file. This info can be used by RSS feed submission software or by feed directories themselves.</NewsFeed_DESCRIPTION>
+    <NewsFeed_Type>RSS 0.90</NewsFeed_Type>
+    <NewsFeed_Language>English</NewsFeed_Language>
+    <NewsFeed_Purpose>News</NewsFeed_Purpose>
+    <NewsFeed_Author_Email>raspopov@cherubicsoft.com</NewsFeed_Author_Email>
+    <NewsFeed_Author_First_Name>Nikolay</NewsFeed_Author_First_Name>
+    <NewsFeed_Author_Last_Name>Raspopov</NewsFeed_Author_Last_Name>
+    <NewsFeed_Feed_URL></NewsFeed_Feed_URL>
+    <NewsFeed_Site_Name></NewsFeed_Site_Name>
+    <NewsFeed_Site_URL></NewsFeed_Site_URL>
+    <NewsFeed_Title></NewsFeed_Title>
+    <NewsFeed_Description_70></NewsFeed_Description_70>
+    <NewsFeed_Description_250></NewsFeed_Description_250>
+  </NewsFeed>
+  <Site>
+    <Site_FORM>Y</Site_FORM>
+    <Site_VERSION>1.0</Site_VERSION>
+    <Site_URL>http://Submit-Everywhere.com/extensions/Site.htm</Site_URL>
+    <Site_DESCRIPTION>This PAD extension allows you to add your site info into your PAD file. This info can be used by site submission software or by web directories themselves.</Site_DESCRIPTION>
+    <Site_Contact_Email>raspopov@cherubicsoft.com</Site_Contact_Email>
+    <Site_Contact_First_Name>Nikolay</Site_Contact_First_Name>
+    <Site_Contact_Last_Name>Raspopov</Site_Contact_Last_Name>
+    <Site_Site_Title>SageThumbs 32-bit</Site_Site_Title>
+    <Site_Site_URL>http://code.google.com/p/sagethumbs/</Site_Site_URL>
+    <Site_Description_100>SageThumbs is a shell extension allowing to preview many image formats.</Site_Description_100>
+    <Site_Description_250>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author).</Site_Description_250>
+    <Site_Description_450>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author).</Site_Description_450>
+    <Site_Keywords>thumbnails,shell extension,explorer extension, windows extension</Site_Keywords>
+  </Site>
+  <Program_Info>
+    <Program_Name>SageThumbs</Program_Name>
+    <Program_Version>2.0.0.7</Program_Version>
+    <Program_Release_Month>08</Program_Release_Month>
+    <Program_Release_Day>05</Program_Release_Day>
+    <Program_Release_Year>2011</Program_Release_Year>
+    <Program_Cost_Dollars>0</Program_Cost_Dollars>
+    <Program_Type>Freeware</Program_Type>
+    <Program_Release_Status>New Release</Program_Release_Status>
+    <Program_Install_Support>Install and Uninstall</Program_Install_Support>
+    <Program_OS_Support>WinXP,WinVista,WinVista x64,Win7 x32,Win7 x64,Win2000,WinServer</Program_OS_Support>
+    <Program_Language>English,French,German,Russian</Program_Language>
+    <Program_Change_Info>Added support for work under restricted account privileges (UAC). Performance optimizations. Fixed SageThumbs modules stuck inside parent process.</Program_Change_Info>
+    <Program_System_Requirements>About 2 Mb of disk space + additional space for cache</Program_System_Requirements>
+    <Program_Category_Class>Graphic Apps::Viewers</Program_Category_Class>
+    <File_Info>
+      <File_Size_Bytes>898569</File_Size_Bytes>
+      <File_Size_K>877</File_Size_K>
+      <File_Size_MB>0.86</File_Size_MB>
+      <Filename_Versioned></Filename_Versioned>
+      <Filename_Previous></Filename_Previous>
+      <Filename_Generic></Filename_Generic>
+      <Filename_Long></Filename_Long>
+    </File_Info>
+    <Expire_Info>
+      <Has_Expire_Info>N</Has_Expire_Info>
+      <Expire_Based_On>Days</Expire_Based_On>
+      <Expire_Count></Expire_Count>
+      <Expire_Other_Info></Expire_Other_Info>
+      <Expire_Month></Expire_Month>
+      <Expire_Day></Expire_Day>
+      <Expire_Year></Expire_Year>
+    </Expire_Info>
+    <Program_Categories>Other,Мультимедиа,Miscellaneous,Collaborations,Computers,Video,Thumbnails,Multimedia,Images,Graphic,Viewers,Apps</Program_Categories>
+    <Limitations>No limitations</Limitations>
+    <Program_Cost_Other_Code></Program_Cost_Other_Code>
+    <Program_Cost_Other></Program_Cost_Other>
+    <Awards></Awards>
+    <Program_Specific_Category></Program_Specific_Category>
+    <Includes_JAVA_VM></Includes_JAVA_VM>
+    <Includes_VB_Runtime></Includes_VB_Runtime>
+    <Includes_DirectX></Includes_DirectX>
+  </Program_Info>
+  <Web_Info>
+    <Application_URLs>
+      <Application_Info_URL>http://code.google.com/p/sagethumbs/</Application_Info_URL>
+      <Application_Order_URL>http://code.google.com/p/sagethumbs/</Application_Order_URL>
+      <Application_Screenshot_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs-context-menu.png</Application_Screenshot_URL>
+      <Application_Icon_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs-icon-32.gif</Application_Icon_URL>
+      <Application_XML_File_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs.xml</Application_XML_File_URL>
+    </Application_URLs>
+    <Download_URLs>
+      <Primary_Download_URL>http://sagethumbs.googlecode.com/files/sagethumbs_2.0.0.7_32_setup.exe</Primary_Download_URL>
+      <Secondary_Download_URL></Secondary_Download_URL>
+      <Additional_Download_URL_1></Additional_Download_URL_1>
+      <Additional_Download_URL_2></Additional_Download_URL_2>
+    </Download_URLs>
+  </Web_Info>
+  <Permissions>
+    <Distribution_Permissions>SageThumbs has been released under the GNU General Public License.</Distribution_Permissions>
+    <EULA>SageThumbs has been released under the GNU General Public License.</EULA>
+  </Permissions>
+  <Program_Descriptions>
+    <English>
+      <Keywords>thumbnails,shell extension,explorer extension, windows extension</Keywords>
+      <Char_Desc_45>SageThumbs is a shell extension.</Char_Desc_45>
+      <Char_Desc_80>SageThumbs is a shell extension allowing to preview many image formats.</Char_Desc_80>
+      <Char_Desc_250>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author).</Char_Desc_250>
+      <Char_Desc_450>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author).</Char_Desc_450>
+      <Char_Desc_2000>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author).
 
 Features:
     Extended thumbnail image view of Explorer folder
@@ -83,26 +161,7 @@ Features:
     Send by mail support
     One-click conversion to popular image formats support
     Wallpaper selection support
-    Copy to clipboard support </Char_Desc_2000>
-		</English>
-	</Program_Descriptions>
-	<Web_Info>
-		<Application_URLs>
-			<Application_Info_URL>http://code.google.com/p/sagethumbs/</Application_Info_URL>
-			<Application_Order_URL>http://code.google.com/p/sagethumbs/</Application_Order_URL>
-			<Application_Screenshot_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs-context-menu.png</Application_Screenshot_URL>
-			<Application_Icon_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs-icon-32.png</Application_Icon_URL>
-			<Application_XML_File_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs.xml</Application_XML_File_URL>
-		</Application_URLs>
-		<Download_URLs>
-			<Primary_Download_URL>http://sagethumbs.googlecode.com/files/sagethumbs_2.0.0.7_32_setup.exe</Primary_Download_URL>
-			<Secondary_Download_URL />
-			<Additional_Download_URL_1 />
-			<Additional_Download_URL_2 />
-		</Download_URLs>
-	</Web_Info>
-	<Permissions>
-		<Distribution_Permissions>SageThumbs has been released under the GNU General Public License.</Distribution_Permissions>
-		<EULA>SageThumbs has been released under the GNU General Public License.</EULA>
-	</Permissions>
+    Copy to clipboard support</Char_Desc_2000>
+    </English>
+  </Program_Descriptions>
 </XML_DIZ_INFO>
