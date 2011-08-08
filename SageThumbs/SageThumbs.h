@@ -27,11 +27,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define LIB_SQLITE			"sqlite3.dll"	// Name of SQLite library (case sensitive)
 #define REG_SAGETHUMBS		_T("Software\\SageThumbs")
 #define REG_SAGETHUMBS_BAK	_T("SageThumbs.bak")
-#define THUMB_STORE_SIZE	256
-#define THUMB_MIN_SIZE		32				// Минимальный размер просмотра в пикселях
-#define THUMB_MAX_SIZE		512				// Максимальный размер просмотра в пикселях 
-#define FILE_MAX_SIZE		10				// Максимальный размер файла в Мб
+#define JPEG_DEFAULT		85ul			// JPEG default quality
+#define PNG_DEFAULT			6ul				// PNG default compression
+#define THUMB_STORE_SIZE	256ul			// Minimum thumbnail size for database
+#define THUMB_MIN_SIZE		32ul			// Минимальный размер просмотра в пикселях
+#define THUMB_MAX_SIZE		512ul			// Максимальный размер просмотра в пикселях 
+#define FILE_MAX_SIZE		10ul			// Максимальный размер файла в Мб
 #define STANDARD_LANGID		0x09			// Стандартный встроенный язык - English
+
+// Disabled by default
+#define EXT_DEFAULT(ext) \
+	((ext)==_T("ico")|| \
+	 (ext)==_T("ani")|| \
+	 (ext)==_T("cur")|| \
+	 (ext)==_T("wmz"))
 
 // SQL для создания базы данных
 const LPCTSTR RECREATE_DATABASE =
@@ -96,7 +105,8 @@ public:
 	CSageThumbsModule();
 
 	OSVERSIONINFO			m_OSVersion;			// OS version
-	CString					m_sModuleFileName;		// This module filename
+	CString					m_sModuleFileName;		// This module full filename
+	CString					m_sModule;				// This module name without extension
 	CString					m_sHome;				// Installation folder
 	CString					m_sDatabase;			// Database filename
 	CExtMap					m_oExtMap;				// Supported image extensions

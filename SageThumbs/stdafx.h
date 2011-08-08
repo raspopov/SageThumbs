@@ -56,6 +56,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <commctrl.h>
 #include <cpl.h>
 #include <delayimp.h>
+#include <ddraw.h>
 #include <emptyvc.h>
 #include <mapi.h>
 #include <ocmm.h>

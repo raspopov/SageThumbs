@@ -521,6 +521,10 @@
 			RelativePath="..\ReadMe.txt"
 			>
 		</File>
+		<File
+			RelativePath="..\SageThumbs Online.url"
+			>
+		</File>
 	</Files>
 	<Globals>
 		<Global

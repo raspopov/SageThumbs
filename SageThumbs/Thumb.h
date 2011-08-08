@@ -105,7 +105,7 @@ class ATL_NO_VTABLE CThumb :
 //	public IDataObject,
 	public IExtractIconA,
 	public IExtractIconW,
-//	public IImageDecodeFilter,
+	public IImageDecodeFilter,
 //	public IColumnProvider
 	public IObjectWithSite,
 	public IEmptyVolumeCache2
@@ -139,7 +139,7 @@ public:
 //		COM_INTERFACE_ENTRY(IDataObject)
 		COM_INTERFACE_ENTRY(IExtractIconA)
 		COM_INTERFACE_ENTRY(IExtractIconW)
-//		COM_INTERFACE_ENTRY(IImageDecodeFilter)
+		COM_INTERFACE_ENTRY(IImageDecodeFilter)
 //		COM_INTERFACE_ENTRY(IColumnProvider)
 		COM_INTERFACE_ENTRY(IObjectWithSite)
 		COM_INTERFACE_ENTRY(IEmptyVolumeCache)
@@ -300,12 +300,12 @@ public:
 	//	/* [out] */ IEnumSTATDATA **ppenumAdvise);
 
 // IImageDecodeFilter
-	//STDMETHOD(Initialize)( 
-	//	/* [in] */ IImageDecodeEventSink *pEventSink);	    
-	//STDMETHOD(Process)( 
-	//	/* [in] */ IStream *pStream);	    
-	//STDMETHOD(Terminate)( 
-	//	/* [in] */ HRESULT hrStatus);
+	STDMETHOD(Initialize)( 
+		/* [in] */ IImageDecodeEventSink *pEventSink);	    
+	STDMETHOD(Process)( 
+		/* [in] */ IStream *pStream);	    
+	STDMETHOD(Terminate)( 
+		/* [in] */ HRESULT hrStatus);
 
 // IObjectWithSite
 	STDMETHOD(SetSite)(IUnknown *pUnkSite);
@@ -354,13 +354,13 @@ protected:
 	CEntity							m_Preview;			// Эскиз
 	UINT							m_cx, m_cy;			// Нужные размеры эскиза
 	CComPtr< IUnknown >				m_pSite;			// Хэндлер хоста IObjectWithSite
-//	CComPtr<IImageDecodeEventSink>	m_spEventSink;		// Хэндлер событий IImageDecodeFilter
+	CComPtr< IImageDecodeEventSink >m_pEventSink;		// Хэндлер событий IImageDecodeFilter
 
 //	CComPtr< IStream >				m_pStream;			// Стрим файла
 	CString							m_sFilename;		// Имя файла
 	BOOL							m_bCleanup;		// Флаг пропуска очистки
 
-	void ConvertTo(HWND hWnd, LPCSTR ext);		// Конвертирование в нужное расширение
+	void ConvertTo(HWND hWnd, int ext);			// Конвертирование в нужное расширение
 	void SetWallpaper(HWND hwnd, WORD reason);	// Установка обоев
 	void SendByMail(HWND hwnd, WORD reason);	// Посылка по почте
 	void CopyToClipboard(HWND hwnd);			// Копирование в буфер обмена

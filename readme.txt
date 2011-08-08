@@ -32,6 +32,12 @@ System Requirements:
 
 Versions:
 
+2.0.0.8
+  * Combined 32/64-bit distributive
+  * Added "JPEG quality" and "PNG compression" convert options
+  * Added "Convert to PNG" context menu item
+  * Optimized options dialog
+
 2.0.0.7
   * Added option "Enable Windows thumbnail cache" (as Win7 "black thumbnail" bug workaround)
   * Added support for work under restricted account privileges (UAC)

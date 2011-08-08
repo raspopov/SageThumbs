@@ -64,6 +64,7 @@ void COptionsDialog::ShowAbout()
 	CString sDatabaseSize, sDatabaseSizeFmt;
 	sDatabaseSizeFmt.LoadString( IDS_DATABASE_SIZE );
 	sDatabaseSize.Format( sDatabaseSizeFmt, ( wfadDatabase.nFileSizeLow >> 10 ) );
+	SetDlgItemText( IDC_CACHE_SIZE, sDatabaseSize );
 
 	// Загрузка информации о версии
 	DWORD handle = NULL;
@@ -86,13 +87,13 @@ void COptionsDialog::ShowAbout()
 							(void**)&szLegalCopyright, &len ) && len )
 						{
 							CString sAbout;
-							sAbout.Format( _T("%s %d.%d.%d.%d\r\n%s\r\n\r\n%s"),
+							sAbout.Format( _T("%s %d.%d.%d.%d\r\n%s"),
 								szProductName,
 								HIWORD (fix->dwFileVersionMS),
 								LOWORD (fix->dwFileVersionMS),
 								HIWORD (fix->dwFileVersionLS),
 								LOWORD (fix->dwFileVersionLS),
-								szLegalCopyright, (LPCTSTR)sDatabaseSize );
+								szLegalCopyright );
 							SetDlgItemText( IDC_COPYRIGHT, sAbout );
 						}
 					}
@@ -111,7 +112,7 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 	SendDlgItemMessage( IDC_LANG, CB_RESETCONTENT );
 	AddLanguage( STANDARD_LANGID, _Module.GetLang() );
 	WIN32_FIND_DATA wfd = {};
-	HANDLE ff = FindFirstFile( _Module.m_sHome + _T("SageThumbs??.dll"), &wfd );
+	HANDLE ff = FindFirstFile( _Module.m_sHome + _Module.m_sModule + _T("??.dll"), &wfd );
 	if ( ff != INVALID_HANDLE_VALUE )
 	{
 		do
@@ -131,14 +132,24 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 
 	ShowAbout();
 
-	const DWORD max_size = GetRegValue( _T("MaxSize"), (DWORD)FILE_MAX_SIZE );
+	const DWORD max_size = GetRegValue( _T("MaxSize"), FILE_MAX_SIZE );
 	SetDlgItemInt( IDC_FILE_SIZE, max_size, FALSE );
 
-	const DWORD width = GetRegValue( _T("Width"), (DWORD)THUMB_STORE_SIZE );
+	const DWORD width = GetRegValue( _T("Width"), THUMB_STORE_SIZE );
 	SetDlgItemInt( IDC_WIDTH, width, FALSE );
 
-	const DWORD height = GetRegValue( _T("Height"), (DWORD)THUMB_STORE_SIZE );
+	const DWORD height = GetRegValue( _T("Height"), THUMB_STORE_SIZE );
 	SetDlgItemInt( IDC_HEIGHT, height, FALSE );
+
+	const DWORD jpeg = GetRegValue( _T("JPEG"), JPEG_DEFAULT );
+	SetDlgItemInt( IDC_JPEG, jpeg, FALSE );
+	SendDlgItemMessage( IDC_JPEG_SPIN, UDM_SETRANGE, 0, MAKELONG( 100, 0 ) );
+	SendDlgItemMessage( IDC_JPEG_SPIN, UDM_SETPOS, 0, MAKELONG( jpeg, 0 ) );
+
+	const DWORD png = GetRegValue( _T("PNG"), PNG_DEFAULT );
+	SetDlgItemInt( IDC_PNG, png, FALSE );
+	SendDlgItemMessage( IDC_PNG_SPIN, UDM_SETRANGE, 0, MAKELONG( 9, 0 ) );
+	SendDlgItemMessage( IDC_PNG_SPIN, UDM_SETPOS, 0, MAKELONG( png, 0 ) );
 
 	const CWindow& pList = GetDlgItem (IDC_TYPES_LIST);
 	ListView_SetExtendedListViewStyle (pList,
@@ -253,6 +264,12 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 	SetRegValue( _T("Width"), width );
 	SetRegValue( _T("Height"), height );
 
+	DWORD jpeg = min( 100, max( 0, GetDlgItemInt( IDC_JPEG, &result, FALSE ) ) );
+	SetRegValue( _T("JPEG"), jpeg );
+
+	DWORD png = min( 9, max( 0, GetDlgItemInt( IDC_PNG, &result, FALSE ) ) );
+	SetRegValue( _T("PNG"), png );
+
 	const bool bEnableMenu = IsDlgButtonChecked( IDC_ENABLE_MENU ) == BST_CHECKED;
 	SetRegValue( _T("EnableMenu"), bEnableMenu ? 1ul : 0ul );
 
@@ -337,6 +354,23 @@ LRESULT COptionsDialog::OnCancel(WORD /* wNotifyCode */, WORD /* wID */, HWND /*
 	bHandled = TRUE;
 
 	EndDialog( IDCANCEL );
+
+	return TRUE;
+}
+
+LRESULT COptionsDialog::OnDefault(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWndCtl */, BOOL& bHandled)
+{
+	bHandled = TRUE;
+
+	const CWindow& pList = GetDlgItem (IDC_TYPES_LIST);
+	const int len = ListView_GetItemCount (pList);
+	for ( int index = 0; index < len; ++index )
+	{
+		CString ext;
+		ListView_GetItemText( pList, index, 0, ext.GetBuffer( 65 ), 64 );
+		ext.ReleaseBuffer();
+		ListView_SetCheckState( pList, index, EXT_DEFAULT( ext ) ? FALSE : TRUE );
+	}
 
 	return TRUE;
 }

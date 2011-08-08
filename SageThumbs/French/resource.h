@@ -23,6 +23,7 @@
 #define IDS_CACHE                       116
 #define IDS_DESCRIPTION                 117
 #define IDS_ACCESS_DENIED               118
+#define IDS_CONVERT_PNG                 119
 #define IDC_WIDTH                       201
 #define IDC_HEIGHT                      202
 #define IDD_OPTIONS                     202
@@ -48,6 +49,12 @@
 #define IDC_EMBEDDED                    215
 #define IDC_ENABLE_ICONS                216
 #define IDC_ENABLE_WINCACHE             217
+#define IDC_JPEG                        219
+#define IDC_PNG                         220
+#define IDC_JPEG_SPIN                   221
+#define IDC_PNG_SPIN                    222
+#define IDC_DEFAULT                     223
+#define IDC_CACHE_SIZE                  224
 
 // Next default values for new objects
 // 
@@ -55,7 +62,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        211
 #define _APS_NEXT_COMMAND_VALUE         32768
-#define _APS_NEXT_CONTROL_VALUE         215
+#define _APS_NEXT_CONTROL_VALUE         225
 #define _APS_NEXT_SYMED_VALUE           103
 #endif
 #endif

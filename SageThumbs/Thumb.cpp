@@ -130,7 +130,8 @@ STDMETHODIMP CThumb::Initialize(LPCITEMIDLIST, IDataObject* pDO, HKEY)
 #define ID_CONVERT_JPG_ITEM			9
 #define ID_CONVERT_GIF_ITEM			10
 #define ID_CONVERT_BMP_ITEM			11
-#define ID_END_ITEM					12			
+#define ID_CONVERT_PNG_ITEM			12
+#define ID_END_ITEM					13			
 
 STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst, UINT uidCmdLast, UINT uFlags)
 {
@@ -156,6 +157,7 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 	m_uOurItemID = uidCmdFirst;
 
 	CString tmp;
+	int nPos = 0;
 
 	// Creating submenu items
 	HMENU hSubMenu = CreateMenu ();
@@ -164,10 +166,10 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 	if ( bSingleFile )
 	{
 		tmp.LoadString (IDS_CLIPBOARD);
-		if ( ! InsertMenu( hSubMenu, 0, MF_BYPOSITION | MF_STRING,
+		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 			uidCmdFirst + ID_CLIPBOARD_ITEM, tmp))
 			return E_FAIL;
-		if ( ! InsertMenu( hSubMenu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
+		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
 			return E_FAIL;
 	}
 
@@ -175,49 +177,53 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 	if ( bSingleFile )
 	{
 		tmp.LoadString (IDS_WALLPAPER_STRETCH);
-		if ( ! InsertMenu( hSubMenu, 2, MF_BYPOSITION | MF_STRING,
+		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 			uidCmdFirst + ID_WALLPAPER_STRETCH_ITEM, tmp))
 			return E_FAIL;
 		tmp.LoadString (IDS_WALLPAPER_TILE);
-		if ( ! InsertMenu( hSubMenu, 3, MF_BYPOSITION | MF_STRING,
+		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 			uidCmdFirst + ID_WALLPAPER_TILE_ITEM, tmp))
 			return E_FAIL;
 		tmp.LoadString (IDS_WALLPAPER_CENTER);
-		if ( ! InsertMenu( hSubMenu, 4, MF_BYPOSITION | MF_STRING,
+		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 			uidCmdFirst + ID_WALLPAPER_CENTER_ITEM, tmp))
 			return E_FAIL;
-		if ( ! InsertMenu( hSubMenu, 5, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
+		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
 			return E_FAIL;
 	}
 
 	tmp.LoadString (IDS_MAIL_IMAGE);
-	if ( ! InsertMenu( hSubMenu, 6, MF_BYPOSITION | MF_STRING,
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 		uidCmdFirst + ID_MAIL_IMAGE_ITEM, tmp))
 		return E_FAIL;
 	tmp.LoadString (IDS_MAIL_THUMBNAIL);
-	if ( ! InsertMenu( hSubMenu, 7, MF_BYPOSITION | MF_STRING,
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 		uidCmdFirst + ID_MAIL_THUMBNAIL_ITEM, tmp))
 		return E_FAIL;
-	if ( ! InsertMenu( hSubMenu, 8, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
 		return E_FAIL;
 
 	tmp.LoadString (IDS_CONVERT_JPG);
-	if ( ! InsertMenu( hSubMenu, 9, MF_BYPOSITION | MF_STRING,
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 		uidCmdFirst + ID_CONVERT_JPG_ITEM, tmp))
 		return E_FAIL;
 	tmp.LoadString (IDS_CONVERT_GIF);
-	if ( ! InsertMenu( hSubMenu, 10, MF_BYPOSITION | MF_STRING,
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 		uidCmdFirst + ID_CONVERT_GIF_ITEM, tmp))
 		return E_FAIL;
 	tmp.LoadString (IDS_CONVERT_BMP);
-	if ( ! InsertMenu( hSubMenu, 11, MF_BYPOSITION | MF_STRING,
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 		uidCmdFirst + ID_CONVERT_BMP_ITEM, tmp))
 		return E_FAIL;
-	if ( ! InsertMenu( hSubMenu, 12, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
+	tmp.LoadString (IDS_CONVERT_PNG);
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
+		uidCmdFirst + ID_CONVERT_PNG_ITEM, tmp))
+		return E_FAIL;
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
 		return E_FAIL;
 
 	tmp.LoadString (IDS_OPTIONS);
-	if ( ! InsertMenu( hSubMenu, 13, MF_BYPOSITION | MF_STRING,
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 		uidCmdFirst + ID_OPTIONS_ITEM, tmp))
 		return E_FAIL;
 
@@ -315,6 +321,9 @@ STDMETHODIMP CThumb::GetCommandString (
 		case ID_CONVERT_BMP_ITEM:
 			tmp.LoadString (IDS_CONVERT_BMP);
 			break;
+		case ID_CONVERT_PNG_ITEM:
+			tmp.LoadString (IDS_CONVERT_PNG);
+			break;
 		default:
 			ATLTRACE( "E_INVALIDARG\n" );
 			return E_INVALIDARG;
@@ -340,8 +349,28 @@ STDMETHODIMP CThumb::GetCommandString (
 	return S_OK;
 }
 
-void CThumb::ConvertTo(HWND hWnd, LPCSTR ext)
+void CThumb::ConvertTo(HWND hWnd, int ext)
 {
+	LPCSTR szExt = NULL;
+	switch ( ext )
+	{
+	case ID_CONVERT_JPG_ITEM:
+		szExt = "jpeg";
+		break;
+	case ID_CONVERT_GIF_ITEM:
+		szExt = "gif";
+		break;
+	case ID_CONVERT_BMP_ITEM:
+		szExt = "bmp";
+		break;
+	case ID_CONVERT_PNG_ITEM:
+		szExt = "png";
+		break;
+	default:
+		ATLASSERT( FALSE );
+	}
+	int index = gflGetFormatIndexByName( szExt );
+
 	for ( POSITION pos = m_Filenames.GetHeadPosition (); pos ; )
 	{
 		CString filename( m_Filenames.GetNext( pos ) );
@@ -352,7 +381,21 @@ void CThumb::ConvertTo(HWND hWnd, LPCSTR ext)
 			GFL_SAVE_PARAMS params = {};
 			gflGetDefaultSaveParams( &params );
 			params.Flags = GFL_SAVE_REPLACE_EXTENSION | GFL_SAVE_ANYWAY;
-			params.FormatIndex = gflGetFormatIndexByName( ext );
+			params.FormatIndex = index;
+			if ( ext == ID_CONVERT_JPG_ITEM )
+			{
+				params.Quality = (GFL_INT16)GetRegValue( _T("JPEG"), JPEG_DEFAULT );
+				params.Progressive = GFL_TRUE;
+				params.OptimizeHuffmanTable = GFL_TRUE;
+			}
+			else if ( ext == ID_CONVERT_GIF_ITEM )
+			{
+				params.Interlaced = GFL_TRUE;
+			}
+			else if ( ext == ID_CONVERT_PNG_ITEM )
+			{
+				params.CompressionLevel = (GFL_INT16)GetRegValue( _T("PNG"), PNG_DEFAULT );
+			}
 
 			if ( gflSaveBitmapT( (LPTSTR)(LPCTSTR)filename, hBitmap, &params ) != GFL_NO_ERROR )
 			{
@@ -407,8 +450,8 @@ void CThumb::SendByMail(HWND hwnd, WORD reason)
 	HRESULT hr;
 
 	// Загрузка размеров из реестра
-	DWORD width = GetRegValue( _T("Width"), (DWORD)THUMB_STORE_SIZE );
-	DWORD height = GetRegValue( _T("Height"), (DWORD)THUMB_STORE_SIZE );
+	DWORD width = GetRegValue( _T("Width"), THUMB_STORE_SIZE );
+	DWORD height = GetRegValue( _T("Height"), THUMB_STORE_SIZE );
 
 	// Инициализация MAPI
 	if ( HMODULE hLibrary = LoadLibrary( _T("MAPI32.DLL") ) )
@@ -545,15 +588,16 @@ STDMETHODIMP CThumb::InvokeCommand(LPCMINVOKECOMMANDINFO pInfo)
 		break;
 
 	case ID_CONVERT_JPG_ITEM:
-		ConvertTo( pInfo->hwnd, "jpeg" );
+		ConvertTo( pInfo->hwnd, ID_CONVERT_JPG_ITEM );
 		break;
-
 	case ID_CONVERT_GIF_ITEM:
-		ConvertTo( pInfo->hwnd, "gif" );
+		ConvertTo( pInfo->hwnd, ID_CONVERT_GIF_ITEM );
 		break;
-
 	case ID_CONVERT_BMP_ITEM:
-		ConvertTo( pInfo->hwnd, "bmp" );
+		ConvertTo( pInfo->hwnd, ID_CONVERT_BMP_ITEM );
+		break;
+	case ID_CONVERT_PNG_ITEM:
+		ConvertTo( pInfo->hwnd, ID_CONVERT_PNG_ITEM );
 		break;
 
 	case ID_WALLPAPER_STRETCH_ITEM:
@@ -629,8 +673,8 @@ STDMETHODIMP CThumb::OnMeasureItem(MEASUREITEMSTRUCT* pmis, LRESULT* pResult)
 		return S_OK;
 
 	// Загрузка размеров из реестра
-	DWORD width = GetRegValue( _T("Width"), (DWORD)THUMB_STORE_SIZE );
-	DWORD height = GetRegValue( _T("Height"), (DWORD)THUMB_STORE_SIZE );
+	DWORD width = GetRegValue( _T("Width"), THUMB_STORE_SIZE );
+	DWORD height = GetRegValue( _T("Height"), THUMB_STORE_SIZE );
 
 	// Расчет всех размеров
 	m_Preview.CalcSize( pmis->itemWidth, pmis->itemHeight, width, height );
@@ -648,8 +692,8 @@ STDMETHODIMP CThumb::OnDrawItem(DRAWITEMSTRUCT* pdis, LRESULT* pResult)
 		return S_OK;
 
 	// Загрузка размеров из реестра
-	DWORD width = GetRegValue( _T("Width"), (DWORD)THUMB_STORE_SIZE );
-	DWORD height = GetRegValue( _T("Height"), (DWORD)THUMB_STORE_SIZE );
+	DWORD width = GetRegValue( _T("Width"), THUMB_STORE_SIZE );
+	DWORD height = GetRegValue( _T("Height"), THUMB_STORE_SIZE );
 
 	UINT cx, cy;
 	m_Preview.CalcSize( cx, cy, width, height );
@@ -1476,136 +1520,187 @@ STDMETHODIMP CThumb::Extract(LPCWSTR /*pszFile*/, UINT nIconIndex, HICON* phicon
 //}
 
 // IImageDecodeFilter
-//
-//STDMETHODIMP CThumb::Initialize (IImageDecodeEventSink* pEventSink)    
-//{
-//	m_spEventSink = pEventSink;
-//	DWORD dwEvents = 0;
-//	ULONG nFormats = 0;
-//    BFID *pFormats = NULL;
-//	HRESULT hr = m_spEventSink->OnBeginDecode (&dwEvents, &nFormats, &pFormats);
-//	if (FAILED (hr)) {
-//		ATLTRACE ("m_spEventSink->OnBeginDecode error 0x%08x\n", hr);
-//		m_spEventSink.Release ();
-//		return hr;
-//	}
-//	ATLTRACE ("m_spEventSink->OnBeginDecode -> events=%d, formats=%d\n", dwEvents, nFormats);
-//	for (ULONG i = 0; i < nFormats; i++)
-//		if (IsEqualGUID (BFID_RGB_24, pFormats [i]))
-//			break;
-//	CoTaskMemFree (pFormats);
-//	if (i == nFormats) {
-//		ATLTRACE ("m_spEventSink->OnBeginDecode cannot find RGB_24 format\n");
-//		return E_FAIL;
-//	}
-//	return S_OK;
-//}
-//
-//STDMETHODIMP CThumb::Process (IStream* pStream)    
-//{
-//	HRESULT hr;
-//
-//	UINT CHUNK = 1;
-//	CAtlArray<unsigned char> data;
-//	ULONG total = 0;
-//	ULONG readed;
-//	for (;;) {
-//		readed = 0;
-//		data.SetCount (total + CHUNK, 0);
-//		hr = pStream->Read (data.GetData () + total, CHUNK, &readed);
-//		if (FAILED (hr)) {
-//			ATLTRACE ("pStream->Read error 0x%08x\n", hr);
-//			return hr;
-//		}
-//		total += readed;
-//		if (readed != CHUNK) {
-//			data.SetCount (total, 0);
-//			break;
-//		}
-//	}
-//	ATLTRACE ("Readed %d bytes\n", total);
-//
-//	// Поиск среди известных расширений
-//	CString ext;
-//	const BitsDescription* bits;
-//	for (POSITION pos = _BitsMap.GetStartPosition (); pos; ) {
-//		bits = NULL;
-//		_BitsMap.GetNextAssoc (pos, ext, bits);
-//		if (bits->size < total && !memcmp (bits->data, data.GetData (), bits->size))
-//			break;
-//		ext.Empty ();
-//	}
-//
-//	GFL_LOAD_PARAMS params;
-//	gflGetDefaultLoadParams (&params);
-//	if (ext.IsEmpty ()) {
-//		// Неизвестное расширение
-//		ATLTRACE ("Unknown format. Autodetecting...\n");
-//	} else {
-//		params.FormatIndex = gflGetFormatIndexByName ((LPCSTR)CT2A (ext));
-//		ATLTRACE ("Its \"%s\" GFL Index=%d\n", ext, params.FormatIndex);
-//	}
-//
-//	GFL_BITMAP* hGflBitmap = NULL;
-//	params.ColorModel = GFL_BGR;
-//	GFL_FILE_INFORMATION info;
-//	ZeroMemory (&info, sizeof (info));
-//	hr = SAFEgflLoadBitmapFromMemory (data.GetData (), total, &hGflBitmap, &params, &info);
-//	if (FAILED (hr))
-//		return hr;
-//	ATLTRACE ("Loaded as \"%s\" GFL Index=%d\n", info.FormatName, info.FormatIndex);
-//	gflFreeFileInformation (&info);
-//
-//	if (hGflBitmap->BitsPerComponent != 8 &&
-//		hGflBitmap->BytesPerPixel != 3 &&
-//		hGflBitmap->ComponentsPerPixel != 3) {
-//		ATLTRACE ("Bad format og GFL bitmap (BitsPerComponent=%d, BytesPerPixel=%d, ComponentsPerPixel=%d)\n",
-//			hGflBitmap->BitsPerComponent, hGflBitmap->BytesPerPixel,
-//			hGflBitmap->ComponentsPerPixel);
-//		gflFreeBitmap (hGflBitmap);
-//		return E_FAIL;
-//	}
-//
-//	CComPtr <IDirectDrawSurface> pIDirectDrawSurface;
-//	hr = m_spEventSink->GetSurface (info.Width, info.Height, BFID_RGB_24, 1,
-//		IMGDECODE_HINT_BOTTOMUP | IMGDECODE_HINT_FULLWIDTH,
-//		reinterpret_cast <IUnknown**> (&pIDirectDrawSurface));
-//	if (FAILED (hr)) {
-//		ATLTRACE ("m_spEventSink->GetSurface error 0x%08x\n", hr);
-//		gflFreeBitmap (hGflBitmap);
-//		return hr;
-//	}
-//
-//	DDSURFACEDESC desc;
-//	ZeroMemory (&desc, sizeof (desc));
-//	desc.dwSize = sizeof (DDSURFACEDESC);
-//	RECT rc = { 0, 0, info.Width - 1, info.Height - 1};
-//	hr = pIDirectDrawSurface->Lock (&rc, &desc, DDLOCK_WAIT, NULL);
-//	if (FAILED (hr)) {
-//		ATLTRACE ("pIDirectDrawSurface->Lock error 0x%08x\n", hr);
-//		gflFreeBitmap (hGflBitmap);
-//		return hr;
-//	}
-//	int line_size = desc.lPitch;
-//	for (int line = 0; line < info.Height; ++line) {
-//		CopyMemory ((char*) desc.lpSurface + line * line_size,
-//			hGflBitmap->Data + line * hGflBitmap->BytesPerLine, info.Width * 3);
-//	}
-//	hr = pIDirectDrawSurface->Unlock (NULL);
-//	if (FAILED (hr)) {
-//		ATLTRACE ("pIDirectDrawSurface->Unlock error 0x%08x\n", hr);
-//		gflFreeBitmap (hGflBitmap);
-//		return hr;
-//	}
-//
-//	gflFreeBitmap (hGflBitmap);
-//	return S_OK;
-//}
-//
-//STDMETHODIMP CThumb::Terminate (HRESULT /* hrStatus */)
-//{
-//	ATLTRACENOTIMPL ("IImageDecodeFilter::Terminate");
-//}
+
+STDMETHODIMP CThumb::Initialize(IImageDecodeEventSink* pEventSink)    
+{
+	if ( ! pEventSink )
+	{
+		ATLTRACE( "CThumb - IImageDecodeFilter::Initialize() : E_POINTER\n" );
+		return E_POINTER;
+	}
+
+	m_pEventSink = pEventSink;
+
+	DWORD dwEvents = 0;
+	ULONG nFormats = 0;
+    BFID *pFormats = NULL;
+	HRESULT hr = m_pEventSink->OnBeginDecode( &dwEvents, &nFormats, &pFormats );
+	if (FAILED (hr))
+	{
+		ATLTRACE( "CThumb - IImageDecodeFilter : OnBeginDecode error 0x%08x\n", hr);
+		m_pEventSink.Release();
+		return hr;
+	}
+	ATLTRACE( "CThumb - IImageDecodeFilter : OnBeginDecode returns: events=0x%08x, formats=%d\n", dwEvents, nFormats);
+	ULONG i = 0;
+	bool bOk = false;
+	for ( ; i < nFormats; ++i )
+	{
+		if ( IsEqualGUID( BFID_MONOCHROME, pFormats[ i ] ) )
+		{
+			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_MONOCHROME\n" );
+		}
+		else if ( IsEqualGUID( BFID_RGB_4, pFormats[ i ] ) )
+		{
+			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_4\n" );
+		}
+		else if ( IsEqualGUID( BFID_RGB_8, pFormats[ i ] ) )
+		{
+			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_8\n" );
+		}
+		else if ( IsEqualGUID( BFID_RGB_555, pFormats[ i ] ) )
+		{
+			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_555\n" );
+		}
+		else if ( IsEqualGUID( BFID_RGB_565, pFormats[ i ] ) )
+		{
+			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_565\n" );
+		}
+		else if ( IsEqualGUID( BFID_RGB_24, pFormats[ i ] ) )
+		{
+			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_24\n" );
+			bOk = true;
+		}
+		else if ( IsEqualGUID( BFID_RGB_32, pFormats[ i ] ) )
+		{
+			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_32\n" );
+		}
+		else if ( IsEqualGUID( BFID_RGBA_32, pFormats[ i ] ) )
+		{
+			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGBA_32\n" );
+		}
+		else if ( IsEqualGUID( BFID_GRAY_8, pFormats[ i ] ) )
+		{
+			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_GRAY_8\n" );
+		}
+		else if ( IsEqualGUID( BFID_GRAY_16, pFormats[ i ] ) )
+		{
+			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_GRAY_16\n" );
+		}
+		else
+		{
+			ATLTRACE( "CThumb - IImageDecodeFilter : Found unknown format\n" );
+		}
+	}
+	CoTaskMemFree( pFormats );
+
+	if ( ! bOk )
+	{
+		ATLTRACE( "CThumb - IImageDecodeFilter : OnBeginDecode cannot find RGB_24 format\n");
+		return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+STDMETHODIMP CThumb::Process(IStream* pStream)    
+{
+	HRESULT hr;
+
+	const ULONG chunk = 1024;
+	ULONG total = 0;
+	CAtlArray< unsigned char > data;
+	for (;;)
+	{
+		if ( ! data.SetCount( total + chunk ) )
+		{
+			ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Out of memory\n" );
+			return E_OUTOFMEMORY;
+		}
+
+		ULONG readed = 0;
+		hr = pStream->Read( data.GetData() + total, chunk, &readed );
+		total += readed;
+		if ( FAILED( hr ) )
+		{
+			ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Read error 0x%08x\n", hr );
+			return hr;
+		}
+		if ( hr == S_FALSE )
+			break;
+	}
+	
+	hr = m_pEventSink->OnBitsComplete();
+	ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Readed %u bytes\n", total );
+
+	GFL_BITMAP* hGflBitmap = NULL;
+	hr = _Module.LoadBitmapFromMemory( data.GetData (), total, &hGflBitmap );
+	if ( FAILED( hr ) )
+	{
+		ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Load error 0x%08x\n", hr );
+		return hr;
+	}
+	ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Loaded as %dx%d bitmap (%d bpl)\n", hGflBitmap->Width, hGflBitmap->Height, hGflBitmap->BytesPerLine );
+
+	CComPtr< IDirectDrawSurface > pIDirectDrawSurface;
+	hr = m_pEventSink->GetSurface( hGflBitmap->Width, hGflBitmap->Height,
+		BFID_RGB_24, 1, IMGDECODE_HINT_TOPDOWN | IMGDECODE_HINT_FULLWIDTH,
+		(IUnknown**) &pIDirectDrawSurface );
+	if (FAILED (hr))
+	{
+		ATLTRACE ("CThumb - IImageDecodeFilter::Process() : m_spEventSink->GetSurface error 0x%08x\n", hr );
+		_Module.FreeBitmap( hGflBitmap );
+		return hr;
+	}
+
+	DDSURFACEDESC desc = { sizeof( DDSURFACEDESC ) };
+	RECT rc = { 0, 0, hGflBitmap->Width, hGflBitmap->Height };
+	hr = pIDirectDrawSurface->Lock( &rc, &desc, DDLOCK_WAIT, NULL );
+	if (FAILED (hr))
+	{
+		ATLTRACE ("CThumb - IImageDecodeFilter::Process() : pIDirectDrawSurface->Lock error 0x%08x\n", hr);
+		_Module.FreeBitmap( hGflBitmap );
+		return hr;
+	}
+
+	for ( int line = 0; line < hGflBitmap->Height; ++line )
+	{
+		char* dst = (char*)desc.lpSurface + line * desc.lPitch;
+		char* src = (char*)hGflBitmap->Data + line * hGflBitmap->BytesPerLine;
+		for ( int p = 0; p < hGflBitmap->Width; ++p, dst += 3, src += hGflBitmap->BytesPerPixel )
+		{
+			// RGB -> BGR
+			dst[0] = src[2];
+			dst[1] = src[1];
+			dst[2] = src[0];
+		}
+	}
+
+	hr = pIDirectDrawSurface->Unlock( &desc );
+	if (FAILED (hr))
+	{
+		ATLTRACE ("CThumb - IImageDecodeFilter::Process() : pIDirectDrawSurface->Unlock error 0x%08x\n", hr);
+		_Module.FreeBitmap( hGflBitmap );
+		return hr;
+	}
+
+	m_pEventSink->OnDecodeComplete( S_OK );
+
+	ATLTRACE( "CThumb - IImageDecodeFilter::Process() : OK\n" );
+	_Module.FreeBitmap( hGflBitmap );
+	return hr;
+}
+
+STDMETHODIMP CThumb::Terminate(HRESULT hrStatus)
+{
+	if ( m_pEventSink )
+	{
+		m_pEventSink->OnDecodeComplete( hrStatus );
+		m_pEventSink.Release();
+	}
+
+	return S_OK;
+}
 
 // IObjectWithSite
 

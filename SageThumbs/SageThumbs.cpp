@@ -56,7 +56,9 @@ CSageThumbsModule::CSageThumbsModule()
 	m_sModuleFileName.ReleaseBuffer();
 	ATLTRACE( "Module path: %s\n", (LPCSTR)CT2A( m_sModuleFileName ) );
 
-	m_sHome = m_sModuleFileName.Left( m_sModuleFileName.ReverseFind( _T('\\') ) + 1 );
+	m_sModule = PathFindFileName( m_sModuleFileName );
+	m_sHome = m_sModuleFileName.Left( m_sModuleFileName.GetLength() - m_sModule.GetLength() );
+	m_sModule = m_sModule.Left( m_sModule.GetLength() - 4 ); // cut ".dll"
 
 	// Get database filename
 	m_sDatabase = GetRegValue( _T("Database") );
@@ -433,7 +435,7 @@ BOOL CSageThumbsModule::LoadLangIDDLL (LANGID LangID)
 	}
 
 	CString strLangIDDLL;
-	strLangIDDLL.Format( _T("%sSageThumbs%.2x.dll"), (LPCTSTR)m_sHome, LangID );
+	strLangIDDLL.Format( _T("%s%s%.2x.dll"), (LPCTSTR)m_sHome, (LPCTSTR)m_sModule, LangID );
 	HMODULE hInstance = LoadLibrary( strLangIDDLL );
 	if ( hInstance )
 	{
@@ -483,12 +485,7 @@ void CSageThumbsModule::FillExtMap()
 		CExtMap::CPair* p = m_oExtMap.GetNext (pos);
 
 		// Exclude bad extensions
-		DWORD dwEnabled = GetRegValue( _T("Enabled"),
-			( ( p->m_key == _T("ico") ||	// Icon
-				p->m_key == _T("ani") ||	// Animated cursor
-				p->m_key == _T("cur") ||	// Cursor
-				p->m_key == _T("wmz")		// Windows Media Player Skin Package
-			) ? 0ul : 1ul ), key + p->m_key );
+		DWORD dwEnabled = GetRegValue( _T("Enabled"), EXT_DEFAULT( p->m_key ) ? 0ul : 1ul, key + p->m_key );
 		SetRegValue( _T(""), p->m_value.info, key + p->m_key );
 		SetRegValue( _T("Enabled"), dwEnabled, key + p->m_key );
 		p->m_value.enabled = ( dwEnabled != 0 );
@@ -1061,7 +1058,7 @@ HRESULT CSageThumbsModule::LoadBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap)
 	{
 		*bitmap = NULL;
 
-		GFL_LOAD_PARAMS params;
+		GFL_LOAD_PARAMS params = {};
 		gflGetDefaultLoadParams( &params );
 		params.ColorModel = GFL_RGBA;
 		err = gflLoadBitmapT( filename, bitmap, &params, NULL);
@@ -1107,7 +1104,7 @@ HRESULT CSageThumbsModule::LoadThumbnailE(LPCTSTR filename, GFL_INT32 width, GFL
 	{
 		*bitmap = NULL;
 
-		GFL_LOAD_PARAMS params;
+		GFL_LOAD_PARAMS params = {};
 		gflGetDefaultThumbnailParams( &params );
 		params.Flags =
 			GFL_LOAD_ONLY_FIRST_FRAME |
@@ -1158,13 +1155,24 @@ HRESULT CSageThumbsModule::LoadBitmapFromMemoryE(LPCVOID data, GFL_UINT32 data_l
 	{
 		*bitmap = NULL;
 
-		GFL_LOAD_PARAMS params;
+		GFL_LOAD_PARAMS params = {};
 		gflGetDefaultLoadParams( &params );
-		params.Flags = GFL_LOAD_FORCE_COLOR_MODEL;
 		params.ColorModel = GFL_RGBA;
 		err = gflLoadBitmapFromMemory( (const GFL_UINT8*)data, data_length, bitmap, &params, NULL );
+		if ( err == GFL_ERROR_FILE_READ )
+		{
+			params.Flags |= GFL_LOAD_IGNORE_READ_ERROR;
+
+			err = gflLoadBitmapFromMemory( (const GFL_UINT8*)data, data_length, bitmap, &params, NULL );
+		}
 		if ( err == GFL_NO_ERROR )
+		{
+			if ( (*bitmap)->Type != GFL_RGBA )
+			{
+				gflChangeColorDepth( *bitmap, NULL, GFL_MODE_TO_RGBA, GFL_MODE_ADAPTIVE );
+			}
 			hr = S_OK;
+		}
 		else
 		{
 			ATLTRACE ("E_FAIL (gflLoadBitmapFromMemory) : %s\n", gflGetErrorString (err));
@@ -1193,8 +1201,6 @@ HRESULT CSageThumbsModule::ConvertBitmapE(const GFL_BITMAP *bitmap, HBITMAP *phB
 	{
 		*phBitmap = NULL;
 
-		//GFL_COLOR bg = { 255, 255, 255, 0 };
-		//err = gflConvertBitmapIntoDDBEx( bitmap, phBitmap, &bg );
 		err = gflConvertBitmapIntoDIBSection( bitmap, phBitmap );
 		if ( err == GFL_NO_ERROR )
 		{
@@ -1305,7 +1311,7 @@ bool CSageThumbsModule::IsGoodFile(LPCTSTR szFilename, Ext* pdata, WIN32_FIND_DA
 		// Bad attributes
 		return false;
 
-	DWORD max_size = GetRegValue( _T("MaxSize"), (DWORD)FILE_MAX_SIZE );
+	DWORD max_size = GetRegValue( _T("MaxSize"), FILE_MAX_SIZE );
 	if ( max_size && ( pfd->nFileSizeHigh || pfd->nFileSizeLow / ( 1024 * 1024 ) > max_size ) )
 		// Too big file
 		return false;

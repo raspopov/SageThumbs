@@ -316,8 +316,8 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 
 	if ( ! m_hGflBitmap )
 	{
-		cx = max( cx, max( GetRegValue( _T("Width"), (DWORD)THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) );
-		cy = max( cy, max( GetRegValue( _T("Height"), (DWORD)THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) );
+		cx = max( cx, max( GetRegValue( _T("Width"), THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) );
+		cy = max( cy, max( GetRegValue( _T("Height"), THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) );
 
 		// Загрузка из файла
 		_Module.LoadThumbnail( sFilename, cx, cy, &m_hGflBitmap );
