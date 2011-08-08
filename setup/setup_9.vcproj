@@ -117,9 +117,9 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Creaintg Installer..."
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; /DBITS=32 /DSOURCE=..\Win32\release\ &quot;$(InputPath)&quot;"
+					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;"
 					AdditionalDependencies="$(OutDir)\SageThumbs.dll"
-					Outputs="$(InputDir)\$(InputName)32.trg"
+					Outputs="$(InputDir)\$(InputName).trg"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -129,20 +129,21 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Creaintg Installer..."
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; /DBITS=64 /DSOURCE=..\x64\release\ &quot;$(InputPath)&quot;&#x0D;&#x0A;"
+					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;"
 					AdditionalDependencies="$(OutDir)\SageThumbs.dll"
-					Outputs="$(InputDir)\$(InputName)64.trg"
+					Outputs="$(InputDir)\$(InputName).trg"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
 				Name="Release|Win32"
+				ExcludedFromBuild="true"
 				>
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Creaintg Installer..."
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; /DBITS=32 /DSOURCE=..\Win32\release\ &quot;$(InputPath)&quot;"
+					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;"
 					AdditionalDependencies="$(OutDir)\SageThumbs.dll"
-					Outputs="$(InputDir)\$(InputName)32.trg"
+					Outputs="$(InputDir)\$(InputName).trg"
 				/>
 			</FileConfiguration>
 			<FileConfiguration
@@ -151,9 +152,9 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Creaintg Installer..."
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; /DBITS=64 /DSOURCE=..\x64\release\ &quot;$(InputPath)&quot;&#x0D;&#x0A;"
+					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;"
 					AdditionalDependencies="$(OutDir)\SageThumbs.dll"
-					Outputs="$(InputDir)\$(InputName)64.trg"
+					Outputs="$(InputDir)\$(InputName).trg"
 				/>
 			</FileConfiguration>
 		</File>

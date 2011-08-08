@@ -1,18 +1,17 @@
-!ifndef BITS | SOURCE
-  !error "BITS and SOURCE must be defined!"
-!endif
-!echo "Bits = ${BITS}, Source = ${SOURCE}"
+!define SRC32		"..\Win32\release\"
+!define SRC64		"..\x64\release\"
 
-!define TITLE		"SageThumbs ${BITS}-bit"
-!define VERSION		"2.0.0.7"
+!define TITLE		"SageThumbs"
+!define VERSION		"2.0.0.8"
 !define COMPANY		"Cherubic Software"
-!define FILENAME	"sagethumbs_${VERSION}_${BITS}_setup.exe"
+!define FILENAME	"sagethumbs_${VERSION}_setup.exe"
 !define COPYRIGHT	"Copyright © 2004-2011 Nikolay Raspopov"
 !define URL			"http://www.cherubicsoft.com/"
 
 SetCompressor /SOLID lzma
 
 Var STARTMENU_FOLDER
+!include "x64.nsh"
 !include "MUI2.nsh"
 !define MUI_ABORTWARNING
 !define MUI_HEADERIMAGE
@@ -23,9 +22,9 @@ Var STARTMENU_FOLDER
 !define MUI_COMPONENTSPAGE_NODESC
 !define MUI_FINISHPAGE_NOAUTOCLOSE
 !define MUI_UNFINISHPAGE_NOAUTOCLOSE
-!define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
-!define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\SageThumbs" 
-!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder ${BITS}"
+!define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU"
+!define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\SageThumbs"
+!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
 !insertmacro MUI_PAGE_WELCOME
 !insertmacro MUI_PAGE_LICENSE "..\license.txt"
 !insertmacro MUI_PAGE_DIRECTORY
@@ -56,15 +55,15 @@ XPStyle On
 BrandingText "${COPYRIGHT}"
 SetOverwrite Try
 OutFile "${FILENAME}"
-InstallDir "$PROGRAMFILES${BITS}\SageThumbs"
-InstallDirRegKey HKCU "Software\SageThumbs" "Install${BITS}"
+InstallDir "$PROGRAMFILES\SageThumbs"
+InstallDirRegKey HKCU "Software\SageThumbs" "Install"
 ShowInstDetails show
 ShowUninstDetails show
 RequestExecutionLevel admin
 
 Function .onInit
 	SetShellVarContext all
-	SetRegView ${BITS}
+	SetRegView 64
 	System::Call 'kernel32::CreateMutexA(i 0, i 0, t "myMutex777") i .r1 ?e'
 	Pop $R0
 	StrCmp $R0 0 +2
@@ -73,64 +72,122 @@ FunctionEnd
 
 Function un.onInit
 	SetShellVarContext all
-	SetRegView ${BITS}
+	SetRegView 64
 	System::Call 'kernel32::CreateMutexA(i 0, i 0, t "myMutex777") i .r1 ?e'
 	Pop $R0
 	StrCmp $R0 0 +2
 	Abort
 FunctionEnd
 
-Function FreeSageThumbs
-	IfFileExists "$INSTDIR\SageThumbs.dll" unreg ok
+Function FreeSageThumbs64
+	IfFileExists "$INSTDIR\64\SageThumbs.dll" unreg ok
 unreg:
-	ExecWait '"$SYSDIR\regsvr32.exe" /s /u "$INSTDIR\SageThumbs.dll"'
+	ExecWait '"$SYSDIR\regsvr32.exe" /s /u "$INSTDIR\64\SageThumbs.dll"'
 	System::Call 'kernel32::CreateEventA(i 0, i 1, i 0, t "SageThumbsWatch") i .r1'
 	StrCmp $R1 0 no_event
  	System::Call 'kernel32::SetEvent(i r1)'
   	Sleep 1000
 no_event:
-	Delete "$INSTDIR\SageThumbs.dll"
+	Delete "$INSTDIR\64\SageThumbs.dll"
 ok:
 FunctionEnd
 
-Function un.FreeSageThumbs
-	IfFileExists "$INSTDIR\SageThumbs.dll" unreg ok
+Function un.FreeSageThumbs64
+	IfFileExists "$INSTDIR\64\SageThumbs.dll" unreg ok
 unreg:
-	ExecWait '"$SYSDIR\regsvr32.exe" /s /u "$INSTDIR\SageThumbs.dll"'
+	ExecWait '"$SYSDIR\regsvr32.exe" /s /u "$INSTDIR\64\SageThumbs.dll"'
 	System::Call 'kernel32::CreateEventA(i 0, i 1, i 0, t "SageThumbsWatch") i .r1'
 	StrCmp $R1 0 no_event
  	System::Call 'kernel32::SetEvent(i r1)'
   	Sleep 1000
 no_event:
-	Delete "$INSTDIR\SageThumbs.dll"
+	Delete "$INSTDIR\64\SageThumbs.dll"
+ok:
+FunctionEnd
+
+Function FreeSageThumbs32
+	IfFileExists "$INSTDIR\32\SageThumbs.dll" unreg ok
+unreg:
+	ExecWait '"$SYSDIR\regsvr32.exe" /s /u "$INSTDIR\32\SageThumbs.dll"'
+	System::Call 'kernel32::CreateEventA(i 0, i 1, i 0, t "SageThumbsWatch") i .r1'
+	StrCmp $R1 0 no_event
+ 	System::Call 'kernel32::SetEvent(i r1)'
+  	Sleep 1000
+no_event:
+	Delete "$INSTDIR\32\SageThumbs.dll"
+ok:
+FunctionEnd
+
+Function un.FreeSageThumbs32
+	IfFileExists "$INSTDIR\32\SageThumbs.dll" unreg ok
+unreg:
+	ExecWait '"$SYSDIR\regsvr32.exe" /s /u "$INSTDIR\32\SageThumbs.dll"'
+	System::Call 'kernel32::CreateEventA(i 0, i 1, i 0, t "SageThumbsWatch") i .r1'
+	StrCmp $R1 0 no_event
+ 	System::Call 'kernel32::SetEvent(i r1)'
+  	Sleep 1000
+no_event:
+	Delete "$INSTDIR\32\SageThumbs.dll"
 ok:
 FunctionEnd
 
 Section "${TITLE}"
-	SetOutPath $INSTDIR	
 
-	Call FreeSageThumbs
-	IfErrors wait1 ok
-wait1:
-	Call FreeSageThumbs
-	IfErrors wait2 ok
-wait2:
-	Call FreeSageThumbs
-	IfErrors wait3 ok
-wait3:
-	Call FreeSageThumbs
-	IfErrors wait4 ok
-wait4:
-	Call FreeSageThumbs
-ok:
+	SetOutPath $TEMP
 
-	Delete "$INSTDIR\SageThumbs19.dll"
-	Delete "$INSTDIR\SageThumbs0c.dll"
-	Delete "$INSTDIR\SageThumbs07.dll"
-	Delete "$INSTDIR\libgfl340.dll"
-	Delete "$INSTDIR\libgfle340.dll"
-	Delete "$INSTDIR\sqlite3.dll"
-	
+# Trying to unregister, unload and delete SageThumbs 32-bit
+	Call FreeSageThumbs32
+	IfErrors wait32_1 ok32
+wait32_1:
+	Call FreeSageThumbs32
+	IfErrors wait32_2 ok32
+wait32_2:
+	Call FreeSageThumbs32
+	IfErrors wait32_3 ok32
+wait32_3:
+	Call FreeSageThumbs32
+	IfErrors wait32_4 ok32
+wait32_4:
+	Call FreeSageThumbs32
+ok32:
+	Delete "$INSTDIR\32\SageThumbs19.dll"
+	Delete "$INSTDIR\32\SageThumbs0c.dll"
+	Delete "$INSTDIR\32\SageThumbs07.dll"
+	Delete "$INSTDIR\32\libgfl340.dll"
+	Delete "$INSTDIR\32\libgfle340.dll"
+	Delete "$INSTDIR\32\sqlite3.dll"
+	Delete "$INSTDIR\32\*.tmp"
+
+# Trying to unregister, unload and delete SageThumbs 64-bit
+	${If} ${RunningX64}
+	Call FreeSageThumbs64
+	IfErrors wait64_1 ok64
+wait64_1:
+	Call FreeSageThumbs64
+	IfErrors wait64_2 ok64
+wait64_2:
+	Call FreeSageThumbs64
+	IfErrors wait64_3 ok64
+wait64_3:
+	Call FreeSageThumbs64
+	IfErrors wait64_4 ok64
+wait64_4:
+	Call FreeSageThumbs64
+ok64:
+	Delete "$INSTDIR\64\SageThumbs19.dll"
+	Delete "$INSTDIR\64\SageThumbs0c.dll"
+	Delete "$INSTDIR\64\SageThumbs07.dll"
+	Delete "$INSTDIR\64\libgfl340.dll"
+	Delete "$INSTDIR\64\libgfle340.dll"
+	Delete "$INSTDIR\64\sqlite3.dll"
+	Delete "$INSTDIR\64\*.tmp"
+	${EndIf}
+
+# Clean very old files
+	Delete /REBOOTOK "$INSTDIR\SageThumbs.dll"
+	Delete /REBOOTOK "$INSTDIR\SageThumbs19.dll"
+	Delete /REBOOTOK "$INSTDIR\SageThumbs0c.dll"
+	Delete /REBOOTOK "$INSTDIR\SageThumbs07.dll"
 	Delete /REBOOTOK "$INSTDIR\libgfl220.dll"
 	Delete /REBOOTOK "$INSTDIR\libgfle220.dll"
 	Delete /REBOOTOK "$INSTDIR\libgfl240.dll"
@@ -141,7 +198,25 @@ ok:
 	Delete /REBOOTOK "$INSTDIR\libgfle290.dll"
 	Delete /REBOOTOK "$INSTDIR\libgfl311.dll"
 	Delete /REBOOTOK "$INSTDIR\libgfle311.dll"
+	Delete /REBOOTOK "$INSTDIR\libgfl340.dll"
+	Delete /REBOOTOK "$INSTDIR\libgfle340.dll"
+	Delete /REBOOTOK "$INSTDIR\sqlite3.dll"
+	Delete /REBOOTOK "$INSTDIR\*.tmp"
+	SetRegView 32
+	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs 32-bit"
+	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs 64-bit"
+	Delete "$SMPROGRAMS\SageThumbs 32-bit\*.*"
+	RmDir  "$SMPROGRAMS\SageThumbs 32-bit"
+	SetRegView 64
+	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs 32-bit"
+	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs 64-bit"
+	Delete "$SMPROGRAMS\SageThumbs 64-bit\*.*"
+	RmDir  "$SMPROGRAMS\SageThumbs 64-bit"
+	${If} ${RunningX64}
+	RmDir /r /REBOOTOK "$PROGRAMFILES64\SageThumbs"
+	${EndIf}
 
+# Clean old database
 	ReadRegStr $0 HKCU "Software\SageThumbs" "Database"
 	StrCmp $0 "" +2
 	Delete /REBOOTOK "$0"
@@ -149,94 +224,150 @@ ok:
 	Delete /REBOOTOK "$WINDIR\SageThumbs.db3"
 	Delete /REBOOTOK "$INSTDIR\SageThumbs.db3"
 
-	Delete "$INSTDIR\*.tmp"
-	File /oname=SageThumbs.dll.tmp "${SOURCE}SageThumbs.dll"
-	File /oname=SageThumbs19.dll.tmp "${SOURCE}SageThumbs19.dll"
-	File /oname=SageThumbs0c.dll.tmp "${SOURCE}SageThumbs0c.dll"
-	File /oname=SageThumbs07.dll.tmp "${SOURCE}SageThumbs07.dll"
-	File /oname=libgfl340.dll.tmp "${SOURCE}libgfl340.dll"
-	File /oname=libgfle340.dll.tmp "${SOURCE}libgfle340.dll"
-	File /oname=sqlite3.dll.tmp "${SOURCE}sqlite3.dll"
+# Install SageThumbs 32-bit
+	SetOutPath $INSTDIR\32
+	File /oname=SageThumbs.dll.tmp		"${SRC32}SageThumbs.dll"
+	File /oname=SageThumbs19.dll.tmp	"${SRC32}SageThumbs19.dll"
+	File /oname=SageThumbs0c.dll.tmp	"${SRC32}SageThumbs0c.dll"
+	File /oname=SageThumbs07.dll.tmp	"${SRC32}SageThumbs07.dll"
+	File /oname=libgfl340.dll.tmp		"${SRC32}libgfl340.dll"
+	File /oname=libgfle340.dll.tmp		"${SRC32}libgfle340.dll"
+	File /oname=sqlite3.dll.tmp			"${SRC32}sqlite3.dll"
+	Rename /REBOOTOK "$INSTDIR\32\SageThumbs.dll.tmp"	"$INSTDIR\32\SageThumbs.dll"
+	Rename /REBOOTOK "$INSTDIR\32\SageThumbs19.dll.tmp"	"$INSTDIR\32\SageThumbs19.dll"
+	Rename /REBOOTOK "$INSTDIR\32\SageThumbs0c.dll.tmp"	"$INSTDIR\32\SageThumbs0c.dll"
+	Rename /REBOOTOK "$INSTDIR\32\SageThumbs07.dll.tmp"	"$INSTDIR\32\SageThumbs07.dll"
+	Rename /REBOOTOK "$INSTDIR\32\libgfl340.dll.tmp"	"$INSTDIR\32\libgfl340.dll"
+	Rename /REBOOTOK "$INSTDIR\32\libgfle340.dll.tmp"	"$INSTDIR\32\libgfle340.dll"
+	Rename /REBOOTOK "$INSTDIR\32\sqlite3.dll.tmp"		"$INSTDIR\32\sqlite3.dll"
+	IfRebootFlag reboot32 0
+	ExecWait '"$SYSDIR\regsvr32.exe" /s "$INSTDIR\32\SageThumbs.dll"'
+	goto done32
+reboot32:
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\RunOnce" "SageThumbs32" "regsvr32.exe /s $\"$INSTDIR\32\SageThumbs.dll$\""
+done32:
+
+# Install SageThumbs 64-bit
+	${If} ${RunningX64}
+	SetOutPath $INSTDIR\64
+	File /oname=SageThumbs.dll.tmp		"${SRC64}SageThumbs.dll"
+	File /oname=SageThumbs19.dll.tmp	"${SRC64}SageThumbs19.dll"
+	File /oname=SageThumbs0c.dll.tmp	"${SRC64}SageThumbs0c.dll"
+	File /oname=SageThumbs07.dll.tmp	"${SRC64}SageThumbs07.dll"
+	File /oname=libgfl340.dll.tmp		"${SRC64}libgfl340.dll"
+	File /oname=libgfle340.dll.tmp		"${SRC64}libgfle340.dll"
+	File /oname=sqlite3.dll.tmp			"${SRC64}sqlite3.dll"
+	Rename /REBOOTOK "$INSTDIR\64\SageThumbs.dll.tmp"	"$INSTDIR\64\SageThumbs.dll"
+	Rename /REBOOTOK "$INSTDIR\64\SageThumbs19.dll.tmp"	"$INSTDIR\64\SageThumbs19.dll"
+	Rename /REBOOTOK "$INSTDIR\64\SageThumbs0c.dll.tmp"	"$INSTDIR\64\SageThumbs0c.dll"
+	Rename /REBOOTOK "$INSTDIR\64\SageThumbs07.dll.tmp"	"$INSTDIR\64\SageThumbs07.dll"
+	Rename /REBOOTOK "$INSTDIR\64\libgfl340.dll.tmp"	"$INSTDIR\64\libgfl340.dll"
+	Rename /REBOOTOK "$INSTDIR\64\libgfle340.dll.tmp"	"$INSTDIR\64\libgfle340.dll"
+	Rename /REBOOTOK "$INSTDIR\64\sqlite3.dll.tmp"		"$INSTDIR\64\sqlite3.dll"
+	IfRebootFlag reboot64 0
+	ExecWait '"$SYSDIR\regsvr32.exe" /s "$INSTDIR\64\SageThumbs.dll"'
+	goto done64
+reboot64:
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\RunOnce" "SageThumbs64" "regsvr32.exe /s $\"$INSTDIR\64\SageThumbs.dll$\""
+done64:
+	${EndIf}
+
+# Install common files and uninstaller
+	SetOutPath $INSTDIR
 	File "..\license.txt"
 	File "..\readme.txt"
-	Rename /REBOOTOK "$INSTDIR\SageThumbs.dll.tmp" "$INSTDIR\SageThumbs.dll"
-	Rename /REBOOTOK "$INSTDIR\SageThumbs19.dll.tmp" "$INSTDIR\SageThumbs19.dll"
-	Rename /REBOOTOK "$INSTDIR\SageThumbs0c.dll.tmp" "$INSTDIR\SageThumbs0c.dll"
-	Rename /REBOOTOK "$INSTDIR\SageThumbs07.dll.tmp" "$INSTDIR\SageThumbs07.dll"
-	Rename /REBOOTOK "$INSTDIR\libgfl340.dll.tmp" "$INSTDIR\libgfl340.dll"
-	Rename /REBOOTOK "$INSTDIR\libgfle340.dll.tmp" "$INSTDIR\libgfle340.dll"
-	Rename /REBOOTOK "$INSTDIR\sqlite3.dll.tmp" "$INSTDIR\sqlite3.dll"
-	IfRebootFlag reboot 0
-	ExecWait '"$SYSDIR\regsvr32.exe" /s "$INSTDIR\SageThumbs.dll"'
-	goto done
-reboot:
-	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\RunOnce" "SageThumbs" "regsvr32.exe /s $\"$INSTDIR\SageThumbs.dll$\""
-done:
 	WriteUninstaller "Uninst.exe"
-	WriteRegStr HKCU "Software\SageThumbs" "Install${BITS}" $INSTDIR
+	WriteRegStr HKCU "Software\SageThumbs" "Install" $INSTDIR
+	DeleteRegKey  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs"
+	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "DisplayName" "${TITLE} ${VERSION}"
+	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "UninstallString" "$INSTDIR\Uninst.exe"
+	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "InstallLocation" "$INSTDIR"
+	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "DisplayIcon" "$INSTDIR\32\SageThumbs.dll"
+	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "DisplayVersion" "${VERSION}"
+	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "Publisher" "${COMPANY}"
+	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "URLInfoAbout" "${URL}"
+	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "NoModify" 1
+	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "NoRepair" 1
 
-	DeleteRegKey  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${TITLE}"
-	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${TITLE}" "DisplayName" "${TITLE} ${VERSION}"
-	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${TITLE}" "UninstallString" "$INSTDIR\Uninst.exe"
-	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${TITLE}" "InstallLocation" "$INSTDIR"
-	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${TITLE}" "DisplayIcon" "$INSTDIR\SageThumbs.dll"
-	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${TITLE}" "DisplayVersion" "${VERSION}"
-	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${TITLE}" "Publisher" "${COMPANY}"
-	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${TITLE}" "URLInfoAbout" "${URL}"
-	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${TITLE}" "NoModify" 1
-	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${TITLE}" "NoRepair" 1
-
+# Install start menu items
 	!insertmacro MUI_STARTMENU_WRITE_BEGIN Application
 	CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
-	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\SageThumbs Options.lnk" "control.exe" "$\"$INSTDIR\SageThumbs.dll$\"" "$INSTDIR\SageThumbs.dll" 0
+	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\SageThumbs 32-bit Options.lnk" "control.exe" "$\"$INSTDIR\32\SageThumbs.dll$\"" "$INSTDIR\32\SageThumbs.dll" 0
+	${If} ${RunningX64}
+	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\SageThumbs 64-bit Options.lnk" "control.exe" "$\"$INSTDIR\64\SageThumbs.dll$\"" "$INSTDIR\64\SageThumbs.dll" 0
+	${EndIf}
 	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Read Me.lnk" "$INSTDIR\readme.txt" "" "$INSTDIR\readme.txt" 0
 	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk" "$INSTDIR\license.txt" "" "$INSTDIR\license.txt" 0
 	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall SageThumbs.lnk" "$INSTDIR\Uninst.exe" "" "$INSTDIR\Uninst.exe" 0
 	!insertmacro MUI_STARTMENU_WRITE_END
+	SetOutPath "$SMPROGRAMS\$STARTMENU_FOLDER"
+	File "..\SageThumbs Online.url"
+
 SectionEnd
 
 Section "Uninstall"
+
 	SetOutPath $TEMP
 
-	Call un.FreeSageThumbs
-	IfErrors wait1 ok
-wait1:
-	Call un.FreeSageThumbs
-	IfErrors wait2 ok
-wait2:
-	Call un.FreeSageThumbs
-	IfErrors wait3 ok
-wait3:
-	Call un.FreeSageThumbs
-	IfErrors wait4 ok
-wait4:
-	Call un.FreeSageThumbs
-	IfErrors fail ok
-fail:
-	Delete /REBOOTOK "$INSTDIR\SageThumbs.dll"
-ok:
+# Trying to unregister, unload and delete SageThumbs 32-bit
+	Call un.FreeSageThumbs32
+	IfErrors wait32_1 ok32
+wait32_1:
+	Call un.FreeSageThumbs32
+	IfErrors wait32_2 ok32
+wait32_2:
+	Call un.FreeSageThumbs32
+	IfErrors wait32_3 ok32
+wait32_3:
+	Call un.FreeSageThumbs32
+	IfErrors wait32_4 ok32
+wait32_4:
+	Call un.FreeSageThumbs32
+	IfErrors fail32 ok32
+fail32:
+	Delete /REBOOTOK "$INSTDIR\32\SageThumbs.dll"
+ok32:
+	Delete /REBOOTOK "$INSTDIR\32\SageThumbs19.dll"
+	Delete /REBOOTOK "$INSTDIR\32\SageThumbs0c.dll"
+	Delete /REBOOTOK "$INSTDIR\32\SageThumbs07.dll"
+	Delete /REBOOTOK "$INSTDIR\32\libgfl340.dll"
+	Delete /REBOOTOK "$INSTDIR\32\libgfle340.dll"
+	Delete /REBOOTOK "$INSTDIR\32\sqlite3.dll"
+	Delete /REBOOTOK "$INSTDIR\32\*.tmp"
+	RMDir  /REBOOTOK "$INSTDIR\32\"
+	DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\RunOnce" "SageThumbs32"
 
-	Delete /REBOOTOK "$INSTDIR\SageThumbs19.dll"
-	Delete /REBOOTOK "$INSTDIR\SageThumbs0c.dll"
-	Delete /REBOOTOK "$INSTDIR\SageThumbs07.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfl340.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfle340.dll"
-	Delete /REBOOTOK "$INSTDIR\sqlite3.dll"
-	Delete /REBOOTOK "$INSTDIR\license.txt"
-	Delete /REBOOTOK "$INSTDIR\readme.txt"
-	Delete "$INSTDIR\*.tmp"
+# Trying to unregister, unload and delete SageThumbs 64-bit
+	${If} ${RunningX64}
+	Call un.FreeSageThumbs64
+	IfErrors wait64_1 ok64
+wait64_1:
+	Call un.FreeSageThumbs64
+	IfErrors wait64_2 ok64
+wait64_2:
+	Call un.FreeSageThumbs64
+	IfErrors wait64_3 ok64
+wait64_3:
+	Call un.FreeSageThumbs64
+	IfErrors wait64_4 ok64
+wait64_4:
+	Call un.FreeSageThumbs64
+	IfErrors fail64 ok64
+fail64:
+	Delete /REBOOTOK "$INSTDIR\64\SageThumbs.dll"
+ok64:
+	Delete /REBOOTOK "$INSTDIR\64\SageThumbs19.dll"
+	Delete /REBOOTOK "$INSTDIR\64\SageThumbs0c.dll"
+	Delete /REBOOTOK "$INSTDIR\64\SageThumbs07.dll"
+	Delete /REBOOTOK "$INSTDIR\64\libgfl340.dll"
+	Delete /REBOOTOK "$INSTDIR\64\libgfle340.dll"
+	Delete /REBOOTOK "$INSTDIR\64\sqlite3.dll"
+	Delete /REBOOTOK "$INSTDIR\64\*.tmp"
+	RMDir  /REBOOTOK "$INSTDIR\64\"
+	DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\RunOnce" "SageThumbs64"
+	${EndIf}
 
-	Delete /REBOOTOK "$INSTDIR\libgfl220.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfle220.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfl240.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfle240.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfl254.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfle254.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfl290.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfle290.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfl311.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfle311.dll"
-
+# Delete database
 	ReadRegStr $0 HKCU "Software\SageThumbs" "Database"
 	StrCmp $0 "" +2
 	Delete /REBOOTOK "$0"
@@ -244,14 +375,25 @@ ok:
 	Delete /REBOOTOK "$WINDIR\SageThumbs.db3"
 	Delete /REBOOTOK "$INSTDIR\SageThumbs.db3"
 	
+# Delete start menu items
 	!insertmacro MUI_STARTMENU_GETFOLDER Application $STARTMENU_FOLDER
 	Delete "$SMPROGRAMS\$STARTMENU_FOLDER\*.*"
 	RmDir  "$SMPROGRAMS\$STARTMENU_FOLDER"
 
+# Delete common files and uninstaller
+	Delete /REBOOTOK "$INSTDIR\license.txt"
+	Delete /REBOOTOK "$INSTDIR\readme.txt"
 	Delete /REBOOTOK "$INSTDIR\Uninst.exe"
-	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${TITLE}"
-	DeleteRegValue HKLM "Software\Microsoft\Windows\CurrentVersion\RunOnce" "${TITLE}"
-	RMDir /REBOOTOK "$INSTDIR"
+	RMDir  /REBOOTOK "$INSTDIR"
+	SetRegView 32
+	DeleteRegKey HKCU "Software\SageThumbs"
+	DeleteRegKey HKLM "Software\SageThumbs"
+	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs"
+	SetRegView 64
+	DeleteRegKey HKCU "Software\SageThumbs"
+	DeleteRegKey HKLM "Software\SageThumbs"
+	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs"
+
 SectionEnd
 
-!appendfile "setup${BITS}.trg" "[${__TIMESTAMP__}] ${TITLE} ${VERSION} ${FILENAME}$\n"
+!appendfile "setup.trg" "[${__TIMESTAMP__}] ${TITLE} ${VERSION} ${FILENAME}$\n"
