@@ -10,8 +10,8 @@
     <Company_UIN>CMP-00B806AA130</Company_UIN>
     <Company_Description>CherbicSoft was founded by Nikolay Raspopov in 2004.</Company_Description>
     <Product_UIN>APP-00B8069D71A</Product_UIN>
-    <Search_String>SageThumbs 32-bit</Search_String>
-    <Publish_on_CD>FALSE</Publish_on_CD>
+    <Search_String>SageThumbs</Search_String>
+    <Publish_on_CD>TRUE</Publish_on_CD>
     <RSProductType></RSProductType>
     <Press_Release_Search_String></Press_Release_Search_String>
     <NewsFeed_Search_String></NewsFeed_Search_String>
@@ -74,18 +74,18 @@
     <Site_Contact_Email>raspopov@cherubicsoft.com</Site_Contact_Email>
     <Site_Contact_First_Name>Nikolay</Site_Contact_First_Name>
     <Site_Contact_Last_Name>Raspopov</Site_Contact_Last_Name>
-    <Site_Site_Title>SageThumbs 32-bit</Site_Site_Title>
+    <Site_Site_Title>SageThumbs</Site_Site_Title>
     <Site_Site_URL>http://code.google.com/p/sagethumbs/</Site_Site_URL>
     <Site_Description_100>SageThumbs is a shell extension allowing to preview many image formats.</Site_Description_100>
     <Site_Description_250>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author).</Site_Description_250>
     <Site_Description_450>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author).</Site_Description_450>
-    <Site_Keywords>thumbnails,shell extension,explorer extension, windows extension</Site_Keywords>
+    <Site_Keywords>thumbnails,shell extension,explorer extension,windows extension,graphic viewer,image viewer,graphic,images,psd,jpg,gif,png,freeware,open source,gpl</Site_Keywords>
   </Site>
   <Program_Info>
     <Program_Name>SageThumbs</Program_Name>
-    <Program_Version>2.0.0.7</Program_Version>
+    <Program_Version>2.0.0.8</Program_Version>
     <Program_Release_Month>08</Program_Release_Month>
-    <Program_Release_Day>05</Program_Release_Day>
+    <Program_Release_Day>08</Program_Release_Day>
     <Program_Release_Year>2011</Program_Release_Year>
     <Program_Cost_Dollars>0</Program_Cost_Dollars>
     <Program_Type>Freeware</Program_Type>
@@ -93,13 +93,13 @@
     <Program_Install_Support>Install and Uninstall</Program_Install_Support>
     <Program_OS_Support>WinXP,WinVista,WinVista x64,Win7 x32,Win7 x64,Win2000,WinServer</Program_OS_Support>
     <Program_Language>English,French,German,Russian</Program_Language>
-    <Program_Change_Info>Added support for work under restricted account privileges (UAC). Performance optimizations. Fixed SageThumbs modules stuck inside parent process.</Program_Change_Info>
+    <Program_Change_Info>Combined 32/64-bit distributive. Added "JPEG quality" and "PNG compression" convert options. Added "Convert to PNG" context menu item. Optimized options dialog.</Program_Change_Info>
     <Program_System_Requirements>About 2 Mb of disk space + additional space for cache</Program_System_Requirements>
     <Program_Category_Class>Graphic Apps::Viewers</Program_Category_Class>
     <File_Info>
-      <File_Size_Bytes>898569</File_Size_Bytes>
-      <File_Size_K>877</File_Size_K>
-      <File_Size_MB>0.86</File_Size_MB>
+      <File_Size_Bytes>1818634</File_Size_Bytes>
+      <File_Size_K>1776</File_Size_K>
+      <File_Size_MB>1.73</File_Size_MB>
       <Filename_Versioned></Filename_Versioned>
       <Filename_Previous></Filename_Previous>
       <Filename_Generic></Filename_Generic>
@@ -145,7 +145,7 @@
   </Permissions>
   <Program_Descriptions>
     <English>
-      <Keywords>thumbnails,shell extension,explorer extension, windows extension</Keywords>
+      <Keywords>thumbnails,shell extension,explorer extension,windows extension,graphic viewer,image viewer,graphic,images,psd,jpg,gif,png,freeware,open source,gpl</Keywords>
       <Char_Desc_45>SageThumbs is a shell extension.</Char_Desc_45>
       <Char_Desc_80>SageThumbs is a shell extension allowing to preview many image formats.</Char_Desc_80>
       <Char_Desc_250>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author).</Char_Desc_250>
