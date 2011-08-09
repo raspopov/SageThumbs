@@ -39,6 +39,7 @@ Var STARTMENU_FOLDER
 !insertmacro MUI_LANGUAGE "Russian"
 !insertmacro MUI_LANGUAGE "French"
 !insertmacro MUI_LANGUAGE "German"
+!insertmacro MUI_LANGUAGE "Swedish"
 
 Name "${TITLE}"
 VIProductVersion "${VERSION}"
