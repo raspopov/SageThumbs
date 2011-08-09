@@ -49,6 +49,8 @@
 #define IDC_EMBEDDED                    215
 #define IDC_ENABLE_ICONS                216
 #define IDC_ENABLE_WINCACHE             217
+#define IDC_CLEAR2                      218
+#define IDC_OPTIMIZE                    218
 #define IDC_JPEG                        219
 #define IDC_PNG                         220
 #define IDC_JPEG_SPIN                   221
