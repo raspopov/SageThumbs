@@ -32,6 +32,10 @@ System Requirements:
 
 Versions:
 
+2.0.0.9
+  * Cache performance optimizations
+  * Added Swedish translation
+
 2.0.0.8
   * Combined 32/64-bit distributive
   * Added "JPEG quality" and "PNG compression" convert options
