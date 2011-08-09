@@ -75,9 +75,9 @@ const LPCTSTR DROP_DATABASE =
 	_T("COMMIT;")
 	_T("VACUUM;");
 
-const LPCTSTR VACUUM_DATABASE =
+const LPCTSTR OPTIMIZE_DATABASE =
+	_T("ANALYZE;")
 	_T("VACUUM;");
-
 
 typedef struct
 {
@@ -128,10 +128,10 @@ public:
 
 	HRESULT GetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info);
 	HRESULT LoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap);
-	HRESULT LoadThumbnail(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap);
-	HRESULT LoadBitmapFromMemory(LPCVOID data, GFL_UINT32 data_length, GFL_BITMAP **bitmap);
+	HRESULT LoadThumbnail(LPCTSTR filename, int width, int height, GFL_BITMAP **bitmap);
+	HRESULT LoadBitmapFromMemory(LPCVOID data, UINT data_length, GFL_BITMAP **bitmap);
 	HRESULT ConvertBitmap(const GFL_BITMAP* bitmap, HBITMAP* phBitmap);
-	HRESULT Resize(GFL_BITMAP* src, GFL_BITMAP** dst, GFL_INT32 width, GFL_INT32 height);
+	HRESULT Resize(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height);
 	HRESULT FreeBitmap(GFL_BITMAP*& bitmap);
 
 	// Проверка, что файл подходит для загрузки по всем параметрам
@@ -167,7 +167,7 @@ protected:
 	void UnLoadLang ();
 	BOOL LoadLangIDDLL (LANGID LangID);
 
-	BOOL RegisterExt(LPCTSTR szExt, bool bEnableThumbs, bool bEnableIcons);
+	BOOL RegisterExt(LPCTSTR szExt, bool bEnableThumbs, bool bEnableIcons, bool bEnableFilter);
 	BOOL UnregisterExt(LPCTSTR szExt);
 
 	void FillExtMap ();
@@ -176,10 +176,10 @@ protected:
 	CComAutoCriticalSection m_pSection;
 	HRESULT GetFileInformationE(LPCTSTR filename, GFL_FILE_INFORMATION* info);
 	HRESULT LoadBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap);
-	HRESULT LoadThumbnailE(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap);
-	HRESULT LoadBitmapFromMemoryE(LPCVOID data, GFL_UINT32 data_length, GFL_BITMAP **bitmap);
+	HRESULT LoadThumbnailE(LPCTSTR filename, int width, int height, GFL_BITMAP **bitmap);
+	HRESULT LoadBitmapFromMemoryE(LPCVOID data, UINT data_length, GFL_BITMAP **bitmap);
 	HRESULT ConvertBitmapE(const GFL_BITMAP* bitmap, HBITMAP* phBitmap);
-	HRESULT ResizeE(GFL_BITMAP* src, GFL_BITMAP** dst, GFL_INT32 width, GFL_INT32 height);
+	HRESULT ResizeE(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height);
 	HRESULT FreeBitmapE(GFL_BITMAP*& bitmap);
 #endif // GFL_THREAD_SAFE
 };
@@ -212,6 +212,7 @@ BOOL RegisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue);
 //void RegisterValue(HKEY hRoot, LPCTSTR key, LPCTSTR name, const BYTE* value, DWORD value_size, LPCTSTR backup);
 BOOL UnregisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue);
 //void UnregisterValue(HKEY hRoot, LPCTSTR key, LPCTSTR name, const BYTE* value, DWORD value_size, LPCTSTR backup);
+BOOL DeleteRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot);
 BOOL DeleteRegKey(HKEY hRoot, LPCTSTR szSubKey);
 
 // Экспортируемые функции

@@ -23,7 +23,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Thumb.h"
 #include "OptionsDlg.h"
 
-//#define HTMLCLSID		_T("{25336920-03F9-11cf-8FD0-00AA00686F13}")
+#define CLSID_HTML		_T("{25336920-03F9-11cf-8FD0-00AA00686F13}")
 //static BitsDescription	_Bits [] = {
 //	{_T("psd"),		2, "\xff\xff", "\x38\x42"},
 //	{_T("xcf"),		8, "\xff\xff\xff\xff\xff\xff\xff\xff", "gimp xcf"},
@@ -125,13 +125,14 @@ BOOL CSageThumbsModule::RegisterExtensions()
 
 	const bool bEnableThumbs = GetRegValue( _T("EnableThumbs"), 1ul ) != 0;
 	const bool bEnableIcons = GetRegValue( _T("EnableIcons"), 1ul ) != 0;
+	const bool bEnableFilter = GetRegValue( _T("EnableFilter"), 1ul ) != 0;
 
 	for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; )
 	{
 		if ( const CExtMap::CPair* p = m_oExtMap.GetNext( pos ) )
 		{
 			if ( p->m_value.enabled )
-				bOK = RegisterExt( p->m_key, bEnableThumbs, bEnableIcons ) && bOK;
+				bOK = RegisterExt( p->m_key, bEnableThumbs, bEnableIcons, bEnableFilter ) && bOK;
 			else
 				bOK = UnregisterExt( p->m_key ) && bOK;
 		}
@@ -208,7 +209,7 @@ void CSageThumbsModule::UpdateShell()
 	CoFreeUnusedLibraries ();
 }
 
-BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, bool bEnableThumbs, bool bEnableIcons)
+BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, bool bEnableThumbs, bool bEnableIcons, bool bEnableFilter)
 {
 	BOOL bOK = TRUE;
 
@@ -216,11 +217,11 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, bool bEnableThumbs, bool bEna
 	CString ext ( szExt );
 	key += ext;
 
-	CString DefaultKey = GetRegValue( _T(""), _T(""), key, HKEY_CLASSES_ROOT );
-	if ( DefaultKey.IsEmpty() )
+	CString sDefaultKey = GetRegValue( _T(""), _T(""), key, HKEY_CLASSES_ROOT );
+	if ( sDefaultKey.IsEmpty() )
 	{
-		DefaultKey = _T("XnView.Image");
-		RegisterValue( HKEY_CLASSES_ROOT, key, _T(""), DefaultKey );
+		sDefaultKey = _T("XnView.Image");
+		RegisterValue( HKEY_CLASSES_ROOT, key, _T(""), sDefaultKey );
 	}
 
 	// Perceived Type Fix
@@ -234,8 +235,32 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, bool bEnableThumbs, bool bEna
 		sExtension = _T("jpeg");
 	else
 		sExtension = szExt;
+	
+	CString sContentKey = _T("MIME\\DataBase\\Content Type\\image/") + sExtension;
+
 	SetRegValue( _T("Content Type"), _T("image/") + sExtension, key, HKEY_CLASSES_ROOT );
-	SetRegValue( _T("Extension"), sExtension, _T("MIME\\DataBase\\Content Type\\image/") + sExtension, HKEY_CLASSES_ROOT );
+	SetRegValue( _T("AutoplayContentTypeHandler"), _T("PicturesContentHandler"), sContentKey, HKEY_CLASSES_ROOT );
+	SetRegValue( _T("Extension"), sExtension, sContentKey, HKEY_CLASSES_ROOT );
+
+	// Set image filter only if it was free
+	/*CString sImageFilterCLSID = GetRegValue( _T("Image Filter CLSID"), _T(""), sContentKey, HKEY_CLASSES_ROOT );
+	if ( bEnableFilter && ( sImageFilterCLSID.IsEmpty() || sImageFilterCLSID.CompareNoCase( CLSID_THUMB ) == 0 ) )
+	{
+		bOK = SetRegValue( _T(""), CLSID_HTML, sDefaultKey + _T("\\CLSID"), HKEY_CLASSES_ROOT ) && bOK;
+		bOK = SetRegValue( _T("Image Filter CLSID"), CLSID_THUMB, sContentKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = SetRegValue( _T("CLSID"), CLSID_HTML, sContentKey, HKEY_CLASSES_ROOT ) && bOK;
+
+		const BYTE Bits[ 6 ] = { 01, 00, 00, 00, 00, 00 };
+		SHSetValue( HKEY_CLASSES_ROOT, sContentKey + _T("\\Bits"), _T("0"), REG_BINARY, &Bits, sizeof( Bits ) );
+	}
+	else if ( ! bEnableFilter && sImageFilterCLSID.CompareNoCase( CLSID_THUMB ) == 0 )
+	{
+		bOK = DeleteRegValue( _T("Image Filter CLSID"), sContentKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = DeleteRegValue( _T("CLSID"), sContentKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = DeleteRegValue( _T("0"), sContentKey + _T("\\Bits"), HKEY_CLASSES_ROOT ) && bOK;
+		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, sContentKey + _T("\\Bits") ) && bOK;
+		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, sDefaultKey + _T("\\CLSID") ) && bOK;
+	}*/
 
 	for ( int i = 0; szHandlers[ i ]; ++i )
 	{
@@ -246,16 +271,16 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, bool bEnableThumbs, bool bEna
 			bOK = UnregisterValue( HKEY_CLASSES_ROOT, key + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
 			if ( ( i == 0 && bEnableIcons ) || ( i == 2 ) )
 			{
-				bOK = RegisterValue( HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
+				bOK = RegisterValue( HKEY_CLASSES_ROOT, sDefaultKey + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
 			}
 			else
 			{
-				bOK = UnregisterValue( HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
+				bOK = UnregisterValue( HKEY_CLASSES_ROOT, sDefaultKey + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
 			}
 			break;
 		
 		default:
-			bOK = UnregisterValue( HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
+			bOK = UnregisterValue( HKEY_CLASSES_ROOT, sDefaultKey + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
 			if ( ( i == 1 && bEnableThumbs ) ||	// IExtractImage
 				 ( i == 3 && bEnableThumbs ) )	// IThumbnailProvider
 			{
@@ -268,45 +293,13 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, bool bEnableThumbs, bool bEna
 		}
 	}
 
-	// IImageDecodeFilter
-	//const BitsDescription* bits = NULL;
-	//if (_BitsMap.Lookup (ext, bits)) {
-	//	CString mime (_T("image/"));
-	//	mime += ext;
-	//	CString mimekey (_T("MIME\\Database\\Content Type\\"));
-	//	mimekey += mime;
-	//	BYTE* data = new BYTE [bits->size * 2 + 4];
-	//	*((DWORD*) data) = bits->size;
-	//	CopyMemory (data + 4, bits->mask, bits->size);
-	//	CopyMemory (data + 4 + bits->size, bits->data, bits->size);
-	//	RegisterValue (HKEY_CLASSES_ROOT, DefaultKey + _T("\\CLSID"),
-	//		_T(""), HTMLCLSID, REG_SAGETHUMBS_BAK);
-	//	RegisterValue (HKEY_CLASSES_ROOT, key, _T("Content Type"),
-	//		mime, _T("Content Type SageThumbs.bak"));
-	//	RegisterValue (HKEY_CLASSES_ROOT, mimekey, _T("Image Filter CLSID"),
-	//		MyCLSID, _T("Image Filter CLSID SageThumbs.bak"));
-	//	RegisterValue (HKEY_CLASSES_ROOT, mimekey, _T("Extension"),
-	//		key, _T("Extension SageThumbs.bak"));
-	//	RegisterValue (HKEY_CLASSES_ROOT, mimekey + _T("\\Bits"), _T("0"),
-	//		data, bits->size * 2 + 4, _T("0 SageThumbs.bak"));
-	//	delete [] data;
-	//} else {
-	//	// Если нет значения, то установка универсального
-	//	BYTE foo [256];
-	//	DWORD size = sizeof (foo);
-	//	LONG err = SHGetValue (HKEY_CLASSES_ROOT, key, _T("Content Type"), &type, foo, &size);
-	//	if (err != ERROR_SUCCESS)
-	//		RegisterValue (HKEY_CLASSES_ROOT, key, _T("Content Type"),
-	//			_T("image/xnview"), _T("Content Type SageThumbs.bak"));
-	//}
-
 	bOK = DeleteRegKey( HKEY_CLASSES_ROOT, key + _T("\\ShellEx") ) && bOK;
 	bOK = DeleteRegKey( HKEY_CLASSES_ROOT, key ) && bOK;
 
-	if ( ! DefaultKey.IsEmpty() )
+	if ( ! sDefaultKey.IsEmpty() )
 	{
-		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx") ) && bOK;
-		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, DefaultKey ) && bOK;
+		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, sDefaultKey + _T("\\ShellEx") ) && bOK;
+		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, sDefaultKey ) && bOK;
 	}
 
 	return bOK;
@@ -320,58 +313,45 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt)
 	CString ext ( szExt );
 	key += ext;
 
-	CString DefaultKey = GetRegValue( _T(""), _T(""), key, HKEY_CLASSES_ROOT );
+	CString sDefaultKey = GetRegValue( _T(""), _T(""), key, HKEY_CLASSES_ROOT );
+
+	CString sExtension;
+	if ( _tcsicmp( szExt, _T("jpg")  ) == 0 ||
+		 _tcsicmp( szExt, _T("jpe")  ) == 0 ||
+		 _tcsicmp( szExt, _T("jfif") ) == 0 )
+		sExtension = _T("jpeg");
+	else
+		sExtension = szExt;
+
+	CString sContentKey = _T("MIME\\DataBase\\Content Type\\image/") + sExtension;
+
+	/*CString sImageFilterCLSID = GetRegValue( _T("Image Filter CLSID"), _T(""), sContentKey, HKEY_CLASSES_ROOT );
+	if ( sImageFilterCLSID.CompareNoCase( CLSID_THUMB ) == 0 )
+	{
+		bOK = DeleteRegValue( _T("Image Filter CLSID"), sContentKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = DeleteRegValue( _T("CLSID"), sContentKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = DeleteRegValue( _T("0"), sContentKey + _T("\\Bits"), HKEY_CLASSES_ROOT ) && bOK;
+		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, sContentKey + _T("\\Bits") ) && bOK;
+		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, sDefaultKey + _T("\\CLSID") ) && bOK;
+	}*/
 
 	for ( int i = 0; szHandlers[ i ]; ++i )
 	{
 		bOK = UnregisterValue( HKEY_CLASSES_ROOT, key + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
 
-		if ( ! DefaultKey.IsEmpty() )
+		if ( ! sDefaultKey.IsEmpty() )
 		{
-			bOK = UnregisterValue( HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
+			bOK = UnregisterValue( HKEY_CLASSES_ROOT, sDefaultKey + _T("\\ShellEx\\") + szHandlers[ i ], _T(""), CLSID_THUMB ) && bOK;
 		}
 	}
-	
-	// IImageDecodeFilter
-	//const BitsDescription* bits = NULL;
-	//if (_BitsMap.Lookup (ext, bits)) {
-	//	CString mime (_T("image/"));
-	//	mime += ext;
-	//	CString mimekey (_T("MIME\\Database\\Content Type\\"));
-	//	mimekey += mime;
-	//	BYTE* data = new BYTE [bits->size * 2 + 4];
-	//	*((DWORD*) data) = bits->size;
-	//	CopyMemory (data + 4, bits->mask, bits->size);
-	//	CopyMemory (data + 4 + bits->size, bits->data, bits->size);
-	//	if (!DefaultKey.IsEmpty ())
-	//		UnregisterValue (HKEY_CLASSES_ROOT, DefaultKey + _T("\\CLSID"),
-	//			_T(""), HTMLCLSID, REG_SAGETHUMBS_BAK);
-	//	UnregisterValue (HKEY_CLASSES_ROOT, key, _T("Content Type"),
-	//		mime, _T("Content Type SageThumbs.bak"));
-	//	UnregisterValue (HKEY_CLASSES_ROOT, mimekey, _T("Image Filter CLSID"),
-	//		MyCLSID, _T("Image Filter CLSID SageThumbs.bak"));
-	//	UnregisterValue (HKEY_CLASSES_ROOT, mimekey, _T("Extension"),
-	//		key, _T("Extension SageThumbs.bak"));
-	//	UnregisterValue (HKEY_CLASSES_ROOT, mimekey + _T("\\Bits"), _T("0"),
-	//		data, bits->size * 2 + 4, _T("0 SageThumbs.bak"));
-	//	delete [] data;
-
-	//	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, mimekey + _T("\\Bits"));
-	//	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, mimekey + _T("\\Bits"));
-	//	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, mimekey);
-	//	SHDeleteEmptyKey (HKEY_CLASSES_ROOT, mimekey);
-	//} else {
-	//	UnregisterValue (HKEY_CLASSES_ROOT, key, _T("Content Type"),
-	//		_T("image/xnview"), _T("Content Type SageThumbs.bak"));
-	//}
 
 	bOK = DeleteRegKey( HKEY_CLASSES_ROOT, key + _T("\\ShellEx") ) && bOK;
 	bOK = DeleteRegKey( HKEY_CLASSES_ROOT, key ) && bOK;
 
-	if ( ! DefaultKey.IsEmpty() )
+	if ( ! sDefaultKey.IsEmpty() )
 	{
-		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, DefaultKey + _T("\\ShellEx") ) && bOK;
-		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, DefaultKey ) && bOK;
+		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, sDefaultKey + _T("\\ShellEx") ) && bOK;
+		bOK = DeleteRegKey( HKEY_CLASSES_ROOT, sDefaultKey ) && bOK;
 	}
 
 	return bOK;
@@ -459,8 +439,8 @@ void CSageThumbsModule::FillExtMap()
 	m_oExtMap.RemoveAll();
 
 	// Загрузка расширений через GFL
-	GFL_INT32 count = gflGetNumberOfFormat();
-	GFL_INT32 i = 0;
+	int count = gflGetNumberOfFormat();
+	int i = 0;
 	for ( ; i < count; ++i )
 	{
 		GFL_FORMAT_INFORMATION info = {};
@@ -468,7 +448,7 @@ void CSageThumbsModule::FillExtMap()
 		if ( err == GFL_NO_ERROR && ( info.Status & GFL_READ ) )
 		{
 			Ext data = { true, (LPCTSTR)CA2T( info.Description ) };
-			for ( GFL_UINT32 j = 0; j < info.NumberOfExtension; ++j )
+			for ( UINT j = 0; j < info.NumberOfExtension; ++j )
 			{
 				CString sExt = (LPCTSTR)CA2T( info.Extension [ j ] );
 				sExt.MakeLower();
@@ -822,7 +802,7 @@ BOOL SetRegValue(LPCTSTR szName, DWORD dwValue, LPCTSTR szKey, HKEY hRoot)
 	}
 
 	// Remove wrong type value if any
-	SHDeleteValue( hRoot, szKey, szName );
+	DeleteRegValue( szName, szKey, hRoot );
 
 	res = SHSetValue( hRoot, szKey, szName, REG_DWORD, &dwValue, sizeof( DWORD ) );
 	if ( res != ERROR_SUCCESS )
@@ -846,7 +826,7 @@ BOOL SetRegValue(LPCTSTR szName, LPCTSTR szValue, LPCTSTR szKey, HKEY hRoot)
 	}
 
 	// Remove wrong type value if any
-	SHDeleteValue( hRoot, szKey, szName );
+	DeleteRegValue( szName, szKey, hRoot );
 
 	if ( _istalpha( szValue[ 0 ] ) && szValue[ 1 ] == _T(':') && szValue[ 2 ] == _T('\\') )
 	{
@@ -873,6 +853,19 @@ BOOL SetRegValue(LPCTSTR szName, LPCTSTR szValue, LPCTSTR szKey, HKEY hRoot)
 		return FALSE;
 	}
 
+	return TRUE;
+}
+
+BOOL DeleteRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot)
+{
+	LSTATUS res = SHDeleteValue( hRoot, szKey, szName );
+	if ( res == ERROR_SUCCESS )
+		res = SHDeleteValue( hRoot, szKey, szName );
+	if ( res == ERROR_ACCESS_DENIED )
+	{
+		ATLTRACE( "Got \"Access Denied\" during value deletion: %s : %s\n", (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
+		return FALSE;
+	}
 	return TRUE;
 }
 
@@ -935,28 +928,14 @@ BOOL UnregisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue)
 		else
 		{
 			// Delete original value
-			LSTATUS res = SHDeleteValue( hRoot, szKey, szName );
-			if ( res == ERROR_SUCCESS )
-				res = SHDeleteValue( hRoot, szKey, szName );
-			if ( res == ERROR_ACCESS_DENIED )
-			{
-				bOK = FALSE;
-				ATLTRACE( "Got \"Access Denied\" during value deletion: %s : %s\n", (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
-			}
+			bOK = DeleteRegValue( szName, szKey, hRoot ) && bOK;
 		}
 	}
 
 	if ( ! backup_buf.IsEmpty() )
 	{
 		// Delete backup value
-		LSTATUS res = SHDeleteValue( hRoot, szKey, REG_SAGETHUMBS_BAK );
-		if ( res == ERROR_SUCCESS )
-			res = SHDeleteValue( hRoot, szKey, REG_SAGETHUMBS_BAK );
-		if ( res == ERROR_ACCESS_DENIED )
-		{
-			ATLTRACE( "Got \"Access Denied\" during value deletion: %s : %s\n", (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
-			bOK = FALSE;
-		}
+		bOK = DeleteRegValue( REG_SAGETHUMBS_BAK, szKey, hRoot ) && bOK; 
 	}
 
 	// Clean-up empty key
@@ -1026,7 +1005,7 @@ HRESULT CSageThumbsModule::GetFileInformationE(LPCTSTR filename, GFL_FILE_INFORM
 
 	__try
 	{
-		GFL_INT32 index = -1;
+		int index = -1;
 		err = gflGetFileInformationT( filename, index, info );
 		if ( err == GFL_NO_ERROR )
 			hr = S_OK;
@@ -1058,7 +1037,7 @@ HRESULT CSageThumbsModule::LoadBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap)
 	{
 		*bitmap = NULL;
 
-		GFL_LOAD_PARAMS params = {};
+		GFL_LOAD_PARAMS params;
 		gflGetDefaultLoadParams( &params );
 		params.ColorModel = GFL_RGBA;
 		err = gflLoadBitmapT( filename, bitmap, &params, NULL);
@@ -1089,13 +1068,13 @@ HRESULT CSageThumbsModule::LoadBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap)
 	return hr;
 }
 
-HRESULT CSageThumbsModule::LoadThumbnail(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::LoadThumbnail(LPCTSTR filename, int width, int height, GFL_BITMAP **bitmap)
 {
 #ifdef GFL_THREAD_SAFE
 	CLock oLock( m_pSection );
 	return LoadThumbnailE( filename, width, height, bitmap );
 }
-HRESULT CSageThumbsModule::LoadThumbnailE(LPCTSTR filename, GFL_INT32 width, GFL_INT32 height, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::LoadThumbnailE(LPCTSTR filename, int width, int height, GFL_BITMAP **bitmap)
 {
 #endif // GFL_THREAD_SAFE
 	GFL_ERROR err;
@@ -1104,7 +1083,7 @@ HRESULT CSageThumbsModule::LoadThumbnailE(LPCTSTR filename, GFL_INT32 width, GFL
 	{
 		*bitmap = NULL;
 
-		GFL_LOAD_PARAMS params = {};
+		GFL_LOAD_PARAMS params;
 		gflGetDefaultThumbnailParams( &params );
 		params.Flags =
 			GFL_LOAD_ONLY_FIRST_FRAME |
@@ -1140,13 +1119,13 @@ HRESULT CSageThumbsModule::LoadThumbnailE(LPCTSTR filename, GFL_INT32 width, GFL
 	return hr;
 }
 
-HRESULT CSageThumbsModule::LoadBitmapFromMemory(LPCVOID data, GFL_UINT32 data_length, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::LoadBitmapFromMemory(LPCVOID data, UINT data_length, GFL_BITMAP **bitmap)
 {
 #ifdef GFL_THREAD_SAFE
 	CLock oLock( m_pSection );
 	return LoadBitmapFromMemoryE( data, data_length, bitmap );
 }
-HRESULT CSageThumbsModule::LoadBitmapFromMemoryE(LPCVOID data, GFL_UINT32 data_length, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::LoadBitmapFromMemoryE(LPCVOID data, UINT data_length, GFL_BITMAP **bitmap)
 {
 #endif // GFL_THREAD_SAFE
 	GFL_ERROR err;
@@ -1155,15 +1134,15 @@ HRESULT CSageThumbsModule::LoadBitmapFromMemoryE(LPCVOID data, GFL_UINT32 data_l
 	{
 		*bitmap = NULL;
 
-		GFL_LOAD_PARAMS params = {};
+		GFL_LOAD_PARAMS params;
 		gflGetDefaultLoadParams( &params );
 		params.ColorModel = GFL_RGBA;
-		err = gflLoadBitmapFromMemory( (const GFL_UINT8*)data, data_length, bitmap, &params, NULL );
+		err = gflLoadBitmapFromMemory( (const BYTE*)data, data_length, bitmap, &params, NULL );
 		if ( err == GFL_ERROR_FILE_READ )
 		{
 			params.Flags |= GFL_LOAD_IGNORE_READ_ERROR;
 
-			err = gflLoadBitmapFromMemory( (const GFL_UINT8*)data, data_length, bitmap, &params, NULL );
+			err = gflLoadBitmapFromMemory( (const BYTE*)data, data_length, bitmap, &params, NULL );
 		}
 		if ( err == GFL_NO_ERROR )
 		{
@@ -1219,13 +1198,13 @@ HRESULT CSageThumbsModule::ConvertBitmapE(const GFL_BITMAP *bitmap, HBITMAP *phB
 	return hr;
 }
 
-HRESULT CSageThumbsModule::Resize(GFL_BITMAP* src, GFL_BITMAP** dst, GFL_INT32 width, GFL_INT32 height)
+HRESULT CSageThumbsModule::Resize(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height)
 {
 #ifdef GFL_THREAD_SAFE
 	CLock oLock( m_pSection );
 	return ResizeE( src, dst, width, height );
 }
-HRESULT CSageThumbsModule::ResizeE(GFL_BITMAP* src, GFL_BITMAP** dst, GFL_INT32 width, GFL_INT32 height)
+HRESULT CSageThumbsModule::ResizeE(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height)
 {
 #endif // GFL_THREAD_SAFE
 	GFL_ERROR err;

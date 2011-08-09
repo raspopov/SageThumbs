@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2010.
+Copyright (C) Nikolay Raspopov, 2004-2011.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -313,12 +313,6 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 
 	_Module.LoadLang( GetLanguage () );
 
-	CDatabase db( _Module.m_sDatabase );
-	if ( db )
-	{
-		db.Exec( VACUUM_DATABASE );
-	}
-
 	if ( ! _Module.RegisterExtensions() )
 	{
 		if ( ( _Module.m_OSVersion.dwMajorVersion >= 6 && ! IsProcessElevated() ) ||
@@ -407,6 +401,24 @@ LRESULT COptionsDialog::OnClear(WORD /* wNotifyCode */, WORD /* wID */, HWND /* 
 
 		ShowAbout();
 	}
+
+	return TRUE;
+}
+
+LRESULT COptionsDialog::OnOptimize(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWndCtl */, BOOL& bHandled)
+{
+	bHandled = TRUE;
+
+	CWaitCursor wc;
+
+	// Analyze and vacuum SageThumbs cache
+	CDatabase db( _Module.m_sDatabase );
+	if ( db )
+	{
+		db.Exec( OPTIMIZE_DATABASE );
+	}
+
+	ShowAbout();
 
 	return TRUE;
 }

@@ -732,17 +732,27 @@ STDMETHODIMP CThumb::OnDrawItem(DRAWITEMSTRUCT* pdis, LRESULT* pResult)
 	HPEN FillPen = CreatePen (PS_SOLID, 1, GetSysColor (
 		(pdis->itemState & ODS_SELECTED) ? COLOR_HIGHLIGHT : COLOR_MENU));
 	HPEN old_pen = (HPEN) SelectObject (pdis->hDC, FillPen);
-	
+
 	Rectangle (pdis->hDC, pdis->rcItem.left, pdis->rcItem.top,
 		pdis->rcItem.right, pdis->rcItem.bottom);
 
-	HDC hMemDC = CreateCompatibleDC (pdis->hDC);
-	HBITMAP hThumbnail = m_Preview.GetImage( cx, cy );
-	HBITMAP hOldBitmap = (HBITMAP) SelectObject( hMemDC, hThumbnail );
-	BitBlt (pdis->hDC, rcDraw.left, rcDraw.top, cx, cy, hMemDC, 0, 0, SRCCOPY);
-	SelectObject( hMemDC, hOldBitmap );
-	DeleteObject( hThumbnail );
-	DeleteDC( hMemDC );
+	if ( HBITMAP hThumbnail = m_Preview.GetImage( cx, cy ) )
+	{
+		if ( HDC hMemDC = CreateCompatibleDC( pdis->hDC ) )
+		{
+			HBITMAP hOldBitmap = (HBITMAP)SelectObject( hMemDC, hThumbnail );
+
+			BLENDFUNCTION bf = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
+			if ( ! AlphaBlend( pdis->hDC, rcDraw.left, rcDraw.top, cx, cy, hMemDC, 0, 0, cx, cy, bf ) )
+			{
+				BitBlt( pdis->hDC, rcDraw.left, rcDraw.top, cx, cy, hMemDC, 0, 0, SRCCOPY );
+			}
+
+			SelectObject( hMemDC, hOldBitmap );
+			DeleteDC( hMemDC );
+		}
+		DeleteObject( hThumbnail );
+	}
 
 	int old_mode = SetBkMode (pdis->hDC, TRANSPARENT);
 	COLORREF old_color = SetTextColor (pdis->hDC, GetSysColor (
@@ -879,12 +889,6 @@ STDMETHODIMP CThumb::Initialize(
 		ATLTRACE( "0x%08x::IInitializeWithFile::Initialize() : E_POINTER\n", this );
 		return E_POINTER;
 	}
-
-	//if ( ! IsGoodFile( pszFilePath ) )
-	//{
-	//	ATLTRACE( "0x%08x::IInitializeWithFile::Initialize(\"%s\") : E_FAIL (Bad File)\n", this, (LPCSTR)CW2A( pszFilePath ) );
-	//	return E_FAIL;
-	//}
 
 	m_sFilename = pszFilePath;
 

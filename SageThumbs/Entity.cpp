@@ -255,8 +255,8 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 	CLock oLock( m_pSection );
 
 	if ( m_hGflBitmap &&
-		 m_hGflBitmap->Width  >= (GFL_INT32)cx && 
-		 m_hGflBitmap->Height >= (GFL_INT32)cy )
+		 m_hGflBitmap->Width  >= (int)cx && 
+		 m_hGflBitmap->Height >= (int)cy )
 	{
 		ATLTRACE( "CEntity::LoadImage(\"%s\",%d,%d) : S_FALSE (Bitmap already loaded)\n", (LPCSTR)CT2A( sFilename ), cx, cy );
 		return S_FALSE;
@@ -293,22 +293,25 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 				 db.GetCount() == 3 )
 			{
 				// Проверка размерности изображения
-				UINT dx = (UINT)db.GetInt32( _T("Width") );
-				UINT dy = (UINT)db.GetInt32( _T("Height") );
-				if ( dx >= cx || dy >= cy )
+				int dx = db.GetInt32( _T("Width") );
+				int dy = db.GetInt32( _T("Height") );
+				if ( ( dx >= (int)cx ) ||
+					 ( dy >= (int)cy ) ||
+					 ( m_ImageInfo.Width == dx && m_ImageInfo.Height <= dy ) ||
+					 ( m_ImageInfo.Width <= dx && m_ImageInfo.Height == dy ) )
 				{
 					// Загрузка изображения из базы данных
 					int nImageSize;
 					if ( LPCVOID pImage = db.GetBlob( _T("Image"), &nImageSize ) )
 					{
 						_Module.LoadBitmapFromMemory( pImage, nImageSize, &m_hGflBitmap );
-						ATLTRACE ( "from database " );
+						ATLTRACE( "from database (%d bytes %dx%d) ", nImageSize, m_hGflBitmap->Width, m_hGflBitmap->Height );
 					}
 				}
 				else
 				{
 					// Слишком маленькое изображение - перезагрузка из файла
-					ATLTRACE ( "reload (needed %ux%u but %ux%u in database) ", cx, cy, dx, dy );
+					ATLTRACE( "reload (needed %dx%d but %dx%d in database) ", (int)cx, (int)cy, dx, dy );
 				}
 			}
 		}
@@ -320,38 +323,53 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 		cy = max( cy, max( GetRegValue( _T("Height"), THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) );
 
 		// Загрузка из файла
-		_Module.LoadThumbnail( sFilename, cx, cy, &m_hGflBitmap );
-		ATLTRACE ( "from disk " );
+		_Module.LoadThumbnail( sFilename, (int)cx, (int)cy, &m_hGflBitmap );
 		if ( ! m_hGflBitmap )
 		{
 			ATLTRACE( "E_FAIL\n" );
 			return E_FAIL;
 		}
+		ATLTRACE( "from disk (%dx%d) ", m_hGflBitmap->Width, m_hGflBitmap->Height );
 
-		// Сохранение изображения в базе если нужно
+		// Save thumbnail image to database using best format
 		GFL_SAVE_PARAMS params;
 		gflGetDefaultSaveParams( &params );
 		params.Flags = GFL_SAVE_ANYWAY;
-		params.CompressionLevel = 9;
-		//params.Quality = 70;
-		//params.Progressive = GFL_TRUE;
-		//params.OptimizeHuffmanTable = GFL_TRUE;
-		params.FormatIndex = gflGetFormatIndexByName( "png" /* "jpeg" */ );
-
-		GFL_UINT8* data = NULL;
-		GFL_UINT32 data_length = 0;
+		if ( m_ImageInfo.ComponentsPerPixel > 3 )
+		{
+			// Using PNG for images with alpha
+			params.CompressionLevel = 6;
+			params.FormatIndex = gflGetFormatIndexByName( "png" );
+			ATLTRACE( "as PNG " );
+		}
+		else
+		{
+			// Using JPEG for rest
+			params.Quality = 70;
+			params.OptimizeHuffmanTable = GFL_TRUE;
+			params.FormatIndex = gflGetFormatIndexByName( "jpeg" );
+			ATLTRACE( "as JPEG " );
+		}
+		BYTE* data = NULL;
+		UINT data_length = 0;
 		GFL_ERROR err = gflSaveBitmapIntoMemory( &data, &data_length, m_hGflBitmap, &params );
 		if ( err == GFL_NO_ERROR )
 		{
+			ATLTRACE( "to database (%u bytes) ", data_length );
+
 			if ( nPathID )
 			{
 				db.Prepare( _T("UPDATE Entities SET Image=?, Width=?, Height=? WHERE Filename==? AND PathID==?;") ) &&
 				db.Bind( 1, data, data_length ) &&
-				db.Bind( 2, (__int32)cx ) &&
-				db.Bind( 3, (__int32)cy ) &&
+				db.Bind( 2, m_hGflBitmap->Width ) &&
+				db.Bind( 3, m_hGflBitmap->Height ) &&
 				db.Bind( 4, sName ) &&
 				db.Bind( 5, nPathID ) &&
 				db.Step();
+			}
+			else
+			{
+				ATLTRACE ( "bad PathID " );
 			}
 			gflMemoryFree( data );
 		}
@@ -372,15 +390,23 @@ HBITMAP CEntity::GetImage(UINT cx, UINT cy)
 	HBITMAP hBitmap = NULL;
 	if ( m_hGflBitmap )
 	{
-		UINT dx, dy;
-		CalcSize( dx, dy, cx, cy );
-
-		GFL_BITMAP* pResizedBitmap = NULL;
-		if ( SUCCEEDED( _Module.Resize( m_hGflBitmap, &pResizedBitmap, dx, dy ) ) &&
-			 pResizedBitmap )
+		if ( ( m_hGflBitmap->Width == (int)cx && m_hGflBitmap->Height <= (int)cy ) ||
+			 ( m_hGflBitmap->Width <= (int)cx && m_hGflBitmap->Height == (int)cy ) )
 		{
-			_Module.ConvertBitmap( pResizedBitmap, &hBitmap );
-			_Module.FreeBitmap( pResizedBitmap );
+			_Module.ConvertBitmap( m_hGflBitmap, &hBitmap );
+		}
+		else
+		{
+			UINT dx, dy;
+			CalcSize( dx, dy, cx, cy );
+
+			GFL_BITMAP* pResizedBitmap = NULL;
+			if ( SUCCEEDED( _Module.Resize( m_hGflBitmap, &pResizedBitmap, dx, dy ) ) &&
+				 pResizedBitmap )
+			{
+				_Module.ConvertBitmap( pResizedBitmap, &hBitmap );
+				_Module.FreeBitmap( pResizedBitmap );
+			}
 		}
 	}
 	return hBitmap;
@@ -461,25 +487,25 @@ HICON CEntity::GetIcon(UINT cx)
 
 void CEntity::CalcSize(UINT& tx, UINT& ty, UINT width, UINT height)
 {
-	CLock oLock( m_pSection );
-
-	if ( (UINT)m_ImageInfo.Width < width && (UINT)m_ImageInfo.Height < height )
+	UINT w = (UINT)m_ImageInfo.Width;
+	UINT h = (UINT)m_ImageInfo.Height;
+	if ( w < width && h < height )
 	{
-		tx = (UINT)m_ImageInfo.Width;
-		ty = (UINT)m_ImageInfo.Height;
+		tx = w;
+		ty = h;
 	}
 	else
 	{
 		tx = width;
 		ty = height;
-		if ( m_ImageInfo.Width && m_ImageInfo.Height && width && height )
+		if ( w && h && width && height )
 		{
-			double aspect = ( (double)m_ImageInfo.Width / (double)m_ImageInfo.Height ) /
-				( (double)width / (double)height );
-			if ( aspect < 1 )
-				tx = (UINT)( width * aspect );
+			UINT a = w * height;
+			UINT b = h * width;
+			if ( a < b )
+				tx = a / h;
 			else
-				ty = (UINT)( height / aspect );
+				ty = b / w;
 		}
 	}
 	if ( ! tx ) tx = 1;

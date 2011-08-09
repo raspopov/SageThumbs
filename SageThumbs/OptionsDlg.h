@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2010.
+Copyright (C) Nikolay Raspopov, 2004-2011.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -35,6 +35,7 @@ protected:
 		COMMAND_ID_HANDLER(IDC_DEFAULT, OnDefault)
 		COMMAND_ID_HANDLER(IDC_SELECT, OnSelect)
 		COMMAND_ID_HANDLER(IDC_CLEAR, OnClear)
+		COMMAND_ID_HANDLER(IDC_OPTIMIZE, OnOptimize)
 	END_MSG_MAP()
 
 	LRESULT AddLanguage(LANGID lang, LANGID selected);
@@ -47,4 +48,5 @@ protected:
 	LRESULT OnDefault(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnSelect(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnClear(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+	LRESULT OnOptimize(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 };
