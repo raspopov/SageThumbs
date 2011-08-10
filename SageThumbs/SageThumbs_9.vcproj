@@ -75,7 +75,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\gfl\libW"
 				ModuleDefinitionFile="$(ProjectName).def"
-				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll;Msimg32.dll"
+				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				SupportUnloadOfDelayLoadedDLL="true"
@@ -101,8 +101,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Registering..."
-				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
@@ -161,7 +160,7 @@
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\gfl\lib64W"
 				ModuleDefinitionFile="$(ProjectName).def"
-				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll;Msimg32.dll"
+				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				SupportUnloadOfDelayLoadedDLL="true"
@@ -187,8 +186,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Registering..."
-				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
@@ -250,7 +248,7 @@
 				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib Msimg32.lib"
 				AdditionalLibraryDirectories="..\gfl\libW"
 				ModuleDefinitionFile="$(ProjectName).def"
-				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll;Msimg32.dll"
+				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -278,8 +276,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Registering..."
-				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;"
+				CommandLine=""
 			/>
 		</Configuration>
 		<Configuration
@@ -341,7 +338,7 @@
 				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib Msimg32.lib"
 				AdditionalLibraryDirectories="..\gfl\lib64W"
 				ModuleDefinitionFile="$(ProjectName).def"
-				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll;Msimg32.dll"
+				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -369,8 +366,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Registering..."
-				CommandLine="regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /u /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;regsvr32 /s &quot;$(OutDir)\$(ProjectName).dll&quot;&#x0D;&#x0A;"
+				CommandLine=""
 			/>
 		</Configuration>
 	</Configurations>

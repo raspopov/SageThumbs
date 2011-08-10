@@ -742,11 +742,11 @@ STDMETHODIMP CThumb::OnDrawItem(DRAWITEMSTRUCT* pdis, LRESULT* pResult)
 		{
 			HBITMAP hOldBitmap = (HBITMAP)SelectObject( hMemDC, hThumbnail );
 
-			BLENDFUNCTION bf = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
-			if ( ! AlphaBlend( pdis->hDC, rcDraw.left, rcDraw.top, cx, cy, hMemDC, 0, 0, cx, cy, bf ) )
-			{
+			//BLENDFUNCTION bf = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
+			//if ( ! AlphaBlend( pdis->hDC, rcDraw.left, rcDraw.top, cx, cy, hMemDC, 0, 0, cx, cy, bf ) )
+			//{
 				BitBlt( pdis->hDC, rcDraw.left, rcDraw.top, cx, cy, hMemDC, 0, 0, SRCCOPY );
-			}
+			//}
 
 			SelectObject( hMemDC, hOldBitmap );
 			DeleteDC( hMemDC );
@@ -941,6 +941,59 @@ STDMETHODIMP CThumb::GetThumbnail(UINT cx, HBITMAP *phbmp, WTS_ALPHATYPE *pdwAlp
 	ATLTRACE( "CThumb - IThumbnailProvider::GetThumbnail(%d) : S_OK (%d planes, %d bits)\n", cx, bm.bmPlanes, bm.bmBitsPixel );
 #endif
 	return S_OK;
+}
+
+// IPropertyStoreCapabilities
+
+STDMETHODIMP CThumb::IsPropertyWritable( 
+	/* [in] */ __RPC__in REFPROPERTYKEY /* key */)
+{
+	ATLTRACE( "CThumb - IPropertyStoreCapabilities::IsPropertyWritable() : S_FALSE\n" );
+	return S_FALSE;
+}
+
+// IPropertyStore
+
+STDMETHODIMP CThumb::GetCount( 
+	/* [out] */ __RPC__out DWORD* cProps)
+{
+	if ( ! cProps )
+	{
+		ATLTRACE( "CThumb - IPropertyStore::GetCount() : E_POINTER\n" );
+		return E_POINTER;
+	}
+	*cProps = 0;
+
+	ATLTRACE( "CThumb - IPropertyStore::GetCount() : S_OK (%u)\n", *cProps );
+	return S_OK;
+}
+
+STDMETHODIMP CThumb::GetAt( 
+	/* [in] */ DWORD iProp,
+	/* [out] */ __RPC__out PROPERTYKEY *pkey)
+{
+	ATLTRACENOTIMPL( "IPropertyStore::GetAt" );
+}
+
+STDMETHODIMP CThumb::GetValue( 
+	/* [in] */ __RPC__in REFPROPERTYKEY key,
+	/* [out] */ __RPC__out PROPVARIANT *pv)
+{
+	ATLTRACENOTIMPL( "IPropertyStore::GetValue" );
+}
+
+STDMETHODIMP CThumb::SetValue( 
+	/* [in] */ __RPC__in REFPROPERTYKEY /* key */,
+	/* [in] */ __RPC__in REFPROPVARIANT /* propvar */)
+{
+	ATLTRACE( "CThumb - IPropertyStore::SetValue() : STG_E_ACCESSDENIED\n" );
+	return STG_E_ACCESSDENIED;
+}
+
+STDMETHODIMP CThumb::Commit()
+{
+	ATLTRACE( "CThumb - IPropertyStore::Commit() : STG_E_ACCESSDENIED\n" );
+	return STG_E_ACCESSDENIED;
 }
 
 // IPreviewHandler
@@ -1525,186 +1578,186 @@ STDMETHODIMP CThumb::Extract(LPCWSTR /*pszFile*/, UINT nIconIndex, HICON* phicon
 
 // IImageDecodeFilter
 
-STDMETHODIMP CThumb::Initialize(IImageDecodeEventSink* pEventSink)    
-{
-	if ( ! pEventSink )
-	{
-		ATLTRACE( "CThumb - IImageDecodeFilter::Initialize() : E_POINTER\n" );
-		return E_POINTER;
-	}
-
-	m_pEventSink = pEventSink;
-
-	DWORD dwEvents = 0;
-	ULONG nFormats = 0;
-    BFID *pFormats = NULL;
-	HRESULT hr = m_pEventSink->OnBeginDecode( &dwEvents, &nFormats, &pFormats );
-	if (FAILED (hr))
-	{
-		ATLTRACE( "CThumb - IImageDecodeFilter : OnBeginDecode error 0x%08x\n", hr);
-		m_pEventSink.Release();
-		return hr;
-	}
-	ATLTRACE( "CThumb - IImageDecodeFilter : OnBeginDecode returns: events=0x%08x, formats=%d\n", dwEvents, nFormats);
-	ULONG i = 0;
-	bool bOk = false;
-	for ( ; i < nFormats; ++i )
-	{
-		if ( IsEqualGUID( BFID_MONOCHROME, pFormats[ i ] ) )
-		{
-			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_MONOCHROME\n" );
-		}
-		else if ( IsEqualGUID( BFID_RGB_4, pFormats[ i ] ) )
-		{
-			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_4\n" );
-		}
-		else if ( IsEqualGUID( BFID_RGB_8, pFormats[ i ] ) )
-		{
-			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_8\n" );
-		}
-		else if ( IsEqualGUID( BFID_RGB_555, pFormats[ i ] ) )
-		{
-			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_555\n" );
-		}
-		else if ( IsEqualGUID( BFID_RGB_565, pFormats[ i ] ) )
-		{
-			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_565\n" );
-		}
-		else if ( IsEqualGUID( BFID_RGB_24, pFormats[ i ] ) )
-		{
-			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_24\n" );
-			bOk = true;
-		}
-		else if ( IsEqualGUID( BFID_RGB_32, pFormats[ i ] ) )
-		{
-			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_32\n" );
-		}
-		else if ( IsEqualGUID( BFID_RGBA_32, pFormats[ i ] ) )
-		{
-			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGBA_32\n" );
-		}
-		else if ( IsEqualGUID( BFID_GRAY_8, pFormats[ i ] ) )
-		{
-			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_GRAY_8\n" );
-		}
-		else if ( IsEqualGUID( BFID_GRAY_16, pFormats[ i ] ) )
-		{
-			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_GRAY_16\n" );
-		}
-		else
-		{
-			ATLTRACE( "CThumb - IImageDecodeFilter : Found unknown format\n" );
-		}
-	}
-	CoTaskMemFree( pFormats );
-
-	if ( ! bOk )
-	{
-		ATLTRACE( "CThumb - IImageDecodeFilter : OnBeginDecode cannot find RGB_24 format\n");
-		return E_FAIL;
-	}
-
-	return S_OK;
-}
-
-STDMETHODIMP CThumb::Process(IStream* pStream)    
-{
-	HRESULT hr;
-
-	const ULONG chunk = 1024;
-	ULONG total = 0;
-	CAtlArray< unsigned char > data;
-	for (;;)
-	{
-		if ( ! data.SetCount( total + chunk ) )
-		{
-			ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Out of memory\n" );
-			return E_OUTOFMEMORY;
-		}
-
-		ULONG readed = 0;
-		hr = pStream->Read( data.GetData() + total, chunk, &readed );
-		total += readed;
-		if ( FAILED( hr ) )
-		{
-			ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Read error 0x%08x\n", hr );
-			return hr;
-		}
-		if ( hr == S_FALSE )
-			break;
-	}
-	
-	hr = m_pEventSink->OnBitsComplete();
-	ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Readed %u bytes\n", total );
-
-	GFL_BITMAP* hGflBitmap = NULL;
-	hr = _Module.LoadBitmapFromMemory( data.GetData (), total, &hGflBitmap );
-	if ( FAILED( hr ) )
-	{
-		ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Load error 0x%08x\n", hr );
-		return hr;
-	}
-	ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Loaded as %dx%d bitmap (%d bpl)\n", hGflBitmap->Width, hGflBitmap->Height, hGflBitmap->BytesPerLine );
-
-	CComPtr< IDirectDrawSurface > pIDirectDrawSurface;
-	hr = m_pEventSink->GetSurface( hGflBitmap->Width, hGflBitmap->Height,
-		BFID_RGB_24, 1, IMGDECODE_HINT_TOPDOWN | IMGDECODE_HINT_FULLWIDTH,
-		(IUnknown**) &pIDirectDrawSurface );
-	if (FAILED (hr))
-	{
-		ATLTRACE ("CThumb - IImageDecodeFilter::Process() : m_spEventSink->GetSurface error 0x%08x\n", hr );
-		_Module.FreeBitmap( hGflBitmap );
-		return hr;
-	}
-
-	DDSURFACEDESC desc = { sizeof( DDSURFACEDESC ) };
-	RECT rc = { 0, 0, hGflBitmap->Width, hGflBitmap->Height };
-	hr = pIDirectDrawSurface->Lock( &rc, &desc, DDLOCK_WAIT, NULL );
-	if (FAILED (hr))
-	{
-		ATLTRACE ("CThumb - IImageDecodeFilter::Process() : pIDirectDrawSurface->Lock error 0x%08x\n", hr);
-		_Module.FreeBitmap( hGflBitmap );
-		return hr;
-	}
-
-	for ( int line = 0; line < hGflBitmap->Height; ++line )
-	{
-		char* dst = (char*)desc.lpSurface + line * desc.lPitch;
-		char* src = (char*)hGflBitmap->Data + line * hGflBitmap->BytesPerLine;
-		for ( int p = 0; p < hGflBitmap->Width; ++p, dst += 3, src += hGflBitmap->BytesPerPixel )
-		{
-			// RGB -> BGR
-			dst[0] = src[2];
-			dst[1] = src[1];
-			dst[2] = src[0];
-		}
-	}
-
-	hr = pIDirectDrawSurface->Unlock( &desc );
-	if (FAILED (hr))
-	{
-		ATLTRACE ("CThumb - IImageDecodeFilter::Process() : pIDirectDrawSurface->Unlock error 0x%08x\n", hr);
-		_Module.FreeBitmap( hGflBitmap );
-		return hr;
-	}
-
-	m_pEventSink->OnDecodeComplete( S_OK );
-
-	ATLTRACE( "CThumb - IImageDecodeFilter::Process() : OK\n" );
-	_Module.FreeBitmap( hGflBitmap );
-	return hr;
-}
-
-STDMETHODIMP CThumb::Terminate(HRESULT hrStatus)
-{
-	if ( m_pEventSink )
-	{
-		m_pEventSink->OnDecodeComplete( hrStatus );
-		m_pEventSink.Release();
-	}
-
-	return S_OK;
-}
+//STDMETHODIMP CThumb::Initialize(IImageDecodeEventSink* pEventSink)    
+//{
+//	if ( ! pEventSink )
+//	{
+//		ATLTRACE( "CThumb - IImageDecodeFilter::Initialize() : E_POINTER\n" );
+//		return E_POINTER;
+//	}
+//
+//	m_pEventSink = pEventSink;
+//
+//	DWORD dwEvents = 0;
+//	ULONG nFormats = 0;
+//    BFID *pFormats = NULL;
+//	HRESULT hr = m_pEventSink->OnBeginDecode( &dwEvents, &nFormats, &pFormats );
+//	if (FAILED (hr))
+//	{
+//		ATLTRACE( "CThumb - IImageDecodeFilter : OnBeginDecode error 0x%08x\n", hr);
+//		m_pEventSink.Release();
+//		return hr;
+//	}
+//	ATLTRACE( "CThumb - IImageDecodeFilter : OnBeginDecode returns: events=0x%08x, formats=%d\n", dwEvents, nFormats);
+//	ULONG i = 0;
+//	bool bOk = false;
+//	for ( ; i < nFormats; ++i )
+//	{
+//		if ( IsEqualGUID( BFID_MONOCHROME, pFormats[ i ] ) )
+//		{
+//			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_MONOCHROME\n" );
+//		}
+//		else if ( IsEqualGUID( BFID_RGB_4, pFormats[ i ] ) )
+//		{
+//			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_4\n" );
+//		}
+//		else if ( IsEqualGUID( BFID_RGB_8, pFormats[ i ] ) )
+//		{
+//			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_8\n" );
+//		}
+//		else if ( IsEqualGUID( BFID_RGB_555, pFormats[ i ] ) )
+//		{
+//			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_555\n" );
+//		}
+//		else if ( IsEqualGUID( BFID_RGB_565, pFormats[ i ] ) )
+//		{
+//			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_565\n" );
+//		}
+//		else if ( IsEqualGUID( BFID_RGB_24, pFormats[ i ] ) )
+//		{
+//			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_24\n" );
+//			bOk = true;
+//		}
+//		else if ( IsEqualGUID( BFID_RGB_32, pFormats[ i ] ) )
+//		{
+//			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGB_32\n" );
+//		}
+//		else if ( IsEqualGUID( BFID_RGBA_32, pFormats[ i ] ) )
+//		{
+//			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_RGBA_32\n" );
+//		}
+//		else if ( IsEqualGUID( BFID_GRAY_8, pFormats[ i ] ) )
+//		{
+//			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_GRAY_8\n" );
+//		}
+//		else if ( IsEqualGUID( BFID_GRAY_16, pFormats[ i ] ) )
+//		{
+//			ATLTRACE( "CThumb - IImageDecodeFilter : Found format BFID_GRAY_16\n" );
+//		}
+//		else
+//		{
+//			ATLTRACE( "CThumb - IImageDecodeFilter : Found unknown format\n" );
+//		}
+//	}
+//	CoTaskMemFree( pFormats );
+//
+//	if ( ! bOk )
+//	{
+//		ATLTRACE( "CThumb - IImageDecodeFilter : OnBeginDecode cannot find RGB_24 format\n");
+//		return E_FAIL;
+//	}
+//
+//	return S_OK;
+//}
+//
+//STDMETHODIMP CThumb::Process(IStream* pStream)    
+//{
+//	HRESULT hr;
+//
+//	const ULONG chunk = 1024;
+//	ULONG total = 0;
+//	CAtlArray< unsigned char > data;
+//	for (;;)
+//	{
+//		if ( ! data.SetCount( total + chunk ) )
+//		{
+//			ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Out of memory\n" );
+//			return E_OUTOFMEMORY;
+//		}
+//
+//		ULONG readed = 0;
+//		hr = pStream->Read( data.GetData() + total, chunk, &readed );
+//		total += readed;
+//		if ( FAILED( hr ) )
+//		{
+//			ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Read error 0x%08x\n", hr );
+//			return hr;
+//		}
+//		if ( hr == S_FALSE )
+//			break;
+//	}
+//	
+//	hr = m_pEventSink->OnBitsComplete();
+//	ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Readed %u bytes\n", total );
+//
+//	GFL_BITMAP* hGflBitmap = NULL;
+//	hr = _Module.LoadBitmapFromMemory( data.GetData (), total, &hGflBitmap );
+//	if ( FAILED( hr ) )
+//	{
+//		ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Load error 0x%08x\n", hr );
+//		return hr;
+//	}
+//	ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Loaded as %dx%d bitmap (%d bpl)\n", hGflBitmap->Width, hGflBitmap->Height, hGflBitmap->BytesPerLine );
+//
+//	CComPtr< IDirectDrawSurface > pIDirectDrawSurface;
+//	hr = m_pEventSink->GetSurface( hGflBitmap->Width, hGflBitmap->Height,
+//		BFID_RGB_24, 1, IMGDECODE_HINT_TOPDOWN | IMGDECODE_HINT_FULLWIDTH,
+//		(IUnknown**) &pIDirectDrawSurface );
+//	if (FAILED (hr))
+//	{
+//		ATLTRACE ("CThumb - IImageDecodeFilter::Process() : m_spEventSink->GetSurface error 0x%08x\n", hr );
+//		_Module.FreeBitmap( hGflBitmap );
+//		return hr;
+//	}
+//
+//	DDSURFACEDESC desc = { sizeof( DDSURFACEDESC ) };
+//	RECT rc = { 0, 0, hGflBitmap->Width, hGflBitmap->Height };
+//	hr = pIDirectDrawSurface->Lock( &rc, &desc, DDLOCK_WAIT, NULL );
+//	if (FAILED (hr))
+//	{
+//		ATLTRACE ("CThumb - IImageDecodeFilter::Process() : pIDirectDrawSurface->Lock error 0x%08x\n", hr);
+//		_Module.FreeBitmap( hGflBitmap );
+//		return hr;
+//	}
+//
+//	for ( int line = 0; line < hGflBitmap->Height; ++line )
+//	{
+//		char* dst = (char*)desc.lpSurface + line * desc.lPitch;
+//		char* src = (char*)hGflBitmap->Data + line * hGflBitmap->BytesPerLine;
+//		for ( int p = 0; p < hGflBitmap->Width; ++p, dst += 3, src += hGflBitmap->BytesPerPixel )
+//		{
+//			// RGB -> BGR
+//			dst[0] = src[2];
+//			dst[1] = src[1];
+//			dst[2] = src[0];
+//		}
+//	}
+//
+//	hr = pIDirectDrawSurface->Unlock( &desc );
+//	if (FAILED (hr))
+//	{
+//		ATLTRACE ("CThumb - IImageDecodeFilter::Process() : pIDirectDrawSurface->Unlock error 0x%08x\n", hr);
+//		_Module.FreeBitmap( hGflBitmap );
+//		return hr;
+//	}
+//
+//	m_pEventSink->OnDecodeComplete( S_OK );
+//
+//	ATLTRACE( "CThumb - IImageDecodeFilter::Process() : OK\n" );
+//	_Module.FreeBitmap( hGflBitmap );
+//	return hr;
+//}
+//
+//STDMETHODIMP CThumb::Terminate(HRESULT hrStatus)
+//{
+//	if ( m_pEventSink )
+//	{
+//		m_pEventSink->OnDecodeComplete( hrStatus );
+//		m_pEventSink.Release();
+//	}
+//
+//	return S_OK;
+//}
 
 // IObjectWithSite
 

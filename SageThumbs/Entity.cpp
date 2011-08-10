@@ -345,7 +345,7 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 		else
 		{
 			// Using JPEG for rest
-			params.Quality = 70;
+			params.Quality = 80;
 			params.OptimizeHuffmanTable = GFL_TRUE;
 			params.FormatIndex = gflGetFormatIndexByName( "jpeg" );
 			ATLTRACE( "as JPEG " );

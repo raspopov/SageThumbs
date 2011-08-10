@@ -198,7 +198,7 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 	const bool bWinCache = GetRegValue( _T("WinCache"), 1ul ) != 0;
 	CheckDlgButton( IDC_ENABLE_WINCACHE, bWinCache ? BST_CHECKED : BST_UNCHECKED );
 
-	const bool bUseFax = GetRegValue( _T(""), _T(""), ShellImagePreview, HKEY_CLASSES_ROOT ).CompareNoCase( FaxCLSID ) == 0;
+	const bool bUseFax = GetRegValue( _T(""), _T(""), ShellImagePreview, HKEY_CLASSES_ROOT ).CompareNoCase( CLSID_FAX ) == 0;
 	CheckDlgButton( IDC_USE_FAX, bUseFax ? BST_CHECKED : BST_UNCHECKED );
 
 	if ( _Module.m_OSVersion.dwMajorVersion >= 6 && ! IsProcessElevated() )
@@ -287,11 +287,12 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 
 	const bool bUseFax = IsDlgButtonChecked( IDC_USE_FAX ) == BST_CHECKED;
 	if ( bUseFax )
-		SetRegValue( _T(""), FaxCLSID, ShellImagePreview, HKEY_CLASSES_ROOT );
+		SetRegValue( _T(""), CLSID_FAX, ShellImagePreview, HKEY_CLASSES_ROOT );
 	else
 	{
-		SHDeleteKey( HKEY_CLASSES_ROOT, ShellImagePreview );
-		SHDeleteKey( HKEY_CLASSES_ROOT, ShellImagePreview );
+		LSTATUS res = SHDeleteKey( HKEY_CLASSES_ROOT, ShellImagePreview );
+		if ( res == ERROR_SUCCESS )
+			SHDeleteKey( HKEY_CLASSES_ROOT, ShellImagePreview );
 	}
 
 	const CWindow& pList = GetDlgItem( IDC_TYPES_LIST );

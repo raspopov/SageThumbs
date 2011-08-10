@@ -25,8 +25,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define LIB_GFL				"libgfl340.dll"	// Name of GFL library (case sensitive)
 #define LIB_GFLE			"libgfle340.dll"// Name of GFLe library (case sensitive)
 #define LIB_SQLITE			"sqlite3.dll"	// Name of SQLite library (case sensitive)
+#define CLSID_THUMB			_T("{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}")
 #define REG_SAGETHUMBS		_T("Software\\SageThumbs")
 #define REG_SAGETHUMBS_BAK	_T("SageThumbs.bak")
+#define REG_SAGETHUMBS_IMG	_T("SageThumbsImage")
 #define JPEG_DEFAULT		85ul			// JPEG default quality
 #define PNG_DEFAULT			6ul				// PNG default compression
 #define THUMB_STORE_SIZE	256ul			// Minimum thumbnail size for database
@@ -167,8 +169,8 @@ protected:
 	void UnLoadLang ();
 	BOOL LoadLangIDDLL (LANGID LangID);
 
-	BOOL RegisterExt(LPCTSTR szExt, bool bEnableThumbs, bool bEnableIcons, bool bEnableFilter);
-	BOOL UnregisterExt(LPCTSTR szExt);
+	BOOL RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableThumbs, bool bEnableIcons, bool bEnableFilter);
+	BOOL UnregisterExt(LPCTSTR szExt, bool bFull);
 
 	void FillExtMap ();
 
@@ -204,16 +206,24 @@ extern CSageThumbsModule	_Module;
 	#define CHECKPOINT(liLast)
 #endif // _DEBUG
 
+BOOL GetRegValue(LPCTSTR szName, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
 DWORD GetRegValue(LPCTSTR szName, DWORD dwDefault, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
-CString GetRegValue(LPCTSTR szName, LPCTSTR szDefault = _T(""), LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
+CString GetRegValue(LPCTSTR szName, const CString& sDefault, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
+BOOL SetRegValue(LPCTSTR szName, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
 BOOL SetRegValue(LPCTSTR szName, DWORD dwValue, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
-BOOL SetRegValue(LPCTSTR szName, LPCTSTR szValue, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
-BOOL RegisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue);
-//void RegisterValue(HKEY hRoot, LPCTSTR key, LPCTSTR name, const BYTE* value, DWORD value_size, LPCTSTR backup);
-BOOL UnregisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue);
-//void UnregisterValue(HKEY hRoot, LPCTSTR key, LPCTSTR name, const BYTE* value, DWORD value_size, LPCTSTR backup);
+BOOL SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
+
+BOOL RegisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName = _T(""), LPCTSTR szValue = CLSID_THUMB);
+BOOL UnregisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName = _T(""), LPCTSTR szValue = CLSID_THUMB);
 BOOL DeleteRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot);
-BOOL DeleteRegKey(HKEY hRoot, LPCTSTR szSubKey);
+void DeleteEmptyRegKey(HKEY hRoot, LPCTSTR szSubKey);
+
+// Cleaning DENIED rights from key
+BOOL CleanRegKey(HKEY hRoot, LPCTSTR szKey);
+
+LPCTSTR GetContentType(LPCTSTR szExt);
+
+BOOL IsKeyExists(HKEY hRoot, LPCTSTR szKey);
 
 // Ёкспортируемые функции
 STDAPI DllCanUnloadNow (void);

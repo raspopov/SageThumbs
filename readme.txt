@@ -33,6 +33,7 @@ System Requirements:
 Versions:
 
 2.0.0.9
+  * Improved working with image files associations in Windows Registry
   * Cache performance optimizations
   * Added Swedish translation
 
