@@ -60,6 +60,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <emptyvc.h>
 #include <mapi.h>
 #include <ocmm.h>
+#include <propkey.h>
 #include <richedit.h>
 #include <shlobj.h>
 #include <sddl.h>
@@ -105,7 +106,7 @@ DEFINE_GUID(CLSID_WindowsThumbnailer,0x889900c3,0x59f3,0x4c2f,0xae,0x21,0xa4,0x0
 
 #define ShellImagePreview	_T("SystemFileAssociations\\image\\ShellEx\\ContextMenuHandlers\\ShellImagePreview")
 #define FileExts			_T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\")
-//#define PropertyHandlers	_T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PropertySystem\\PropertyHandlers\\")
+#define PropertyHandlers	_T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PropertySystem\\PropertyHandlers\\")
 #define REG_XNVIEW_KEY		_T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\XnView_is1")
 #define REG_XNVIEW_PATH1	_T("UninstallString")
 #define REG_XNVIEW_PATH2	_T("Inno Setup: App Path")

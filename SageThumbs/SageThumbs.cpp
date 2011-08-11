@@ -37,20 +37,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 struct
 {
-	bool	bUseProgID;
-	LPCTSTR szGUID;
+	bool	bDelete;		// Delete key if true
+	bool	bUseProgID;		// Register to ProgID key (true) else to extension key (false)
+	LPCTSTR szName;			// Key name
 }
 static const Handlers[] =
 {
-	{ true,  _T("IconHandler") },								// IExtractIconA and IExtractIconW (Windows 2000)
-	{ false, _T("{BB2E617C-0920-11D1-9A0B-00C04FC2D6C1}") },	// IExtractImage (Windows 2000)
-	{ true,  _T("{00021500-0000-0000-C000-000000000046}") },	// IQueryInfo (Windows 2000)
-	{ false, _T("{E357FCCD-A995-4576-B01F-234630154E96}") },	// IThumbnailProvider (Windows Vista)
-//	{ false,  _T("PropertyHandler") },							// IPropertyStore (Windows Vista)
-//	{ _T("{000214fa-0000-0000-c000-000000000046}") },			// IExtractIconW (Windows Vista)
-//	{ _T("DataHandler") },										// IDataObject (Windows 2000)
-//	{ _T("{8895B1C6-B41F-4C1C-A562-0D564250836F}") },			// IPreviewHandler (Windows Vista)
-	{ false, NULL }
+	{ false, true,  _T("IconHandler") },							// IExtractIconA and IExtractIconW (Windows 2000)
+	{ false, false, _T("{BB2E617C-0920-11D1-9A0B-00C04FC2D6C1}") },	// IExtractImage (Windows 2000)
+	{ false, true,  _T("{00021500-0000-0000-C000-000000000046}") },	// IQueryInfo (Windows 2000)
+	{ false, false, _T("{E357FCCD-A995-4576-B01F-234630154E96}") },	// IThumbnailProvider (Windows Vista)
+	{ false, false, _T("PropertyHandler") },						// IPropertyStore (Windows Vista)
+	{ true , true , _T("DataHandler") },							// IDataObject (Windows 2000)
+	{ true , false, _T("{8895B1C6-B41F-4C1C-A562-0D564250836F}") },	// IPreviewHandler (Windows Vista)
+	{ false, false, NULL }
 };
 
 //BitsDescriptionMap	_BitsMap;
@@ -130,37 +130,20 @@ BOOL CSageThumbsModule::RegisterExtensions()
 
 	const bool bEnableThumbs = GetRegValue( _T("EnableThumbs"), 1ul ) != 0;
 	const bool bEnableIcons  = GetRegValue( _T("EnableIcons"),  1ul ) != 0;
-	const bool bEnableFilter = GetRegValue( _T("EnableFilter"), 1ul ) != 0;
 
+	// Register common associations
 	for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; )
 	{
 		if ( const CExtMap::CPair* p = m_oExtMap.GetNext( pos ) )
 		{
 			if ( p->m_value.enabled )
-				bOK = RegisterExt( p->m_key, p->m_value.info, bEnableThumbs, bEnableIcons, bEnableFilter ) && bOK;
+				bOK = RegisterExt( p->m_key, p->m_value.info, bEnableThumbs, bEnableIcons ) && bOK;
 			else
 				bOK = UnregisterExt( p->m_key, false ) && bOK;
 		}
 	}
 
-	//const bool bEnableThumbs = GetRegValue( _T("EnableThumbs"), 1 ) != 0;
-	//const bool bEnableIcons = GetRegValue( _T("EnableIcons"), 1 ) != 0;
-	//CString sRoot( _T("SystemFileAssociations\\image\\ShellEx\\") );
-	//for ( int i = 0; szHandlers[ i ]; ++i )
-	//{
-	//	if ( ( i == 0 && ! bEnableIcons ) ||	// IExtractIcon
-	//		 ( i == 1 && ! bEnableThumbs ) ||	// IExtractImage
-	//		 ( i == 3 && ! bEnableThumbs ) )	// IThumbnailProvider
-	//	{
-	//		UnregisterValue (HKEY_CLASSES_ROOT, sRoot + szHandlers[ i ],
-	//			_T(""), MyCLSID, REG_SAGETHUMBS_BAK);
-	//	}
-	//	else
-	//	{
-	//		RegisterValue( HKEY_CLASSES_ROOT, sRoot + szHandlers[ i ],
-	//			_T(""), MyCLSID, REG_SAGETHUMBS_BAK );
-	//	}
-	//}
+	// TODO: Register SystemFileAssociations
 
 	CleanWindowsCache();
 
@@ -173,6 +156,7 @@ BOOL CSageThumbsModule::UnregisterExtensions()
 {
 	BOOL bOK = TRUE;
 
+	// Unregister common associations
 	for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; )
 	{
 		if ( const CExtMap::CPair* p = m_oExtMap.GetNext( pos ) )
@@ -181,22 +165,12 @@ BOOL CSageThumbsModule::UnregisterExtensions()
 		}
 	}
 
-	// IImageDecodeFilter
-	//UnregisterValue (HKEY_CLASSES_ROOT, _T("MIME\\Database\\Content Type\\image/xnview"),
-	//	_T("Image Filter CLSID"), MyCLSID, _T("Image Filter CLSID SageThumbs.bak"));
-	//UnregisterValue (HKEY_CLASSES_ROOT, _T("MIME\\Database\\Content Type\\image/xnview\\Bits"),
-	//	_T("0"), (const BYTE*) XNVIEW_MIME, 36, _T("0 SageThumbs.bak"));
-	//SHDeleteEmptyKey (HKEY_CLASSES_ROOT, _T("MIME\\Database\\Content Type\\image/xnview\\Bits"));
-	//SHDeleteEmptyKey (HKEY_CLASSES_ROOT, _T("MIME\\Database\\Content Type\\image/xnview\\Bits"));
-	//SHDeleteEmptyKey (HKEY_CLASSES_ROOT, _T("MIME\\Database\\Content Type\\image/xnview"));
-	//SHDeleteEmptyKey (HKEY_CLASSES_ROOT, _T("MIME\\Database\\Content Type\\image/xnview"));
-
+	// Unregister SystemFileAssociations
 	CString sRoot( _T("SystemFileAssociations\\image\\ShellEx\\") );
-	for ( int i = 0; Handlers[ i ].szGUID; ++i )
+	for ( int i = 0; Handlers[ i ].szName; ++i )
 	{
-		bOK = UnregisterValue( HKEY_CLASSES_ROOT, sRoot + Handlers[ i ].szGUID ) && bOK;
+		bOK = UnregisterValue( HKEY_CLASSES_ROOT, sRoot + Handlers[ i ].szName ) && bOK;
 	}
-
 	DeleteEmptyRegKey( HKEY_CLASSES_ROOT, _T("SystemFileAssociations\\image\\ShellEx") );
 	DeleteEmptyRegKey( HKEY_CLASSES_ROOT, _T("SystemFileAssociations\\image") );
 
@@ -214,16 +188,17 @@ void CSageThumbsModule::UpdateShell()
 	CoFreeUnusedLibraries();
 }
 
-BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableThumbs, bool bEnableIcons, bool /*bEnableFilter*/)
+BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableThumbs, bool bEnableIcons)
 {
 	BOOL bOK = TRUE;
 
 	CString sType( _T(".") );
 	sType += szExt;
 	CString sFileExt = FileExts + sType;
+	CString sDefaultKey = REG_SAGETHUMBS_IMG + sType;
+	CString sDefaultType = GetDefaultType( szExt );
 
 	// Register extension
-	CString sDefaultKey = REG_SAGETHUMBS_IMG + sType;
 	CString sCurrentKey = GetRegValue( _T(""), _T(""), sType, HKEY_CLASSES_ROOT );
 	if ( sCurrentKey.IsEmpty() )
 	{
@@ -233,12 +208,7 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 	else if ( sCurrentKey.CompareNoCase( sDefaultKey ) != 0 )
 	{
 		// Clean lost existing key
-		if ( IsKeyExists( HKEY_CLASSES_ROOT, sDefaultKey ) )
-		{
-			LSTATUS res = SHDeleteKey( HKEY_CLASSES_ROOT, sDefaultKey );
-			if ( res == ERROR_SUCCESS )
-				SHDeleteKey( HKEY_CLASSES_ROOT, sDefaultKey );
-		}
+		DeleteRegKey( HKEY_CLASSES_ROOT, sDefaultKey );
 
 		// Copy old key to our key
 		HKEY hKey = NULL;
@@ -254,7 +224,7 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 		}
 
 		// Save old key as alternate ProgID
-		SetRegValue( sCurrentKey, sType + _T("\\OpenWithProgids"), HKEY_CLASSES_ROOT );
+		bOK = SetRegValue( sCurrentKey, sType + _T("\\OpenWithProgids"), HKEY_CLASSES_ROOT ) && bOK;
 
 		// Use this key
 		sDefaultKey = GetRegValue( _T(""), _T(""), sType, HKEY_CLASSES_ROOT );
@@ -266,18 +236,25 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 	// Extension information
 	bOK = SetRegValue( _T(""), szInfo, sDefaultKey, HKEY_CLASSES_ROOT ) && bOK;
 
-	// Default icon (using Windows if absent)
-	CString sDefaultIcon = GetRegValue( _T(""), _T(""), sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT );
-	if ( sDefaultIcon.IsEmpty() )
+	// Default icon (using Windows if absent) + restore .ico icon
+	if ( sType.CompareNoCase( _T(".ico") ) == 0 )
 	{
-		sDefaultIcon = GetRegValue( _T(""), _T(""), _T("jpegfile\\DefaultIcon"), HKEY_CLASSES_ROOT );
+		bOK = SetRegValue( _T(""), _T("%1"), sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT ) && bOK;
+	}
+	else
+	{
+		CString sDefaultIcon = GetRegValue( _T(""), _T(""), sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT );
 		if ( sDefaultIcon.IsEmpty() )
-			sDefaultIcon = GetRegValue( _T(""), _T(""), _T("pngfile\\DefaultIcon"), HKEY_CLASSES_ROOT );
-		if ( sDefaultIcon.IsEmpty() )
-			sDefaultIcon = GetRegValue( _T(""), _T(""), _T("giffile\\DefaultIcon"), HKEY_CLASSES_ROOT );
-		if ( ! sDefaultIcon.IsEmpty() )
 		{
-			bOK = SetRegValue( _T(""), sDefaultIcon, sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT ) && bOK;
+			sDefaultIcon = GetRegValue( _T(""), _T(""), _T("jpegfile\\DefaultIcon"), HKEY_CLASSES_ROOT );
+			if ( sDefaultIcon.IsEmpty() )
+				sDefaultIcon = GetRegValue( _T(""), _T(""), _T("pngfile\\DefaultIcon"), HKEY_CLASSES_ROOT );
+			if ( sDefaultIcon.IsEmpty() )
+				sDefaultIcon = GetRegValue( _T(""), _T(""), _T("giffile\\DefaultIcon"), HKEY_CLASSES_ROOT );
+			if ( ! sDefaultIcon.IsEmpty() )
+			{
+				bOK = SetRegValue( _T(""), sDefaultIcon, sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT ) && bOK;
+			}
 		}
 	}
 
@@ -293,20 +270,21 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 	CString sPerceivedType = GetRegValue( _T("PerceivedType"), _T(""), sType, HKEY_CLASSES_ROOT );
 	if ( sPerceivedType.IsEmpty() )
 	{
-		SetRegValue( _T("PerceivedType"), _T("image"), sType, HKEY_CLASSES_ROOT );
+		SetRegValue( _T("PerceivedType"), GetPerceivedType( szExt ), sType, HKEY_CLASSES_ROOT );
 	}
 
 	// Content Type Fix (optional)
-	CString sContentExt = GetContentType( szExt );
 	CString sContentType = GetRegValue( _T("Content Type"), _T(""), sType, HKEY_CLASSES_ROOT );
 	if ( sContentType.IsEmpty() )
 	{
-		SetRegValue( _T("Content Type"), _T("image/") + sContentExt, sType, HKEY_CLASSES_ROOT );
+		sContentType = GetContentType( szExt );
+		CString sContentKey = _T("MIME\\DataBase\\Content Type\\") + sContentType;
+
+		SetRegValue( _T("Content Type"), sContentType, sType, HKEY_CLASSES_ROOT );
 
 		// MIME Fix (optional)
-		CString sContentKey = _T("MIME\\DataBase\\Content Type\\image/") + sContentExt;
 		SetRegValue( _T("AutoplayContentTypeHandler"), _T("PicturesContentHandler"), sContentKey, HKEY_CLASSES_ROOT );
-		SetRegValue( _T("Extension"), sContentExt, sContentKey, HKEY_CLASSES_ROOT );
+		SetRegValue( _T("Extension"), GetContentExt( szExt ), sContentKey, HKEY_CLASSES_ROOT );
 
 		// Set image filter only if it was free
 		/*CString sImageFilterCLSID = GetRegValue( _T("Image Filter CLSID"), _T(""), sContentKey, HKEY_CLASSES_ROOT );
@@ -329,42 +307,54 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 		}*/
 	}
 
-	for ( int i = 0; Handlers[ i ].szGUID; ++i )
+	for ( int i = 0; Handlers[ i ].szName; ++i )
 	{
+		CString sHandlerTypeKey = sType + _T("\\ShellEx\\") + Handlers[ i ].szName;
+		CString sHandlerProgIDKey = sDefaultKey + _T("\\ShellEx\\") + Handlers[ i ].szName;
+
 		if ( Handlers[ i ].bUseProgID )
 		{
-			if ( ( ( i == 0 ) && bEnableIcons ) ||	// IExtractIcon
-				   ( i != 0 ) )
+			if ( ( i == 0 && ! bEnableIcons ) ||	// IExtractIcon
+				Handlers[ i ].bDelete )
 			{
-				bOK = RegisterValue( HKEY_CLASSES_ROOT, sDefaultKey + _T("\\ShellEx\\") + Handlers[ i ].szGUID ) && bOK;
+				bOK = UnregisterValue( HKEY_CLASSES_ROOT, sHandlerProgIDKey ) && bOK;
 			}
 			else
 			{
-				bOK = UnregisterValue( HKEY_CLASSES_ROOT, sDefaultKey + _T("\\ShellEx\\") + Handlers[ i ].szGUID ) && bOK;
+				bOK = RegisterValue( HKEY_CLASSES_ROOT, sHandlerProgIDKey ) && bOK;
 			}
 
 			// Clean wrong registration
-			bOK = UnregisterValue( HKEY_CLASSES_ROOT, sType + _T("\\ShellEx\\") + Handlers[ i ].szGUID ) && bOK;
+			bOK = DeleteRegKey( HKEY_CLASSES_ROOT, sHandlerTypeKey ) && bOK;
 		}
 		else
 		{
-			if ( ( ( i == 1 || i == 3 ) && bEnableThumbs ) ||	// IExtractImage + IThumbnailProvider
-				   ( i != 1 && i != 3 ) )
+			if ( ( ( i == 1 || i == 3 ) && ! bEnableThumbs ) ||	// IExtractImage + IThumbnailProvider
+				Handlers[ i ].bDelete )
 			{
-				bOK = RegisterValue( HKEY_CLASSES_ROOT, sType + _T("\\ShellEx\\") + Handlers[ i ].szGUID ) && bOK;
+				bOK = UnregisterValue( HKEY_CLASSES_ROOT, sHandlerTypeKey ) && bOK;
 			}
 			else
 			{
-				bOK = UnregisterValue( HKEY_CLASSES_ROOT, sType + _T("\\ShellEx\\") + Handlers[ i ].szGUID ) && bOK;
+				bOK = RegisterValue( HKEY_CLASSES_ROOT, sHandlerTypeKey ) && bOK;
 			}
 
 			// Clean wrong registration
-			bOK = UnregisterValue( HKEY_CLASSES_ROOT, sDefaultKey + _T("\\ShellEx\\") + Handlers[ i ].szGUID ) && bOK;
+			bOK = DeleteRegKey( HKEY_CLASSES_ROOT, sHandlerProgIDKey ) && bOK;
 		}
 	}
 
 	// Register IPropertyStore handler
-	//bOK = RegisterValue( HKEY_LOCAL_MACHINE, PropertyHandlers + sType ) && bOK;
+	bOK = RegisterValue( HKEY_LOCAL_MACHINE, PropertyHandlers + sType ) && bOK;
+	CString sSysKey = _T("SystemFileAssociations\\") + sType;
+	if ( ! IsKeyExists( HKEY_CLASSES_ROOT, sSysKey ) || GetRegValue( REG_SAGETHUMBS_IMG, sSysKey, HKEY_CLASSES_ROOT ) )
+	{
+		bOK = SetRegValue( REG_SAGETHUMBS_IMG, sSysKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = SetRegValue( _T("ExtendedTileInfo"), ExtendedTileInfo, sSysKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = SetRegValue( _T("FullDetails"), FullDetails, sSysKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = SetRegValue( _T("InfoTip"), InfoTip, sSysKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = SetRegValue( _T("PreviewDetails"), PreviewDetails, sSysKey, HKEY_CLASSES_ROOT ) && bOK;
+	}
 
 	SetRegValue( sDefaultKey, sFileExt + _T("\\OpenWithProgids"), HKEY_CURRENT_USER );
 	SetRegValue( _T("Progid"), sDefaultKey, sFileExt + _T("\\UserChoice"), HKEY_CURRENT_USER );
@@ -388,9 +378,12 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt, bool bFull)
 	CString sType( _T(".") );
 	sType += szExt;
 	CString sFileExt = FileExts + sType;
+	CString sDefaultKey = REG_SAGETHUMBS_IMG + sType;
+	CString sDefaultType = GetDefaultType( szExt );
 
 	CString sCurrentKey = GetRegValue( _T(""), _T(""), sType, HKEY_CLASSES_ROOT );
-	CString sDefaultKey = REG_SAGETHUMBS_IMG + sType;
+	CString sPerceivedType = GetRegValue( _T("PerceivedType"), _T(""), sType, HKEY_CLASSES_ROOT );
+	CString sContentType = GetRegValue( _T("Content Type"), _T(""), sType, HKEY_CLASSES_ROOT );
 
 	/*CString sContentExt = GetContentType( szExt );
 	CString sContentKey = _T("MIME\\DataBase\\Content Type\\image/") + sContentExt;
@@ -405,20 +398,30 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt, bool bFull)
 	}*/
 
 	// Unregister all handlers
-	for ( int i = 0; Handlers[ i ].szGUID; ++i )
+	for ( int i = 0; Handlers[ i ].szName; ++i )
 	{
-		bOK = UnregisterValue( HKEY_CLASSES_ROOT, sType + _T("\\ShellEx\\") + Handlers[ i ].szGUID ) && bOK;
+		bOK = UnregisterValue( HKEY_CLASSES_ROOT, sType + _T("\\ShellEx\\") + Handlers[ i ].szName ) && bOK;
 		if ( ! sCurrentKey.IsEmpty() )
 		{
-			bOK = UnregisterValue( HKEY_CLASSES_ROOT, sCurrentKey + _T("\\ShellEx\\") + Handlers[ i ].szGUID ) && bOK;
+			bOK = UnregisterValue( HKEY_CLASSES_ROOT, sCurrentKey + _T("\\ShellEx\\") + Handlers[ i ].szName ) && bOK;
 		}
 	}
 
 	// Unregister IPropertyStore handler
-	//bOK = UnregisterValue( HKEY_LOCAL_MACHINE, PropertyHandlers + sType ) && bOK;
+	bOK = UnregisterValue( HKEY_LOCAL_MACHINE, PropertyHandlers + sType ) && bOK;
+	CString sSysKey = _T("SystemFileAssociations\\") + sType;
+	if ( GetRegValue( REG_SAGETHUMBS_IMG, sSysKey, HKEY_CLASSES_ROOT ) )
+	{
+		bOK = DeleteRegValue( REG_SAGETHUMBS_IMG, sSysKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = DeleteRegValue( _T("ExtendedTileInfo"), sSysKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = DeleteRegValue( _T("FullDetails"), sSysKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = DeleteRegValue( _T("InfoTip"), sSysKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = DeleteRegValue( _T("PreviewDetails"), sSysKey, HKEY_CLASSES_ROOT ) && bOK;
+	}
 
 	// Clean empty keys
-	//DeleteEmptyRegKey( HKEY_LOCAL_MACHINE, PropertyHandlers + sType );
+	DeleteEmptyRegKey( HKEY_LOCAL_MACHINE, PropertyHandlers + sType );
+	DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sSysKey );
 	DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sType + _T("\\ShellEx") );
 	DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sType );
 	if ( ! sCurrentKey.IsEmpty() )
@@ -434,11 +437,10 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt, bool bFull)
 
 		// Test for unused key and delete it
 		sCurrentKey = GetRegValue( _T(""), _T(""), sType, HKEY_CLASSES_ROOT );
-		if ( sCurrentKey.CompareNoCase( sDefaultKey ) != 0 )
+		if ( sCurrentKey.CompareNoCase( sDefaultKey ) != 0 &&
+			IsKeyExists( HKEY_CLASSES_ROOT, sDefaultKey ) )
 		{
-			LSTATUS res = SHDeleteKey( HKEY_CLASSES_ROOT, sDefaultKey );
-			if ( res == ERROR_SUCCESS )
-				SHDeleteKey( HKEY_CLASSES_ROOT, sDefaultKey );
+			DeleteRegKey( HKEY_CLASSES_ROOT, sDefaultKey );
 
 			DeleteRegValue( sDefaultKey, sType + _T("\\OpenWithProgids"), HKEY_CLASSES_ROOT );
 			DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sType + _T("\\OpenWithProgids") );
@@ -448,6 +450,9 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt, bool bFull)
 				DeleteRegValue( _T("Progid"), sFileExt + _T("\\UserChoice"), HKEY_CURRENT_USER );
 			else
 				SetRegValue( _T("Progid"), sCurrentKey, sFileExt + _T("\\UserChoice"), HKEY_CURRENT_USER );
+
+			// Extra clean-up
+			UnregisterExt( szExt, false );
 		}
 
 		// Clean empty keys
@@ -455,43 +460,30 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt, bool bFull)
 		DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sFileExt + _T("\\OpenWithProgids") );
 		DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sFileExt + _T("\\UserChoice") );
 		DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sFileExt );
+	}
 
-		// Extra clean-up
-		UnregisterExt( szExt, false );
-
-		// Clean orphan extension key
-		sCurrentKey = GetRegValue( _T(""), _T(""), sType, HKEY_CLASSES_ROOT );
-		if ( sCurrentKey.IsEmpty() || ! IsKeyExists( HKEY_CLASSES_ROOT, sCurrentKey ) )
+	// Test orphan extension key
+	sCurrentKey = GetRegValue( _T(""), _T(""), sType, HKEY_CLASSES_ROOT );
+	if ( sCurrentKey.IsEmpty() ||
+		! IsKeyExists( HKEY_CLASSES_ROOT, sCurrentKey ) )
+	{
+		if ( sDefaultType.IsEmpty() )
 		{
-			// Restore standard image types
-			if ( sType.CompareNoCase( _T(".jpg") ) == 0 )
+			// Clean orphan extension key
+			DeleteRegValue( _T(""), sType, HKEY_CLASSES_ROOT );
+			if ( sPerceivedType.CompareNoCase( GetPerceivedType( szExt ) ) == 0 )
 			{
-				SetRegValue( _T(""), _T("jpegfile"), sType, HKEY_CLASSES_ROOT ); 
+				DeleteRegValue( _T("PerceivedType"), sType, HKEY_CLASSES_ROOT );
 			}
-			else if ( sType.CompareNoCase( _T(".gif") ) == 0 )
+			if ( sContentType.CompareNoCase( GetContentType( szExt ) ) == 0 )
 			{
-				SetRegValue( _T(""), _T("giffile"), sType, HKEY_CLASSES_ROOT ); 
+				DeleteRegValue( _T("Content Type"), sType, HKEY_CLASSES_ROOT );	
 			}
-			else if ( sType.CompareNoCase( _T(".png") ) == 0 )
-			{
-				SetRegValue( _T(""), _T("pngfile"), sType, HKEY_CLASSES_ROOT ); 
-			}
-			else if ( sType.CompareNoCase( _T(".emf") ) == 0 )
-			{
-				SetRegValue( _T(""), _T("wmffile"), sType, HKEY_CLASSES_ROOT ); 
-			}
-			else if ( sType.CompareNoCase( _T(".emf") ) == 0 )
-			{
-				SetRegValue( _T(""), _T("wmffile"), sType, HKEY_CLASSES_ROOT ); 
-			}
-			else if ( ! IsKeyExists( HKEY_CLASSES_ROOT, sType + _T("\\PersistentHandler") ) )
-			{
-				// Safe to delete
-				LSTATUS res = SHDeleteKey( HKEY_CLASSES_ROOT, sType );
-				if ( res == ERROR_SUCCESS )
-					SHDeleteKey( HKEY_CLASSES_ROOT, sType );
-			}
+			DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sType );
 		}
+		else
+			// Restore standard image type
+			SetRegValue( _T(""), sDefaultType, sType, HKEY_CLASSES_ROOT ); 
 	}
 
 	return bOK;
@@ -947,10 +939,11 @@ BOOL SetRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot)
 	LSTATUS res = SHSetValue( hRoot, szKey, szName, REG_NONE, NULL, 0 );
 	if ( res != ERROR_SUCCESS )
 	{
-		ATLTRACE( "Got %s during value setting: %s : %s\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
+		ATLTRACE( "Got %s during value setting: %s\\%s \"%s\"\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
 		return FALSE;
 	}
 
+	ATLTRACE( "Set value: %s\\%s \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
 	return TRUE;
 }
 
@@ -973,10 +966,11 @@ BOOL SetRegValue(LPCTSTR szName, DWORD dwValue, LPCTSTR szKey, HKEY hRoot)
 	res = SHSetValue( hRoot, szKey, szName, REG_DWORD, &dwValue, sizeof( DWORD ) );
 	if ( res != ERROR_SUCCESS )
 	{
-		ATLTRACE( "Got %s during value setting: %s : %s = %d\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), dwValue );
+		ATLTRACE( "Got %s during value setting: %s\\%s \"%s\" = %d\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), dwValue );
 		return FALSE;
 	}
 
+	ATLTRACE( "Set value: %s\\%s \"%s\" = %u\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), dwValue );
 	return TRUE;
 }
 
@@ -991,8 +985,9 @@ BOOL SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey, HKEY hRoo
 		return TRUE;
 	}
 
-	// Remove wrong type value if any
-	DeleteRegValue( szName, szKey, hRoot );
+	// Remove wrong type value if any (except default value)
+	if ( *szName )
+		DeleteRegValue( szName, szKey, hRoot );
 
 	if ( _istalpha( sValue.GetAt( 0 ) ) &&
 		sValue.GetAt( 1 ) == _T(':') &&
@@ -1006,10 +1001,11 @@ BOOL SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey, HKEY hRoo
 			res = SHSetValue( hRoot, szKey, szName, REG_EXPAND_SZ, sCompact, (DWORD)lengthof( sCompact ) );
 			if ( res != ERROR_SUCCESS )
 			{
-				ATLTRACE( "Got %s during value setting: %s : %s = %d\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sCompact ) );
+				ATLTRACE( "Got %s during value setting: %s\\%s \"%s\" = %s\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sCompact ) );
 				return FALSE;
 			}
 
+			ATLTRACE( "Set value: %s\\%s \"%s\" = %s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sCompact ) );
 			return TRUE;
 		}
 	}
@@ -1017,10 +1013,11 @@ BOOL SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey, HKEY hRoo
 	res = SHSetValue( hRoot, szKey, szName, REG_SZ, sValue, (DWORD)lengthof( sValue ) );
 	if ( res != ERROR_SUCCESS )
 	{
-		ATLTRACE( "Got %s during value setting: %s : %s = %s\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sValue ) );
+		ATLTRACE( "Got %s during value setting: %s\\%s \"%s\" = %s\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sValue ) );
 		return FALSE;
 	}
 
+	ATLTRACE( "Set value: %s\\%s \"%s\" = %s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sValue ) );
 	return TRUE;
 }
 
@@ -1070,7 +1067,7 @@ BOOL CleanRegKey(HKEY hRoot, LPCTSTR szKey)
 							res = RegSetKeySecurity( hKey, si, pNewSD );
 							if ( res == ERROR_SUCCESS )
 							{
-								ATLTRACE( "Cleared DENIED rights from key: %s\n", (LPCSTR)CT2A( szKey ) );
+								ATLTRACE( "Cleared DENIED rights from key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
 								bOK = TRUE;
 							}
 							LocalFree( pNewSD );
@@ -1089,7 +1086,10 @@ BOOL DeleteRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot)
 	// First attempt
 	LSTATUS res = SHDeleteValue( hRoot, szKey, szName );
 	if ( res == ERROR_SUCCESS )
+	{
+		ATLTRACE( "Deleted value: %s\\%s \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
 		res = SHDeleteValue( hRoot, szKey, szName );
+	}
 	if ( res != ERROR_ACCESS_DENIED )
 		return TRUE;
 
@@ -1098,13 +1098,57 @@ BOOL DeleteRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot)
 		// Second attempt
 		res = SHDeleteValue( hRoot, szKey, szName );
 		if ( res == ERROR_SUCCESS )
+		{
+			ATLTRACE( "Deleted value: %s\\%s \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
 			res = SHDeleteValue( hRoot, szKey, szName );
+		}
 		if ( res != ERROR_ACCESS_DENIED )
 			return TRUE;
 	}
 
-	ATLTRACE( "Got \"Access Denied\" during value deletion: %s : %s\n", (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
+	ATLTRACE( "Got \"Access Denied\" during value deletion: %s\\%s \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
 	return FALSE;
+}
+
+BOOL DeleteRegKey(HKEY hRoot, LPCTSTR szSubKey)
+{
+	LSTATUS res = SHDeleteKey( hRoot, szSubKey );		// HKCU
+	if ( res == ERROR_SUCCESS )
+	{
+		ATLTRACE( "Deleted key  : %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szSubKey ) );
+		res = SHDeleteKey( hRoot, szSubKey );			// HKLM
+	}
+	return ( res != ERROR_ACCESS_DENIED );
+}
+
+BOOL DeleteEmptyRegKey(HKEY hRoot, LPCTSTR szSubKey)
+{
+	LSTATUS res = SHDeleteEmptyKey( hRoot, szSubKey );	// HKCU
+	if ( res == ERROR_SUCCESS )
+	{
+		ATLTRACE( "Deleted key  : %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szSubKey ) );
+		res = SHDeleteEmptyKey( hRoot, szSubKey );		// HKLM
+	}
+	return ( res != ERROR_ACCESS_DENIED );
+}
+
+LPCTSTR GetKeyName(HKEY hRoot)
+{
+	switch ( (DWORD_PTR)hRoot )
+	{
+	case HKEY_CLASSES_ROOT:
+		return _T("HKEY_CLASSES_ROOT");
+	case HKEY_CURRENT_USER:
+		return _T("HKEY_CURRENT_USER");
+	case HKEY_LOCAL_MACHINE:
+		return _T("HKEY_LOCAL_MACHINE");
+	case HKEY_USERS:
+		return _T("HKEY_USERS");
+	case HKEY_CURRENT_CONFIG:
+		return _T("HKEY_CURRENT_CONFIG");
+	default:
+		return _T("{custom}");
+	}
 }
 
 BOOL RegisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue)
@@ -1159,12 +1203,6 @@ BOOL UnregisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue)
 	DeleteEmptyRegKey( hRoot, szKey );
 
 	return bOK;
-}
-
-void DeleteEmptyRegKey(HKEY hRoot, LPCTSTR szSubKey)
-{
-	SHDeleteEmptyKey( hRoot, szSubKey );	// HKCU
-	SHDeleteEmptyKey( hRoot, szSubKey );	// HKLM
 }
 
 HRESULT CSageThumbsModule::GetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info)
@@ -1474,14 +1512,86 @@ bool CSageThumbsModule::IsGoodFile(LPCTSTR szFilename, Ext* pdata, WIN32_FIND_DA
 	return true;
 }
 
-LPCTSTR GetContentType(LPCTSTR szExt)
+CString GetDefaultType(LPCTSTR szExt)
 {
-	if ( _tcsicmp( szExt, _T("jpg")  ) == 0 ||
-		 _tcsicmp( szExt, _T("jpe")  ) == 0 ||
-		 _tcsicmp( szExt, _T("jfif") ) == 0 )
+	struct
+	{
+		LPCTSTR szType;
+		LPCTSTR szProgID;
+	}
+	static const DefaultTypes[] =
+	{
+		{ _T("bmp"),	_T("Paint.Picture") },
+		{ _T("dib"),	_T("Paint.Picture") },
+		{ _T("emf"),	_T("emffile") },
+		{ _T("ico"),	_T("icofile") },
+		{ _T("jfif"),	_T("pjpegfile") },
+		{ _T("jpe"),	_T("jpegfile") },
+		{ _T("jpeg"),	_T("jpegfile") },
+		{ _T("jpg"),	_T("jpegfile") },
+		{ _T("gif"),	_T("giffile") },
+		{ _T("mdi"),	_T("MSPaper.Document") },
+		{ _T("png"),	_T("pngfile") },
+		{ _T("rle"),	_T("rlefile") },
+		{ _T("tif"),	_T("TIFImage.Document") },
+		{ _T("tiff"),	_T("TIFImage.Document") },
+		{ _T("wdp"),	_T("wdpfile") },
+		{ _T("wmf"),	_T("wmffile") },
+		{ NULL,			NULL }
+	};
+	for ( int i = 0; DefaultTypes[ i ].szType; ++i )
+	{
+		if ( _tcsicmp( szExt, DefaultTypes[ i ].szType ) == 0 )
+		{
+			return DefaultTypes[ i ].szProgID;
+		}
+	}
+	return CString();
+}
+
+CString GetPerceivedType(LPCTSTR /* szExt */)
+{
+	return _T("image");
+}
+
+CString GetContentExt(LPCTSTR szExt)
+{
+	if ( _tcsicmp( szExt, _T("jfif") ) == 0 ||
+		 _tcsicmp( szExt, _T("jpe") ) == 0 ||
+		 _tcsicmp( szExt, _T("jpeg") ) == 0 ||
+		 _tcsicmp( szExt, _T("jpg") ) == 0 )
 		return _T("jpeg");
+	else if ( _tcsicmp( szExt, _T("bmp") ) == 0 ||
+			  _tcsicmp( szExt, _T("dib") ) == 0 )
+		return _T("bmp");
+	else if ( _tcsicmp( szExt, _T("tif") ) == 0 ||
+			  _tcsicmp( szExt, _T("tiff") ) == 0 )
+		return _T("tif");
 	else
 		return szExt;
+}
+
+CString GetContentType(LPCTSTR szExt)
+{
+	if ( _tcsicmp( szExt, _T("jfif") ) == 0 ||
+		 _tcsicmp( szExt, _T("jpe") ) == 0 ||
+		 _tcsicmp( szExt, _T("jpeg") ) == 0 ||
+		 _tcsicmp( szExt, _T("jpg") ) == 0 )
+		return _T("image/jpeg");
+	else if ( _tcsicmp( szExt, _T("bmp") ) == 0 ||
+			  _tcsicmp( szExt, _T("dib") ) == 0 )
+		return _T("image/bmp");
+	else if ( _tcsicmp( szExt, _T("ico") ) == 0 )
+		return _T("image/x-icon");
+	else if ( _tcsicmp( szExt, _T("mdi") ) == 0 )
+		return _T("image/vnd.ms-modi");
+	else if ( _tcsicmp( szExt, _T("tif") ) == 0 ||
+			  _tcsicmp( szExt, _T("tiff") ) == 0 )
+		return _T("image/tiff");
+	else if ( _tcsicmp( szExt, _T("wdp") ) == 0 )
+		return _T("image/vnd.ms-photo");
+	else
+		return CString( _T("image/") ) + szExt;
 }
 
 BOOL IsKeyExists(HKEY hRoot, LPCTSTR szKey)

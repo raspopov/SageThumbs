@@ -76,9 +76,10 @@ public:
 	// Расчёт размеров изображения исходя из заданных размеров подложки
 	void CalcSize(UINT& tx, UINT& ty, UINT width, UINT height);
 
-protected:
 	WIN32_FIND_DATA			m_FileData;			// Данные о файле на диске
 	GFL_FILE_INFORMATION	m_ImageInfo;		// Информация о изображении
+
+protected:
 	GFL_BITMAP*				m_hGflBitmap;		// Загруженный эскиз (NULL - не загружен)
 	CString					m_TitleString;		// Текст подписи под эскизом
 	CString					m_InfoTipString;	// Текст для всплывающей подсказки

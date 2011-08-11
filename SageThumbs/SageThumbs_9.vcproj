@@ -71,7 +71,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib Msimg32.lib"
+				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib propsys.lib Msimg32.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\gfl\libW"
 				ModuleDefinitionFile="$(ProjectName).def"
@@ -156,7 +156,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib Msimg32.lib"
+				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib propsys.lib Msimg32.lib"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="..\gfl\lib64W"
 				ModuleDefinitionFile="$(ProjectName).def"
@@ -245,7 +245,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib Msimg32.lib"
+				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib propsys.lib Msimg32.lib"
 				AdditionalLibraryDirectories="..\gfl\libW"
 				ModuleDefinitionFile="$(ProjectName).def"
 				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll"
@@ -335,7 +335,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				IgnoreImportLibrary="true"
-				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib Msimg32.lib"
+				AdditionalDependencies="version.lib comCtl32.lib libgfl.lib libgfle.lib propsys.lib Msimg32.lib"
 				AdditionalLibraryDirectories="..\gfl\lib64W"
 				ModuleDefinitionFile="$(ProjectName).def"
 				DelayLoadDLLs="sqlite3.dll;libgfl340.dll;libgfle340.dll"

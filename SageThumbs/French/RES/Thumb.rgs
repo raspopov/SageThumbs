@@ -54,7 +54,7 @@ HKCR
 		{
 			NoRemove ColumnHandlers
 			{
-				Delete '{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}' = s 'SageThumbs Shell Extension'
+				Delete '{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}'
 			}
 		}
 	}
@@ -81,7 +81,7 @@ HKLM
 					}
 					NoRemove 'PreviewHandlers'
 					{
-						Delete val '{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}' = s 'SageThumbs Shell Extension'
+						Delete '{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}'
 					}
 					NoRemove 'Shell Extensions'
 					{

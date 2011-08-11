@@ -239,9 +239,9 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 	m_InfoTipString = m_MenuTipString;
 	m_InfoTipString.Replace (_T(','), _T('\n'));
 
-	tmp.Format (_T("%dx%d %d bit"),
+	tmp.Format( _T("%d x %d %d bit"),
 		m_ImageInfo.Width, m_ImageInfo.Height,
-		m_ImageInfo.ComponentsPerPixel * m_ImageInfo.BitsPerComponent);
+		m_ImageInfo.ComponentsPerPixel * m_ImageInfo.BitsPerComponent );
 	m_TitleString += (LPCTSTR)CA2T (m_ImageInfo.FormatName);
 	m_TitleString += _T(" ");
 	m_TitleString += tmp;

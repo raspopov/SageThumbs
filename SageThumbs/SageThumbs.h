@@ -37,6 +37,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define FILE_MAX_SIZE		10ul			// Максимальный размер файла в Мб
 #define STANDARD_LANGID		0x09			// Стандартный встроенный язык - English
 
+#define ExtendedTileInfo	_T("prop:System.ItemType;*System.DateModified;*System.Image.Dimensions")
+#define FullDetails			_T("prop:System.PropGroup.Image;System.Image.Dimensions;System.Image.HorizontalSize;System.Image.VerticalSize;System.Image.BitDepth;System.PropGroup.FileSystem;System.ItemNameDisplay;System.ItemType;System.ItemFolderPathDisplay;System.DateCreated;System.DateModified;System.Size;System.FileAttributes;System.OfflineAvailability;System.OfflineStatus;System.SharedWith;System.FileOwner;System.ComputerName")
+#define InfoTip				_T("prop:System.ItemType;*System.DateModified;*System.Image.Dimensions;*System.Size")
+#define PreviewDetails		_T("prop:*System.DateModified;*System.Image.Dimensions;*System.Size;*System.OfflineAvailability;*System.OfflineStatus;*System.DateCreated;*System.SharedWith")
+
 // Disabled by default
 #define EXT_DEFAULT(ext) \
 	((ext)==_T("ico")|| \
@@ -169,7 +174,7 @@ protected:
 	void UnLoadLang ();
 	BOOL LoadLangIDDLL (LANGID LangID);
 
-	BOOL RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableThumbs, bool bEnableIcons, bool bEnableFilter);
+	BOOL RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableThumbs, bool bEnableIcons);
 	BOOL UnregisterExt(LPCTSTR szExt, bool bFull);
 
 	void FillExtMap ();
@@ -213,15 +218,22 @@ BOOL SetRegValue(LPCTSTR szName, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HK
 BOOL SetRegValue(LPCTSTR szName, DWORD dwValue, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
 BOOL SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
 
-BOOL RegisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName = _T(""), LPCTSTR szValue = CLSID_THUMB);
-BOOL UnregisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName = _T(""), LPCTSTR szValue = CLSID_THUMB);
-BOOL DeleteRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot);
-void DeleteEmptyRegKey(HKEY hRoot, LPCTSTR szSubKey);
-
 // Cleaning DENIED rights from key
 BOOL CleanRegKey(HKEY hRoot, LPCTSTR szKey);
 
-LPCTSTR GetContentType(LPCTSTR szExt);
+BOOL DeleteRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot);
+BOOL DeleteRegKey(HKEY hRoot, LPCTSTR szSubKey);
+BOOL DeleteEmptyRegKey(HKEY hRoot, LPCTSTR szSubKey);
+
+LPCTSTR GetKeyName(HKEY hRoot);
+
+BOOL RegisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName = _T(""), LPCTSTR szValue = CLSID_THUMB);
+BOOL UnregisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName = _T(""), LPCTSTR szValue = CLSID_THUMB);
+
+CString GetDefaultType(LPCTSTR szExt);
+CString GetPerceivedType(LPCTSTR szExt);
+CString GetContentExt(LPCTSTR szExt);
+CString GetContentType(LPCTSTR szExt);
 
 BOOL IsKeyExists(HKEY hRoot, LPCTSTR szKey);
 

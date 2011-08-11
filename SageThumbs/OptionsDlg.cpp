@@ -264,10 +264,10 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 	SetRegValue( _T("Width"), width );
 	SetRegValue( _T("Height"), height );
 
-	DWORD jpeg = min( 100, max( 0, GetDlgItemInt( IDC_JPEG, &result, FALSE ) ) );
+	DWORD jpeg = min( 100, GetDlgItemInt( IDC_JPEG, &result, FALSE ) );
 	SetRegValue( _T("JPEG"), jpeg );
 
-	DWORD png = min( 9, max( 0, GetDlgItemInt( IDC_PNG, &result, FALSE ) ) );
+	DWORD png = min( 9, GetDlgItemInt( IDC_PNG, &result, FALSE ) );
 	SetRegValue( _T("PNG"), png );
 
 	const bool bEnableMenu = IsDlgButtonChecked( IDC_ENABLE_MENU ) == BST_CHECKED;
@@ -289,11 +289,7 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 	if ( bUseFax )
 		SetRegValue( _T(""), CLSID_FAX, ShellImagePreview, HKEY_CLASSES_ROOT );
 	else
-	{
-		LSTATUS res = SHDeleteKey( HKEY_CLASSES_ROOT, ShellImagePreview );
-		if ( res == ERROR_SUCCESS )
-			SHDeleteKey( HKEY_CLASSES_ROOT, ShellImagePreview );
-	}
+		DeleteRegKey( HKEY_CLASSES_ROOT, ShellImagePreview );
 
 	const CWindow& pList = GetDlgItem( IDC_TYPES_LIST );
 	const int len = ListView_GetItemCount( pList );

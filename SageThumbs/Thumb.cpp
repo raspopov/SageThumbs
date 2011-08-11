@@ -946,9 +946,24 @@ STDMETHODIMP CThumb::GetThumbnail(UINT cx, HBITMAP *phbmp, WTS_ALPHATYPE *pdwAlp
 // IPropertyStoreCapabilities
 
 STDMETHODIMP CThumb::IsPropertyWritable( 
-	/* [in] */ __RPC__in REFPROPERTYKEY /* key */)
+	/* [in] */ __RPC__in REFPROPERTYKEY key)
 {
-	ATLTRACE( "CThumb - IPropertyStoreCapabilities::IsPropertyWritable() : S_FALSE\n" );
+#ifdef _DEBUG
+	CStringA sPropName;
+	CComPtr< IPropertyDescription > pDesc;
+	if ( SUCCEEDED( PSGetPropertyDescription( key, IID_PPV_ARGS( &pDesc ) ) ) )
+	{
+		LPWSTR szPropName = NULL;
+		if ( SUCCEEDED( pDesc->GetCanonicalName( &szPropName ) ) )
+		{
+			sPropName = szPropName;
+			CoTaskMemFree( szPropName );
+		}
+		pDesc.Release();
+	}
+#endif
+
+	ATLTRACE( "CThumb - IPropertyStoreCapabilities::IsPropertyWritable(\"%s\") : S_FALSE\n", (LPCSTR)sPropName );
 	return S_FALSE;
 }
 
@@ -969,17 +984,82 @@ STDMETHODIMP CThumb::GetCount(
 }
 
 STDMETHODIMP CThumb::GetAt( 
-	/* [in] */ DWORD iProp,
-	/* [out] */ __RPC__out PROPERTYKEY *pkey)
+	/* [in] */ DWORD /* iProp */,
+	/* [out] */ __RPC__out PROPERTYKEY* pkey)
 {
+	if ( ! pkey )
+	{
+		ATLTRACE( "CThumb - IPropertyStore::GetAt() : E_POINTER\n" );
+		return E_POINTER;
+	}
+
 	ATLTRACENOTIMPL( "IPropertyStore::GetAt" );
 }
 
 STDMETHODIMP CThumb::GetValue( 
 	/* [in] */ __RPC__in REFPROPERTYKEY key,
-	/* [out] */ __RPC__out PROPVARIANT *pv)
+	/* [out] */ __RPC__out PROPVARIANT* pv)
 {
-	ATLTRACENOTIMPL( "IPropertyStore::GetValue" );
+#ifdef _DEBUG
+	CStringA sPropName;
+	CComPtr< IPropertyDescription > pDesc;
+	if ( SUCCEEDED( PSGetPropertyDescription( key, IID_PPV_ARGS( &pDesc ) ) ) )
+	{
+		LPWSTR szPropName = NULL;
+		if ( SUCCEEDED( pDesc->GetCanonicalName( &szPropName ) ) )
+		{
+			sPropName = szPropName;
+			CoTaskMemFree( szPropName );
+		}
+		pDesc.Release();
+	}
+#endif
+
+	if ( ! pv )
+	{
+		ATLTRACE( "CThumb - IPropertyStore::GetValue(\"%s\") : E_POINTER\n", (LPCSTR)sPropName );
+		return E_POINTER;
+	}
+	PropVariantInit( pv );
+
+	if ( SUCCEEDED( m_Preview.LoadInfo( m_sFilename ) ) )
+	{
+		if ( IsEqualPropertyKey( key, PKEY_DRM_IsProtected ) )
+		{
+			pv->vt = VT_BOOL;
+			pv->boolVal = VARIANT_FALSE;
+		}
+		else if ( IsEqualPropertyKey( key, PKEY_Image_Dimensions ) )
+		{
+			CString sDimensions;
+			sDimensions.Format( _T("%d x %d"), m_Preview.m_ImageInfo.Width, m_Preview.m_ImageInfo.Height );
+			pv->vt = VT_BSTR;
+			pv->bstrVal = sDimensions.AllocSysString();
+		}
+		else if ( IsEqualPropertyKey( key, PKEY_Image_HorizontalSize ) )
+		{
+			pv->vt = VT_UI4;
+			pv->ulVal = m_Preview.m_ImageInfo.Width;
+		}
+		else if ( IsEqualPropertyKey( key, PKEY_Image_VerticalSize ) )
+		{
+			pv->vt = VT_UI4;
+			pv->ulVal = m_Preview.m_ImageInfo.Height;
+		}
+		else if ( IsEqualPropertyKey( key, PKEY_Image_BitDepth ) )
+		{
+			pv->vt = VT_UI4;
+			pv->ulVal = m_Preview.m_ImageInfo.ComponentsPerPixel * m_Preview.m_ImageInfo.BitsPerComponent;
+		}
+		else if ( IsEqualPropertyKey( key, PKEY_PerceivedType ) )
+		{
+			pv->vt = VT_I4;
+			pv->lVal = PERCEIVED_TYPE_IMAGE;
+		}
+	}
+
+	ATLTRACE( "CThumb - IPropertyStore::GetValue(\"%s\") : S_OK\n", (LPCSTR)sPropName );
+	return S_OK;
 }
 
 STDMETHODIMP CThumb::SetValue( 

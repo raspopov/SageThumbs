@@ -33,9 +33,11 @@ System Requirements:
 Versions:
 
 2.0.0.9
+  * Added support for image properties
   * Improved working with image files associations in Windows Registry
   * Cache performance optimizations
   * Added Swedish translation
+  * Added new version checker to installer
 
 2.0.0.8
   * Combined 32/64-bit distributive
