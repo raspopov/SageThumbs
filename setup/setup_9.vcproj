@@ -107,6 +107,14 @@
 	</References>
 	<Files>
 		<File
+			RelativePath=".\OnlineUpdate.nsh"
+			>
+		</File>
+		<File
+			RelativePath=".\ReadMe.txt"
+			>
+		</File>
+		<File
 			RelativePath=".\setup.nsi"
 			DeploymentContent="true"
 			>
@@ -117,7 +125,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Creaintg Installer..."
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;"
+					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
 					AdditionalDependencies="$(OutDir)\SageThumbs.dll"
 					Outputs="$(InputDir)\$(InputName).trg"
 				/>
@@ -129,7 +137,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Creaintg Installer..."
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;"
+					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
 					AdditionalDependencies="$(OutDir)\SageThumbs.dll"
 					Outputs="$(InputDir)\$(InputName).trg"
 				/>
@@ -141,7 +149,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Creaintg Installer..."
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;"
+					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
 					AdditionalDependencies="$(OutDir)\SageThumbs.dll"
 					Outputs="$(InputDir)\$(InputName).trg"
 				/>
@@ -152,7 +160,7 @@
 				<Tool
 					Name="VCCustomBuildTool"
 					Description="Creaintg Installer..."
-					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;"
+					CommandLine="&quot;C:\Program Files (x86)\NSIS\makensis.exe&quot; &quot;$(InputPath)&quot;&#x0D;&#x0A;"
 					AdditionalDependencies="$(OutDir)\SageThumbs.dll"
 					Outputs="$(InputDir)\$(InputName).trg"
 				/>

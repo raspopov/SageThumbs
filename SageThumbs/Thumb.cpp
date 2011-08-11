@@ -948,6 +948,7 @@ STDMETHODIMP CThumb::GetThumbnail(UINT cx, HBITMAP *phbmp, WTS_ALPHATYPE *pdwAlp
 STDMETHODIMP CThumb::IsPropertyWritable( 
 	/* [in] */ __RPC__in REFPROPERTYKEY key)
 {
+	key;
 #ifdef _DEBUG
 	CStringA sPropName;
 	CComPtr< IPropertyDescription > pDesc;
@@ -961,9 +962,8 @@ STDMETHODIMP CThumb::IsPropertyWritable(
 		}
 		pDesc.Release();
 	}
-#endif
-
 	ATLTRACE( "CThumb - IPropertyStoreCapabilities::IsPropertyWritable(\"%s\") : S_FALSE\n", (LPCSTR)sPropName );
+#endif
 	return S_FALSE;
 }
 
@@ -1000,6 +1000,13 @@ STDMETHODIMP CThumb::GetValue(
 	/* [in] */ __RPC__in REFPROPERTYKEY key,
 	/* [out] */ __RPC__out PROPVARIANT* pv)
 {
+	if ( ! pv )
+	{
+		ATLTRACE( "CThumb - IPropertyStore::GetValue() : E_POINTER\n" );
+		return E_POINTER;
+	}
+	PropVariantInit( pv );
+
 #ifdef _DEBUG
 	CStringA sPropName;
 	CComPtr< IPropertyDescription > pDesc;
@@ -1013,14 +1020,8 @@ STDMETHODIMP CThumb::GetValue(
 		}
 		pDesc.Release();
 	}
+	ATLTRACE( "CThumb - IPropertyStore::GetValue(\"%s\") : S_OK\n", (LPCSTR)sPropName );
 #endif
-
-	if ( ! pv )
-	{
-		ATLTRACE( "CThumb - IPropertyStore::GetValue(\"%s\") : E_POINTER\n", (LPCSTR)sPropName );
-		return E_POINTER;
-	}
-	PropVariantInit( pv );
 
 	if ( SUCCEEDED( m_Preview.LoadInfo( m_sFilename ) ) )
 	{
@@ -1058,7 +1059,6 @@ STDMETHODIMP CThumb::GetValue(
 		}
 	}
 
-	ATLTRACE( "CThumb - IPropertyStore::GetValue(\"%s\") : S_OK\n", (LPCSTR)sPropName );
 	return S_OK;
 }
 

@@ -7,39 +7,50 @@
 !define FILENAME	"sagethumbs_${VERSION}_setup.exe"
 !define COPYRIGHT	"Copyright © 2004-2011 Nikolay Raspopov"
 !define URL			"http://www.cherubicsoft.com/"
+!define PAD			"http://sagethumbs.googlecode.com/svn/trunk/sagethumbs.xml"
 
 SetCompressor /SOLID lzma
 
-Var STARTMENU_FOLDER
 !include "x64.nsh"
+
+!include "WordFunc.nsh"
+	!insertmacro "VersionCompare"
+
+!include "XML.nsh"
+
+!include "OnlineUpdate.nsh"
+	!insertmacro "UpdatePad"
+
+Var STARTMENU_FOLDER
 !include "MUI2.nsh"
-!define MUI_ABORTWARNING
-!define MUI_HEADERIMAGE
-!define MUI_ICON "install.ico"
-!define MUI_UNICON "uninstall.ico"
-!define MUI_HEADERIMAGE_BITMAP "install.bmp"
-!define MUI_HEADERIMAGE_UNBITMAP "uninstall.bmp"
-!define MUI_COMPONENTSPAGE_NODESC
-!define MUI_FINISHPAGE_NOAUTOCLOSE
-!define MUI_UNFINISHPAGE_NOAUTOCLOSE
-!define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU"
-!define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\SageThumbs"
-!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
-!insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE "..\license.txt"
-!insertmacro MUI_PAGE_DIRECTORY
-!insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
-!insertmacro MUI_PAGE_INSTFILES
-!insertmacro MUI_PAGE_FINISH
-!insertmacro MUI_UNPAGE_WELCOME
-!insertmacro MUI_UNPAGE_CONFIRM
-!insertmacro MUI_UNPAGE_INSTFILES
-!insertmacro MUI_UNPAGE_FINISH
-!insertmacro MUI_LANGUAGE "English"
-!insertmacro MUI_LANGUAGE "Russian"
-!insertmacro MUI_LANGUAGE "French"
-!insertmacro MUI_LANGUAGE "German"
-!insertmacro MUI_LANGUAGE "Swedish"
+	!define MUI_ABORTWARNING
+	!define MUI_HEADERIMAGE
+	!define MUI_ICON "install.ico"
+	!define MUI_UNICON "uninstall.ico"
+	!define MUI_HEADERIMAGE_BITMAP "install.bmp"
+	!define MUI_HEADERIMAGE_UNBITMAP "uninstall.bmp"
+	!define MUI_COMPONENTSPAGE_NODESC
+	!define MUI_FINISHPAGE_NOAUTOCLOSE
+	!define MUI_UNFINISHPAGE_NOAUTOCLOSE
+	!define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU"
+	!define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\SageThumbs"
+	!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
+	!insertmacro MUI_PAGE_WELCOME
+	!insertmacro MUI_PAGE_LICENSE "..\license.txt"
+	!insertmacro MUI_PAGE_COMPONENTS
+	!insertmacro MUI_PAGE_DIRECTORY
+	!insertmacro MUI_PAGE_STARTMENU Application $STARTMENU_FOLDER
+	!insertmacro MUI_PAGE_INSTFILES
+	!insertmacro MUI_PAGE_FINISH
+	!insertmacro MUI_UNPAGE_WELCOME
+	!insertmacro MUI_UNPAGE_CONFIRM
+	!insertmacro MUI_UNPAGE_INSTFILES
+	!insertmacro MUI_UNPAGE_FINISH
+	!insertmacro MUI_LANGUAGE "English"
+	!insertmacro MUI_LANGUAGE "Russian"
+	!insertmacro MUI_LANGUAGE "French"
+	!insertmacro MUI_LANGUAGE "German"
+	!insertmacro MUI_LANGUAGE "Swedish"
 
 Name "${TITLE}"
 VIProductVersion "${VERSION}"
@@ -62,78 +73,46 @@ ShowInstDetails show
 ShowUninstDetails show
 RequestExecutionLevel admin
 
-Function .onInit
-	SetShellVarContext all
-	SetRegView 64
-	System::Call 'kernel32::CreateMutexA(i 0, i 0, t "myMutex777") i .r1 ?e'
-	Pop $R0
-	StrCmp $R0 0 +2
-	Abort
-FunctionEnd
+Section "Check for new version before install"
 
-Function un.onInit
-	SetShellVarContext all
-	SetRegView 64
-	System::Call 'kernel32::CreateMutexA(i 0, i 0, t "myMutex777") i .r1 ?e'
-	Pop $R0
-	StrCmp $R0 0 +2
-	Abort
-FunctionEnd
+	SetOutPath $TEMP
+	${UpdatePad} "${PAD}" "${VERSION}" $0 $1
+	StrCmp $0 "" 0 new
+	DetailPrint "No updates available"
+	Goto end
+new:
+	DetailPrint "Found new version: $1"
+	MessageBox MB_YESNO|MB_ICONQUESTION|MB_SETFOREGROUND "Found new version: $1$\n$\nDo you want to download and install it instead?" IDYES update
+	Goto end
+update:
+	DetailPrint "Downloading $0..."
+	StrCpy $3 "$EXEDIR\sagethumbs_$1_setup.exe"
+	ClearErrors
+	CreateDirectory "$EXEDIR\_test"
+	IfErrors 0 +2
+	StrCpy $3 "$TEMP\sagethumbs_$1_setup.exe"
+	RMDir "$EXEDIR\_test"
+	Delete "$3"
+	NSISdl::download $0 $3
+	Pop $2
+	StrCmp $2 "cancel" end
+	StrCmp $2 "success" run
+	DetailPrint "Download failed: $2"
+	MessageBox MB_OK|MB_ICONEXCLAMATION|MB_SETFOREGROUND "Download failed: $2"
+    ExecShell "open" "$0"
+    Quit
 
-Function FreeSageThumbs64
-	IfFileExists "$INSTDIR\64\SageThumbs.dll" unreg ok
-unreg:
-	ExecWait '"$SYSDIR\regsvr32.exe" /s /u "$INSTDIR\64\SageThumbs.dll"'
-	System::Call 'kernel32::CreateEventA(i 0, i 1, i 0, t "SageThumbsWatch") i .r1'
-	StrCmp $R1 0 no_event
- 	System::Call 'kernel32::SetEvent(i r1)'
-  	Sleep 1000
-no_event:
-	Delete "$INSTDIR\64\SageThumbs.dll"
-ok:
-FunctionEnd
+run:
+    Exec '$3'
+	Quit
 
-Function un.FreeSageThumbs64
-	IfFileExists "$INSTDIR\64\SageThumbs.dll" unreg ok
-unreg:
-	ExecWait '"$SYSDIR\regsvr32.exe" /s /u "$INSTDIR\64\SageThumbs.dll"'
-	System::Call 'kernel32::CreateEventA(i 0, i 1, i 0, t "SageThumbsWatch") i .r1'
-	StrCmp $R1 0 no_event
- 	System::Call 'kernel32::SetEvent(i r1)'
-  	Sleep 1000
-no_event:
-	Delete "$INSTDIR\64\SageThumbs.dll"
-ok:
-FunctionEnd
+end:
+	ClearErrors
 
-Function FreeSageThumbs32
-	IfFileExists "$INSTDIR\32\SageThumbs.dll" unreg ok
-unreg:
-	ExecWait '"$SYSDIR\regsvr32.exe" /s /u "$INSTDIR\32\SageThumbs.dll"'
-	System::Call 'kernel32::CreateEventA(i 0, i 1, i 0, t "SageThumbsWatch") i .r1'
-	StrCmp $R1 0 no_event
- 	System::Call 'kernel32::SetEvent(i r1)'
-  	Sleep 1000
-no_event:
-	Delete "$INSTDIR\32\SageThumbs.dll"
-ok:
-FunctionEnd
+SectionEnd
 
-Function un.FreeSageThumbs32
-	IfFileExists "$INSTDIR\32\SageThumbs.dll" unreg ok
-unreg:
-	ExecWait '"$SYSDIR\regsvr32.exe" /s /u "$INSTDIR\32\SageThumbs.dll"'
-	System::Call 'kernel32::CreateEventA(i 0, i 1, i 0, t "SageThumbsWatch") i .r1'
-	StrCmp $R1 0 no_event
- 	System::Call 'kernel32::SetEvent(i r1)'
-  	Sleep 1000
-no_event:
-	Delete "$INSTDIR\32\SageThumbs.dll"
-ok:
-FunctionEnd
-
-Section "${TITLE}"
-
+Section "!${TITLE}"
+	SectionIn RO
 	SetOutPath $TEMP
 
 # Trying to unregister, unload and delete SageThumbs 32-bit
@@ -313,7 +292,6 @@ done64:
 SectionEnd
 
 Section "Uninstall"
-
 	SetOutPath $TEMP
 
 # Trying to unregister, unload and delete SageThumbs 32-bit
@@ -404,5 +382,75 @@ ok64:
 	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs"
 
 SectionEnd
+
+Function .onInit
+	SetShellVarContext all
+	SetRegView 64
+	System::Call 'kernel32::CreateMutexA(i 0, i 0, t "${TITLE}.${VERSION}") i .r1 ?e'
+	Pop $R0
+	StrCmp $R0 0 +2
+	Abort
+FunctionEnd
+
+Function un.onInit
+	SetShellVarContext all
+	SetRegView 64
+	System::Call 'kernel32::CreateMutexA(i 0, i 0, t "${TITLE}.${VERSION}") i .r1 ?e'
+	Pop $R0
+	StrCmp $R0 0 +2
+	Abort
+FunctionEnd
+
+Function FreeSageThumbs64
+	IfFileExists "$INSTDIR\64\SageThumbs.dll" unreg ok
+unreg:
+	ExecWait '"$SYSDIR\regsvr32.exe" /s /u "$INSTDIR\64\SageThumbs.dll"'
+	System::Call 'kernel32::CreateEventA(i 0, i 1, i 0, t "SageThumbsWatch") i .r1'
+	StrCmp $R1 0 no_event
+ 	System::Call 'kernel32::SetEvent(i r1)'
+  	Sleep 1000
+no_event:
+	Delete "$INSTDIR\64\SageThumbs.dll"
+ok:
+FunctionEnd
+
+Function un.FreeSageThumbs64
+	IfFileExists "$INSTDIR\64\SageThumbs.dll" unreg ok
+unreg:
+	ExecWait '"$SYSDIR\regsvr32.exe" /s /u "$INSTDIR\64\SageThumbs.dll"'
+	System::Call 'kernel32::CreateEventA(i 0, i 1, i 0, t "SageThumbsWatch") i .r1'
+	StrCmp $R1 0 no_event
+ 	System::Call 'kernel32::SetEvent(i r1)'
+  	Sleep 1000
+no_event:
+	Delete "$INSTDIR\64\SageThumbs.dll"
+ok:
+FunctionEnd
+
+Function FreeSageThumbs32
+	IfFileExists "$INSTDIR\32\SageThumbs.dll" unreg ok
+unreg:
+	ExecWait '"$SYSDIR\regsvr32.exe" /s /u "$INSTDIR\32\SageThumbs.dll"'
+	System::Call 'kernel32::CreateEventA(i 0, i 1, i 0, t "SageThumbsWatch") i .r1'
+	StrCmp $R1 0 no_event
+ 	System::Call 'kernel32::SetEvent(i r1)'
+  	Sleep 1000
+no_event:
+	Delete "$INSTDIR\32\SageThumbs.dll"
+ok:
+FunctionEnd
+
+Function un.FreeSageThumbs32
+	IfFileExists "$INSTDIR\32\SageThumbs.dll" unreg ok
+unreg:
+	ExecWait '"$SYSDIR\regsvr32.exe" /s /u "$INSTDIR\32\SageThumbs.dll"'
+	System::Call 'kernel32::CreateEventA(i 0, i 1, i 0, t "SageThumbsWatch") i .r1'
+	StrCmp $R1 0 no_event
+ 	System::Call 'kernel32::SetEvent(i r1)'
+  	Sleep 1000
+no_event:
+	Delete "$INSTDIR\32\SageThumbs.dll"
+ok:
+FunctionEnd
 
 !appendfile "setup.trg" "[${__TIMESTAMP__}] ${TITLE} ${VERSION} ${FILENAME}$\n"
