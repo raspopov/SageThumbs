@@ -64,7 +64,6 @@
 				EnableCOMDATFolding="2"
 				ResourceOnlyDLL="true"
 				SetChecksum="true"
-				BaseAddress="0x1F000000"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -203,7 +202,6 @@
 				EnableCOMDATFolding="2"
 				ResourceOnlyDLL="true"
 				SetChecksum="true"
-				BaseAddress="0x1F000000"
 				TargetMachine="1"
 			/>
 			<Tool

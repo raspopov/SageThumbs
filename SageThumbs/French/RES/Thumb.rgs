@@ -20,7 +20,7 @@ HKCR
 			VersionIndependentProgID = s 'SageThumbs.Thumb'
 			InprocServer32 = s '%MODULE%'
 			{
-				val ThreadingModel = s 'Apartment'
+				val ThreadingModel = s 'Both'
 			}
 			val AppID = s '%APPID%'
 		}

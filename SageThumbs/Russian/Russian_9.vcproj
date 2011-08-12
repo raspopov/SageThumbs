@@ -64,8 +64,6 @@
 				EnableCOMDATFolding="2"
 				ResourceOnlyDLL="true"
 				SetChecksum="true"
-				BaseAddress="0x1F000000"
-				ImportLibrary="$(OutDir)/Russian.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -135,8 +133,6 @@
 				EnableCOMDATFolding="2"
 				ResourceOnlyDLL="true"
 				SetChecksum="true"
-				BaseAddress=""
-				ImportLibrary="$(OutDir)/Russian.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -206,8 +202,6 @@
 				EnableCOMDATFolding="2"
 				ResourceOnlyDLL="true"
 				SetChecksum="true"
-				BaseAddress="0x1F000000"
-				ImportLibrary=""
 				TargetMachine="1"
 			/>
 			<Tool
@@ -278,8 +272,6 @@
 				LinkTimeCodeGeneration="0"
 				ResourceOnlyDLL="true"
 				SetChecksum="true"
-				BaseAddress=""
-				ImportLibrary=""
 				TargetMachine="17"
 			/>
 			<Tool
