@@ -132,6 +132,7 @@ wait32_4:
 ok32:
 	Delete "$INSTDIR\32\SageThumbs1d.dll"
 	Delete "$INSTDIR\32\SageThumbs19.dll"
+	Delete "$INSTDIR\32\SageThumbs16.dll"
 	Delete "$INSTDIR\32\SageThumbs0c.dll"
 	Delete "$INSTDIR\32\SageThumbs07.dll"
 	Delete "$INSTDIR\32\libgfl340.dll"
@@ -157,6 +158,7 @@ wait64_4:
 ok64:
 	Delete "$INSTDIR\64\SageThumbs1d.dll"
 	Delete "$INSTDIR\64\SageThumbs19.dll"
+	Delete "$INSTDIR\64\SageThumbs16.dll"
 	Delete "$INSTDIR\64\SageThumbs0c.dll"
 	Delete "$INSTDIR\64\SageThumbs07.dll"
 	Delete "$INSTDIR\64\libgfl340.dll"
@@ -211,6 +213,7 @@ ok64:
 	File /oname=SageThumbs.dll.tmp		"${SRC32}SageThumbs.dll"
 	File /oname=SageThumbs1d.dll.tmp	"${SRC32}SageThumbs1d.dll"
 	File /oname=SageThumbs19.dll.tmp	"${SRC32}SageThumbs19.dll"
+	File /oname=SageThumbs16.dll.tmp	"${SRC32}SageThumbs16.dll"
 	File /oname=SageThumbs0c.dll.tmp	"${SRC32}SageThumbs0c.dll"
 	File /oname=SageThumbs07.dll.tmp	"${SRC32}SageThumbs07.dll"
 	File /oname=libgfl340.dll.tmp		"${SRC32}libgfl340.dll"
@@ -218,6 +221,7 @@ ok64:
 	File /oname=sqlite3.dll.tmp			"${SRC32}sqlite3.dll"
 	Rename /REBOOTOK "$INSTDIR\32\SageThumbs.dll.tmp"	"$INSTDIR\32\SageThumbs.dll"
 	Rename /REBOOTOK "$INSTDIR\32\SageThumbs1d.dll.tmp"	"$INSTDIR\32\SageThumbs1d.dll"
+	Rename /REBOOTOK "$INSTDIR\32\SageThumbs16.dll.tmp"	"$INSTDIR\32\SageThumbs16.dll"
 	Rename /REBOOTOK "$INSTDIR\32\SageThumbs19.dll.tmp"	"$INSTDIR\32\SageThumbs19.dll"
 	Rename /REBOOTOK "$INSTDIR\32\SageThumbs0c.dll.tmp"	"$INSTDIR\32\SageThumbs0c.dll"
 	Rename /REBOOTOK "$INSTDIR\32\SageThumbs07.dll.tmp"	"$INSTDIR\32\SageThumbs07.dll"
@@ -237,6 +241,7 @@ done32:
 	File /oname=SageThumbs.dll.tmp		"${SRC64}SageThumbs.dll"
 	File /oname=SageThumbs1d.dll.tmp	"${SRC64}SageThumbs1d.dll"
 	File /oname=SageThumbs19.dll.tmp	"${SRC64}SageThumbs19.dll"
+	File /oname=SageThumbs16.dll.tmp	"${SRC64}SageThumbs16.dll"
 	File /oname=SageThumbs0c.dll.tmp	"${SRC64}SageThumbs0c.dll"
 	File /oname=SageThumbs07.dll.tmp	"${SRC64}SageThumbs07.dll"
 	File /oname=libgfl340.dll.tmp		"${SRC64}libgfl340.dll"
@@ -245,6 +250,7 @@ done32:
 	Rename /REBOOTOK "$INSTDIR\64\SageThumbs.dll.tmp"	"$INSTDIR\64\SageThumbs.dll"
 	Rename /REBOOTOK "$INSTDIR\64\SageThumbs1d.dll.tmp"	"$INSTDIR\64\SageThumbs1d.dll"
 	Rename /REBOOTOK "$INSTDIR\64\SageThumbs19.dll.tmp"	"$INSTDIR\64\SageThumbs19.dll"
+	Rename /REBOOTOK "$INSTDIR\64\SageThumbs16.dll.tmp"	"$INSTDIR\64\SageThumbs16.dll"
 	Rename /REBOOTOK "$INSTDIR\64\SageThumbs0c.dll.tmp"	"$INSTDIR\64\SageThumbs0c.dll"
 	Rename /REBOOTOK "$INSTDIR\64\SageThumbs07.dll.tmp"	"$INSTDIR\64\SageThumbs07.dll"
 	Rename /REBOOTOK "$INSTDIR\64\libgfl340.dll.tmp"	"$INSTDIR\64\libgfl340.dll"
@@ -314,6 +320,7 @@ fail32:
 ok32:
 	Delete /REBOOTOK "$INSTDIR\32\SageThumbs1d.dll"
 	Delete /REBOOTOK "$INSTDIR\32\SageThumbs19.dll"
+	Delete /REBOOTOK "$INSTDIR\32\SageThumbs16.dll"
 	Delete /REBOOTOK "$INSTDIR\32\SageThumbs0c.dll"
 	Delete /REBOOTOK "$INSTDIR\32\SageThumbs07.dll"
 	Delete /REBOOTOK "$INSTDIR\32\libgfl340.dll"
@@ -344,6 +351,7 @@ fail64:
 ok64:
 	Delete /REBOOTOK "$INSTDIR\64\SageThumbs1d.dll"
 	Delete /REBOOTOK "$INSTDIR\64\SageThumbs19.dll"
+	Delete /REBOOTOK "$INSTDIR\64\SageThumbs16.dll"
 	Delete /REBOOTOK "$INSTDIR\64\SageThumbs0c.dll"
 	Delete /REBOOTOK "$INSTDIR\64\SageThumbs07.dll"
 	Delete /REBOOTOK "$INSTDIR\64\libgfl340.dll"

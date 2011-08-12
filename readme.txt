@@ -37,6 +37,7 @@ Versions:
   * Improved working with image files associations in Windows Registry
   * Cache performance optimizations
   * Added Swedish translation
+  * Added Portuguese translation
   * Added new version checker to installer
 
 2.0.0.8
