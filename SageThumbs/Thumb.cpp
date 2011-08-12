@@ -855,7 +855,7 @@ STDMETHODIMP CThumb::GetCurFile(LPOLESTR*)
 
 STDMETHODIMP CThumb::Initialize( 
   /* [in] */ __RPC__in_opt IShellItem * psi,
-  /* [in] */ DWORD /*grfMode*/)
+  /* [in] */ DWORD /* grfMode */)
 {
 	if ( ! psi  )
 	{
@@ -882,7 +882,7 @@ STDMETHODIMP CThumb::Initialize(
 
 STDMETHODIMP CThumb::Initialize(
 	/* [in] */ LPCWSTR pszFilePath,
-	/* [in] */ DWORD /*grfMode*/)
+	/* [in] */ DWORD /* grfMode */)
 {
 	if ( ! pszFilePath  )
 	{
@@ -1025,7 +1025,12 @@ STDMETHODIMP CThumb::GetValue(
 
 	if ( SUCCEEDED( m_Preview.LoadInfo( m_sFilename ) ) )
 	{
-		if ( IsEqualPropertyKey( key, PKEY_DRM_IsProtected ) )
+		if ( IsEqualPropertyKey( key, PKEY_ItemTypeText ) )
+		{
+			pv->vt = VT_BSTR;
+			pv->bstrVal = CString( m_Preview.m_ImageInfo.Description ).AllocSysString();
+		}
+		else if ( IsEqualPropertyKey( key, PKEY_DRM_IsProtected ) )
 		{
 			pv->vt = VT_BOOL;
 			pv->boolVal = VARIANT_FALSE;
@@ -1047,10 +1052,68 @@ STDMETHODIMP CThumb::GetValue(
 			pv->vt = VT_UI4;
 			pv->ulVal = m_Preview.m_ImageInfo.Height;
 		}
+		else if ( IsEqualPropertyKey( key, PKEY_Image_ResolutionUnit ) )
+		{
+			pv->vt = VT_I2;
+			pv->iVal = 2;	// inches
+		}
+		else if ( IsEqualPropertyKey( key, PKEY_Image_HorizontalResolution ) )
+		{
+			if ( m_Preview.m_ImageInfo.Xdpi )
+			{
+				pv->vt = VT_R8;
+				pv->dblVal = (double)m_Preview.m_ImageInfo.Xdpi;
+			}
+		}
+		else if ( IsEqualPropertyKey( key, PKEY_Image_VerticalResolution ) )
+		{
+			if ( m_Preview.m_ImageInfo.Ydpi || m_Preview.m_ImageInfo.Xdpi )
+			{
+				pv->vt = VT_R8;
+				pv->dblVal = (double) ( m_Preview.m_ImageInfo.Ydpi ?
+					m_Preview.m_ImageInfo.Ydpi : m_Preview.m_ImageInfo.Xdpi );
+			}
+		}
 		else if ( IsEqualPropertyKey( key, PKEY_Image_BitDepth ) )
 		{
 			pv->vt = VT_UI4;
 			pv->ulVal = m_Preview.m_ImageInfo.ComponentsPerPixel * m_Preview.m_ImageInfo.BitsPerComponent;
+		}
+		else if ( IsEqualPropertyKey( key, PKEY_Image_Compression ) )
+		{
+			pv->vt = VT_UI2;
+			switch ( m_Preview.m_ImageInfo.Compression )
+			{
+			case GFL_NO_COMPRESSION:
+				pv->uiVal = IMAGE_COMPRESSION_UNCOMPRESSED;
+				break;
+			case GFL_LZW:
+			case GFL_LZW_PREDICTOR:				
+				pv->uiVal = IMAGE_COMPRESSION_LZW;
+				break;
+			case GFL_JPEG:
+				pv->uiVal = IMAGE_COMPRESSION_JPEG;
+				break;
+			case GFL_CCITT_FAX3:
+			case GFL_CCITT_FAX3_2D:
+				pv->uiVal = IMAGE_COMPRESSION_CCITT_T3;
+				break;
+			case GFL_CCITT_FAX4:
+				pv->uiVal = IMAGE_COMPRESSION_CCITT_T4;
+				break;
+			case GFL_ZIP:
+			case GFL_RLE:
+			case GFL_SGI_RLE:
+			case GFL_CCITT_RLE:
+			case GFL_WAVELET:
+			default:
+				pv->uiVal = IMAGE_COMPRESSION_PACKBITS;
+			}
+		}
+		else if ( IsEqualPropertyKey( key, PKEY_Image_CompressionText ) )
+		{
+			pv->vt = VT_BSTR;
+			pv->bstrVal = CString( m_Preview.m_ImageInfo.CompressionDescription ).AllocSysString();
 		}
 		else if ( IsEqualPropertyKey( key, PKEY_PerceivedType ) )
 		{
@@ -1075,6 +1138,227 @@ STDMETHODIMP CThumb::Commit()
 	ATLTRACE( "CThumb - IPropertyStore::Commit() : STG_E_ACCESSDENIED\n" );
 	return STG_E_ACCESSDENIED;
 }
+
+// IPropertySetStorage
+
+//STDMETHODIMP CThumb::Create( 
+//	/* [in] */ __RPC__in REFFMTID rfmtid,
+//	/* [unique][in] */ __RPC__in_opt const CLSID* /* pclsid */,
+//	/* [in] */ DWORD /* grfFlags */,
+//	/* [in] */ DWORD /* grfMode */,
+//	/* [out] */ __RPC__deref_out_opt IPropertyStorage** /* ppprstg */)
+//{
+//	rfmtid;
+//
+//#ifdef _DEBUG
+//	LPOLESTR szGUID = NULL;
+//	StringFromIID( rfmtid, &szGUID );
+//	ATLTRACE( "CThumb - IPropertySetStorage::Create(\"%s\") : STG_E_ACCESSDENIED\n", (LPCSTR)CW2A( szGUID ) );
+//	CoTaskMemFree( szGUID );
+//#endif
+//
+//	return STG_E_ACCESSDENIED;
+//}
+//
+//STDMETHODIMP CThumb::Open( 
+//	/* [in] */ __RPC__in REFFMTID rfmtid,
+//	/* [in] */ DWORD /* grfMode */,
+//	/* [out] */ __RPC__deref_out_opt IPropertyStorage** ppprstg)
+//{
+//	if ( ! ppprstg )
+//	{
+//		ATLTRACE( "CThumb - IPropertySetStorage::Open() : E_POINTER\n" );
+//		return E_POINTER;
+//	}
+//	*ppprstg = NULL;
+//
+//	if ( IsEqualIID( rfmtid, FMTID_ImageProperties ) )
+//	{
+//		ATLTRACE( "CThumb - IPropertySetStorage::Open(\"FMTID_ImageProperties\") : S_OK\n" );
+//		return QueryInterface( IID_IPropertyStorage, (void**)ppprstg );
+//	}
+//
+//#ifdef _DEBUG
+//	LPOLESTR szGUID = NULL;
+//	StringFromIID( rfmtid, &szGUID );
+//	ATLTRACE( "CThumb - IPropertySetStorage::Open(\"%s\") : STG_E_INVALIDPARAMETER\n", (LPCSTR)CW2A( szGUID ) );
+//	CoTaskMemFree( szGUID );
+//#endif
+//
+//	return STG_E_INVALIDPARAMETER;
+//}
+//
+//STDMETHODIMP CThumb::Delete( 
+//	/* [in] */ __RPC__in REFFMTID rfmtid)
+//{
+//	rfmtid;
+//
+//#ifdef _DEBUG
+//	LPOLESTR szGUID = NULL;
+//	StringFromIID( rfmtid, &szGUID );
+//	ATLTRACE( "CThumb - IPropertySetStorage::Delete(\"%s\") : STG_E_ACCESSDENIED\n", (LPCSTR)CW2A( szGUID ) );
+//	CoTaskMemFree( szGUID );
+//#endif
+//
+//	return STG_E_ACCESSDENIED;
+//}
+//
+//STDMETHODIMP CThumb::Enum(
+//	/* [out] */ __RPC__deref_out_opt IEnumSTATPROPSETSTG** /* ppenum */)
+//{
+//	ATLTRACENOTIMPL( _T("CThumb - IPropertySetStorage::Enum()") );
+//}
+
+// IPropertyStorage
+
+//STDMETHODIMP CThumb::ReadMultiple( 
+//	/* [in] */ ULONG cpspec,
+//	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[ ],
+//	/* [size_is][out] */ __RPC__out_ecount_full(cpspec) PROPVARIANT rgpropvar[])
+//{
+//	if ( ! rgpspec || ! rgpropvar )
+//	{
+//		ATLTRACE( "CThumb - IPropertySetStorage::ReadMultiple() : E_POINTER\n" );
+//		return E_POINTER;
+//	}
+//
+//	for ( ULONG i = 0; i < cpspec; ++i )
+//	{
+//		if ( rgpspec[ i ].ulKind == PRSPEC_PROPID )
+//		{
+//			ATLTRACE( "CThumb - IPropertySetStorage::ReadMultiple() : %d. ID=%d\n", i + 1, rgpspec[ i ].propid );
+//		}
+//		else
+//		{
+//			ATLTRACE( "CThumb - IPropertySetStorage::ReadMultiple() : %d. STR=\"%s\"\n", i + 1, (LPCSTR)CW2A( rgpspec[ i ].lpwstr ) );
+//		}
+//	}
+//
+//	return S_OK;
+//}
+//
+//STDMETHODIMP CThumb::WriteMultiple( 
+//	/* [in] */ ULONG /* cpspec */,
+//	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC /* rgpspec */ [ ],
+//	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPVARIANT /* rgpropvar */ [ ],
+//	/* [in] */ PROPID /* propidNameFirst */)
+//{
+//	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::WriteMultiple()") );
+//}
+//
+//STDMETHODIMP CThumb::DeleteMultiple( 
+//	/* [in] */ ULONG /* cpspec */,
+//	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC /* rgpspec */ [])
+//{
+//	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::DeleteMultiple()") );
+//}
+//
+//STDMETHODIMP CThumb::ReadPropertyNames( 
+//	/* [in] */ ULONG /* cpropid */,
+//	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID /* rgpropid */ [],
+//	/* [size_is][out] */ __RPC__out_ecount_full(cpropid) LPOLESTR /* rglpwstrName */ [])
+//{
+//	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::ReadPropertyNames()") );
+//}
+//
+//STDMETHODIMP CThumb::WritePropertyNames( 
+//	/* [in] */ ULONG /* cpropid */,
+//	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID /* rgpropid */ [],
+//	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const LPOLESTR /* rglpwstrName */ [])
+//{
+//	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::WritePropertyNames()") );
+//}
+//
+//STDMETHODIMP CThumb::DeletePropertyNames( 
+//	/* [in] */ ULONG /* cpropid */,
+//	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID /* rgpropid */ [])
+//{
+//	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::DeletePropertyNames()") );
+//}
+//
+//STDMETHODIMP CThumb::Commit( 
+//	/* [in] */ DWORD /* grfCommitFlags */)
+//{
+//	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::Commit()") );
+//}
+//
+//STDMETHODIMP CThumb::Revert()
+//{
+//	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::Revert()") );
+//}
+//
+//STDMETHODIMP CThumb::Enum( 
+//	/* [out] */ __RPC__deref_out_opt IEnumSTATPROPSTG** /* ppenum */)
+//{
+//	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::Enum()") );
+//}
+//
+//STDMETHODIMP CThumb::SetTimes( 
+//	/* [in] */ __RPC__in const FILETIME* /* pctime */,
+//	/* [in] */ __RPC__in const FILETIME* /* patime */,
+//	/* [in] */ __RPC__in const FILETIME* /* pmtime */)
+//{
+//	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::SetTimes()") );
+//}
+//
+//STDMETHODIMP CThumb::SetClass( 
+//	/* [in] */ __RPC__in REFCLSID /* clsid */)
+//{
+//	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::SetClass()") );
+//}
+//
+//STDMETHODIMP CThumb::Stat( 
+//	/* [out] */ __RPC__out STATPROPSETSTG* /* pstatpsstg */)
+//{
+//	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::Stat()") );
+//}
+
+// INamedPropertyStore
+
+//STDMETHODIMP CThumb::GetNamedValue( 
+//	/* [string][in] */ __RPC__in_string LPCWSTR pszName,
+//	/* [out] */ __RPC__out PROPVARIANT* ppropvar)
+//{
+//	if ( ! ppropvar )
+//	{
+//		ATLTRACE( "CThumb - IPropertyStore::GetValue() : E_POINTER\n" );
+//		return E_POINTER;
+//	}
+//	PropVariantInit( ppropvar );
+//
+//	ATLTRACE( "CThumb - INamedPropertyStore::GetNamedValue(\"%s\") : S_OK\n", (LPCSTR)CW2A( pszName ) );
+//	return S_OK;
+//}
+//
+//STDMETHODIMP CThumb::SetNamedValue( 
+//	/* [string][in] */ __RPC__in_string LPCWSTR pszName,
+//	 /* [in] */ __RPC__in REFPROPVARIANT /* propvar */)
+//{
+//	ATLTRACE( "CThumb - INamedPropertyStore::SetNamedValue(\"%s\") : STG_E_ACCESSDENIED\n", (LPCSTR)CW2A( pszName ) );
+//	return STG_E_ACCESSDENIED;
+//}
+//
+//STDMETHODIMP CThumb::GetNameCount( 
+//	/* [out] */ __RPC__out DWORD* pdwCount)
+//{
+//	if ( ! pdwCount )
+//	{
+//		ATLTRACE( "CThumb - INamedPropertyStore::GetNameCount() : E_POINTER\n" );
+//		return E_POINTER;
+//	}
+//	*pdwCount = 0;
+//
+//	ATLTRACE( "CThumb - INamedPropertyStore::GetNameCount : S_OK (%u)\n", *pdwCount );
+//	return S_OK;
+//}
+//
+//STDMETHODIMP CThumb::GetNameAt( 
+//	/* [in] */ DWORD /* iProp */,
+//	/* [out] */ __RPC__deref_out_opt BSTR* /* pbstrName */)
+//{
+//	ATLTRACE( "CThumb - INamedPropertyStore::GetNameAt() : STG_E_ACCESSDENIED\n" );
+//	return E_NOTIMPL;
+//}
 
 // IPreviewHandler
 

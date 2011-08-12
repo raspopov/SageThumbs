@@ -37,11 +37,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define FILE_MAX_SIZE		10ul			// Максимальный размер файла в Мб
 #define STANDARD_LANGID		0x09			// Стандартный встроенный язык - English
 
-#define ExtendedTileInfo	_T("prop:System.ItemType;*System.DateModified;*System.Image.Dimensions")
-#define FullDetails			_T("prop:System.PropGroup.Image;System.Image.Dimensions;System.Image.HorizontalSize;System.Image.VerticalSize;System.Image.BitDepth;System.PropGroup.FileSystem;System.ItemNameDisplay;System.ItemType;System.ItemFolderPathDisplay;System.DateCreated;System.DateModified;System.Size;System.FileAttributes;System.OfflineAvailability;System.OfflineStatus;System.SharedWith;System.FileOwner;System.ComputerName")
-#define InfoTip				_T("prop:System.ItemType;*System.DateModified;*System.Image.Dimensions;*System.Size")
-#define PreviewDetails		_T("prop:*System.DateModified;*System.Image.Dimensions;*System.Size;*System.OfflineAvailability;*System.OfflineStatus;*System.DateCreated;*System.SharedWith")
-
 // Disabled by default
 #define EXT_DEFAULT(ext) \
 	((ext)==_T("ico")|| \
@@ -172,12 +167,15 @@ protected:
 
 //	static DWORD WINAPI WatchThread (LPVOID param);
 	void UnLoadLang ();
-	BOOL LoadLangIDDLL (LANGID LangID);
+	BOOL LoadLangIDDLL(LANGID LangID);
 
-	BOOL RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableThumbs, bool bEnableIcons);
+	BOOL RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableThumbs, bool bEnableIcons, bool bEnableInfo);
 	BOOL UnregisterExt(LPCTSTR szExt, bool bFull);
 
-	void FillExtMap ();
+	// Restore file extension lost ProgID using several methods
+	void FixProgID(LPCTSTR szExt);
+
+	void FillExtMap();
 
 #ifdef GFL_THREAD_SAFE
 	CComAutoCriticalSection m_pSection;
@@ -227,8 +225,8 @@ BOOL DeleteEmptyRegKey(HKEY hRoot, LPCTSTR szSubKey);
 
 LPCTSTR GetKeyName(HKEY hRoot);
 
-BOOL RegisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName = _T(""), LPCTSTR szValue = CLSID_THUMB);
-BOOL UnregisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName = _T(""), LPCTSTR szValue = CLSID_THUMB);
+BOOL RegisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName = _T(""), LPCTSTR szValue = CLSID_THUMB, LPCTSTR szBackupName = REG_SAGETHUMBS_BAK);
+BOOL UnregisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName = _T(""), LPCTSTR szValue = CLSID_THUMB, LPCTSTR szBackupName = REG_SAGETHUMBS_BAK);
 
 CString GetDefaultType(LPCTSTR szExt);
 CString GetPerceivedType(LPCTSTR szExt);

@@ -23,27 +23,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 DEFINE_GUID(CLSID_WindowsThumbnailer,0x889900c3,0x59f3,0x4c2f,0xae,0x21,0xa4,0x09,0xea,0x01,0xe6,0x05);
 
-void MakeDirectory(LPCTSTR dir)
-{
-	TCHAR path [MAX_PATH];
-	LPCTSTR src = dir;
-	LPTSTR  dst = path;
-	while ( *src )
-	{
-		*dst++ = *src;
-		if (*src++ == _T('\\'))
-		{
-			*dst = _T('\0');
-			CreateDirectory (path, NULL);
-		}
-	}
-	if (*(dst - 1) != _T('\\'))
-	{
-		*dst = _T('\0');
-		CreateDirectory (path, NULL);
-	}
-}
-
 CString GetSpecialFolderPath(int csidl)
 {
 	CString buf;

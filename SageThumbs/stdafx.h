@@ -123,9 +123,6 @@ void CleanWindowsCache();
 BOOL LoadIcon(LPCTSTR szFilename, HICON* phSmallIcon, HICON* phLargeIcon = NULL, HICON* phHugeIcon = NULL, int nIcon = 0);
 DWORD CRC32(const char *buf, int len);
 
-// Recreate folder including all sub-folders
-void MakeDirectory(LPCTSTR dir);
-
 // Get system folder path
 CString GetSpecialFolderPath(int csidl);
 
