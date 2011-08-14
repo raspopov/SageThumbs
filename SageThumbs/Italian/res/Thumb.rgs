@@ -1,0 +1,119 @@
+HKCR
+{
+	SageThumbs.Thumb.1 = s 'SageThumbs Shell Extension'
+	{
+		CLSID = s '{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}'
+	}
+	SageThumbs.Thumb = s 'SageThumbs Shell Extension'
+	{
+		CLSID = s '{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}'
+		CurVer = s 'SageThumbs.Thumb.1'
+	}
+	NoRemove CLSID
+	{
+		{4A34B3E3-F50E-4FF6-8979-7E4176466FF2} = s 'SageThumbs Shell Extension'
+		{
+			val DisplayName = s 'SageThumbs Shell Extension'
+			val Icon = s 'SageThumbs.dll,101'
+			val DisableLowILProcessIsolation = d '1'
+			ProgID = s 'SageThumbs.Thumb.1'
+			VersionIndependentProgID = s 'SageThumbs.Thumb'
+			InprocServer32 = s '%MODULE%'
+			{
+				val ThreadingModel = s 'Both'
+			}
+			val AppID = s '%APPID%'
+		}
+	}
+    NoRemove *
+    {
+        NoRemove shellex
+        {
+            NoRemove ContextMenuHandlers
+            {
+                SageThumbs = s '{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}'
+            }
+        }
+    }
+    NoRemove SystemFileAssociations
+    {
+		NoRemove image
+		{
+			NoRemove ShellEx
+			{
+				NoRemove ContextMenuHandlers
+				{
+					SageThumbs = s '{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}'
+				}
+			}
+		}
+	}
+    NoRemove Folder
+    {
+		NoRemove shellex
+		{
+			NoRemove ColumnHandlers
+			{
+				Delete '{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}'
+			}
+		}
+	}
+}
+HKLM
+{
+	NoRemove SOFTWARE
+	{
+		NoRemove Microsoft
+		{
+			NoRemove Windows
+			{
+				NoRemove CurrentVersion
+				{
+					NoRemove Explorer
+					{
+						NoRemove VolumeCaches
+						{
+							'SageThumbs Shell Extension' = s '{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}'
+							{
+								val IconPath = s '%MODULE%,0'
+							}
+						}
+					}
+					NoRemove 'PreviewHandlers'
+					{
+						Delete '{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}'
+					}
+					NoRemove 'Shell Extensions'
+					{
+						NoRemove Approved
+						{
+							val '{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}' = s 'SageThumbs Shell Extension'
+						}
+					}
+					NoRemove 'Control Panel'
+					{
+						NoRemove Cpls
+						{
+							val 'SageThumbs Shell Extension' = s '%MODULE%'
+						}
+						NoRemove 'Extended Properties'
+						{
+							NoRemove System.Software.AppId
+							{
+								val '%MODULE%' = s '%APPID%'
+							}
+							NoRemove System.ApplicationName
+							{
+								val '%MODULE%' = s 'Cherubic.SageThumbs'
+							}
+							NoRemove System.ControlPanel.Category
+							{
+								val '%MODULE%' = s '1'
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
