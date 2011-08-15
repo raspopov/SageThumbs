@@ -61,6 +61,7 @@
     </None>
     <None Include="..\license.txt" />
     <None Include="..\ReadMe.txt" />
+    <None Include="..\SageThumbs Online.url" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dllLoaderMinimal.h">

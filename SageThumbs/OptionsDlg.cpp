@@ -310,7 +310,7 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 
 	_Module.LoadLang( GetLanguage () );
 
-	if ( ! _Module.RegisterExtensions() )
+	if ( ! _Module.RegisterExtensions( m_hWnd ) )
 	{
 		if ( ( _Module.m_OSVersion.dwMajorVersion >= 6 && ! IsProcessElevated() ) ||
 			_Module.MsgBox( m_hWnd, IDS_ACCESS_DENIED, MB_OKCANCEL | MB_ICONEXCLAMATION ) == IDOK )

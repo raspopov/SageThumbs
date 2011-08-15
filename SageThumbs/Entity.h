@@ -58,20 +58,9 @@ public:
 		*pDateStamp = m_FileData.ftLastWriteTime;
 	}
 
-	inline LPCTSTR GetTitleString() const
-	{
-		return m_TitleString;
-	}
-
-	inline LPCTSTR GetInfoTipString() const
-	{
-		return m_InfoTipString;
-	}
-
-	inline LPCTSTR GetMenuTipString() const
-	{
-		return m_MenuTipString;
-	}
+	CString GetTitleString() const;
+	CString GetInfoTipString() const;
+	CString GetMenuTipString() const;
 
 	// Расчёт размеров изображения исходя из заданных размеров подложки
 	void CalcSize(UINT& tx, UINT& ty, UINT width, UINT height);
@@ -80,9 +69,7 @@ public:
 	GFL_FILE_INFORMATION	m_ImageInfo;		// Информация о изображении
 
 protected:
+	volatile bool			m_bInfoLoaded;		// Image info loaded successfuly
 	GFL_BITMAP*				m_hGflBitmap;		// Загруженный эскиз (NULL - не загружен)
-	CString					m_TitleString;		// Текст подписи под эскизом
-	CString					m_InfoTipString;	// Текст для всплывающей подсказки
-	CString					m_MenuTipString;	// Текст для подсказки пункта меню
 	CComAutoCriticalSection m_pSection;
 };

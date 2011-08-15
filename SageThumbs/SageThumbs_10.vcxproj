@@ -27,24 +27,21 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseOfAtl>false</UseOfAtl>
-    <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v90</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseOfAtl>false</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseOfAtl>false</UseOfAtl>
-    <CharacterSet>Unicode</CharacterSet>
     <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
-    <UseOfAtl>false</UseOfAtl>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -125,20 +122,15 @@
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>version.lib;comCtl32.lib;libgfl.lib;libgfle.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>version.lib;comCtl32.lib;libgfl.lib;libgfle.lib;propsys.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\gfl\libW;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(ProjectName).def</ModuleDefinitionFile>
-      <DelayLoadDLLs>sqlite3.dll;libgfl340.dll;libgfle340.dll;ole32.dll;oleaut32.dll;shlwapi.dll;shell32.dll;version.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <DelayLoadDLLs>sqlite3.dll;libgfl340.dll;libgfle340.dll;ole32.dll;oleaut32.dll;shlwapi.dll;shell32.dll;version.dll;propsys.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
-    <PostBuildEvent>
-      <Message>Registering...</Message>
-      <Command>regsvr32 /u /s "$(TargetPath)"
-regsvr32 /u /s "$(TargetPath)"
-regsvr32 /s "$(TargetPath)"</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PreBuildEvent>
@@ -173,20 +165,15 @@ regsvr32 /s "$(TargetPath)"</Command>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>version.lib;comCtl32.lib;libgfl.lib;libgfle.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>version.lib;comCtl32.lib;libgfl.lib;libgfle.lib;propsys.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\gfl\lib64W;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(ProjectName).def</ModuleDefinitionFile>
-      <DelayLoadDLLs>sqlite3.dll;libgfl340.dll;libgfle340.dll;ole32.dll;oleaut32.dll;shlwapi.dll;shell32.dll;version.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
+      <DelayLoadDLLs>sqlite3.dll;libgfl340.dll;libgfle340.dll;ole32.dll;oleaut32.dll;shlwapi.dll;shell32.dll;version.dll;propsys.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
-    <PostBuildEvent>
-      <Message>Registering...</Message>
-      <Command>regsvr32 /u /s "$(TargetPath)"
-regsvr32 /u /s "$(TargetPath)"
-regsvr32 /s "$(TargetPath)"</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
@@ -227,7 +214,7 @@ regsvr32 /s "$(TargetPath)"</Command>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>version.lib;comCtl32.lib;libgfl.lib;libgfle.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>version.lib;comCtl32.lib;libgfl.lib;libgfle.lib;propsys.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\gfl\libW;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(ProjectName).def</ModuleDefinitionFile>
       <DelayLoadDLLs>sqlite3.dll;libgfl340.dll;libgfle340.dll;ole32.dll;oleaut32.dll;shlwapi.dll;shell32.dll;version.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
@@ -237,12 +224,7 @@ regsvr32 /s "$(TargetPath)"</Command>
       <SetChecksum>true</SetChecksum>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
-    <PostBuildEvent>
-      <Message>Registering...</Message>
-      <Command>regsvr32 /u /s "$(TargetPath)"
-regsvr32 /u /s "$(TargetPath)"
-regsvr32 /s "$(TargetPath)"</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PreBuildEvent>
@@ -283,7 +265,7 @@ regsvr32 /s "$(TargetPath)"</Command>
       <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>version.lib;comCtl32.lib;libgfl.lib;libgfle.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>version.lib;comCtl32.lib;libgfl.lib;libgfle.lib;propsys.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\gfl\lib64W;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(ProjectName).def</ModuleDefinitionFile>
       <DelayLoadDLLs>sqlite3.dll;libgfl340.dll;libgfle340.dll;ole32.dll;oleaut32.dll;shlwapi.dll;shell32.dll;version.dll;%(DelayLoadDLLs)</DelayLoadDLLs>
@@ -293,12 +275,7 @@ regsvr32 /s "$(TargetPath)"</Command>
       <SetChecksum>true</SetChecksum>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
-    <PostBuildEvent>
-      <Message>Registering...</Message>
-      <Command>regsvr32 /u /s "$(TargetPath)"
-regsvr32 /u /s "$(TargetPath)"
-regsvr32 /s "$(TargetPath)"</Command>
-    </PostBuildEvent>
+    <PostBuildEvent />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Entity.cpp" />
@@ -314,6 +291,7 @@ regsvr32 /s "$(TargetPath)"</Command>
     <ClCompile Include="Thumb.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\SageThumbs Online.url" />
     <None Include="SageThumbs.def" />
     <None Include="res\bitmap1.bmp" />
     <None Include="res\SageThumbs.bmp" />

@@ -36,7 +36,7 @@ CThumb::CThumb() :
 
 HRESULT CThumb::FinalConstruct()
 {
-	return S_OK;
+	return CoCreateFreeThreadedMarshaler( GetControllingUnknown(), &m_pUnkMarshaler.p );
 }
 
 void CThumb::FinalRelease()
@@ -48,6 +48,8 @@ void CThumb::FinalRelease()
 //	m_pStream.Release();
 
 	m_pSite.Release();
+
+	m_pUnkMarshaler.Release();
 }
 
 // IShellExtInit
@@ -351,6 +353,20 @@ STDMETHODIMP CThumb::GetCommandString (
 
 void CThumb::ConvertTo(HWND hWnd, int ext)
 {
+	CComPtr< IProgressDialog > pProgress;
+	HRESULT hr = pProgress.CoCreateInstance( CLSID_ProgressDialog );
+	if ( SUCCEEDED( hr ) )
+	{
+		CString sTitle;
+		sTitle.LoadString( IDS_PROJNAME );
+		pProgress->SetTitle( sTitle );
+		CString sProcess;
+		sProcess.LoadString( IDS_CONVERTING );
+		pProgress->SetLine( 1,sProcess, FALSE, NULL );
+		pProgress->StartProgressDialog( hWnd, NULL, PROGDLG_NORMAL | PROGDLG_AUTOTIME, NULL );
+	}
+	DWORD total = (DWORD)m_Filenames.GetCount(), counter = 0;
+
 	LPCSTR szExt = NULL;
 	switch ( ext )
 	{
@@ -371,9 +387,21 @@ void CThumb::ConvertTo(HWND hWnd, int ext)
 	}
 	int index = gflGetFormatIndexByName( szExt );
 
-	for ( POSITION pos = m_Filenames.GetHeadPosition (); pos ; )
+	for ( POSITION pos = m_Filenames.GetHeadPosition (); pos ; ++counter )
 	{
 		CString filename( m_Filenames.GetNext( pos ) );
+
+		if ( pProgress )
+		{
+			pProgress->SetLine( 2, filename, TRUE, NULL );
+			pProgress->SetProgress( counter, total );
+			Sleep( 10 );
+			if ( pProgress->HasUserCancelled() )
+			{
+				pProgress->StopProgressDialog();
+				return;
+			}
+		}
 
 		GFL_BITMAP* hBitmap = NULL;
 		if ( SUCCEEDED( _Module.LoadBitmap( filename, &hBitmap ) ) )
@@ -410,6 +438,14 @@ void CThumb::ConvertTo(HWND hWnd, int ext)
 			break;
 		}
 	}
+
+	if ( pProgress )
+	{
+		pProgress->SetLine( 2, _T(""), TRUE, NULL );
+		pProgress->SetProgress( total, total );
+		Sleep( 1000 );
+		pProgress->StopProgressDialog();
+	}
 }
 
 void CThumb::SetWallpaper(HWND hWnd, WORD reason)
@@ -445,9 +481,21 @@ void CThumb::SetWallpaper(HWND hWnd, WORD reason)
 		_Module.MsgBox( hWnd, IDS_ERR_OPEN );
 }
 
-void CThumb::SendByMail(HWND hwnd, WORD reason)
+void CThumb::SendByMail(HWND hWnd, WORD reason)
 {
-	HRESULT hr;
+	CComPtr< IProgressDialog > pProgress;
+	HRESULT hr = pProgress.CoCreateInstance( CLSID_ProgressDialog );
+	if ( SUCCEEDED( hr ) )
+	{
+		CString sTitle;
+		sTitle.LoadString( IDS_PROJNAME );
+		pProgress->SetTitle( sTitle );
+		CString sProcess;
+		sProcess.LoadString( IDS_SENDING );
+		pProgress->SetLine( 1, sProcess, FALSE, NULL );
+		pProgress->StartProgressDialog( hWnd, NULL, PROGDLG_NORMAL | PROGDLG_AUTOTIME, NULL );
+	}
+	DWORD total = (DWORD)m_Filenames.GetCount(), counter = 0;
 
 	// Загрузка размеров из реестра
 	DWORD width = GetRegValue( _T("Width"), THUMB_STORE_SIZE );
@@ -462,9 +510,23 @@ void CThumb::SendByMail(HWND hwnd, WORD reason)
 			// Подготовка изображений к отсылке
 			CAtlArray< CStringA > save_names;
 			CAtlArray< CStringA > save_filenames;
-			for ( POSITION pos = m_Filenames.GetHeadPosition () ; pos ; )
+			for ( POSITION pos = m_Filenames.GetHeadPosition () ; pos ; ++counter )
 			{
 				CString filename( m_Filenames.GetNext( pos ) );
+
+				if ( pProgress )
+				{
+					pProgress->SetLine( 2, filename, TRUE, NULL );
+					pProgress->SetProgress( counter, total );
+					Sleep( 10 );
+					if ( pProgress->HasUserCancelled() )
+					{
+						pProgress->StopProgressDialog();
+						FreeLibrary (hLibrary);
+						return;
+					}
+				}
+
 				if ( reason == ID_MAIL_IMAGE_ITEM )
 				{
 					save_names.Add( CT2CA( PathFindFileName( filename ) ) );
@@ -511,14 +573,14 @@ void CThumb::SendByMail(HWND hwnd, WORD reason)
 							(LPCSTR)save_names[ i ] );
 						mfd [i].lpFileType = NULL;
 					}
-					ULONG err = pMAPISendMail (0, (ULONG_PTR)hwnd, &mm,
+					ULONG err = pMAPISendMail (0, (ULONG_PTR)hWnd, &mm,
 						MAPI_DIALOG | MAPI_LOGON_UI | MAPI_NEW_SESSION, 0);
 					if (MAPI_E_USER_ABORT != err && SUCCESS_SUCCESS != err)
-						_Module.MsgBox( hwnd, IDS_ERR_MAIL );
+						_Module.MsgBox( hWnd, IDS_ERR_MAIL );
 					delete [] mfd;
 				}
 				else
-					_Module.MsgBox( hwnd, IDS_ERR_MAIL );
+					_Module.MsgBox( hWnd, IDS_ERR_MAIL );
 
 				// Удаление временных изображений
 				if ( reason != ID_MAIL_IMAGE_ITEM )
@@ -530,14 +592,23 @@ void CThumb::SendByMail(HWND hwnd, WORD reason)
 				}
 			}
 			else
-				_Module.MsgBox( hwnd, IDS_ERR_NOTHING );
+				_Module.MsgBox( hWnd, IDS_ERR_NOTHING );
 		}
 		else
-			_Module.MsgBox( hwnd, IDS_ERR_MAIL );
+			_Module.MsgBox( hWnd, IDS_ERR_MAIL );
+
 		FreeLibrary (hLibrary);
 	}
 	else
-		_Module.MsgBox( hwnd, IDS_ERR_MAIL );
+		_Module.MsgBox( hWnd, IDS_ERR_MAIL );
+
+	if ( pProgress )
+	{
+		pProgress->SetLine( 2, _T(""), TRUE, NULL );
+		pProgress->SetProgress( total, total );
+		Sleep( 1000 );
+		pProgress->StopProgressDialog();
+	}
 }
 
 void CThumb::CopyToClipboard(HWND hwnd)
@@ -1025,7 +1096,8 @@ STDMETHODIMP CThumb::GetValue(
 
 	if ( SUCCEEDED( m_Preview.LoadInfo( m_sFilename ) ) )
 	{
-		if ( IsEqualPropertyKey( key, PKEY_ItemTypeText ) )
+		if ( IsEqualPropertyKey( key, PKEY_ItemTypeText ) ||
+			 IsEqualPropertyKey( key, PKEY_FileDescription ) )
 		{
 			pv->vt = VT_BSTR;
 			pv->bstrVal = CString( m_Preview.m_ImageInfo.Description ).AllocSysString();

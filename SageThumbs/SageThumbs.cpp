@@ -55,6 +55,7 @@ static const Handlers[] =
 
 // Properties are displayed on the Details tab of the Properties dialog box. This is the complete list of properties that the file type supports. 
 LPCTSTR FullDetails	=		_T("prop:System.PropGroup.Image;")
+							_T("System.FileDescription;")
 							_T("System.Image.Dimensions;")
 							_T("System.Image.HorizontalSize;")
 							_T("System.Image.VerticalSize;")
@@ -86,21 +87,46 @@ LPCTSTR PreviewDetails =	_T("prop:*System.DateModified;")
 							_T("*System.DateCreated;")
 							_T("*System.SharedWith");
 
+// Properties are displayed in the title area of the Preview Pane next to the thumbnail for the item.
+LPCTSTR PreviewTitle =		_T("prop:System.ItemNameDisplay;")
+							_T("System.FileDescription");
+
 // Properties are displayed for an item when the list view is in Extended Tile view mode.
-LPCTSTR ExtendedTileInfo =	_T("prop:System.ItemType;")
+LPCTSTR ExtendedTileInfo =	_T("prop:System.FileDescription;")
 							_T("*System.DateModified;")
 							_T("*System.Image.Dimensions;")
 							_T("*System.Image.BitDepth");
 
-// Properties are displayed in an infotip when a user hovers over an item.
-LPCTSTR InfoTip =			_T("prop:System.ItemType;")
-							_T("*System.DateModified;")
-							_T("*System.Image.Dimensions;")
-							_T("*System.Image.BitDepth;")
-							_T("*System.Image.Compression;")
-							_T("*System.Size");
+// Properties are displayed when the list view is in Tiles view mode.
+LPCTSTR TileInfo =			_T("prop:System.FileDescription;")
+							_T("System.Size;")
+							_T("System.DateModified");
 
-//LPCTSTR ConflictPrompt =	_T("prop:System.ItemType;")
+// Properties are displayed in an infotip when a user hovers over an item.
+LPCTSTR InfoTip =			_T("prop:System.FileDescription;")
+							_T("System.DateModified;")
+							_T("System.Image.Dimensions;")
+							_T("System.Image.BitDepth;")
+							_T("System.Image.Compression;")
+							_T("System.Size");
+
+LPCTSTR ContentViewModeForBrowse =
+							_T("prop:~System.ItemNameDisplay;")
+							_T("~System.FileDescription;")
+							_T("~System.Image.Dimensions;")
+							_T("System.Image.BitDepth;")
+							_T("System.DateModified;")
+							_T("System.Size");
+
+LPCTSTR ContentViewModeForSearch =
+							_T("prop:~System.ItemNameDisplay;")
+							_T("~System.ItemFolderPathDisplay;")
+							_T("~System.Image.Dimensions;")
+							_T("~System.FileDescription;")
+							_T("System.DateModified;")
+							_T("System.Size");
+
+//LPCTSTR ConflictPrompt =	_T("prop:System.FileDescription;")
 //							_T("System.Size;")
 //							_T("System.DateModified;")
 //							_T("System.DateCreated;")
@@ -153,7 +179,7 @@ HRESULT CSageThumbsModule::DllRegisterServer()
 
 	HRESULT hr = CAtlDllModuleT< CSageThumbsModule >::DllRegisterServer( FALSE );
 
-	ATLVERIFY ( RegisterExtensions() );
+	ATLVERIFY ( RegisterExtensions( GetDesktopWindow() ) );
 
 	ATLTRACE ("DllRegisterServer : ");
 	CHECKPOINT(DllRegisterServer)
@@ -177,9 +203,25 @@ HRESULT CSageThumbsModule::DllUnregisterServer()
 	return hr;
 }
 
-BOOL CSageThumbsModule::RegisterExtensions()
+BOOL CSageThumbsModule::RegisterExtensions(HWND hWnd)
 {
 	BOOL bOK = TRUE;
+
+	CComPtr< IProgressDialog > pProgress;
+	if ( hWnd )
+	{
+		HRESULT hr = pProgress.CoCreateInstance( CLSID_ProgressDialog );
+		if ( SUCCEEDED( hr ) )
+		{
+			CString sTitle;
+			sTitle.LoadString( IDS_PROJNAME );
+			pProgress->SetTitle( sTitle );
+			CString sProcess;
+			sProcess.LoadString( IDS_APPLYING );
+			pProgress->SetLine( 1, sProcess, FALSE, NULL );
+			pProgress->StartProgressDialog( hWnd, NULL, PROGDLG_NORMAL | PROGDLG_NOCANCEL | PROGDLG_AUTOTIME, NULL );
+		}
+	}
 
 	const bool bEnableThumbs = GetRegValue( _T("EnableThumbs"), 1ul ) != 0;
 	const bool bEnableIcons  = GetRegValue( _T("EnableIcons"),  1ul ) != 0;
@@ -187,10 +229,18 @@ BOOL CSageThumbsModule::RegisterExtensions()
 	const bool bEnableInfo = GetRegValue( _T("EnableInfo"), ( m_OSVersion.dwMajorVersion < 6 ) ? 1ul : 0ul ) != 0;
 
 	// Register common associations
-	for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; )
+	DWORD total = (DWORD)m_oExtMap.GetCount(), count = 0;
+	for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; ++count )
 	{
 		if ( const CExtMap::CPair* p = m_oExtMap.GetNext( pos ) )
 		{
+			if ( pProgress )
+			{
+				pProgress->SetLine( 2, p->m_value.info, FALSE, NULL );
+				pProgress->SetProgress( count, total );
+				Sleep( 10 );
+			}
+
 			if ( p->m_value.enabled )
 				bOK = RegisterExt( p->m_key, p->m_value.info, bEnableThumbs, bEnableIcons, bEnableInfo ) && bOK;
 			else
@@ -200,9 +250,21 @@ BOOL CSageThumbsModule::RegisterExtensions()
 
 	// TODO: Register SystemFileAssociations
 
+	if ( pProgress )
+	{
+		pProgress->SetLine( 2, _T("Updating..."), FALSE, NULL );
+		pProgress->SetProgress( total, total );
+	}
+
 	CleanWindowsCache();
 
 	UpdateShell();
+
+	if ( pProgress )
+	{
+		Sleep( 1000 );
+		pProgress->StopProgressDialog();
+	}
 
 	return bOK;
 }
@@ -403,9 +465,13 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 	CString sSysKey = _T("SystemFileAssociations\\") + sType;
 //	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ConflictPrompt"), ConflictPrompt, _T("ConflictPrompt.") REG_SAGETHUMBS_BAK ) && bOK;
 	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ExtendedTileInfo"), ExtendedTileInfo, _T("ExtendedTileInfo.") REG_SAGETHUMBS_BAK ) && bOK;
+	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("TileInfo"), TileInfo, _T("TileInfo.") REG_SAGETHUMBS_BAK ) && bOK;
 	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("FullDetails"), FullDetails, _T("FullDetails.") REG_SAGETHUMBS_BAK ) && bOK;
 	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("InfoTip"), InfoTip, _T("InfoTip.") REG_SAGETHUMBS_BAK ) && bOK;
 	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("PreviewDetails"), PreviewDetails, _T("PreviewDetails.") REG_SAGETHUMBS_BAK ) && bOK;
+	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("PreviewTitle"), PreviewTitle, _T("PreviewTitle.") REG_SAGETHUMBS_BAK ) && bOK;
+	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ContentViewModeForBrowse"), ContentViewModeForBrowse, _T("ContentViewModeForBrowse.") REG_SAGETHUMBS_BAK ) && bOK;
+	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ContentViewModeForSearch"), ContentViewModeForSearch, _T("ContentViewModeForSearch.") REG_SAGETHUMBS_BAK ) && bOK;
 
 	SetRegValue( sDefaultKey, sFileExt + _T("\\OpenWithProgids"), HKEY_CURRENT_USER );
 	SetRegValue( _T("Progid"), sDefaultKey, sFileExt + _T("\\UserChoice"), HKEY_CURRENT_USER );
@@ -460,9 +526,13 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt, bool bFull)
 	CString sSysKey = _T("SystemFileAssociations\\") + sType;
 //	bOK = UnregisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ConflictPrompt"), ConflictPrompt, _T("ConflictPrompt.") REG_SAGETHUMBS_BAK ) && bOK;
 	bOK = UnregisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ExtendedTileInfo"), ExtendedTileInfo, _T("ExtendedTileInfo.") REG_SAGETHUMBS_BAK ) && bOK;
+	bOK = UnregisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("TileInfo"), TileInfo, _T("TileInfo.") REG_SAGETHUMBS_BAK ) && bOK;
 	bOK = UnregisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("FullDetails"), FullDetails, _T("FullDetails.") REG_SAGETHUMBS_BAK ) && bOK;
 	bOK = UnregisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("InfoTip"), InfoTip, _T("InfoTip.") REG_SAGETHUMBS_BAK ) && bOK;
 	bOK = UnregisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("PreviewDetails"), PreviewDetails, _T("PreviewDetails.") REG_SAGETHUMBS_BAK ) && bOK;
+	bOK = UnregisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("PreviewTitle"), PreviewTitle, _T("PreviewTitle.") REG_SAGETHUMBS_BAK ) && bOK;
+	bOK = UnregisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ContentViewModeForBrowse"), ContentViewModeForBrowse, _T("ContentViewModeForBrowse.") REG_SAGETHUMBS_BAK ) && bOK;
+	bOK = UnregisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ContentViewModeForSearch"), ContentViewModeForSearch, _T("ContentViewModeForSearch.") REG_SAGETHUMBS_BAK ) && bOK;
 
 	// Clean empty keys
 	DeleteEmptyRegKey( HKEY_LOCAL_MACHINE, sPropKey );
@@ -980,6 +1050,36 @@ STDAPI DllUnregisterServer(void)
 	ATLTRACE( "Calling ::DllUnregisterServer()...\n" );
 
 	return _Module.DllUnregisterServer();
+}
+
+// DllInstall - Adds/Removes entries to the system registry per user per machine.
+STDAPI DllInstall(BOOL bInstall, LPCWSTR pszCmdLine)
+{
+	HRESULT hr = E_FAIL;
+	static const wchar_t szUserSwitch[] = L"user";
+
+	if ( pszCmdLine )
+	{
+		if ( _wcsnicmp( pszCmdLine, szUserSwitch, _countof( szUserSwitch ) ) == 0 )
+		{
+			ATL::AtlSetPerUserRegistration(true);
+		}
+	}
+
+	if ( bInstall )
+	{	
+		hr = DllRegisterServer();
+		if ( FAILED( hr ) )
+		{
+			DllUnregisterServer();
+		}
+	}
+	else
+	{
+		hr = DllUnregisterServer();
+	}
+
+	return hr;
 }
 
 void CALLBACK Options (HWND hwnd, HINSTANCE /* hinst */, LPSTR /* lpszCmdLine */, int /* nCmdShow */)

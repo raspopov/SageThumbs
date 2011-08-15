@@ -27,6 +27,7 @@ CEntity::CEntity ()
 	: m_FileData	()
 	, m_ImageInfo	()
 	, m_hGflBitmap	( NULL )
+	, m_bInfoLoaded	( false )
 {
 }
 
@@ -52,7 +53,13 @@ CoTaskMemFree( stat.pwcsName );
 
 HRESULT CEntity::LoadInfo(const CString& sFilename)
 {
+	if ( m_bInfoLoaded )
+		return S_OK;
+
 	CLock oLock( m_pSection );
+
+	if ( m_bInfoLoaded )
+		return S_OK;
 
 	Ext data;
 	if ( ! _Module.IsGoodFile( sFilename, &data, &m_FileData ) )
@@ -114,6 +121,7 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 
 							// Проверка информации
 							bFound =
+								m_ImageInfo.FileSize == nFileSize &&
 								m_ImageInfo.Width &&
 								m_ImageInfo.Height &&
 								m_ImageInfo.ComponentsPerPixel &&
@@ -149,6 +157,7 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 		ATLTRACE( "from disk " );
 		if ( FAILED( _Module.GetFileInformation( sFilename, &m_ImageInfo ) ) )
 		{
+			ZeroMemory( &m_ImageInfo, sizeof( m_ImageInfo ) );
 			return E_FAIL;
 		}
 
@@ -177,18 +186,32 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 		}
 	}
 
-	FILETIME ftLastWriteLocal;
-	FileTimeToLocalFileTime( &m_FileData.ftLastWriteTime, &ftLastWriteLocal );
+	m_bInfoLoaded = true;
 
-	SYSTEMTIME stLastWriteLocal;
-	FileTimeToSystemTime( &ftLastWriteLocal, &stLastWriteLocal );
+	ATLTRACE( "S_OK.\n" );
+	return S_OK;
+}
 
-	TCHAR datetime [64];
-	GetDateFormat( LOCALE_USER_DEFAULT, DATE_SHORTDATE, &stLastWriteLocal, NULL,
-		datetime, _countof( datetime ) );
-	GetTimeFormat( LOCALE_USER_DEFAULT, 0, &stLastWriteLocal, NULL,
-		datetime + _tcslen (datetime) + 1, _countof( datetime ) );
-	datetime [ _tcslen( datetime ) ] = _T(' ');
+CString CEntity::GetTitleString() const
+{
+	CString tmp;
+	tmp.Format( _T("%d x %d %d bit"),
+		m_ImageInfo.Width,
+		m_ImageInfo.Height,
+		m_ImageInfo.ComponentsPerPixel * m_ImageInfo.BitsPerComponent );
+	return CString( (LPCTSTR)CA2T( m_ImageInfo.FormatName ) ) + _T(" ") + tmp;
+}
+
+CString CEntity::GetInfoTipString() const
+{
+	CString sInfoTipString = GetMenuTipString();
+	sInfoTipString.Replace (_T(','), _T('\n'));
+	return sInfoTipString;
+}
+
+CString CEntity::GetMenuTipString() const
+{
+	CString sMenuTipString;
 
 	CString type;
 	type.LoadString (IDS_TYPE);
@@ -205,49 +228,53 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 	CString compression;
 	compression.LoadString (IDS_COMPRESSION);
 
-	CString tmp;
-	tmp = type;
-	tmp += m_ImageInfo.Description[ 0 ] ? (LPCTSTR)CA2T( m_ImageInfo.Description ) : data.info;
-	m_MenuTipString += tmp;
+	CString tmp = type;
+	tmp += (LPCTSTR)CA2T( m_ImageInfo.Description[ 0 ] ? m_ImageInfo.Description : m_ImageInfo.FormatName );
+	sMenuTipString += tmp;
+	
 	tmp.Format (_T(", %s%d x %d"), (LPCTSTR)dim, m_ImageInfo.Width, m_ImageInfo.Height);
-	m_MenuTipString += tmp;
+	sMenuTipString += tmp;
+	
 	tmp.Format (_T(", %s%d"), (LPCTSTR)colors, m_ImageInfo.ComponentsPerPixel * m_ImageInfo.BitsPerComponent);
-	m_MenuTipString += tmp;
+	sMenuTipString += tmp;
+	
 	if ( m_ImageInfo.Xdpi )
 	{
 		tmp.Format (_T(", %s%d dpi"), (LPCTSTR)resolution, m_ImageInfo.Xdpi);
-		m_MenuTipString += tmp;
+		sMenuTipString += tmp;
 	}
+	
 	if ( m_ImageInfo.Compression != GFL_NO_COMPRESSION )
 	{
 		tmp = _T(", ");
 		tmp += compression;
 		tmp += (LPCTSTR)CA2T (m_ImageInfo.CompressionDescription);
-		m_MenuTipString += tmp;
+		sMenuTipString += tmp;
 	}
+	
+	FILETIME ftLastWriteLocal;
+	FileTimeToLocalFileTime( &m_FileData.ftLastWriteTime, &ftLastWriteLocal );
+	SYSTEMTIME stLastWriteLocal;
+	FileTimeToSystemTime( &ftLastWriteLocal, &stLastWriteLocal );
+	TCHAR datetime [64];
+	GetDateFormat( LOCALE_USER_DEFAULT, DATE_SHORTDATE, &stLastWriteLocal, NULL,
+		datetime, _countof( datetime ) );
+	GetTimeFormat( LOCALE_USER_DEFAULT, 0, &stLastWriteLocal, NULL,
+		datetime + _tcslen (datetime) + 1, _countof( datetime ) );
+	datetime [ _tcslen( datetime ) ] = _T(' ');
 	tmp = _T(", ");
 	tmp += date;
 	tmp += datetime;
-	m_MenuTipString += tmp;
-	TCHAR file_size [ 33 ] = {};
+	sMenuTipString += tmp;
+
+	TCHAR file_size [ 33 ];
 	_ui64tot_s( MAKEQWORD( m_FileData.nFileSizeLow,  m_FileData.nFileSizeHigh ), file_size, 33, 10 );
 	tmp = _T(", ");
 	tmp += size;
 	tmp += file_size;
-	m_MenuTipString += tmp;
+	sMenuTipString += tmp;
 
-	m_InfoTipString = m_MenuTipString;
-	m_InfoTipString.Replace (_T(','), _T('\n'));
-
-	tmp.Format( _T("%d x %d %d bit"),
-		m_ImageInfo.Width, m_ImageInfo.Height,
-		m_ImageInfo.ComponentsPerPixel * m_ImageInfo.BitsPerComponent );
-	m_TitleString += (LPCTSTR)CA2T (m_ImageInfo.FormatName);
-	m_TitleString += _T(" ");
-	m_TitleString += tmp;
-
-	ATLTRACE( "S_OK.\n" );
-	return S_OK;
+	return sMenuTipString;
 }
 
 HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)

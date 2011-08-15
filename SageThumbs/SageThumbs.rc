@@ -16,10 +16,8 @@
 // Neutral resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NEU)
-#ifdef _WIN32
 LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 #pragma code_page(1251)
-#endif //_WIN32
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -53,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,0,0,9
- PRODUCTVERSION 2,0,0,9
+ FILEVERSION 2,0,0,10
+ PRODUCTVERSION 2,0,0,10
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -72,12 +70,12 @@ BEGIN
             VALUE "Comments", "http://www.cherubicsoft.com/"
             VALUE "CompanyName", "CherubicSoft"
             VALUE "FileDescription", "SageThumbs Shell Extension"
-            VALUE "FileVersion", "2, 0, 0, 9"
+            VALUE "FileVersion", "2, 0, 0, 10"
             VALUE "InternalName", "SageThumbs.dll"
             VALUE "LegalCopyright", "Copyright © 2004-2011 Nikolay Raspopov"
             VALUE "OriginalFilename", "SageThumbs.dll"
             VALUE "ProductName", "SageThumbs Shell Extension"
-            VALUE "ProductVersion", "2, 0, 0, 9"
+            VALUE "ProductVersion", "2, 0, 0, 10"
         END
     END
     BLOCK "VarFileInfo"
@@ -163,7 +161,7 @@ END
 //
 
 #ifdef APSTUDIO_INVOKED
-GUIDELINES DESIGNINFO 
+GUIDELINES DESIGNINFO
 BEGIN
     IDD_OPTIONS, DIALOG
     BEGIN
@@ -196,7 +194,7 @@ IDR_SAGETHUMBS          BITMAP                  ".\\res\\SageThumbs.bmp"
 // String Table
 //
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_PROJNAME            "SageThumbs"
     IDS_OPTIONS_HELP        "Change various SageThumbs options"
@@ -212,7 +210,7 @@ BEGIN
     IDS_ERR_MAIL            "Can't send mail"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_OPTIONS             "SageThumbs Options..."
     IDS_CLIPBOARD           "Copy to clipboard"
@@ -221,7 +219,7 @@ BEGIN
     IDS_WALLPAPER_STRETCH   "Set stretched wallpaper"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_MAIL_IMAGE          "Send image by mail..."
     IDS_MAIL_THUMBNAIL      "Send thumbnail by mail..."
@@ -230,7 +228,7 @@ BEGIN
     IDS_CONVERT_BMP         "Convert to BMP"
 END
 
-STRINGTABLE 
+STRINGTABLE
 BEGIN
     IDS_ERR_NOTHING         "Nothing to send"
     IDS_ERR_CLIPBOARD       "Can't open clipboard"
@@ -240,6 +238,9 @@ BEGIN
     IDS_DESCRIPTION         "Clean SageThumbs thumbnail cache. No user data will be affected."
     IDS_ACCESS_DENIED       "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
     IDS_CONVERT_PNG         "Convert to PNG"
+    IDS_CONVERTING          "Converting..."
+    IDS_SENDING             "Sending..."
+    IDS_APPLYING            "Applying settings..."
 END
 
 #endif    // Neutral resources

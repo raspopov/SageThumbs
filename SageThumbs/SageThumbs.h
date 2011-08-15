@@ -119,7 +119,7 @@ public:
 	BOOL Initialize();
 	void UnInitialize();
 
-	BOOL RegisterExtensions();
+	BOOL RegisterExtensions(HWND hWnd = NULL);
 	BOOL UnregisterExtensions();
 
 	LANGID GetLang();					// Текущий загруженный язык
@@ -240,6 +240,7 @@ STDAPI DllCanUnloadNow (void);
 STDAPI DllGetClassObject (REFCLSID rclsid, REFIID riid, LPVOID* ppv);
 STDAPI DllRegisterServer (void);
 STDAPI DllUnregisterServer (void);
+STDAPI DllInstall(BOOL bInstall, LPCWSTR pszCmdLine);
 void CALLBACK Options (HWND hwnd, HINSTANCE hinst = NULL, LPSTR lpszCmdLine = NULL, int nCmdShow = 0);
 LONG APIENTRY CPlApplet (HWND hwnd, UINT uMsg, LPARAM lParam1, LPARAM lParam2);
 

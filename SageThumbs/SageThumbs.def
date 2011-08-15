@@ -3,5 +3,6 @@ EXPORTS
 	DllGetClassObject	PRIVATE
 	DllRegisterServer	PRIVATE
 	DllUnregisterServer	PRIVATE
+	DllInstall			PRIVATE
 	Options				PRIVATE
 	CPlApplet			PRIVATE

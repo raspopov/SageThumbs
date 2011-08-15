@@ -120,6 +120,7 @@ public:
 	DECLARE_REGISTRY_RESOURCEID(IDR_THUMB)
 
 	DECLARE_PROTECT_FINAL_CONSTRUCT()
+	DECLARE_GET_CONTROLLING_UNKNOWN()
 
 	BEGIN_COM_MAP(CThumb)
 		COM_INTERFACE_ENTRY(IObjectSafety)
@@ -153,6 +154,7 @@ public:
 		COM_INTERFACE_ENTRY(IObjectWithSite)
 		COM_INTERFACE_ENTRY(IEmptyVolumeCache)
 		COM_INTERFACE_ENTRY(IEmptyVolumeCache2)
+		COM_INTERFACE_ENTRY_AGGREGATE(IID_IMarshal, m_pUnkMarshaler.p)
 	END_COM_MAP()
 
 	BEGIN_CATEGORY_MAP(CThumb)
@@ -443,6 +445,7 @@ public:
 		/* [out] */ DWORD *pdwFlags);
 
 protected:
+	CComPtr< IUnknown >				m_pUnkMarshaler;
 	CAtlList< CString >				m_Filenames;		// »мена файлов дл€ меню
 	UINT							m_uOurItemID;		// »дентификатор пункта меню
 	CEntity							m_Preview;			// Ёскиз

@@ -32,6 +32,11 @@ System Requirements:
 
 Versions:
 
+2.0.0.10
+  * Improved/optimized image property information (Windows Vista and above)
+  * Added progress dialogs for long operations
+  * Added Italian translation
+
 2.0.0.9
   * Added support for image properties
   * Improved working with image files associations in Windows Registry

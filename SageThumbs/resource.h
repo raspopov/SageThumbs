@@ -24,6 +24,9 @@
 #define IDS_DESCRIPTION                 117
 #define IDS_ACCESS_DENIED               118
 #define IDS_CONVERT_PNG                 119
+#define IDS_CONVERTING                  120
+#define IDS_SENDING                     121
+#define IDS_APPLYING                    122
 #define IDC_WIDTH                       201
 #define IDC_HEIGHT                      202
 #define IDD_OPTIONS                     202
@@ -49,7 +52,6 @@
 #define IDC_EMBEDDED                    215
 #define IDC_ENABLE_ICONS                216
 #define IDC_ENABLE_WINCACHE             217
-#define IDC_CLEAR2                      218
 #define IDC_OPTIMIZE                    218
 #define IDC_JPEG                        219
 #define IDC_PNG                         220
