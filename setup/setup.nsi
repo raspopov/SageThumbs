@@ -2,7 +2,7 @@
 !define SRC64		"..\x64\release\"
 
 !define TITLE		"SageThumbs"
-!define VERSION		"2.0.0.10"
+!define VERSION		"2.0.0.11"
 !define COMPANY		"Cherubic Software"
 !define FILENAME	"sagethumbs_${VERSION}_setup.exe"
 !define COPYRIGHT	"Copyright © 2004-2011 Nikolay Raspopov"

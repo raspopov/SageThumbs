@@ -357,9 +357,7 @@ void CThumb::ConvertTo(HWND hWnd, int ext)
 	HRESULT hr = pProgress.CoCreateInstance( CLSID_ProgressDialog );
 	if ( SUCCEEDED( hr ) )
 	{
-		CString sTitle;
-		sTitle.LoadString( IDS_PROJNAME );
-		pProgress->SetTitle( sTitle );
+		pProgress->SetTitle( _Module.GetAppName() );
 		CString sProcess;
 		sProcess.LoadString( IDS_CONVERTING );
 		pProgress->SetLine( 1,sProcess, FALSE, NULL );
@@ -487,9 +485,7 @@ void CThumb::SendByMail(HWND hWnd, WORD reason)
 	HRESULT hr = pProgress.CoCreateInstance( CLSID_ProgressDialog );
 	if ( SUCCEEDED( hr ) )
 	{
-		CString sTitle;
-		sTitle.LoadString( IDS_PROJNAME );
-		pProgress->SetTitle( sTitle );
+		pProgress->SetTitle( _Module.GetAppName() );
 		CString sProcess;
 		sProcess.LoadString( IDS_SENDING );
 		pProgress->SetLine( 1, sProcess, FALSE, NULL );

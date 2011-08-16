@@ -27,6 +27,7 @@
 #define IDS_CONVERTING                  120
 #define IDS_SENDING                     121
 #define IDS_APPLYING                    122
+#define IDS_UPDATING                    123
 #define IDC_WIDTH                       201
 #define IDC_HEIGHT                      202
 #define IDD_OPTIONS                     202

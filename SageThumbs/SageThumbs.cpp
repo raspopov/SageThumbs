@@ -213,11 +213,9 @@ BOOL CSageThumbsModule::RegisterExtensions(HWND hWnd)
 		HRESULT hr = pProgress.CoCreateInstance( CLSID_ProgressDialog );
 		if ( SUCCEEDED( hr ) )
 		{
-			CString sTitle;
-			sTitle.LoadString( IDS_PROJNAME );
-			pProgress->SetTitle( sTitle );
+			pProgress->SetTitle( _Module.GetAppName() );
 			CString sProcess;
-			sProcess.LoadString( IDS_APPLYING );
+			sProcess.LoadString( IDS_APPLYING ); 
 			pProgress->SetLine( 1, sProcess, FALSE, NULL );
 			pProgress->StartProgressDialog( hWnd, NULL, PROGDLG_NORMAL | PROGDLG_NOCANCEL | PROGDLG_AUTOTIME, NULL );
 		}
@@ -252,7 +250,9 @@ BOOL CSageThumbsModule::RegisterExtensions(HWND hWnd)
 
 	if ( pProgress )
 	{
-		pProgress->SetLine( 2, _T("Updating..."), FALSE, NULL );
+		CString sProcess;
+		sProcess.LoadString( IDS_UPDATING ); 
+		pProgress->SetLine( 2, sProcess, FALSE, NULL );
 		pProgress->SetProgress( total, total );
 	}
 
@@ -842,7 +842,12 @@ BOOL CSageThumbsModule::Initialize()
 	CHECKPOINT_BEGIN(GFLInit)
 
 	// Get XnView folder
-	CString sPlugins = GetRegValue( _T("Plugins"), CString() );
+#ifdef WIN64
+	LPCTSTR szPluginsKey = _T("PlugIns64");
+#else
+	LPCTSTR szPluginsKey = _T("PlugIns32");
+#endif
+	CString sPlugins = GetRegValue( szPluginsKey, CString() );
 	if ( ! sPlugins.IsEmpty() && GetFileAttributes( sPlugins ) == INVALID_FILE_ATTRIBUTES )
 		sPlugins.Empty();
 	if ( sPlugins.IsEmpty() )
@@ -879,7 +884,13 @@ BOOL CSageThumbsModule::Initialize()
 	if ( sPlugins.IsEmpty() )
 	{
 		// %Program Files%\XnView\PlugIns
-		CString buf = GetSpecialFolderPath( CSIDL_PROGRAM_FILES );
+		CString buf = GetSpecialFolderPath(
+#ifdef WIN64
+			CSIDL_PROGRAM_FILES
+#else
+			CSIDL_PROGRAM_FILESX86
+#endif
+			);
 		if ( ! buf.IsEmpty() )
 		{
 			buf.TrimRight (_T("\\"));
@@ -891,9 +902,9 @@ BOOL CSageThumbsModule::Initialize()
 	}
 	if ( ! sPlugins.IsEmpty() )
 	{
-		SetRegValue( _T("Plugins"), sPlugins );
+		SetRegValue( szPluginsKey, sPlugins );
 		gflSetPluginsPathnameT( sPlugins );
-		ATLTRACE( "gflSetPluginsPathnameW : \"%s\"\n", (LPCSTR)CT2A( sPlugins ) );
+		ATLTRACE( "gflSetPluginsPathnameW : %s=\"%s\"\n", szPluginsKey, (LPCSTR)CT2A( sPlugins ) );
 	}
 
 	// Инициализация GFL
