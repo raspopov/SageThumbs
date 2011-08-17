@@ -225,6 +225,14 @@ BOOL CSageThumbsModule::RegisterExtensions(HWND hWnd)
 	const bool bEnableIcons  = GetRegValue( _T("EnableIcons"),  1ul ) != 0;
 	// Enabled by default on Windows 2000 and Windows XP only
 	const bool bEnableInfo = GetRegValue( _T("EnableInfo"), ( m_OSVersion.dwMajorVersion < 6 ) ? 1ul : 0ul ) != 0;
+	const bool bEnableOverlay  = GetRegValue( _T("EnableOverlay"),  0ul ) != 0;
+
+	if ( bEnableOverlay )
+		// Enable by removing empty key
+		bOK = DeleteRegValue( _T("TypeOverlay"), _T("SystemFileAssociations\\image"), HKEY_CLASSES_ROOT ) && bOK;
+	else
+		// Disable by setting empty key
+		bOK = SetRegValue( _T("TypeOverlay"), _T(""), _T("SystemFileAssociations\\image"), HKEY_CLASSES_ROOT ) && bOK;
 
 	// Register common associations
 	DWORD total = (DWORD)m_oExtMap.GetCount(), count = 0;
@@ -240,7 +248,7 @@ BOOL CSageThumbsModule::RegisterExtensions(HWND hWnd)
 			}
 
 			if ( p->m_value.enabled )
-				bOK = RegisterExt( p->m_key, p->m_value.info, bEnableThumbs, bEnableIcons, bEnableInfo ) && bOK;
+				bOK = RegisterExt( p->m_key, p->m_value.info, bEnableThumbs, bEnableIcons, bEnableInfo, bEnableOverlay ) && bOK;
 			else
 				bOK = UnregisterExt( p->m_key, false ) && bOK;
 		}
@@ -288,8 +296,8 @@ BOOL CSageThumbsModule::UnregisterExtensions()
 	{
 		bOK = UnregisterValue( HKEY_CLASSES_ROOT, sRoot + Handlers[ i ].szName ) && bOK;
 	}
-	DeleteEmptyRegKey( HKEY_CLASSES_ROOT, _T("SystemFileAssociations\\image\\ShellEx") );
-	DeleteEmptyRegKey( HKEY_CLASSES_ROOT, _T("SystemFileAssociations\\image") );
+
+	bOK = SetRegValue( _T("TypeOverlay"), _T(""), _T("SystemFileAssociations\\image"), HKEY_CLASSES_ROOT ) && bOK;
 
 	CleanWindowsCache();
 
@@ -305,7 +313,7 @@ void CSageThumbsModule::UpdateShell()
 	CoFreeUnusedLibraries();
 }
 
-BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableThumbs, bool bEnableIcons, bool bEnableInfo)
+BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableThumbs, bool bEnableIcons, bool bEnableInfo, bool bEnableOverlay)
 {
 	BOOL bOK = TRUE;
 
@@ -356,13 +364,14 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 	bOK = SetRegValue( _T(""), szInfo, sDefaultKey, HKEY_CLASSES_ROOT ) && bOK;
 
 	// Default icon (using Windows if absent) + restore .ico icon
+	CString sDefaultIcon;
 	if ( sType.CompareNoCase( _T(".ico") ) == 0 )
 	{
 		bOK = SetRegValue( _T(""), _T("%1"), sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT ) && bOK;
 	}
 	else
 	{
-		CString sDefaultIcon = GetRegValue( _T(""), _T(""), sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT );
+		sDefaultIcon = GetRegValue( _T(""), _T(""), sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT );
 		if ( sDefaultIcon.IsEmpty() )
 		{
 			sDefaultIcon = GetRegValue( _T(""), _T(""), _T("jpegfile\\DefaultIcon"), HKEY_CLASSES_ROOT );
@@ -374,6 +383,15 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 			{
 				bOK = SetRegValue( _T(""), sDefaultIcon, sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT ) && bOK;
 			}
+		}
+
+		if ( bEnableOverlay && ! sDefaultIcon.IsEmpty() )
+		{
+			bOK = SetRegValue( _T("TypeOverlay"), sDefaultIcon, sDefaultKey, HKEY_CLASSES_ROOT ) && bOK; 
+		}
+		else
+		{
+			bOK = DeleteRegValue( _T("TypeOverlay"), sDefaultKey, HKEY_CLASSES_ROOT ) && bOK; 
 		}
 	}
 
@@ -497,6 +515,8 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt, bool bFull)
 	CString sFileExt = FileExts + sType;
 	CString sDefaultKey = REG_SAGETHUMBS_IMG + sType;
 	CString sCurrentKey = GetRegValue( _T(""), _T(""), sType, HKEY_CLASSES_ROOT );
+
+	bOK = DeleteRegValue( _T("TypeOverlay"), sCurrentKey, HKEY_CLASSES_ROOT ) && bOK; 
 
 	/*CString sContentExt = GetContentType( szExt );
 	CString sContentKey = _T("MIME\\DataBase\\Content Type\\image/") + sContentExt;
@@ -1262,11 +1282,11 @@ BOOL SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey, HKEY hRoo
 			res = SHSetValue( hRoot, szKey, szName, REG_EXPAND_SZ, sCompact, (DWORD)lengthof( sCompact ) );
 			if ( res != ERROR_SUCCESS )
 			{
-				ATLTRACE( "Got %s during value setting: %s\\%s \"%s\" = %s\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sCompact ) );
+				ATLTRACE( "Got %s during value setting: %s\\%s \"%s\" = \"%s\"\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sCompact ) );
 				return FALSE;
 			}
 
-			ATLTRACE( "Set value: %s\\%s \"%s\" = %s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sCompact ) );
+			ATLTRACE( "Set value: %s\\%s \"%s\" = \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sCompact ) );
 			return TRUE;
 		}
 	}
@@ -1274,11 +1294,11 @@ BOOL SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey, HKEY hRoo
 	res = SHSetValue( hRoot, szKey, szName, REG_SZ, sValue, (DWORD)lengthof( sValue ) );
 	if ( res != ERROR_SUCCESS )
 	{
-		ATLTRACE( "Got %s during value setting: %s\\%s \"%s\" = %s\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sValue ) );
+		ATLTRACE( "Got %s during value setting: %s\\%s \"%s\" = \"%s\"\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sValue ) );
 		return FALSE;
 	}
 
-	ATLTRACE( "Set value: %s\\%s \"%s\" = %s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sValue ) );
+	ATLTRACE( "Set value: %s\\%s \"%s\" = \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sValue ) );
 	return TRUE;
 }
 
@@ -1344,8 +1364,13 @@ BOOL CleanRegKey(HKEY hRoot, LPCTSTR szKey)
 
 BOOL DeleteRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot)
 {
+	LSTATUS res = SHGetValue( hRoot, szKey, szName, NULL, NULL, NULL );
+	if ( res == ERROR_FILE_NOT_FOUND || res == ERROR_PATH_NOT_FOUND )
+		// Already deleted
+		return TRUE;
+
 	// First attempt
-	LSTATUS res = SHDeleteValue( hRoot, szKey, szName );
+	res = SHDeleteValue( hRoot, szKey, szName );
 	if ( res == ERROR_SUCCESS )
 	{
 		ATLTRACE( "Deleted value: %s\\%s \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );

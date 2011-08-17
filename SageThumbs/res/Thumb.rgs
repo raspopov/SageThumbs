@@ -15,7 +15,6 @@ HKCR
 		{
 			val DisplayName = s 'SageThumbs Shell Extension'
 			val Icon = s 'SageThumbs.dll,101'
-			val DisableLowILProcessIsolation = d '1'
 			ProgID = s 'SageThumbs.Thumb.1'
 			VersionIndependentProgID = s 'SageThumbs.Thumb'
 			InprocServer32 = s '%MODULE%'

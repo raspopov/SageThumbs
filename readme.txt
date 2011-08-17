@@ -32,6 +32,11 @@ System Requirements:
 
 Versions:
 
+2.0.0.11
+  * Added new option "Show type overlay on thumbnails"
+  * Separated 32-bit and 64-bit plugins folders
+  * Fixed some issues under UAC
+
 2.0.0.10
   * Improved/optimized image property information (Windows Vista and above)
   * Added progress dialogs for long operations

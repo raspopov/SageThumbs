@@ -60,6 +60,7 @@
 #define IDC_PNG_SPIN                    222
 #define IDC_DEFAULT                     223
 #define IDC_CACHE_SIZE                  224
+#define IDC_ENABLE_OVERLAY              225
 
 // Next default values for new objects
 // 

@@ -192,6 +192,9 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 	const bool bEnableIcons = GetRegValue( _T("EnableIcons"), 1ul ) != 0;
 	CheckDlgButton( IDC_ENABLE_ICONS, bEnableIcons ? BST_CHECKED : BST_UNCHECKED );
 
+	const bool bEnableOverlay  = GetRegValue( _T("EnableOverlay"),  0ul ) != 0;
+	CheckDlgButton( IDC_ENABLE_OVERLAY, bEnableOverlay ? BST_CHECKED : BST_UNCHECKED );
+
 	const bool bUseEmbedded = GetRegValue( _T("UseEmbedded"), 0ul ) != 0;
 	CheckDlgButton( IDC_EMBEDDED, bUseEmbedded ? BST_CHECKED : BST_UNCHECKED );
 
@@ -278,6 +281,9 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 
 	const bool bEnableIcons = IsDlgButtonChecked( IDC_ENABLE_ICONS ) == BST_CHECKED;
 	SetRegValue( _T("EnableIcons"), bEnableIcons ? 1ul : 0ul );
+
+	const bool bEnableOverlay = IsDlgButtonChecked( IDC_ENABLE_OVERLAY ) == BST_CHECKED;
+	SetRegValue( _T("EnableOverlay"), bEnableOverlay ? 1ul : 0ul );
 
 	const bool bUseEmbedded = IsDlgButtonChecked( IDC_EMBEDDED ) == BST_CHECKED;
 	SetRegValue( _T("UseEmbedded"), bUseEmbedded ? 1ul : 0ul );

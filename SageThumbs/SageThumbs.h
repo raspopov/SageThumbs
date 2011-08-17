@@ -169,7 +169,7 @@ protected:
 	void UnLoadLang ();
 	BOOL LoadLangIDDLL(LANGID LangID);
 
-	BOOL RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableThumbs, bool bEnableIcons, bool bEnableInfo);
+	BOOL RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableThumbs, bool bEnableIcons, bool bEnableInfo, bool bEnableOverlay);
 	BOOL UnregisterExt(LPCTSTR szExt, bool bFull);
 
 	// Restore file extension lost ProgID using several methods
