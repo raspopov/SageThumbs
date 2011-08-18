@@ -924,7 +924,7 @@ BOOL CSageThumbsModule::Initialize()
 	{
 		SetRegValue( szPluginsKey, sPlugins );
 		gflSetPluginsPathnameT( sPlugins );
-		ATLTRACE( "gflSetPluginsPathnameW : %s=\"%s\"\n", szPluginsKey, (LPCSTR)CT2A( sPlugins ) );
+		ATLTRACE( "gflSetPluginsPathnameW : %s=\"%s\"\n", (LPCSTR)CT2A( szPluginsKey ), (LPCSTR)CT2A( sPlugins ) );
 	}
 
 	// Инициализация GFL

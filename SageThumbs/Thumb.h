@@ -19,61 +19,87 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 /*
+Shell item load:
+	1. Query for IInitializeWithStream (Windows Vista):
+		IInitializeWithStream::Initialize
+	2. Query for IPersistStream (Windows 7):
+		IPersistStream::Load
+	3. Query for IInitializeWithItem (Windows Vista):
+		IInitializeWithItem::Initialize
+	4. Query for IInitializeWithFile (Windows Vista):
+		IInitializeWithFile::Initialize
+	5. Query for IPersistFile (Windows 2000):
+		IPersistFile:Load
+
 Shortcut Menu Handlers:
-	1. IClassFactory
-	2. IShellExtInit::Initialize
-	3. IObjectWithSite::SetSite(pExplorer)
-	4. IContextMenu::QueryContextMenu	-> Load info and image
-	5. Menu commands:
+	1. Query for IClassFactory
+	2. Query for IContextMenu
+	3. Query for IShellExtInit
+	4. IShellExtInit::Initialize
+	5. Query for IObjectWithSite
+	6. IObjectWithSite::SetSite(pExplorer)
+	7. IContextMenu::QueryContextMenu	-> Load info and image
+	8. Menu commands:
 		IContextMenu::GetCommandString
+		Query for IContextMenu3
 		IContextMenu3::HandleMenuMsg2 : WM_MEASUREITEM (for ownerdraw items)
 		IContextMenu3::HandleMenuMsg2 : WM_DRAWITEM (for ownerdraw items)
 		IContextMenu3::HandleMenuMsg2 : WM_INITMENUPOPUP (for submenu)
 		IContextMenu::InvokeCommand
-	6. IObjectWithSite::SetSite(NULL)
-	7. Release
-
-Shell item load:
-	1. IInitializeWithStream (Windows Vista)
-	2. IPersistStream (Windows 7)
-	3. IInitializeWithItem (Windows Vista)
-	4. IInitializeWithFile (Windows Vista)
-	5. IPersistFile (Windows 2000)
+	9. Query for IObjectWithSite
+	10. IObjectWithSite::SetSite(NULL)
+	11. Release
 
 InfoTip Handler:
-	1. IClassFactory
+	1. Query for IClassFactory
 	2. Shell item load
-	3. ICustomizeInfoTip::?				- ???
-	4. IQueryInfo::GetInfoTip			-> Load info only
-	5. IQueryInfo::GetInfoFlags			- ???
-	4. Release
+	3. Query for ICustomizeInfoTip
+	4. Query for IQueryInfo
+	5. IQueryInfo::GetInfoTip			-> Load info only
+	6. IQueryInfo::GetInfoFlags
+	7. Release
 
 Thumbnail Image Handler WinXP:
-	1. IClassFactory
+	1. Query for IClassFactory
 	2. Shell item load
-	3. IExtractImage::GetLocation		-> Load info and image
-	4. IExtractImage2:GetDateStamp
-	5. IExtractImage::Extract
-	6. Release
+	3. Query for IExtractImage
+	4. Query for IExtractImage2
+	5. IExtractImage2:GetDateStamp
+	6. IExtractImage::GetLocation		-> Load info and image
+	7. IExtractImage::Extract
+	8. Release
 
 Thumbnail Image Handler Vista:
-	1. IClassFactory
+	1. Query for IClassFactory
 	2. Shell item load
-	3. IExtractImage::GetLocation		-> Load info and image
-	4. IThumbnailProvider::GetThumbnail
-	5. Release
+	3. Query for IExtractImage
+	4. IExtractImage::GetLocation		-> Load info and image
+	5. Query for IThumbnailProvider
+	6. IThumbnailProvider::GetThumbnail
+	7. Release
 
 Data Handler:
-	1. IClassFactory
-	2. IPersistFile::Load
-	3. Release
+	1. Query for IClassFactory
+	2. Query for IPersistFile
+	3. IPersistFile::Load
+	4. Release
 
 Icon Handler:
-	1. IClassFactory
+	1. Query for IClassFactory
 	2. Shell item load
-	3. IExtractIcon::GetIconLocation
-	4. IExtractIcon::Extract			-> Load info and image
-	5. Release
+	3. Query for IExtractIconW
+	4. IExtractIconW::GetIconLocation
+	5. IExtractIconW::Extract			-> Load info and image
+	6. Release
+
+Property Handler (Windows Vista):
+	1. Query for IClassFactory
+	2. Shell item load
+	3. Query for IPropertyStore
+	4. Query for INamedPropertyStore
+	5. Query for IPropertyStoreCapabilities
+	6. IPropertyStore::GetValue			-> Load info
+	7. Release
 */
 
 #pragma once
