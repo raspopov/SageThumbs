@@ -42,6 +42,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	((ext)==_T("ico")|| \
 	 (ext)==_T("ani")|| \
 	 (ext)==_T("cur")|| \
+	 (ext)==_T("sys")|| \
 	 (ext)==_T("wmz"))
 
 // SQL для создания базы данных

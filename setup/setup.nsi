@@ -52,6 +52,8 @@ Var STARTMENU_FOLDER
 	!insertmacro MUI_LANGUAGE "German"
 	!insertmacro MUI_LANGUAGE "Swedish"
 	!insertmacro MUI_LANGUAGE "Italian"
+	!insertmacro MUI_LANGUAGE "PortugueseBR"
+	!insertmacro MUI_LANGUAGE "SimpChinese"
 
 Name "${TITLE}"
 VIProductVersion "${VERSION}"
@@ -131,14 +133,8 @@ wait32_3:
 wait32_4:
 	Call FreeSageThumbs32
 ok32:
-	Delete "$INSTDIR\32\SageThumbs1d.dll"
-	Delete "$INSTDIR\32\SageThumbs19.dll"
-	Delete "$INSTDIR\32\SageThumbs16.dll"
-	Delete "$INSTDIR\32\SageThumbs10.dll"
-	Delete "$INSTDIR\32\SageThumbs0c.dll"
-	Delete "$INSTDIR\32\SageThumbs07.dll"
-	Delete "$INSTDIR\32\libgfl340.dll"
-	Delete "$INSTDIR\32\libgfle340.dll"
+	Delete "$INSTDIR\32\SageThumbs*.dll"
+	Delete "$INSTDIR\32\libgfl*.dll"
 	Delete "$INSTDIR\32\sqlite3.dll"
 	Delete "$INSTDIR\32\*.tmp"
 
@@ -158,35 +154,15 @@ wait64_3:
 wait64_4:
 	Call FreeSageThumbs64
 ok64:
-	Delete "$INSTDIR\64\SageThumbs1d.dll"
-	Delete "$INSTDIR\64\SageThumbs19.dll"
-	Delete "$INSTDIR\64\SageThumbs16.dll"
-	Delete "$INSTDIR\64\SageThumbs10.dll"
-	Delete "$INSTDIR\64\SageThumbs0c.dll"
-	Delete "$INSTDIR\64\SageThumbs07.dll"
-	Delete "$INSTDIR\64\libgfl340.dll"
-	Delete "$INSTDIR\64\libgfle340.dll"
+	Delete "$INSTDIR\64\SageThumbs*.dll"
+	Delete "$INSTDIR\64\libgfl*.dll"
 	Delete "$INSTDIR\64\sqlite3.dll"
 	Delete "$INSTDIR\64\*.tmp"
 	${EndIf}
 
 # Clean very old files
-	Delete /REBOOTOK "$INSTDIR\SageThumbs.dll"
-	Delete /REBOOTOK "$INSTDIR\SageThumbs19.dll"
-	Delete /REBOOTOK "$INSTDIR\SageThumbs0c.dll"
-	Delete /REBOOTOK "$INSTDIR\SageThumbs07.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfl220.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfle220.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfl240.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfle240.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfl254.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfle254.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfl290.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfle290.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfl311.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfle311.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfl340.dll"
-	Delete /REBOOTOK "$INSTDIR\libgfle340.dll"
+	Delete /REBOOTOK "$INSTDIR\SageThumbs*.dll"
+	Delete /REBOOTOK "$INSTDIR\libgfl*.dll"
 	Delete /REBOOTOK "$INSTDIR\sqlite3.dll"
 	Delete /REBOOTOK "$INSTDIR\*.tmp"
 	SetRegView 32
@@ -220,6 +196,7 @@ ok64:
 	File /oname=SageThumbs10.dll.tmp	"${SRC32}SageThumbs10.dll"
 	File /oname=SageThumbs0c.dll.tmp	"${SRC32}SageThumbs0c.dll"
 	File /oname=SageThumbs07.dll.tmp	"${SRC32}SageThumbs07.dll"
+	File /oname=SageThumbs04.dll.tmp	"${SRC32}SageThumbs04.dll"
 	File /oname=libgfl340.dll.tmp		"${SRC32}libgfl340.dll"
 	File /oname=libgfle340.dll.tmp		"${SRC32}libgfle340.dll"
 	File /oname=sqlite3.dll.tmp			"${SRC32}sqlite3.dll"
@@ -230,15 +207,10 @@ ok64:
 	Rename /REBOOTOK "$INSTDIR\32\SageThumbs10.dll.tmp"	"$INSTDIR\32\SageThumbs10.dll"
 	Rename /REBOOTOK "$INSTDIR\32\SageThumbs0c.dll.tmp"	"$INSTDIR\32\SageThumbs0c.dll"
 	Rename /REBOOTOK "$INSTDIR\32\SageThumbs07.dll.tmp"	"$INSTDIR\32\SageThumbs07.dll"
+	Rename /REBOOTOK "$INSTDIR\32\SageThumbs04.dll.tmp"	"$INSTDIR\32\SageThumbs04.dll"
 	Rename /REBOOTOK "$INSTDIR\32\libgfl340.dll.tmp"	"$INSTDIR\32\libgfl340.dll"
 	Rename /REBOOTOK "$INSTDIR\32\libgfle340.dll.tmp"	"$INSTDIR\32\libgfle340.dll"
 	Rename /REBOOTOK "$INSTDIR\32\sqlite3.dll.tmp"		"$INSTDIR\32\sqlite3.dll"
-	IfRebootFlag reboot32 0
-	ExecWait '"$SYSDIR\regsvr32.exe" /s "$INSTDIR\32\SageThumbs.dll"'
-	goto done32
-reboot32:
-	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\RunOnce" "SageThumbs32" "regsvr32.exe /s $\"$INSTDIR\32\SageThumbs.dll$\""
-done32:
 
 # Install SageThumbs 64-bit
 	${If} ${RunningX64}
@@ -250,6 +222,7 @@ done32:
 	File /oname=SageThumbs10.dll.tmp	"${SRC64}SageThumbs10.dll"
 	File /oname=SageThumbs0c.dll.tmp	"${SRC64}SageThumbs0c.dll"
 	File /oname=SageThumbs07.dll.tmp	"${SRC64}SageThumbs07.dll"
+	File /oname=SageThumbs04.dll.tmp	"${SRC64}SageThumbs04.dll"
 	File /oname=libgfl340.dll.tmp		"${SRC64}libgfl340.dll"
 	File /oname=libgfle340.dll.tmp		"${SRC64}libgfle340.dll"
 	File /oname=sqlite3.dll.tmp			"${SRC64}sqlite3.dll"
@@ -260,15 +233,10 @@ done32:
 	Rename /REBOOTOK "$INSTDIR\64\SageThumbs10.dll.tmp"	"$INSTDIR\64\SageThumbs10.dll"
 	Rename /REBOOTOK "$INSTDIR\64\SageThumbs0c.dll.tmp"	"$INSTDIR\64\SageThumbs0c.dll"
 	Rename /REBOOTOK "$INSTDIR\64\SageThumbs07.dll.tmp"	"$INSTDIR\64\SageThumbs07.dll"
+	Rename /REBOOTOK "$INSTDIR\64\SageThumbs04.dll.tmp"	"$INSTDIR\64\SageThumbs04.dll"
 	Rename /REBOOTOK "$INSTDIR\64\libgfl340.dll.tmp"	"$INSTDIR\64\libgfl340.dll"
 	Rename /REBOOTOK "$INSTDIR\64\libgfle340.dll.tmp"	"$INSTDIR\64\libgfle340.dll"
 	Rename /REBOOTOK "$INSTDIR\64\sqlite3.dll.tmp"		"$INSTDIR\64\sqlite3.dll"
-	IfRebootFlag reboot64 0
-	ExecWait '"$SYSDIR\regsvr32.exe" /s "$INSTDIR\64\SageThumbs.dll"'
-	goto done64
-reboot64:
-	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\RunOnce" "SageThumbs64" "regsvr32.exe /s $\"$INSTDIR\64\SageThumbs.dll$\""
-done64:
 	${EndIf}
 
 # Install common files and uninstaller
@@ -302,6 +270,20 @@ done64:
 	SetOutPath "$SMPROGRAMS\$STARTMENU_FOLDER"
 	File "..\SageThumbs Online.url"
 
+# Registration
+	IfRebootFlag reboot 0
+	ExecWait '"$SYSDIR\regsvr32.exe" /s "$INSTDIR\32\SageThumbs.dll"'
+	${If} ${RunningX64}
+	ExecWait '"$SYSDIR\regsvr32.exe" /s "$INSTDIR\64\SageThumbs.dll"'
+	${EndIf}
+	goto done
+reboot:
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\RunOnce" "SageThumbs32" "regsvr32.exe /s $\"$INSTDIR\32\SageThumbs.dll$\""
+	${If} ${RunningX64}
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\RunOnce" "SageThumbs64" "regsvr32.exe /s $\"$INSTDIR\64\SageThumbs.dll$\""
+	${EndIf}
+done:
+
 SectionEnd
 
 Section "Uninstall"
@@ -325,14 +307,8 @@ wait32_4:
 fail32:
 	Delete /REBOOTOK "$INSTDIR\32\SageThumbs.dll"
 ok32:
-	Delete /REBOOTOK "$INSTDIR\32\SageThumbs1d.dll"
-	Delete /REBOOTOK "$INSTDIR\32\SageThumbs19.dll"
-	Delete /REBOOTOK "$INSTDIR\32\SageThumbs16.dll"
-	Delete /REBOOTOK "$INSTDIR\32\SageThumbs10.dll"
-	Delete /REBOOTOK "$INSTDIR\32\SageThumbs0c.dll"
-	Delete /REBOOTOK "$INSTDIR\32\SageThumbs07.dll"
-	Delete /REBOOTOK "$INSTDIR\32\libgfl340.dll"
-	Delete /REBOOTOK "$INSTDIR\32\libgfle340.dll"
+	Delete /REBOOTOK "$INSTDIR\32\SageThumbs*.dll"
+	Delete /REBOOTOK "$INSTDIR\32\libgfl*.dll"
 	Delete /REBOOTOK "$INSTDIR\32\sqlite3.dll"
 	Delete /REBOOTOK "$INSTDIR\32\*.tmp"
 	RMDir  /REBOOTOK "$INSTDIR\32\"
@@ -357,14 +333,8 @@ wait64_4:
 fail64:
 	Delete /REBOOTOK "$INSTDIR\64\SageThumbs.dll"
 ok64:
-	Delete /REBOOTOK "$INSTDIR\64\SageThumbs1d.dll"
-	Delete /REBOOTOK "$INSTDIR\64\SageThumbs19.dll"
-	Delete /REBOOTOK "$INSTDIR\64\SageThumbs16.dll"
-	Delete /REBOOTOK "$INSTDIR\64\SageThumbs10.dll"
-	Delete /REBOOTOK "$INSTDIR\64\SageThumbs0c.dll"
-	Delete /REBOOTOK "$INSTDIR\64\SageThumbs07.dll"
-	Delete /REBOOTOK "$INSTDIR\64\libgfl340.dll"
-	Delete /REBOOTOK "$INSTDIR\64\libgfle340.dll"
+	Delete /REBOOTOK "$INSTDIR\64\SageThumbs*.dll"
+	Delete /REBOOTOK "$INSTDIR\64\libgfl*.dll"
 	Delete /REBOOTOK "$INSTDIR\64\sqlite3.dll"
 	Delete /REBOOTOK "$INSTDIR\64\*.tmp"
 	RMDir  /REBOOTOK "$INSTDIR\64\"

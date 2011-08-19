@@ -1,4 +1,4 @@
-SageThumbs - Thumbnail image shell extension.
+SageThumbs Shell Extension
 
 ========================================================================
 
@@ -25,8 +25,21 @@ Please read carefully the following information.
 
 System Requirements:
 
-  * Windows 2000/XP/2003/Vista/2008/7
-  * About 2 Mb of disk space + additional space for cache
+  * Windows 2000/XP/2003/Vista/2008/7 32/64-bit
+  * About 5 Mb of disk space + additional space for cache
+
+========================================================================
+
+External plugins:
+
+	SageThumbs can use external XnView plugins, it tries to automatically
+	detect XnView installation folder or if failed it will use predefined
+	folder. Typically this folder is "C:\Program files\XnView\PlugIns\"
+	for 32-bit SageThumbs on 32-bit Windows or 64-bit SageThumbs on 64-bit
+	Windows and	"C:\Program Files (x86)\XnView\PlugIns\" for 32-bit
+	Sagethumbs on 64-bit Windows. So if you have no XnView installed you
+	can create this folder manually and unpack plugins to it. Just don't
+	forget that you need same "bit capacity" for plugins and SageThumbs.
 
 ========================================================================
 
@@ -36,6 +49,7 @@ Versions:
   * Added new option "Show type overlay on thumbnails"
   * Separated 32-bit and 64-bit plugins folders
   * Fixed some issues under UAC
+  * Added Chinese translation
 
 2.0.0.10
   * Improved/optimized image property information (Windows Vista and above)
