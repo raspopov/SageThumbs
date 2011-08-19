@@ -36,8 +36,8 @@ External plugins:
 	detect XnView installation folder or if failed it will use predefined
 	folder. Typically this folder is "C:\Program files\XnView\PlugIns\"
 	for 32-bit SageThumbs on 32-bit Windows or 64-bit SageThumbs on 64-bit
-	Windows and	"C:\Program Files (x86)\XnView\PlugIns\" for 32-bit
-	Sagethumbs on 64-bit Windows. So if you have no XnView installed you
+	Windows and "C:\Program Files (x86)\XnView\PlugIns\" for 32-bit
+	SageThumbs on 64-bit Windows. So if you have no XnView installed you
 	can create this folder manually and unpack plugins to it. Just don't
 	forget that you need same "bit capacity" for plugins and SageThumbs.
 

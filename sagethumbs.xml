@@ -83,9 +83,9 @@
   </Site>
   <Program_Info>
     <Program_Name>SageThumbs</Program_Name>
-    <Program_Version>2.0.0.10</Program_Version>
+    <Program_Version>2.0.0.11</Program_Version>
     <Program_Release_Month>08</Program_Release_Month>
-    <Program_Release_Day>15</Program_Release_Day>
+    <Program_Release_Day>19</Program_Release_Day>
     <Program_Release_Year>2011</Program_Release_Year>
     <Program_Cost_Dollars>0</Program_Cost_Dollars>
     <Program_Type>Freeware</Program_Type>
@@ -93,12 +93,12 @@
     <Program_Install_Support>Install and Uninstall</Program_Install_Support>
     <Program_OS_Support>WinXP,WinVista,WinVista x64,Win7 x32,Win7 x64,Win2000,WinServer</Program_OS_Support>
     <Program_Language>English,French,German,Portuguese,Russian,Swedish</Program_Language>
-    <Program_Change_Info>Improved/optimized image property information (Windows Vista and above). Added progress dialogs for long operations. Added Italian translation.</Program_Change_Info>
-    <Program_System_Requirements>About 2 Mb of disk space + additional space for cache</Program_System_Requirements>
+    <Program_Change_Info>Added new option "Show type overlay on thumbnails". Separated 32-bit and 64-bit plugins folders. Fixed some issues under UAC. Added Chinese translation.</Program_Change_Info>
+    <Program_System_Requirements>About 5 Mb of disk space + additional space for cache</Program_System_Requirements>
     <Program_Category_Class>Graphic Apps::Viewers</Program_Category_Class>
     <File_Info>
-      <File_Size_Bytes>1895766</File_Size_Bytes>
-      <File_Size_K>1851</File_Size_K>
+      <File_Size_Bytes>1903080</File_Size_Bytes>
+      <File_Size_K>1858</File_Size_K>
       <File_Size_MB>1.81</File_Size_MB>
       <Filename_Versioned></Filename_Versioned>
       <Filename_Previous></Filename_Previous>
@@ -133,7 +133,7 @@
       <Application_XML_File_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs.xml</Application_XML_File_URL>
     </Application_URLs>
     <Download_URLs>
-      <Primary_Download_URL>http://sagethumbs.googlecode.com/files/sagethumbs_2.0.0.10_setup.exe</Primary_Download_URL>
+      <Primary_Download_URL>http://sagethumbs.googlecode.com/files/sagethumbs_2.0.0.11_setup.exe</Primary_Download_URL>
       <Secondary_Download_URL></Secondary_Download_URL>
       <Additional_Download_URL_1></Additional_Download_URL_1>
       <Additional_Download_URL_2></Additional_Download_URL_2>
