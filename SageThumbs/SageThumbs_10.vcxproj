@@ -302,7 +302,6 @@
     <None Include="..\ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dllLoaderMinimal.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="..\gfl\libgfl.h" />
     <ClInclude Include="..\gfl\libgfle.h" />

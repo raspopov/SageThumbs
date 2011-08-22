@@ -64,9 +64,6 @@
     <None Include="..\SageThumbs Online.url" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="dllLoaderMinimal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
