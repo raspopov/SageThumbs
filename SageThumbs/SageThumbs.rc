@@ -51,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,0,0,11
- PRODUCTVERSION 2,0,0,11
+ FILEVERSION 2,0,0,12
+ PRODUCTVERSION 2,0,0,12
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -70,12 +70,12 @@ BEGIN
             VALUE "Comments", "http://www.cherubicsoft.com/"
             VALUE "CompanyName", "CherubicSoft"
             VALUE "FileDescription", "SageThumbs Shell Extension"
-            VALUE "FileVersion", "2.0.0.11"
+            VALUE "FileVersion", "2.0.0.12"
             VALUE "InternalName", "SageThumbs.dll"
             VALUE "LegalCopyright", "Copyright © 2004-2011 Nikolay Raspopov"
             VALUE "OriginalFilename", "SageThumbs.dll"
             VALUE "ProductName", "SageThumbs Shell Extension"
-            VALUE "ProductVersion", "2.0.0.11"
+            VALUE "ProductVersion", "2.0.0.12"
         END
     END
     BLOCK "VarFileInfo"
@@ -131,7 +131,7 @@ BEGIN
     EDITTEXT        IDC_PNG,166,188,30,14,ES_AUTOHSCROLL
     CONTROL         "",IDC_PNG_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,198,188,11,14
     CONTROL         "Use Windows Image/Fax Viewer",IDC_USE_FAX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,223,182,11
-    CONTROL         "Select/Deselect all",IDC_SELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,222,50,119,8
+    CONTROL         "Select/Deselect all",IDC_SELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,222,50,110,8
     PUSHBUTTON      "Default",IDC_DEFAULT,335,42,70,16
     CONTROL         "",IDC_TYPES_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SORTASCENDING | LVS_NOLABELWRAP | LVS_ALIGNLEFT | LVS_NOCOLUMNHEADER | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,222,64,183,181
     PUSHBUTTON      "Clear...",IDC_CLEAR,14,253,69,16
