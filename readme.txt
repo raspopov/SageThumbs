@@ -45,6 +45,10 @@ External plugins:
 
 Versions:
 
+2.0.0.12
+  * "Maximum size of image file" option limits image thumbnail generation only
+  * Added Spanish translation
+
 2.0.0.11
   * Added new option "Show type overlay on thumbnails"
   * Separated 32-bit and 64-bit plugins folders

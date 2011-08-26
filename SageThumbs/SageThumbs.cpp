@@ -142,7 +142,6 @@ CSageThumbsModule::CSageThumbsModule()
 	, m_hSQLite		( NULL )
 	, m_hLangDLL	( NULL )
 	, m_CurLangID	( STANDARD_LANGID )
-//	, m_hWatchThread( NULL )
 {
 	m_OSVersion.dwOSVersionInfoSize = sizeof( m_OSVersion );
 	GetVersionEx( &m_OSVersion );
@@ -173,13 +172,58 @@ CSageThumbsModule::CSageThumbsModule()
 	ATLTRACE( "Database path: %s\n", (LPCSTR)CT2A( m_sDatabase ) );
 }
 
-HRESULT CSageThumbsModule::DllRegisterServer()
+BOOL CSageThumbsModule::DllMain(DWORD dwReason, LPVOID lpReserved) throw()
+{
+	BOOL res = CAtlDllModuleT< CSageThumbsModule >::DllMain( dwReason, lpReserved );
+
+	switch ( dwReason )
+	{
+	case DLL_PROCESS_ATTACH:
+		ATLTRACE( "CThumb - DllMain::DLL_PROCESS_ATTACH\n" );
+		DisableThreadLibraryCalls( _AtlBaseModule.GetModuleInstance() );
+		__try
+		{
+			if ( ! res || ! Initialize() )
+				res = FALSE;
+		}
+		__except ( EXCEPTION_EXECUTE_HANDLER )
+		{
+			ATLTRACE( "Exception in CSageThumbsModule::Initialize()\n" );
+			res = FALSE;
+		}
+		break;
+
+	case DLL_PROCESS_DETACH:
+		ATLTRACE( "CThumb - DllMain::DLL_PROCESS_DETACH\n" );
+		__try
+		{
+			UnInitialize();
+		}
+		__except ( EXCEPTION_EXECUTE_HANDLER )
+		{
+			ATLTRACE( "Exception in CSageThumbsModule::UnInitialize()\n" );
+		}
+		break;
+
+	case DLL_THREAD_ATTACH:
+		ATLTRACE( "CThumb - DllMain::DLL_THREAD_ATTACH\n" );
+		break;
+
+	case DLL_THREAD_DETACH:
+		ATLTRACE( "CThumb - DllMain::DLL_THREAD_DETACH\n" );
+		break;
+	}
+
+	return res;
+}
+
+HRESULT CSageThumbsModule::DllRegisterServer() throw()
 {
 	CHECKPOINT_BEGIN(DllRegisterServer)
 
 	HRESULT hr = CAtlDllModuleT< CSageThumbsModule >::DllRegisterServer( FALSE );
 
-	ATLVERIFY ( RegisterExtensions( GetDesktopWindow() ) );
+	RegisterExtensions( GetDesktopWindow() );
 
 	ATLTRACE ("DllRegisterServer : ");
 	CHECKPOINT(DllRegisterServer)
@@ -188,13 +232,13 @@ HRESULT CSageThumbsModule::DllRegisterServer()
 	return hr;
 }
 
-HRESULT CSageThumbsModule::DllUnregisterServer()
+HRESULT CSageThumbsModule::DllUnregisterServer() throw()
 {
 	CHECKPOINT_BEGIN(DllUnregisterServer)
 
 	HRESULT hr = CAtlDllModuleT< CSageThumbsModule >::DllUnregisterServer( FALSE );
 
-	ATLVERIFY ( UnregisterExtensions() );
+	UnregisterExtensions();
 
 	ATLTRACE ("DllUnregisterServer : ");
 	CHECKPOINT(DllUnregisterServer)
@@ -828,10 +872,6 @@ BOOL CSageThumbsModule::Initialize()
 {
 	ATLTRACE ( "CSageThumbsModule::Initialize ()\n" );
 
-	//DWORD id;
-	//m_hWatchThread = CreateThread( NULL, 0, WatchThread, (LPVOID) this, 0, &id );
-	//Sleep( 0 );
-
 	CHECKPOINT_BEGIN(LoadLibrarySQLite)
 	m_hSQLite = ::LoadLibrary( m_sHome + LIB_SQLITE );
 	if ( ! m_hSQLite )
@@ -976,111 +1016,37 @@ void CSageThumbsModule::UnInitialize ()
 	}
 
 	UnLoadLang ();
-
-	//ATLTRACE (_T("CSageThumbsModule::UnInitialize () -> begin\n"));
-	//if (m_hWatchThread)
-	//{
-	//	HANDLE hWatchEvent = CreateEvent (NULL, TRUE, TRUE, _T("SageThumbsWatch"));
-	//	if (hWatchEvent)
-	//	{
-	//		for (int count = 0;
-	//			(WaitForSingleObject (m_hWatchThread, 100) == WAIT_TIMEOUT) &&
-	//			count < 20; count++)
-	//			SetEvent (hWatchEvent);
-	//		if (WaitForSingleObject (m_hWatchThread, 0) == WAIT_TIMEOUT)
-	//		{
-	//			ATLTRACE (_T("CSageThumbsModule::UnInitialize () -> TerminateThread\n"));
-	//			TerminateThread (m_hWatchThread, 0);
-	//		}
-	//		CloseHandle (m_hWatchThread);
-	//		m_hWatchThread = NULL;
-	//		CloseHandle (hWatchEvent);
-	//	}
-	//}
-	//ATLTRACE (_T("CSageThumbsModule::UnInitialize () -> end\n"));
 }
-
-/*DWORD WINAPI CSageThumbsModule::WatchThread(LPVOID)
-{
-	ATLTRACE( "WatchThread -> begin\n" );
-	HANDLE hWatchEvent = CreateEvent( NULL, TRUE, FALSE, _T("SageThumbsWatch") );
-	if ( hWatchEvent )
-	{
-		WaitForSingleObject( hWatchEvent, INFINITE );
-		CloseHandle( hWatchEvent );
-	}
-	//CoFreeUnusedLibraries();
-	ATLTRACE( "WatchThread -> end\n" );
-	return 0;
-}*/
 
 extern "C" BOOL WINAPI DllMain(HINSTANCE /* hInstance */, DWORD dwReason, LPVOID lpReserved)
 {
-	if ( _Module.DllMain( dwReason, lpReserved ) )
-	{
-		switch ( dwReason )
-		{
-		case DLL_PROCESS_ATTACH:
-			ATLTRACE( "DllMain::DLL_PROCESS_ATTACH\n" );
-			__try
-			{
-				if ( ! _Module.Initialize() )
-					return FALSE;
-			}
-			__except ( EXCEPTION_EXECUTE_HANDLER )
-			{
-				ATLTRACE( "Exception in CSageThumbsModule::Initialize()\n" );
-				return FALSE;
-			}
-			break;
-
-		case DLL_PROCESS_DETACH:
-			ATLTRACE( "DllMain::DLL_PROCESS_DETACH\n" );
-			__try
-			{
-				_Module.UnInitialize();
-			}
-			__except ( EXCEPTION_EXECUTE_HANDLER )
-			{
-				ATLTRACE( "Exception in CSageThumbsModule::UnInitialize()\n" );
-			}
-			break;
-		}
-		return TRUE;
-	}
-	else
-	{
-		ATLTRACE( "Failed CSageThumbsModule::DllMain() call\n" );
-		return FALSE;
-	}
+	return _Module.DllMain( dwReason, lpReserved );
 }
 
 STDAPI DllCanUnloadNow(void)
 {
-	ATLTRACE( "Calling ::DllCanUnloadNow()...\n" );
-
-	return _Module.DllCanUnloadNow();
+	HRESULT hr = _Module.DllCanUnloadNow();
+	ATLTRACE( "CThumb - DllCanUnloadNow() : 0x%08x\n", hr );
+	return hr;
 }
 
 STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv)
 {
-	ATLTRACE( "Calling ::DllGetClassObject()...\n" );
-
-	return _Module.DllGetClassObject(rclsid, riid, ppv);
+	return _Module.DllGetClassObject( rclsid, riid, ppv );
 }
 
 STDAPI DllRegisterServer(void)
 {
-	ATLTRACE( "Calling ::DllRegisterServer()...\n" );
-
-	return _Module.DllRegisterServer();
+	HRESULT hr = _Module.DllRegisterServer();
+	ATLTRACE( "CThumb - DllRegisterServer() : 0x%08x\n", hr );
+	return hr;
 }
 
 STDAPI DllUnregisterServer(void)
 {
-	ATLTRACE( "Calling ::DllUnregisterServer()...\n" );
-
-	return _Module.DllUnregisterServer();
+	HRESULT hr = _Module.DllUnregisterServer();
+	ATLTRACE( "CThumb - DllUnregisterServer() : 0x%08x\n", hr );
+	return hr;
 }
 
 // DllInstall - Adds/Removes entries to the system registry per user per machine.
@@ -1505,8 +1471,7 @@ HRESULT CSageThumbsModule::GetFileInformationE(LPCTSTR filename, GFL_FILE_INFORM
 
 	__try
 	{
-		int index = -1;
-		err = gflGetFileInformationT( filename, index, info );
+		err = gflGetFileInformationT( filename, -1, info );
 		if ( err == GFL_NO_ERROR )
 			hr = S_OK;
 		else
@@ -1790,11 +1755,6 @@ bool CSageThumbsModule::IsGoodFile(LPCTSTR szFilename, Ext* pdata, WIN32_FIND_DA
 		// Bad attributes
 		return false;
 
-	DWORD max_size = GetRegValue( _T("MaxSize"), FILE_MAX_SIZE );
-	if ( max_size && ( pfd->nFileSizeHigh || pfd->nFileSizeLow / ( 1024 * 1024 ) > max_size ) )
-		// Too big file
-		return false;
-
 	return true;
 }
 
@@ -1892,3 +1852,47 @@ BOOL IsKeyExists(HKEY hRoot, LPCTSTR szKey)
 	}
 	return TRUE;
 }
+
+#ifdef ISTREAM_ENABLED
+
+GFL_UINT32 GFLAPI IStreamRead(GFL_HANDLE handle, void* buffer, GFL_UINT32 size) throw()
+{
+	IStream* pStream = (IStream*)handle;
+
+	ULONG read = 0;
+	pStream->Read( buffer, size, &read );
+
+	return read;
+}
+
+GFL_UINT32 GFLAPI IStreamTell(GFL_HANDLE handle) throw()
+{
+	IStream* pStream = (IStream*)handle;
+
+	const LARGE_INTEGER zero = {};
+	ULARGE_INTEGER pos = {};
+	pStream->Seek( zero, STREAM_SEEK_CUR, &pos );
+
+	return pos.LowPart;
+}
+
+GFL_UINT32 GFLAPI IStreamSeek(GFL_HANDLE handle, GFL_INT32 offset, GFL_INT32 origin) throw()
+{
+	IStream* pStream = (IStream*)handle;
+
+	//STREAM_SEEK_SET  0
+	//STREAM_SEEK_CUR  1
+	//STREAM_SEEK_END  2
+
+	//SEEK_SET    0
+	//SEEK_CUR    1
+	//SEEK_END    2
+
+	LARGE_INTEGER to = { offset };
+	ULARGE_INTEGER moved = {};
+	pStream->Seek( to, origin, &moved );
+
+	return moved.LowPart;
+}
+
+#endif // ISTREAM_ENABLED

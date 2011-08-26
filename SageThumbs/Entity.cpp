@@ -24,10 +24,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SQLite.h"
 
 CEntity::CEntity ()
-	: m_FileData	()
-	, m_ImageInfo	()
-	, m_hGflBitmap	( NULL )
-	, m_bInfoLoaded	( false )
+	: m_FileData		()
+	, m_ImageInfo		()
+	, m_hGflBitmap		( NULL )
+	, m_bDatabaseUsed	( false )
+	, m_bInfoLoaded		( false )
 {
 }
 
@@ -37,19 +38,6 @@ CEntity::~CEntity()
 
 	gflFreeFileInformation( &m_ImageInfo );
 }
-
-/*
-STATSTG stat = {};
-hr = pstream->Stat( &stat, STATFLAG_DEFAULT );
-if ( FAILED( hr ) )
-{
-	ATLTRACE( "E_FAIL (Not a real file)\n" );
-	return E_FAIL;
-}
-
-if ( stat.pwcsName )
-CoTaskMemFree( stat.pwcsName );
-*/
 
 HRESULT CEntity::LoadInfo(const CString& sFilename)
 {
@@ -80,7 +68,7 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 	QWORD nCreationTime = MAKEQWORD( m_FileData.ftCreationTime.dwLowDateTime, m_FileData.ftCreationTime.dwHighDateTime );
 	QWORD nFileSize = MAKEQWORD( m_FileData.nFileSizeLow, m_FileData.nFileSizeHigh );
 
-	// Поиск файла в базе данных
+	// Load image information from database
 	bool bFound = false, bNew = false;
 	CDatabase db( _Module.m_sDatabase );
 	if ( db )
@@ -99,11 +87,11 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 		{
 			nPathID = db.GetInt64( _T("PathID") );
 
-			if ( db.Prepare( _T("SELECT FileSize, LastWriteTime, CreationTime, ImageInfo, Width, Height FROM Entities WHERE Filename==? AND PathID==?;") ) &&
+			if ( db.Prepare( _T("SELECT FileSize, LastWriteTime, CreationTime, ImageInfo FROM Entities WHERE Filename==? AND PathID==?;") ) &&
 				 db.Bind( 1, sName ) &&
 				 db.Bind( 2, nPathID ) &&
 				 db.Step() &&
-				 db.GetCount() == 6 )
+				 db.GetCount() == 4 )
 			{
 				// Сличение файла по размеру и дате последней записи
 				if ( (QWORD)db.GetInt64( _T("FileSize") ) == nFileSize &&
@@ -119,7 +107,7 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 						{
 							CopyMemory( &m_ImageInfo, pImageInfo, sizeof( m_ImageInfo ) );
 
-							// Проверка информации
+							// Validate image information
 							bFound =
 								m_ImageInfo.FileSize == nFileSize &&
 								m_ImageInfo.Width &&
@@ -142,7 +130,11 @@ HRESULT CEntity::LoadInfo(const CString& sFilename)
 			bNew = true;
 	}
 
-	if ( ! bFound )
+	if ( bFound )
+	{
+		m_bDatabaseUsed = true;
+	}
+	else
 	{
 		// Удаление устаревших данных о файле
 		if ( db && ! bNew )
@@ -295,6 +287,14 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 	if ( FAILED( hr ) )
 		return hr;
 
+	QWORD max_size = GetRegValue( _T("MaxSize"), FILE_MAX_SIZE );
+	if ( MAKEQWORD( m_FileData.nFileSizeLow, m_FileData.nFileSizeHigh ) > max_size * 1024 * 1024 )
+	{
+		// Too big file
+		ATLTRACE( "CEntity::LoadImage(\"%s\",%d,%d) : E_FAIL (Bitmap too big)\n", (LPCSTR)CT2A( sFilename ), cx, cy );
+		return E_FAIL;
+	}
+
 	ATLTRACE( "CEntity::LoadImage(\"%s\",%d,%d) : Load image ", (LPCSTR)CT2A( sFilename ), cx, cy );
 
 	__int64 nPathID = 0;
@@ -409,6 +409,186 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 	ATLTRACE( "S_OK.\n" );
 	return S_OK;
 }
+
+#ifdef ISTREAM_ENABLED
+
+HRESULT CEntity::LoadInfo(IStream* pStream)
+{
+	if ( m_bInfoLoaded )
+	{
+		ATLTRACE( "CEntity::LoadInfo() : S_FALSE (Already loaded)\n" );
+		return S_OK;
+	}
+
+	CLock oLock( m_pSection );
+
+	if ( m_bInfoLoaded )
+	{
+		ATLTRACE( "CEntity::LoadInfo() : S_FALSE (Already loaded)\n" );
+		return S_OK;
+	}
+
+	// Load file information from stream
+	STATSTG stat = {};
+	if ( SUCCEEDED( pStream->Stat( &stat,  STATFLAG_DEFAULT ) ) && stat.pwcsName )
+	{
+		m_FileData.ftCreationTime = stat.ctime;
+		m_FileData.ftLastAccessTime = stat.atime;
+		m_FileData.ftLastWriteTime = stat.mtime;
+		m_FileData.nFileSizeHigh = stat.cbSize.HighPart;
+		m_FileData.nFileSizeLow = stat.cbSize.LowPart;
+		wcscpy_s( m_FileData.cFileName, stat.pwcsName );
+		if ( stat.pwcsName ) CoTaskMemFree( stat.pwcsName );
+
+		CharLowerBuff( m_FileData.cFileName, (DWORD)wcslen( m_FileData.cFileName ) );
+		QWORD nFileSize = MAKEQWORD( m_FileData.nFileSizeLow, m_FileData.nFileSizeHigh );
+
+		// Load image information from database
+		CDatabase db( _Module.m_sDatabase );
+		if ( db &&
+			 db.Prepare( _T("SELECT ImageInfo FROM Entities WHERE Filename==? AND FileSize==? AND LastWriteTime==? AND CreationTime==?;") ) &&
+			 db.Bind( 1, m_FileData.cFileName ) &&
+			 db.Bind( 2, (__int64)nFileSize ) &&
+			 db.Bind( 3, (__int64)MAKEQWORD( m_FileData.ftLastWriteTime.dwLowDateTime, m_FileData.ftLastWriteTime.dwHighDateTime ) ) &&
+			 db.Bind( 4, (__int64)MAKEQWORD( m_FileData.ftCreationTime.dwLowDateTime, m_FileData.ftCreationTime.dwHighDateTime ) ) &&
+			 db.Step() &&
+			 db.GetCount() == 1 )
+		{
+			int nImageInfoSize = 0;
+			if ( LPCVOID pImageInfo = db.GetBlob( _T("ImageInfo"), &nImageInfoSize ) )
+			{
+				if ( nImageInfoSize == sizeof( m_ImageInfo ) )
+				{
+					CopyMemory( &m_ImageInfo, pImageInfo, sizeof( m_ImageInfo ) );
+
+					// Validate image information
+					if ( m_ImageInfo.FileSize == nFileSize &&
+						 m_ImageInfo.Width &&
+						 m_ImageInfo.Height &&
+						 m_ImageInfo.ComponentsPerPixel &&
+						 m_ImageInfo.BitsPerComponent &&
+						 m_ImageInfo.FormatName[ 0 ] )
+					{
+						m_bDatabaseUsed = true;
+						m_bInfoLoaded = true;
+
+						ATLTRACE( "CEntity::LoadInfo(\"%s\") : S_OK (from database %dx%d)\n", (LPCSTR)CT2A( m_FileData.cFileName ), m_ImageInfo.Width, m_ImageInfo.Height );
+						return S_OK;
+					}
+				}
+			}
+		}
+	}
+
+	GFL_LOAD_CALLBACKS calls = { IStreamRead, IStreamTell, IStreamSeek };
+	const LARGE_INTEGER zero = {};
+	pStream->Seek( zero, STREAM_SEEK_SET, NULL );
+	GFL_ERROR res = gflGetFileInformationFromHandle( (GFL_HANDLE)pStream, -1, &calls, &m_ImageInfo );
+	if ( res != GFL_NO_ERROR )
+	{
+		ATLTRACE( "CEntity::LoadInfo(\"%s\") : E_FAIL (GFL error %d)\n", (LPCSTR)CT2A( m_FileData.cFileName ), res);
+		return E_FAIL;
+	}
+
+	m_bInfoLoaded = true;
+
+	ATLTRACE( "CEntity::LoadInfo(\"%s\") : S_OK (from stream %dx%d)\n", (LPCSTR)CT2A( m_FileData.cFileName ), m_ImageInfo.Width, m_ImageInfo.Height );
+	return S_OK;
+}
+
+HRESULT CEntity::LoadImage(IStream* pStream, UINT cx, UINT cy)
+{
+	if ( m_hGflBitmap )
+	{
+		ATLTRACE( "CEntity::LoadImage(%ux%u) : S_FALSE (Already loaded)\n", cx, cy );
+		return S_FALSE;
+	}
+
+	HRESULT hr = LoadInfo( pStream );
+	if ( FAILED( hr ) )
+		return hr;
+
+	if ( m_bDatabaseUsed )
+	{
+		QWORD nFileSize = MAKEQWORD( m_FileData.nFileSizeLow, m_FileData.nFileSizeHigh );
+
+		// Load image from database
+		CDatabase db( _Module.m_sDatabase );
+		if ( db &&
+			db.Prepare( _T("SELECT Image, Width, Height FROM Entities WHERE Filename==? AND FileSize==? AND LastWriteTime==? AND CreationTime==?;") ) &&
+			db.Bind( 1, m_FileData.cFileName ) &&
+			db.Bind( 2, (__int64)nFileSize ) &&
+			db.Bind( 3, (__int64)MAKEQWORD( m_FileData.ftLastWriteTime.dwLowDateTime, m_FileData.ftLastWriteTime.dwHighDateTime ) ) &&
+			db.Bind( 4, (__int64)MAKEQWORD( m_FileData.ftCreationTime.dwLowDateTime, m_FileData.ftCreationTime.dwHighDateTime ) ) &&
+			db.Step() &&
+			db.GetCount() == 3 )
+		{
+			// Test image dimensions
+			int dx = db.GetInt32( _T("Width") );
+			int dy = db.GetInt32( _T("Height") );
+			if ( ( dx >= (int)cx ) ||
+				 ( dy >= (int)cy ) ||
+				 ( m_ImageInfo.Width == dx && m_ImageInfo.Height <= dy ) ||
+				 ( m_ImageInfo.Width <= dx && m_ImageInfo.Height == dy ) )
+			{
+				// Good image
+				int nImageSize = 0;
+				if ( LPCVOID pImage = db.GetBlob( _T("Image"), &nImageSize ) )
+				{
+					_Module.LoadBitmapFromMemory( pImage, nImageSize, &m_hGflBitmap );
+					if ( m_hGflBitmap )
+					{
+						ATLTRACE( "CEntity::LoadImage(%ux%u) : S_OK (from database %d bytes %dx%d)\n", cx, cy, nImageSize, m_hGflBitmap->Width, m_hGflBitmap->Height );
+						return S_OK;
+					}
+				}
+			}
+		}
+	}
+
+	GFL_LOAD_PARAMS params;
+	gflGetDefaultThumbnailParams( &params );
+	if ( LPCTSTR szExt = PathFindExtension( m_FileData.cFileName ) )
+	{
+		if ( *szExt == _T('.') )
+		{
+			params.FormatIndex = gflGetFormatIndexByName( (LPCSTR)CT2A( &szExt[ 1 ] ) );
+		}
+	}
+	params.Flags =
+		GFL_LOAD_ONLY_FIRST_FRAME |
+		GFL_LOAD_HIGH_QUALITY_THUMBNAIL |
+		( ( ::GetRegValue( _T("UseEmbedded"), 0ul ) != 0 ) ? GFL_LOAD_EMBEDDED_THUMBNAIL : 0 ) |
+		GFL_LOAD_PREVIEW_NO_CANVAS_RESIZE;
+	params.ColorModel = GFL_RGBA;
+	params.Callbacks.Read = IStreamRead;
+	params.Callbacks.Tell = IStreamTell;
+	params.Callbacks.Seek = IStreamSeek;
+	const LARGE_INTEGER zero = {};
+	pStream->Seek( zero, STREAM_SEEK_SET, NULL );
+	GFL_ERROR err = gflLoadThumbnailFromHandle( (GFL_HANDLE)pStream, cx, cy, &m_hGflBitmap, &params, NULL );
+	if ( err == GFL_ERROR_FILE_READ )
+	{
+		params.Flags |= GFL_LOAD_IGNORE_READ_ERROR;
+		pStream->Seek( zero, STREAM_SEEK_SET, NULL );
+		err = gflLoadThumbnailFromHandle( (GFL_HANDLE)pStream, cx, cy, &m_hGflBitmap, &params, NULL );
+	}
+	if ( err != GFL_NO_ERROR )
+	{
+		ATLTRACE( "CEntity::LoadImage(%ux%u) : E_FAIL (GFL error %d)\n", cx, cy, err );
+		return E_FAIL;
+	}
+
+	if ( m_hGflBitmap->Type != GFL_RGBA )
+	{
+		gflChangeColorDepth( m_hGflBitmap, NULL, GFL_MODE_TO_RGBA, GFL_MODE_ADAPTIVE );
+	}
+
+	ATLTRACE( "CEntity::LoadImage(%ux%u) : S_OK (from stream)\n", cx, cy );
+	return S_OK;
+}
+
+#endif // ISTREAM_ENABLED
 
 HBITMAP CEntity::GetImage(UINT cx, UINT cy)
 {

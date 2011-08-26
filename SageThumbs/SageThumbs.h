@@ -21,6 +21,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #pragma once
 
 // #define GFL_THREAD_SAFE	// When enabled GFL calls guarded by critical section
+// #define ISTREAM_ENABLED	// Enable support for IInitializeWithStream interface
 
 #define LIB_GFL				"libgfl340.dll"	// Name of GFL library (case sensitive)
 #define LIB_GFLE			"libgfle340.dll"// Name of GFLe library (case sensitive)
@@ -40,6 +41,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 // Disabled by default
 #define EXT_DEFAULT(ext) \
 	((ext)==_T("ico")|| \
+	 (ext)==_T("icl")|| \
 	 (ext)==_T("ani")|| \
 	 (ext)==_T("cur")|| \
 	 (ext)==_T("pdf")|| \
@@ -115,8 +117,9 @@ public:
 	CString					m_sDatabase;			// Database filename
 	CExtMap					m_oExtMap;				// Supported image extensions
 
-	HRESULT DllRegisterServer();
-	HRESULT DllUnregisterServer();
+	BOOL DllMain(DWORD dwReason, LPVOID lpReserved) throw();
+	HRESULT DllRegisterServer() throw();
+	HRESULT DllUnregisterServer() throw();
 
 	BOOL Initialize();
 	void UnInitialize();
@@ -165,9 +168,7 @@ protected:
 	HMODULE					m_hSQLite;
 	HINSTANCE				m_hLangDLL;
 	LANGID					m_CurLangID;
-//	HANDLE					m_hWatchThread;
 
-//	static DWORD WINAPI WatchThread (LPVOID param);
 	void UnLoadLang ();
 	BOOL LoadLangIDDLL(LANGID LangID);
 
@@ -237,11 +238,18 @@ CString GetContentType(LPCTSTR szExt);
 
 BOOL IsKeyExists(HKEY hRoot, LPCTSTR szKey);
 
+// GFL callback functions for IStream handle
+#ifdef ISTREAM_ENABLED
+GFL_UINT32 GFLAPI IStreamRead(GFL_HANDLE handle, void* buffer, GFL_UINT32 size) throw();
+GFL_UINT32 GFLAPI IStreamTell(GFL_HANDLE handle) throw();
+GFL_UINT32 GFLAPI IStreamSeek(GFL_HANDLE handle, GFL_INT32 offset, GFL_INT32 origin) throw();
+#endif // ISTREAM_ENABLED
+
 // Ёкспортируемые функции
-STDAPI DllCanUnloadNow (void);
-STDAPI DllGetClassObject (REFCLSID rclsid, REFIID riid, LPVOID* ppv);
-STDAPI DllRegisterServer (void);
-STDAPI DllUnregisterServer (void);
+STDAPI DllCanUnloadNow(void);
+STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv);
+STDAPI DllRegisterServer(void);
+STDAPI DllUnregisterServer(void);
 STDAPI DllInstall(BOOL bInstall, LPCWSTR pszCmdLine);
 void CALLBACK Options (HWND hwnd, HINSTANCE hinst = NULL, LPSTR lpszCmdLine = NULL, int nCmdShow = 0);
 LONG APIENTRY CPlApplet (HWND hwnd, UINT uMsg, LPARAM lParam1, LPARAM lParam2);

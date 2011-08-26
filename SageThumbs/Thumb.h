@@ -114,11 +114,14 @@ class ATL_NO_VTABLE CThumb :
 	public CComObjectRootEx< CComMultiThreadModel >,
 	public CComCoClass< CThumb, &CLSID_Thumb >,
 	public IObjectSafetyImpl< CThumb, INTERFACESAFE_FOR_UNTRUSTED_CALLER | INTERFACESAFE_FOR_UNTRUSTED_DATA >,
+	public IExternalConnectionImpl< CThumb >,
 	public IShellExtInit,
 	public IContextMenu3,
 	public IPersistFile,
 //	public IParentAndItem,
-//	public IInitializeWithStream,
+#ifdef ISTREAM_ENABLED
+	public IInitializeWithStream,
+#endif // ISTREAM_ENABLED
 	public IInitializeWithItem,
 	public IInitializeWithFile,
 	public IThumbnailProvider,
@@ -150,6 +153,7 @@ public:
 
 	BEGIN_COM_MAP(CThumb)
 		COM_INTERFACE_ENTRY(IObjectSafety)
+		COM_INTERFACE_ENTRY(IExternalConnection)
 		COM_INTERFACE_ENTRY(IShellExtInit)
 		COM_INTERFACE_ENTRY(IContextMenu3)
 		COM_INTERFACE_ENTRY(IContextMenu2)
@@ -157,7 +161,9 @@ public:
 		COM_INTERFACE_ENTRY(IPersist)
 		COM_INTERFACE_ENTRY(IPersistFile)
 //		COM_INTERFACE_ENTRY(IParentAndItem)
-//		COM_INTERFACE_ENTRY(IInitializeWithStream)
+#ifdef ISTREAM_ENABLED
+		COM_INTERFACE_ENTRY(IInitializeWithStream)
+#endif // ISTREAM_ENABLED
 		COM_INTERFACE_ENTRY(IInitializeWithItem)
 		COM_INTERFACE_ENTRY(IInitializeWithFile)
 		COM_INTERFACE_ENTRY(IThumbnailProvider)
@@ -190,8 +196,12 @@ public:
 
 	HRESULT FinalConstruct();
 	void FinalRelease();
+	
+	void OnAddConnection(bool /*bThisIsFirstLock*/)
+	{
+		ATLTRACE( "CTumbs - IExternalConnection::AddConnection()\n" );
+	}
 
-public:
 // IShellExtInit
 	STDMETHOD(Initialize)(LPCITEMIDLIST, LPDATAOBJECT pDO, HKEY);
 
@@ -225,9 +235,11 @@ public:
 	//	/* [out] */ __RPC__deref_out_opt PITEMID_CHILD *ppidlChild);
 
 // IInitializeWithStream
-	//STDMETHOD(Initialize)( 
-	//	/* [in] */ IStream *pstream,
-	//	/* [in] */ DWORD grfMode);
+#ifdef ISTREAM_ENABLED
+	STDMETHOD(Initialize)( 
+		/* [in] */ IStream *pstream,
+		/* [in] */ DWORD grfMode);
+#endif // ISTREAM_ENABLED
 
 // IInitializeWithItem
 	STDMETHOD(Initialize)( 
@@ -479,8 +491,11 @@ protected:
 	CComPtr< IUnknown >				m_pSite;			// Хэндлер хоста IObjectWithSite
 //	CComPtr< IImageDecodeEventSink >m_pEventSink;		// Хэндлер событий IImageDecodeFilter
 
-//	CComPtr< IStream >				m_pStream;			// Стрим файла
-	CString							m_sFilename;		// Имя файла
+#ifdef ISTREAM_ENABLED
+	CComPtr< IStream >				m_pStream;			// Стрим файла
+#endif ISTREAM_ENABLED
+
+	CString							m_sFilename;		// Full file name 
 	BOOL							m_bCleanup;		// Флаг пропуска очистки
 
 	void ConvertTo(HWND hWnd, int ext);			// Конвертирование в нужное расширение

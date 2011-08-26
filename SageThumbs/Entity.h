@@ -32,6 +32,11 @@ public:
 	// Загрузка превьюшки из базы или из файла
 	HRESULT LoadImage(const CString& sFilename, UINT cx, UINT cy);
 
+#ifdef ISTREAM_ENABLED
+	HRESULT LoadInfo(IStream* pStream);
+	HRESULT LoadImage(IStream* pStream, UINT cx, UINT cy);
+#endif // ISTREAM_ENABLED
+
 	// Получение битмэпа
 	HBITMAP GetImage(UINT cx, UINT cy);
 
@@ -43,6 +48,11 @@ public:
 		return ( m_hGflBitmap != NULL );
 	}
 
+	inline bool IsInfoAvailable() const
+	{
+		return m_bInfoLoaded;
+	}
+
 	inline UINT Width() const
 	{
 		return m_hGflBitmap ? m_hGflBitmap->Width : 0;
@@ -51,6 +61,46 @@ public:
 	inline UINT Height() const
 	{
 		return m_hGflBitmap ? m_hGflBitmap->Height : 0;
+	}
+
+	inline UINT ImageWidth() const
+	{
+		return m_ImageInfo.Width;
+	}
+
+	inline UINT ImageHeight() const
+	{
+		return m_ImageInfo.Height;
+	}
+
+	inline UINT ImageXdpi() const
+	{
+		return m_ImageInfo.Xdpi;
+	}
+
+	inline UINT ImageYdpi() const
+	{
+		return m_ImageInfo.Ydpi;
+	}
+
+	inline UINT ImageBitDepth() const
+	{
+		return m_ImageInfo.ComponentsPerPixel * m_ImageInfo.BitsPerComponent;
+	}
+
+	inline CString ImageDescription() const
+	{
+		return (LPCTSTR)CA2T( m_ImageInfo.Description );
+	}
+
+	inline GFL_COMPRESSION ImageCompression() const
+	{
+		return m_ImageInfo.Compression;
+	}
+
+	inline CString ImageCompressionDescription() const
+	{
+		return (LPCTSTR)CA2T( m_ImageInfo.CompressionDescription );
 	}
 
 	inline void GetLastWriteTime(FILETIME* pDateStamp) const
@@ -65,11 +115,11 @@ public:
 	// Расчёт размеров изображения исходя из заданных размеров подложки
 	void CalcSize(UINT& tx, UINT& ty, UINT width, UINT height);
 
-	WIN32_FIND_DATA			m_FileData;			// Данные о файле на диске
-	GFL_FILE_INFORMATION	m_ImageInfo;		// Информация о изображении
-
 protected:
-	volatile bool			m_bInfoLoaded;		// Image info loaded successfuly
-	GFL_BITMAP*				m_hGflBitmap;		// Загруженный эскиз (NULL - не загружен)
+	GFL_FILE_INFORMATION	m_ImageInfo;		// Image info
+	WIN32_FIND_DATA			m_FileData;			// Image file info
+	volatile bool			m_bDatabaseUsed;	// Image info loaded from database
+	volatile bool			m_bInfoLoaded;		// Image info loaded successfully
+	GFL_BITMAP*				m_hGflBitmap;		// Loaded thumbnail
 	CComAutoCriticalSection m_pSection;
 };

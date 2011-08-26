@@ -36,6 +36,8 @@ CThumb::CThumb() :
 
 HRESULT CThumb::FinalConstruct()
 {
+	ATLTRACE( "CThumb - FinalConstruct()\n" );
+
 	return CoCreateFreeThreadedMarshaler( GetControllingUnknown(), &m_pUnkMarshaler.p );
 }
 
@@ -45,29 +47,31 @@ void CThumb::FinalRelease()
 
 	m_sFilename.Empty();
 
-//	m_pStream.Release();
+#ifdef ISTREAM_ENABLED
+	m_pStream.Release();
+#endif // ISTREAM_ENABLED
 
 	m_pSite.Release();
 
 	m_pUnkMarshaler.Release();
+
+	ATLTRACE( "CThumb - FinalRelease()\n" );
 }
 
 // IShellExtInit
 
 STDMETHODIMP CThumb::Initialize(LPCITEMIDLIST, IDataObject* pDO, HKEY)
 {
-	ATLTRACE( "0x%08x::IShellExtInit::Initialize() : ", this );
+	if ( ! pDO )
+	{
+		ATLTRACE( "CThumb - IShellExtInit::Initialize() : E_INVALIDARG (No data)\n" );
+		return E_INVALIDARG;
+	}
 
 	bool bEnableMenu = GetRegValue( _T("EnableMenu"), 1ul ) != 0;
 	if ( ! bEnableMenu )
 	{
-		ATLTRACE( "E_INVALIDARG (Menu disabled)\n" );
-		return E_INVALIDARG;
-	}
-
-	if ( ! pDO )
-	{
-		ATLTRACE( "E_INVALIDARG (No data)\n" );
+		ATLTRACE( "CThumb - IShellExtInit::Initialize() : E_INVALIDARG (Menu disabled)\n" );
 		return E_INVALIDARG;
 	}
 
@@ -77,7 +81,7 @@ STDMETHODIMP CThumb::Initialize(LPCITEMIDLIST, IDataObject* pDO, HKEY)
 	HRESULT hr = pDO->GetData( &fe, &med );
 	if ( FAILED( hr ) )
 	{
-		ATLTRACE( "E_INVALIDARG (No data)\n" );
+		ATLTRACE( "CThumb - IShellExtInit::Initialize() : E_INVALIDARG (No data)\n" );
 		return E_INVALIDARG;
 	}
 
@@ -85,7 +89,7 @@ STDMETHODIMP CThumb::Initialize(LPCITEMIDLIST, IDataObject* pDO, HKEY)
     if ( ! hDrop )
 	{
 		ReleaseStgMedium (&med);
-		ATLTRACE( "E_INVALIDARG (No data)\n" );
+		ATLTRACE( "CThumb - IShellExtInit::Initialize() : E_INVALIDARG (No data)\n" );
 		return E_INVALIDARG;
 	}
 
@@ -103,18 +107,21 @@ STDMETHODIMP CThumb::Initialize(LPCITEMIDLIST, IDataObject* pDO, HKEY)
 		{
 			m_Filenames.AddTail( filename );
 		}
+		else
+		{
+			ATLTRACE( "CThumb - IShellExtInit::Initialize() : Ignored file \"%s\"\n", (LPCSTR)CT2A( filename ) );
+		}
 	}
     GlobalUnlock( med.hGlobal );
 	ReleaseStgMedium( &med );
 
 	if ( m_Filenames.IsEmpty() )
 	{
-		ATLTRACE( "E_INVALIDARG (No files selected)\n" );
+		ATLTRACE( "CThumb - IShellExtInit::Initialize() : E_INVALIDARG (No files selected)\n" );
 		return E_INVALIDARG;
 	}
 
-	ATLTRACE( "S_OK (%d, \"%s\")\n", m_Filenames.GetCount(), (LPCSTR)CT2A( m_Filenames.GetHead() ) );
-
+	ATLTRACE( "CThumb - IShellExtInit::Initialize() : S_OK (%d files, first: \"%s\")\n", m_Filenames.GetCount(), (LPCSTR)CT2A( m_Filenames.GetHead() ) );
 	return S_OK;
 }
 
@@ -137,20 +144,27 @@ STDMETHODIMP CThumb::Initialize(LPCITEMIDLIST, IDataObject* pDO, HKEY)
 
 STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst, UINT uidCmdLast, UINT uFlags)
 {
-	ATLTRACE( "0x%08x::IContextMenu::QueryContextMenu (hmenu=0x%08x, index=%d, first=%d, last=%d, flags=0x%08x)\n", this, hMenu, uIndex, uidCmdFirst, uidCmdLast, uFlags);
+	// If the flags include CMF_DEFAULTONLY then we shouldn't do anything.
+	if ( uFlags & CMF_DEFAULTONLY )
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : S_OK (Bypass)\n" );
+		return MAKE_HRESULT( SEVERITY_SUCCESS, FACILITY_NULL, 0 );
+	}
 
 	bool bEnableMenu = GetRegValue( _T("EnableMenu"), 1ul ) != 0;
 	if ( ! bEnableMenu )
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Menu disabled)\n" );
 		// Меню выключено
 		return E_FAIL;
-
-	// If the flags include CMF_DEFAULTONLY then we shouldn't do anything.
-	if ( uFlags & CMF_DEFAULTONLY )
-		return MAKE_HRESULT( SEVERITY_SUCCESS, FACILITY_NULL, 0 );
+	}
 
 	// Проверка на нехватку идентификаторов
 	if ( uidCmdFirst + ID_END_ITEM > uidCmdLast )
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (No free IDs)\n" );
 		return E_FAIL;
+	}
 
 	bool bSingleFile = ( m_Filenames.GetCount () == 1 );
 
@@ -170,9 +184,15 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 		tmp.LoadString (IDS_CLIPBOARD);
 		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 			uidCmdFirst + ID_CLIPBOARD_ITEM, tmp))
+		{
+			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 			return E_FAIL;
+		}
 		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
+		{
+			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 			return E_FAIL;
+		}
 	}
 
 	// Wallpaper operation items
@@ -181,67 +201,114 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 		tmp.LoadString (IDS_WALLPAPER_STRETCH);
 		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 			uidCmdFirst + ID_WALLPAPER_STRETCH_ITEM, tmp))
+		{
+			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 			return E_FAIL;
+		}
 		tmp.LoadString (IDS_WALLPAPER_TILE);
 		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 			uidCmdFirst + ID_WALLPAPER_TILE_ITEM, tmp))
+		{
+			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 			return E_FAIL;
+		}
 		tmp.LoadString (IDS_WALLPAPER_CENTER);
 		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 			uidCmdFirst + ID_WALLPAPER_CENTER_ITEM, tmp))
+		{
+			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 			return E_FAIL;
+		}
 		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
+		{
+			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 			return E_FAIL;
+		}
 	}
 
 	tmp.LoadString (IDS_MAIL_IMAGE);
 	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 		uidCmdFirst + ID_MAIL_IMAGE_ITEM, tmp))
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
+	}
 	tmp.LoadString (IDS_MAIL_THUMBNAIL);
 	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 		uidCmdFirst + ID_MAIL_THUMBNAIL_ITEM, tmp))
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
+	}
 	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
+	}
 
 	tmp.LoadString (IDS_CONVERT_JPG);
 	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 		uidCmdFirst + ID_CONVERT_JPG_ITEM, tmp))
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
+	}
 	tmp.LoadString (IDS_CONVERT_GIF);
 	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 		uidCmdFirst + ID_CONVERT_GIF_ITEM, tmp))
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
+	}
 	tmp.LoadString (IDS_CONVERT_BMP);
 	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 		uidCmdFirst + ID_CONVERT_BMP_ITEM, tmp))
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
+	}
 	tmp.LoadString (IDS_CONVERT_PNG);
 	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 		uidCmdFirst + ID_CONVERT_PNG_ITEM, tmp))
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
+	}
 	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
+	}
 
 	tmp.LoadString (IDS_OPTIONS);
 	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
 		uidCmdFirst + ID_OPTIONS_ITEM, tmp))
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
+	}
 
 	// Creating main menu items
 	if ( ! InsertMenu( hMenu, uIndex++, MF_BYPOSITION | MF_SEPARATOR, 0, 0 ) )
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu separator)\n" );
 		return E_FAIL;
+	}
 
 	// Preview menu item
 	if ( bSingleFile )
 	{
 		// Загрузка файла
-		if ( SUCCEEDED( m_Preview.LoadImage( m_Filenames.GetHead(), m_cx, m_cy ) ) )
+		m_Preview.LoadImage( m_Filenames.GetHead(), m_cx, m_cy );
+
+		if ( m_Preview )
 		{
 			if ( ! InsertMenu( hSubMenu, 0, MF_BYPOSITION | MF_OWNERDRAW,
 				uidCmdFirst + ID_THUMBNAIL_ITEM, 0 ) )
+			{
+				ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert image menu item)\n" );
 				return E_FAIL;
+			}
 		}
 	}
 
@@ -255,14 +322,19 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 	mii.cch = (UINT)tmp.GetLength();
 	mii.hbmpItem = (HBITMAP)LoadImage( _AtlBaseModule.GetResourceInstance(),
 		MAKEINTRESOURCE( IDR_SAGETHUMBS ), IMAGE_BITMAP, 16, 16, LR_SHARED );
-
 	if ( ! InsertMenuItem ( hMenu, uIndex++, TRUE, &mii ) )
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert main menu)\n" );
 		return E_FAIL;
+	}
 
-	if ( ! InsertMenu (hMenu, uIndex++, MF_BYPOSITION | MF_SEPARATOR, 0, 0 ) )
+	if ( ! InsertMenu ( hMenu, uIndex++, MF_BYPOSITION | MF_SEPARATOR, 0, 0 ) )
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu separator)\n" );
 		return E_FAIL;
+	}
 
-	// Tell the shell we added top-level menu items
+	ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : S_OK\n" );
 	return MAKE_HRESULT (SEVERITY_SUCCESS, FACILITY_NULL, ID_END_ITEM);
 }
 
@@ -899,29 +971,38 @@ STDMETHODIMP CThumb::GetCurFile(LPOLESTR*)
 
 // IInitializeWithStream
 
-//STDMETHODIMP CThumb::Initialize( 
-//	/* [in] */ IStream * pstream,
-//	/* [in] */ DWORD /*grfMode*/)
-//{
-//	ATLTRACE( "0x%08x::IInitializeWithStream::Initialize(0x%08x) : ", this, pstream );
-//
-//	if ( ! pstream )
-//	{
-//		ATLTRACE( "E_POINTER\n" );
-//		return E_POINTER;
-//	}
-//
-//	m_pStream = pstream;
-//
-//	ATLTRACE( "E_NOTIMPL\n" );
-//
-//	return E_NOTIMPL;
-//}
+#ifdef ISTREAM_ENABLED
+STDMETHODIMP CThumb::Initialize( 
+	/* [in] */ IStream * pstream,
+	/* [in] */ DWORD /*grfMode*/)
+{
+	if ( ! pstream )
+	{
+		ATLTRACE( "CThumb - IInitializeWithStream::Initialize() : E_POINTER\n" );
+		return E_POINTER;
+	}
+
+	TCHAR szPath[ MAX_PATH ];
+	GetModuleFileName( NULL, szPath, MAX_PATH );
+	ATLTRACE( "CThumb - IInitializeWithStream::Initialize() : We are inside \"%s\"\n", (LPCSTR)CT2A( szPath ) );
+
+	LPCTSTR szFilename = PathFindFileName( szPath );
+	//if ( _tcsicmp( szFilename, _T("dllhost.exe") ) == 0 )
+	{
+		m_pStream = pstream;
+		ATLTRACE( "CThumb - IInitializeWithStream::Initialize() : S_OK\n" );
+		return S_OK;
+	}
+
+	ATLTRACE( "CThumb - IInitializeWithStream::Initialize() : E_NOTIMPL\n" );
+	return E_NOTIMPL;
+}
+#endif // ISTREAM_ENABLED
 
 // IInitializeWithItem
 
 STDMETHODIMP CThumb::Initialize( 
-  /* [in] */ __RPC__in_opt IShellItem * psi,
+  /* [in] */ __RPC__in_opt IShellItem* psi,
   /* [in] */ DWORD /* grfMode */)
 {
 	if ( ! psi  )
@@ -930,36 +1011,48 @@ STDMETHODIMP CThumb::Initialize(
 		return E_POINTER;
 	}
 
-	LPWSTR pszFilePath = NULL;
-	HRESULT hr = psi->GetDisplayName( SIGDN_FILESYSPATH, &pszFilePath );
+	LPWSTR wszFile = NULL;
+	HRESULT hr = psi->GetDisplayName( SIGDN_FILESYSPATH, &wszFile );
 	if ( FAILED( hr ) )
 	{
 		ATLTRACE( "CThumb - IInitializeWithItem::Initialize() : E_FAIL (Unknown path)\n" );
 		return E_FAIL;
 	}
 
-	m_sFilename = pszFilePath;
+	if ( ! _Module.IsGoodFile( (LPCTSTR)CW2T( wszFile ) ) )
+	{
+		ATLTRACE( "0x%08x::IInitializeWithItem::Initialize(\"%s\") : E_FAIL (Bad File)\n", this, (LPCSTR)CW2A( wszFile ) );
+		return E_FAIL;
+	}
 
-	ATLTRACE( "CThumb - IInitializeWithItem::Initialize(\"%s\") : S_OK\n", (LPCSTR)CW2A( pszFilePath ) );
-	CoTaskMemFree( pszFilePath );
+	m_sFilename = wszFile;
+
+	ATLTRACE( "CThumb - IInitializeWithItem::Initialize(\"%s\") : S_OK\n", (LPCSTR)CW2A( wszFile ) );
+	CoTaskMemFree( wszFile );
 	return S_OK;
 }
 
 // IInitializeWithFile
 
 STDMETHODIMP CThumb::Initialize(
-	/* [in] */ LPCWSTR pszFilePath,
+	/* [in] */ LPCWSTR wszFile,
 	/* [in] */ DWORD /* grfMode */)
 {
-	if ( ! pszFilePath  )
+	if ( ! wszFile  )
 	{
 		ATLTRACE( "0x%08x::IInitializeWithFile::Initialize() : E_POINTER\n", this );
 		return E_POINTER;
 	}
 
-	m_sFilename = pszFilePath;
+	if ( ! _Module.IsGoodFile( (LPCTSTR)CW2T( wszFile ) ) )
+	{
+		ATLTRACE( "0x%08x::IInitializeWithFile::Initialize(\"%s\") : E_FAIL (Bad File)\n", this, (LPCSTR)CW2A( wszFile ) );
+		return E_FAIL;
+	}
 
-	ATLTRACE( "0x%08x::IInitializeWithFile::Initialize(\"%s\") : S_OK\n", this, (LPCSTR)CW2A( pszFilePath ) );
+	m_sFilename = wszFile;
+
+	ATLTRACE( "0x%08x::IInitializeWithFile::Initialize(\"%s\") : S_OK\n", this, (LPCSTR)CW2A( wszFile ) );
 	return S_OK;
 }
 
@@ -974,6 +1067,9 @@ STDMETHODIMP CThumb::GetThumbnail(UINT cx, HBITMAP *phbmp, WTS_ALPHATYPE *pdwAlp
 	}
 	*phbmp = NULL;
 
+	if ( pdwAlpha )
+		*pdwAlpha = WTSAT_UNKNOWN;
+
 	if ( ! GetRegValue( _T("EnableThumbs"), 1ul ) )
 	{
 		ATLTRACE( "CThumb - IThumbnailProvider::GetThumbnail(%d) : E_FAIL (Disabled)\n", cx );
@@ -986,10 +1082,12 @@ STDMETHODIMP CThumb::GetThumbnail(UINT cx, HBITMAP *phbmp, WTS_ALPHATYPE *pdwAlp
 		{
 			m_Preview.LoadImage( m_sFilename, cx, cx );
 		}
-		//else if ( ! m_pStream )
-		//{
-		//	hr = m_Preview.LoadImage( m_pStream );
-		//}
+#ifdef ISTREAM_ENABLED
+		else if ( m_pStream )
+		{
+			m_Preview.LoadImage( m_pStream, cx, cx );
+		}
+#endif // ISTREAM_ENABLED
 	}
 
 	*phbmp = m_Preview.GetImage( cx, cx );
@@ -998,9 +1096,6 @@ STDMETHODIMP CThumb::GetThumbnail(UINT cx, HBITMAP *phbmp, WTS_ALPHATYPE *pdwAlp
 		ATLTRACE( "CThumb - IThumbnailProvider::GetThumbnail(%d) : E_FAIL (Load failed)\n", cx );
 		return E_FAIL;
 	}
-
-	if ( pdwAlpha )
-		*pdwAlpha = WTSAT_UNKNOWN;
 
 #ifdef _DEBUG
 	BITMAP bm = {};
@@ -1090,104 +1185,117 @@ STDMETHODIMP CThumb::GetValue(
 	ATLTRACE( "CThumb - IPropertyStore::GetValue(\"%s\") : S_OK\n", (LPCSTR)sPropName );
 #endif
 
-	if ( SUCCEEDED( m_Preview.LoadInfo( m_sFilename ) ) )
+	if ( ! m_sFilename.IsEmpty() )
 	{
-		if ( IsEqualPropertyKey( key, PKEY_ItemTypeText ) ||
-			 IsEqualPropertyKey( key, PKEY_FileDescription ) )
+		m_Preview.LoadInfo( m_sFilename );
+	}
+#ifdef ISTREAM_ENABLED
+	else if ( m_pStream )
+	{
+		m_Preview.LoadInfo( m_pStream );
+	}
+#endif // ISTREAM_ENABLED
+
+	if ( ! m_Preview.IsInfoAvailable() )
+	{
+		ATLTRACE( "CThumb - IPropertyStore::GetValue() : S_OK (No info)\n" );
+		return S_OK;
+	}
+
+	if ( IsEqualPropertyKey( key, PKEY_ItemTypeText ) ||
+			IsEqualPropertyKey( key, PKEY_FileDescription ) )
+	{
+		pv->vt = VT_BSTR;
+		pv->bstrVal = m_Preview.ImageDescription().AllocSysString();
+	}
+	else if ( IsEqualPropertyKey( key, PKEY_DRM_IsProtected ) )
+	{
+		pv->vt = VT_BOOL;
+		pv->boolVal = VARIANT_FALSE;
+	}
+	else if ( IsEqualPropertyKey( key, PKEY_Image_Dimensions ) )
+	{
+		CString sDimensions;
+		sDimensions.Format( _T("%d x %d"), m_Preview.ImageWidth(), m_Preview.ImageHeight() );
+		pv->vt = VT_BSTR;
+		pv->bstrVal = sDimensions.AllocSysString();
+	}
+	else if ( IsEqualPropertyKey( key, PKEY_Image_HorizontalSize ) )
+	{
+		pv->vt = VT_UI4;
+		pv->ulVal = m_Preview.ImageWidth();
+	}
+	else if ( IsEqualPropertyKey( key, PKEY_Image_VerticalSize ) )
+	{
+		pv->vt = VT_UI4;
+		pv->ulVal = m_Preview.ImageHeight();
+	}
+	else if ( IsEqualPropertyKey( key, PKEY_Image_ResolutionUnit ) )
+	{
+		pv->vt = VT_I2;
+		pv->iVal = 2;	// inches
+	}
+	else if ( IsEqualPropertyKey( key, PKEY_Image_HorizontalResolution ) )
+	{
+		if ( m_Preview.ImageXdpi() )
 		{
-			pv->vt = VT_BSTR;
-			pv->bstrVal = CString( m_Preview.m_ImageInfo.Description ).AllocSysString();
+			pv->vt = VT_R8;
+			pv->dblVal = (double)m_Preview.ImageXdpi();
 		}
-		else if ( IsEqualPropertyKey( key, PKEY_DRM_IsProtected ) )
+	}
+	else if ( IsEqualPropertyKey( key, PKEY_Image_VerticalResolution ) )
+	{
+		if ( m_Preview.ImageYdpi() || m_Preview.ImageXdpi() )
 		{
-			pv->vt = VT_BOOL;
-			pv->boolVal = VARIANT_FALSE;
+			pv->vt = VT_R8;
+			pv->dblVal = (double) ( m_Preview.ImageYdpi() ? m_Preview.ImageYdpi() : m_Preview.ImageXdpi() );
 		}
-		else if ( IsEqualPropertyKey( key, PKEY_Image_Dimensions ) )
+	}
+	else if ( IsEqualPropertyKey( key, PKEY_Image_BitDepth ) )
+	{
+		pv->vt = VT_UI4;
+		pv->ulVal = m_Preview.ImageBitDepth();
+	}
+	else if ( IsEqualPropertyKey( key, PKEY_Image_Compression ) )
+	{
+		pv->vt = VT_UI2;
+		switch ( m_Preview.ImageCompression() )
 		{
-			CString sDimensions;
-			sDimensions.Format( _T("%d x %d"), m_Preview.m_ImageInfo.Width, m_Preview.m_ImageInfo.Height );
-			pv->vt = VT_BSTR;
-			pv->bstrVal = sDimensions.AllocSysString();
+		case GFL_NO_COMPRESSION:
+			pv->uiVal = IMAGE_COMPRESSION_UNCOMPRESSED;
+			break;
+		case GFL_LZW:
+		case GFL_LZW_PREDICTOR:				
+			pv->uiVal = IMAGE_COMPRESSION_LZW;
+			break;
+		case GFL_JPEG:
+			pv->uiVal = IMAGE_COMPRESSION_JPEG;
+			break;
+		case GFL_CCITT_FAX3:
+		case GFL_CCITT_FAX3_2D:
+			pv->uiVal = IMAGE_COMPRESSION_CCITT_T3;
+			break;
+		case GFL_CCITT_FAX4:
+			pv->uiVal = IMAGE_COMPRESSION_CCITT_T4;
+			break;
+		case GFL_ZIP:
+		case GFL_RLE:
+		case GFL_SGI_RLE:
+		case GFL_CCITT_RLE:
+		case GFL_WAVELET:
+		default:
+			pv->uiVal = IMAGE_COMPRESSION_PACKBITS;
 		}
-		else if ( IsEqualPropertyKey( key, PKEY_Image_HorizontalSize ) )
-		{
-			pv->vt = VT_UI4;
-			pv->ulVal = m_Preview.m_ImageInfo.Width;
-		}
-		else if ( IsEqualPropertyKey( key, PKEY_Image_VerticalSize ) )
-		{
-			pv->vt = VT_UI4;
-			pv->ulVal = m_Preview.m_ImageInfo.Height;
-		}
-		else if ( IsEqualPropertyKey( key, PKEY_Image_ResolutionUnit ) )
-		{
-			pv->vt = VT_I2;
-			pv->iVal = 2;	// inches
-		}
-		else if ( IsEqualPropertyKey( key, PKEY_Image_HorizontalResolution ) )
-		{
-			if ( m_Preview.m_ImageInfo.Xdpi )
-			{
-				pv->vt = VT_R8;
-				pv->dblVal = (double)m_Preview.m_ImageInfo.Xdpi;
-			}
-		}
-		else if ( IsEqualPropertyKey( key, PKEY_Image_VerticalResolution ) )
-		{
-			if ( m_Preview.m_ImageInfo.Ydpi || m_Preview.m_ImageInfo.Xdpi )
-			{
-				pv->vt = VT_R8;
-				pv->dblVal = (double) ( m_Preview.m_ImageInfo.Ydpi ?
-					m_Preview.m_ImageInfo.Ydpi : m_Preview.m_ImageInfo.Xdpi );
-			}
-		}
-		else if ( IsEqualPropertyKey( key, PKEY_Image_BitDepth ) )
-		{
-			pv->vt = VT_UI4;
-			pv->ulVal = m_Preview.m_ImageInfo.ComponentsPerPixel * m_Preview.m_ImageInfo.BitsPerComponent;
-		}
-		else if ( IsEqualPropertyKey( key, PKEY_Image_Compression ) )
-		{
-			pv->vt = VT_UI2;
-			switch ( m_Preview.m_ImageInfo.Compression )
-			{
-			case GFL_NO_COMPRESSION:
-				pv->uiVal = IMAGE_COMPRESSION_UNCOMPRESSED;
-				break;
-			case GFL_LZW:
-			case GFL_LZW_PREDICTOR:				
-				pv->uiVal = IMAGE_COMPRESSION_LZW;
-				break;
-			case GFL_JPEG:
-				pv->uiVal = IMAGE_COMPRESSION_JPEG;
-				break;
-			case GFL_CCITT_FAX3:
-			case GFL_CCITT_FAX3_2D:
-				pv->uiVal = IMAGE_COMPRESSION_CCITT_T3;
-				break;
-			case GFL_CCITT_FAX4:
-				pv->uiVal = IMAGE_COMPRESSION_CCITT_T4;
-				break;
-			case GFL_ZIP:
-			case GFL_RLE:
-			case GFL_SGI_RLE:
-			case GFL_CCITT_RLE:
-			case GFL_WAVELET:
-			default:
-				pv->uiVal = IMAGE_COMPRESSION_PACKBITS;
-			}
-		}
-		else if ( IsEqualPropertyKey( key, PKEY_Image_CompressionText ) )
-		{
-			pv->vt = VT_BSTR;
-			pv->bstrVal = CString( m_Preview.m_ImageInfo.CompressionDescription ).AllocSysString();
-		}
-		else if ( IsEqualPropertyKey( key, PKEY_PerceivedType ) )
-		{
-			pv->vt = VT_I4;
-			pv->lVal = PERCEIVED_TYPE_IMAGE;
-		}
+	}
+	else if ( IsEqualPropertyKey( key, PKEY_Image_CompressionText ) )
+	{
+		pv->vt = VT_BSTR;
+		pv->bstrVal = m_Preview.ImageCompressionDescription().AllocSysString();
+	}
+	else if ( IsEqualPropertyKey( key, PKEY_PerceivedType ) )
+	{
+		pv->vt = VT_I4;
+		pv->lVal = PERCEIVED_TYPE_IMAGE;
 	}
 
 	return S_OK;
@@ -1517,7 +1625,7 @@ STDMETHODIMP CThumb::GetLocation (
 
 	if ( pszPathBuffer )
 	{
-		*pszPathBuffer = _T('\0');
+		*pszPathBuffer = 0;
 
 		if ( ! m_sFilename.IsEmpty() )
 		{
@@ -1525,9 +1633,17 @@ STDMETHODIMP CThumb::GetLocation (
 			DWORD len = min( (DWORD)( m_sFilename.GetLength() + 1 ), cch );
 			wcsncpy_s( pszPathBuffer, cch, (LPCWSTR)szFilenameW, len );
 		}
-		//else if ( ! m_pStream )
-		//{
-		//}
+#ifdef ISTREAM_ENABLED
+		else if ( m_pStream )
+		{
+			STATSTG stat = {};
+			if ( SUCCEEDED( m_pStream->Stat( &stat,  STATFLAG_DEFAULT ) ) && stat.pwcsName )
+			{
+				wcscpy_s( pszPathBuffer, cch, stat.pwcsName );
+				if ( stat.pwcsName ) CoTaskMemFree( stat.pwcsName );
+			}
+		}
+#endif // ISTREAM_ENABLED
 	}
 
 	// Получение размеров от системы
@@ -1545,31 +1661,34 @@ STDMETHODIMP CThumb::GetLocation (
 			*pdwFlags = 0;
 	}
 
-	HRESULT hr = E_FAIL;
 	if ( ! m_sFilename.IsEmpty() )
 	{
-		hr = m_Preview.LoadImage( m_sFilename, m_cx, m_cy );
+		m_Preview.LoadImage( m_sFilename, m_cx, m_cy );
 	}
-	//else if ( ! m_pStream )
-	//{
-	//}
+#ifdef ISTREAM_ENABLED
+	else if ( m_pStream )
+	{
+		m_Preview.LoadImage( m_pStream, m_cx, m_cy );
+	}
+#endif // ISTREAM_ENABLED
 
-	return SUCCEEDED( hr ) ? S_OK : E_FAIL;
+	return m_Preview ? S_OK : E_FAIL;
 }
 
 STDMETHODIMP CThumb::Extract ( 
 	/* [out] */ HBITMAP *phBmpThumbnail)
 {
-	if ( ! GetRegValue( _T("EnableThumbs"), 1ul ) )
-	{
-		ATLTRACE( "CThumb - IExtractImage::Extract() : E_FAIL (Disabled)\n" );
-		return E_FAIL;
-	}
-
 	if ( ! phBmpThumbnail )
 	{
 		ATLTRACE( "CThumb - IExtractImage::Extract() : E_POINTER\n" );
 		return E_POINTER;
+	}
+	*phBmpThumbnail = NULL;
+
+	if ( ! GetRegValue( _T("EnableThumbs"), 1ul ) )
+	{
+		ATLTRACE( "CThumb - IExtractImage::Extract() : E_FAIL (Disabled)\n" );
+		return E_FAIL;
 	}
 
 	*phBmpThumbnail = m_Preview.GetImage( m_cx, m_cy );
@@ -1661,16 +1780,18 @@ STDMETHODIMP CThumb::GetInfoTip(DWORD, LPWSTR* ppwszTip)
 		return E_OUTOFMEMORY;
 	}
 
-	HRESULT hr = E_FAIL;
 	if ( ! m_sFilename.IsEmpty() )
 	{
-		hr = m_Preview.LoadInfo( m_sFilename );
+		m_Preview.LoadInfo( m_sFilename );
 	}
-	//else if ( ! m_pStream )
-	//{
-	//}
+#ifdef ISTREAM_ENABLED
+	else if ( m_pStream )
+	{
+		m_Preview.LoadInfo( m_pStream );
+	}
+#endif // ISTREAM_ENABLED
 
-	if ( FAILED( hr ) )
+	if ( ! m_Preview.IsInfoAvailable() )
 	{
 		ATLTRACE( "0x%08x::IQueryInfo::GetInfoTip() : E_FAIL (Load failed)\n", this );
 		return E_FAIL;
@@ -1715,29 +1836,48 @@ STDMETHODIMP CThumb::GetIconLocation(UINT /* uFlags */, LPWSTR szIconFile, UINT 
 		return E_POINTER;
 	}
 
-	// Этот индекс Explorer использует для идентификации и кешировании иконок:
-	// Делаем его уникальным
-	//LARGE_INTEGER count;
-	//QueryPerformanceCounter( &count );
-	//*piIndex = (int)count.LowPart;
+	// Make it unique
+	LARGE_INTEGER count;
+	QueryPerformanceCounter( &count );
+	*piIndex = (int)count.LowPart;
 
 	if ( szIconFile )
 	{
-		CT2CW szFilenameW( m_sFilename );
-		DWORD len = min( (DWORD)( m_sFilename.GetLength() + 1 ), cch );
-		wcsncpy_s( szIconFile, cch, (LPCWSTR)szFilenameW, len );
-	}
+		*szIconFile = 0;
 
-	*piIndex = (int)CRC32( (LPCSTR)(LPCTSTR)m_sFilename, m_sFilename.GetLength() * sizeof( TCHAR ) );
+		if ( ! m_sFilename.IsEmpty() )
+		{
+			CT2CW szFilenameW( m_sFilename );
+			DWORD len = min( (DWORD)( m_sFilename.GetLength() + 1 ), cch );
+			wcsncpy_s( szIconFile, cch, (LPCWSTR)szFilenameW, len );	
+		}
+#ifdef ISTREAM_ENABLED
+		else if ( m_pStream )
+		{
+			STATSTG stat = {};
+			if ( SUCCEEDED( m_pStream->Stat( &stat,  STATFLAG_DEFAULT ) ) && stat.pwcsName )
+			{
+				wcscpy_s( szIconFile, cch, stat.pwcsName );
+				if ( stat.pwcsName ) CoTaskMemFree( stat.pwcsName );
+			}
+		}
+#endif // ISTREAM_ENABLED
+
+		if ( *szIconFile )
+		{
+			*piIndex = (int)CRC32( (const char*)szIconFile, (int)( wcslen( szIconFile ) * sizeof( TCHAR ) ) );
+		}
+	}
 
 	*pwFlags = GIL_NOTFILENAME | GIL_PERINSTANCE;
 
-	ATLTRACE( "CThumb - IExtractIcon::GetIconLocation(\"%s\",0x%08x,0x%08x) : S_OK\n", (LPCSTR)CT2A( m_sFilename ), (DWORD)*piIndex, *pwFlags );
+	ATLTRACE( "CThumb - IExtractIcon::GetIconLocation(\"%s\",0x%08x,0x%08x) : S_OK\n", (LPCSTR)CW2A( szIconFile ), (DWORD)*piIndex, *pwFlags );
 	return S_OK;
 }
 
-STDMETHODIMP CThumb::Extract(LPCWSTR /*pszFile*/, UINT nIconIndex, HICON* phiconLarge, HICON* phiconSmall, UINT nIconSize)
+STDMETHODIMP CThumb::Extract(LPCWSTR pszFile, UINT nIconIndex, HICON* phiconLarge, HICON* phiconSmall, UINT nIconSize)
 {
+	pszFile;
 	nIconIndex;
 
 	if ( phiconLarge ) *phiconLarge = NULL;
@@ -1748,28 +1888,32 @@ STDMETHODIMP CThumb::Extract(LPCWSTR /*pszFile*/, UINT nIconIndex, HICON* phicon
 	m_cx = m_cy = max( cxLarge, cxSmall );
 	if ( ! m_cx )
 	{
-		ATLTRACE( "CThumb - IExtractIcon::Extract() : E_FAIL (No size)\n" );
+		ATLTRACE( "CThumb - IExtractIcon::Extract(\"%s\") : E_FAIL (No size)\n", (LPCSTR)CW2A( pszFile ) );
 		return E_FAIL;
 	}
 
-	ATLTRACE( "CThumb - IExtractIcon::Extract(0x%08x,%d,%d) : ", nIconIndex, cxLarge, cxSmall );
-
-	HRESULT hr = E_FAIL;
 	if ( ! m_Preview )
 	{
 		if ( ! m_sFilename.IsEmpty() )
 		{
-			hr = m_Preview.LoadImage( m_sFilename, m_cx, m_cy );
+			m_Preview.LoadImage( m_sFilename, m_cx, m_cy );
 		}
+#ifdef ISTREAM_ENABLED
+		else if ( m_pStream )
+		{
+			m_Preview.LoadImage( m_pStream, m_cx, m_cy );
+		}
+#endif // ISTREAM_ENABLED
 	}
-	if ( FAILED( hr ) )
+
+	if ( ! m_Preview && ! m_sFilename.IsEmpty() )
 	{
 		// Attempt to load default icon
 		CString sExt = PathFindExtension( m_sFilename );
 		if ( sExt.IsEmpty() )
 		{
 			// No extension
-			ATLTRACE( "CThumb - IExtractIcon::Extract() : E_FAIL (No extension)\n" );
+			ATLTRACE( "CThumb - IExtractIcon::Extract(\"%s\") : E_FAIL (No extension)\n", (LPCSTR)CW2A( pszFile ) );
 			return E_FAIL;
 		}
 
@@ -1786,7 +1930,7 @@ STDMETHODIMP CThumb::Extract(LPCWSTR /*pszFile*/, UINT nIconIndex, HICON* phicon
 		if ( sDefaultIcon.IsEmpty() )
 		{
 			// No icon
-			ATLTRACE( "CThumb - IExtractIcon::Extract() : E_FAIL (No icon)\n" );
+			ATLTRACE( "CThumb - IExtractIcon::Extract(\"%s\") : E_FAIL (No icon)\n", (LPCSTR)CW2A( pszFile ) );
 			return E_FAIL;
 		}
 
@@ -1796,11 +1940,11 @@ STDMETHODIMP CThumb::Extract(LPCWSTR /*pszFile*/, UINT nIconIndex, HICON* phicon
 			( cxSmall == 48 ) ? phiconSmall : ( ( cxLarge == 48 ) ? phiconLarge : NULL ) ) )
 		{
 			// Found no icon
-			ATLTRACE( "CThumb - IExtractIcon::Extract() : E_FAIL (Found no icon)\n" );
+			ATLTRACE( "CThumb - IExtractIcon::Extract(\"%s\") : E_FAIL (Found no icon)\n", (LPCSTR)CW2A( pszFile ) );
 			return E_FAIL;
 		}
 
-		ATLTRACE( "CThumb - IExtractIcon::Extract() : S_OK (Default)\n" );
+		ATLTRACE( "CThumb - IExtractIcon::Extract(\"%s\") : S_OK (Default)\n", (LPCSTR)CW2A( pszFile ) );
 		return S_OK;
 	}
 
@@ -1814,7 +1958,7 @@ STDMETHODIMP CThumb::Extract(LPCWSTR /*pszFile*/, UINT nIconIndex, HICON* phicon
 		*phiconSmall = m_Preview.GetIcon( cxSmall );
 	}
 
-	ATLTRACE( "CThumb - IExtractIcon::Extract() : S_OK\n" );
+	ATLTRACE( "CThumb - IExtractIcon::Extract(\"%s\",0x%08x,%d,%d) : S_OK\n", (LPCSTR)CW2A( pszFile ), nIconIndex, cxLarge, cxSmall );
 	return S_OK;
 }
 
