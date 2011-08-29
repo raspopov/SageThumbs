@@ -51,6 +51,7 @@ Var STARTMENU_FOLDER
 	!insertmacro MUI_LANGUAGE "Italian"
 	!insertmacro MUI_LANGUAGE "PortugueseBR"
 	!insertmacro MUI_LANGUAGE "SimpChinese"
+	!insertmacro MUI_LANGUAGE "Spanish"
 
 !macro InstallSageThumb _SRC _DST
 	SetOutPath ${_DST}
