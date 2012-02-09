@@ -67,8 +67,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <sddl.h>
 #include <thumbcache.h>
 
-#include "../gfl/libgfl.h"
-#include "../gfl/libgfle.h"
+#include "..\Localization\Localization.h"
+
+#include "..\gfl\libgfl.h"
+#include "..\gfl\libgfle.h"
 
 #if UNICODE
 	#define gflLoadBitmapT			gflLoadBitmapW
@@ -126,13 +128,6 @@ DWORD CRC32(const char *buf, int len);
 
 // Get system folder path
 CString GetSpecialFolderPath(int csidl);
-
-inline BYTE hs2b(TCHAR s)
-{
-	return (BYTE) ( ( s >= '0' && s <= _T('9') ) ? ( s - _T('0') ) :
-		( s >= 'a' && s <= _T('f') ) ? ( s - _T('a') + 10 ) :
-		( s >= 'A' && s <= _T('F') ) ? ( s - _T('A') + 10 ) : 0 );
-}
 
 inline size_t lengthof(LPCTSTR szString)
 {

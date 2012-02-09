@@ -11,7 +11,11 @@
     </Filter>
     <Filter Include="Resource Files">
       <UniqueIdentifier>{e3f56f15-8f6e-4d65-96f9-abbd5375538f}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+      <Extensions>p_;rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Translations">
+      <UniqueIdentifier>{6e43d2f5-30a2-40a1-a55b-fdde353e0122}</UniqueIdentifier>
+      <Extensions>po</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -38,16 +42,10 @@
     <None Include="SageThumbs.def">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="res\bitmap1.bmp">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="res\SageThumbs.bmp">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="res\SageThumbs.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="SageThumbs.ico">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="res\SageThumbs.rc2">
@@ -62,6 +60,18 @@
     <None Include="..\license.txt" />
     <None Include="..\ReadMe.txt" />
     <None Include="..\SageThumbs Online.url" />
+    <None Include="sagethumbs.dll.16.p_">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sagethumbs.dll.1d.p_">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sagethumbs.dll.19.p_">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sagethumbs.dll.10.p_">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
@@ -96,5 +106,19 @@
     <ResourceCompile Include="SageThumbs.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="SageThumbs.dll.19.po">
+      <Filter>Translations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SageThumbs.dll.1d.po">
+      <Filter>Translations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SageThumbs.dll.16.po">
+      <Filter>Translations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SageThumbs.dll.10.po">
+      <Filter>Translations</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>

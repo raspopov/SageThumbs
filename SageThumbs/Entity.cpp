@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2011.
+Copyright (C) Nikolay Raspopov, 2004-2012.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -205,37 +205,30 @@ CString CEntity::GetMenuTipString() const
 {
 	CString sMenuTipString;
 
-	CString type;
-	type.LoadString (IDS_TYPE);
-	CString dim;
-	dim.LoadString (IDS_DIM);
-	CString colors;
-	colors.LoadString (IDS_COLORS);
-	CString date;
-	date.LoadString (IDS_DATE);
-	CString size;
-	size.LoadString (IDS_SIZE);
-	CString resolution;
-	resolution.LoadString (IDS_RESOLUTION);
-	CString compression;
-	compression.LoadString (IDS_COMPRESSION);
+	CString type = _Module.m_oLangs.LoadString( IDS_TYPE );
+	CString dim = _Module.m_oLangs.LoadString( IDS_DIM );
+	CString colors = _Module.m_oLangs.LoadString( IDS_COLORS );
+	CString date = _Module.m_oLangs.LoadString( IDS_DATE );
+	CString size = _Module.m_oLangs.LoadString( IDS_SIZE );
+	CString resolution = _Module.m_oLangs.LoadString( IDS_RESOLUTION );
+	CString compression = _Module.m_oLangs.LoadString( IDS_COMPRESSION );
 
 	CString tmp = type;
 	tmp += (LPCTSTR)CA2T( m_ImageInfo.Description[ 0 ] ? m_ImageInfo.Description : m_ImageInfo.FormatName );
 	sMenuTipString += tmp;
-	
+
 	tmp.Format (_T(", %s%d x %d"), (LPCTSTR)dim, m_ImageInfo.Width, m_ImageInfo.Height);
 	sMenuTipString += tmp;
-	
+
 	tmp.Format (_T(", %s%d"), (LPCTSTR)colors, m_ImageInfo.ComponentsPerPixel * m_ImageInfo.BitsPerComponent);
 	sMenuTipString += tmp;
-	
+
 	if ( m_ImageInfo.Xdpi )
 	{
 		tmp.Format (_T(", %s%d dpi"), (LPCTSTR)resolution, m_ImageInfo.Xdpi);
 		sMenuTipString += tmp;
 	}
-	
+
 	if ( m_ImageInfo.Compression != GFL_NO_COMPRESSION )
 	{
 		tmp = _T(", ");
@@ -243,7 +236,7 @@ CString CEntity::GetMenuTipString() const
 		tmp += (LPCTSTR)CA2T (m_ImageInfo.CompressionDescription);
 		sMenuTipString += tmp;
 	}
-	
+
 	FILETIME ftLastWriteLocal;
 	FileTimeToLocalFileTime( &m_FileData.ftLastWriteTime, &ftLastWriteLocal );
 	SYSTEMTIME stLastWriteLocal;
@@ -274,7 +267,7 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 	CLock oLock( m_pSection );
 
 	if ( m_hGflBitmap &&
-		 m_hGflBitmap->Width  >= (int)cx && 
+		 m_hGflBitmap->Width  >= (int)cx &&
 		 m_hGflBitmap->Height >= (int)cy )
 	{
 		ATLTRACE( "CEntity::LoadImage(\"%s\",%d,%d) : S_FALSE (Bitmap already loaded)\n", (LPCSTR)CT2A( sFilename ), cx, cy );

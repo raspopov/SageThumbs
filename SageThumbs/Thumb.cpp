@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2011.
+Copyright (C) Nikolay Raspopov, 2004-2012.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -140,7 +140,7 @@ STDMETHODIMP CThumb::Initialize(LPCITEMIDLIST, IDataObject* pDO, HKEY)
 #define ID_CONVERT_GIF_ITEM			10
 #define ID_CONVERT_BMP_ITEM			11
 #define ID_CONVERT_PNG_ITEM			12
-#define ID_END_ITEM					13			
+#define ID_END_ITEM					13
 
 STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst, UINT uidCmdLast, UINT uFlags)
 {
@@ -169,21 +169,18 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 	bool bSingleFile = ( m_Filenames.GetCount () == 1 );
 
 	// Store the menu item's ID so we can check against it later when
-	// WM_MEASUREITEM/WM_DRAWITEM are sent. 
+	// WM_MEASUREITEM/WM_DRAWITEM are sent.
 	m_uOurItemID = uidCmdFirst;
 
-	CString tmp;
 	int nPos = 0;
 
 	// Creating submenu items
 	HMENU hSubMenu = CreateMenu ();
-	
+
 	// Clipboard operation items
 	if ( bSingleFile )
 	{
-		tmp.LoadString (IDS_CLIPBOARD);
-		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
-			uidCmdFirst + ID_CLIPBOARD_ITEM, tmp))
+		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_CLIPBOARD_ITEM, _Module.m_oLangs.LoadString( IDS_CLIPBOARD ) ) )
 		{
 			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 			return E_FAIL;
@@ -198,23 +195,17 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 	// Wallpaper operation items
 	if ( bSingleFile )
 	{
-		tmp.LoadString (IDS_WALLPAPER_STRETCH);
-		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
-			uidCmdFirst + ID_WALLPAPER_STRETCH_ITEM, tmp))
+		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_WALLPAPER_STRETCH_ITEM, _Module.m_oLangs.LoadString( IDS_WALLPAPER_STRETCH ) ) )
 		{
 			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 			return E_FAIL;
 		}
-		tmp.LoadString (IDS_WALLPAPER_TILE);
-		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
-			uidCmdFirst + ID_WALLPAPER_TILE_ITEM, tmp))
+		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_WALLPAPER_TILE_ITEM, _Module.m_oLangs.LoadString( IDS_WALLPAPER_TILE ) ) )
 		{
 			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 			return E_FAIL;
 		}
-		tmp.LoadString (IDS_WALLPAPER_CENTER);
-		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
-			uidCmdFirst + ID_WALLPAPER_CENTER_ITEM, tmp))
+		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_WALLPAPER_CENTER_ITEM, _Module.m_oLangs.LoadString( IDS_WALLPAPER_CENTER ) ) )
 		{
 			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 			return E_FAIL;
@@ -226,50 +217,12 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 		}
 	}
 
-	tmp.LoadString (IDS_MAIL_IMAGE);
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
-		uidCmdFirst + ID_MAIL_IMAGE_ITEM, tmp))
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_MAIL_IMAGE_ITEM, _Module.m_oLangs.LoadString( IDS_MAIL_IMAGE ) ) )
 	{
 		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
 	}
-	tmp.LoadString (IDS_MAIL_THUMBNAIL);
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
-		uidCmdFirst + ID_MAIL_THUMBNAIL_ITEM, tmp))
-	{
-		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
-		return E_FAIL;
-	}
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
-	{
-		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
-		return E_FAIL;
-	}
-
-	tmp.LoadString (IDS_CONVERT_JPG);
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
-		uidCmdFirst + ID_CONVERT_JPG_ITEM, tmp))
-	{
-		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
-		return E_FAIL;
-	}
-	tmp.LoadString (IDS_CONVERT_GIF);
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
-		uidCmdFirst + ID_CONVERT_GIF_ITEM, tmp))
-	{
-		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
-		return E_FAIL;
-	}
-	tmp.LoadString (IDS_CONVERT_BMP);
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
-		uidCmdFirst + ID_CONVERT_BMP_ITEM, tmp))
-	{
-		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
-		return E_FAIL;
-	}
-	tmp.LoadString (IDS_CONVERT_PNG);
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
-		uidCmdFirst + ID_CONVERT_PNG_ITEM, tmp))
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_MAIL_THUMBNAIL_ITEM, _Module.m_oLangs.LoadString( IDS_MAIL_THUMBNAIL ) ) )
 	{
 		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
@@ -279,10 +232,32 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
 	}
-
-	tmp.LoadString (IDS_OPTIONS);
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,
-		uidCmdFirst + ID_OPTIONS_ITEM, tmp))
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_CONVERT_JPG_ITEM, _Module.m_oLangs.LoadString( IDS_CONVERT_JPG ) ) )
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
+		return E_FAIL;
+	}
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,uidCmdFirst + ID_CONVERT_GIF_ITEM, _Module.m_oLangs.LoadString( IDS_CONVERT_GIF ) ) )
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
+		return E_FAIL;
+	}
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_CONVERT_BMP_ITEM, _Module.m_oLangs.LoadString( IDS_CONVERT_BMP ) ) )
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
+		return E_FAIL;
+	}
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_CONVERT_PNG_ITEM, _Module.m_oLangs.LoadString( IDS_CONVERT_PNG ) ) )
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
+		return E_FAIL;
+	}
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
+		return E_FAIL;
+	}
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_OPTIONS_ITEM, _Module.m_oLangs.LoadString( IDS_OPTIONS ) ) )
 	{
 		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
@@ -303,8 +278,7 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 
 		if ( m_Preview )
 		{
-			if ( ! InsertMenu( hSubMenu, 0, MF_BYPOSITION | MF_OWNERDRAW,
-				uidCmdFirst + ID_THUMBNAIL_ITEM, 0 ) )
+			if ( ! InsertMenu( hSubMenu, 0, MF_BYPOSITION | MF_OWNERDRAW, uidCmdFirst + ID_THUMBNAIL_ITEM, 0 ) )
 			{
 				ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert image menu item)\n" );
 				return E_FAIL;
@@ -312,16 +286,14 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 		}
 	}
 
-	tmp = _Module.GetAppName();
-
+	CString sAppName = _Module.m_oLangs.LoadString( IDS_PROJNAME );
 	MENUITEMINFO mii = { sizeof( MENUITEMINFO ) };
 	mii.fMask  = MIIM_STRING | MIIM_SUBMENU | MIIM_ID | MIIM_BITMAP;
 	mii.wID = uidCmdFirst + ID_SUBMENU_ITEM;
 	mii.hSubMenu = hSubMenu;
-	mii.dwTypeData = (LPTSTR)(LPCTSTR)tmp;
-	mii.cch = (UINT)tmp.GetLength();
-	mii.hbmpItem = (HBITMAP)LoadImage( _AtlBaseModule.GetResourceInstance(),
-		MAKEINTRESOURCE( IDR_SAGETHUMBS ), IMAGE_BITMAP, 16, 16, LR_SHARED );
+	mii.dwTypeData = (LPTSTR)(LPCTSTR)sAppName;
+	mii.cch = (UINT)sAppName.GetLength();
+	mii.hbmpItem = (HBITMAP)LoadImage( _AtlBaseModule.GetResourceInstance(), MAKEINTRESOURCE( IDR_SAGETHUMBS ), IMAGE_BITMAP, 16, 16, LR_SHARED );
 	if ( ! InsertMenuItem ( hMenu, uIndex++, TRUE, &mii ) )
 	{
 		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert main menu)\n" );
@@ -366,37 +338,37 @@ STDMETHODIMP CThumb::GetCommandString (
 			tmp = m_Preview.GetMenuTipString ();
 			break;
 		case ID_OPTIONS_ITEM:
-			tmp.LoadString (IDS_OPTIONS_HELP);
+			tmp = _Module.m_oLangs.LoadString (IDS_OPTIONS_HELP);
 			break;
 		case ID_CLIPBOARD_ITEM:
-			tmp.LoadString (IDS_CLIPBOARD);
+			tmp = _Module.m_oLangs.LoadString (IDS_CLIPBOARD);
 			break;
 		case ID_WALLPAPER_STRETCH_ITEM:
-			tmp.LoadString (IDS_WALLPAPER_STRETCH);
+			tmp = _Module.m_oLangs.LoadString (IDS_WALLPAPER_STRETCH);
 			break;
 		case ID_WALLPAPER_TILE_ITEM:
-			tmp.LoadString (IDS_WALLPAPER_TILE);
+			tmp = _Module.m_oLangs.LoadString (IDS_WALLPAPER_TILE);
 			break;
 		case ID_WALLPAPER_CENTER_ITEM:
-			tmp.LoadString (IDS_WALLPAPER_CENTER);
+			tmp = _Module.m_oLangs.LoadString (IDS_WALLPAPER_CENTER);
 			break;
 		case ID_MAIL_IMAGE_ITEM:
-			tmp.LoadString (IDS_MAIL_IMAGE);
+			tmp = _Module.m_oLangs.LoadString (IDS_MAIL_IMAGE);
 			break;
 		case ID_MAIL_THUMBNAIL_ITEM:
-			tmp.LoadString (IDS_MAIL_THUMBNAIL);
+			tmp = _Module.m_oLangs.LoadString (IDS_MAIL_THUMBNAIL);
 			break;
 		case ID_CONVERT_JPG_ITEM:
-			tmp.LoadString (IDS_CONVERT_JPG);
+			tmp = _Module.m_oLangs.LoadString (IDS_CONVERT_JPG);
 			break;
 		case ID_CONVERT_GIF_ITEM:
-			tmp.LoadString (IDS_CONVERT_GIF);
+			tmp = _Module.m_oLangs.LoadString (IDS_CONVERT_GIF);
 			break;
 		case ID_CONVERT_BMP_ITEM:
-			tmp.LoadString (IDS_CONVERT_BMP);
+			tmp = _Module.m_oLangs.LoadString (IDS_CONVERT_BMP);
 			break;
 		case ID_CONVERT_PNG_ITEM:
-			tmp.LoadString (IDS_CONVERT_PNG);
+			tmp = _Module.m_oLangs.LoadString (IDS_CONVERT_PNG);
 			break;
 		default:
 			ATLTRACE( "E_INVALIDARG\n" );
@@ -430,9 +402,7 @@ void CThumb::ConvertTo(HWND hWnd, int ext)
 	if ( SUCCEEDED( hr ) )
 	{
 		pProgress->SetTitle( _Module.GetAppName() );
-		CString sProcess;
-		sProcess.LoadString( IDS_CONVERTING );
-		pProgress->SetLine( 1,sProcess, FALSE, NULL );
+		pProgress->SetLine( 1, _Module.m_oLangs.LoadString( IDS_CONVERTING ), FALSE, NULL );
 		pProgress->StartProgressDialog( hWnd, NULL, PROGDLG_NORMAL | PROGDLG_AUTOTIME, NULL );
 	}
 	DWORD total = (DWORD)m_Filenames.GetCount(), counter = 0;
@@ -558,9 +528,7 @@ void CThumb::SendByMail(HWND hWnd, WORD reason)
 	if ( SUCCEEDED( hr ) )
 	{
 		pProgress->SetTitle( _Module.GetAppName() );
-		CString sProcess;
-		sProcess.LoadString( IDS_SENDING );
-		pProgress->SetLine( 1, sProcess, FALSE, NULL );
+		pProgress->SetLine( 1, _Module.m_oLangs.LoadString( IDS_SENDING ), FALSE, NULL );
 		pProgress->StartProgressDialog( hWnd, NULL, PROGDLG_NORMAL | PROGDLG_AUTOTIME, NULL );
 	}
 	DWORD total = (DWORD)m_Filenames.GetCount(), counter = 0;
@@ -865,7 +833,7 @@ STDMETHODIMP CThumb::OnDrawItem(DRAWITEMSTRUCT* pdis, LRESULT* pResult)
 	BOOL bFlatMenu = FALSE;
 	SystemParametersInfo (SPI_GETFLATMENU, 0, &bFlatMenu, 0);
 	HBRUSH FillBrush = GetSysColorBrush (
-		(pdis->itemState & ODS_SELECTED) ? 
+		(pdis->itemState & ODS_SELECTED) ?
 		(bFlatMenu ? COLOR_MENUHILIGHT : COLOR_HIGHLIGHT) : COLOR_MENU);
 	HBRUSH old_brush = (HBRUSH) SelectObject (pdis->hDC, FillBrush);
 	HPEN FillPen = CreatePen (PS_SOLID, 1, GetSysColor (
@@ -896,10 +864,10 @@ STDMETHODIMP CThumb::OnDrawItem(DRAWITEMSTRUCT* pdis, LRESULT* pResult)
 	int old_mode = SetBkMode (pdis->hDC, TRANSPARENT);
 	COLORREF old_color = SetTextColor (pdis->hDC, GetSysColor (
 		(pdis->itemState & ODS_SELECTED) ? COLOR_HIGHLIGHTTEXT : COLOR_MENUTEXT));
-	
+
 	DrawText (pdis->hDC, m_Preview.GetTitleString (), -1, &rcText,
 		DT_SINGLELINE | DT_CENTER | DT_VCENTER | DT_NOPREFIX);
-	
+
 	SetTextColor (pdis->hDC, old_color);
 	SetBkMode (pdis->hDC, old_mode);
 
@@ -944,7 +912,7 @@ STDMETHODIMP CThumb::GetClassID(LPCLSID pclsid)
 	}
 
 	*pclsid = CLSID_Thumb;
-		
+
 	ATLTRACE ("S_OK\n");
 	return S_OK;
 }
@@ -972,7 +940,7 @@ STDMETHODIMP CThumb::GetCurFile(LPOLESTR*)
 // IInitializeWithStream
 
 #ifdef ISTREAM_ENABLED
-STDMETHODIMP CThumb::Initialize( 
+STDMETHODIMP CThumb::Initialize(
 	/* [in] */ IStream * pstream,
 	/* [in] */ DWORD /*grfMode*/)
 {
@@ -1001,7 +969,7 @@ STDMETHODIMP CThumb::Initialize(
 
 // IInitializeWithItem
 
-STDMETHODIMP CThumb::Initialize( 
+STDMETHODIMP CThumb::Initialize(
   /* [in] */ __RPC__in_opt IShellItem* psi,
   /* [in] */ DWORD /* grfMode */)
 {
@@ -1107,7 +1075,7 @@ STDMETHODIMP CThumb::GetThumbnail(UINT cx, HBITMAP *phbmp, WTS_ALPHATYPE *pdwAlp
 
 // IPropertyStoreCapabilities
 
-STDMETHODIMP CThumb::IsPropertyWritable( 
+STDMETHODIMP CThumb::IsPropertyWritable(
 	/* [in] */ __RPC__in REFPROPERTYKEY key)
 {
 	key;
@@ -1131,7 +1099,7 @@ STDMETHODIMP CThumb::IsPropertyWritable(
 
 // IPropertyStore
 
-STDMETHODIMP CThumb::GetCount( 
+STDMETHODIMP CThumb::GetCount(
 	/* [out] */ __RPC__out DWORD* cProps)
 {
 	if ( ! cProps )
@@ -1145,7 +1113,7 @@ STDMETHODIMP CThumb::GetCount(
 	return S_OK;
 }
 
-STDMETHODIMP CThumb::GetAt( 
+STDMETHODIMP CThumb::GetAt(
 	/* [in] */ DWORD /* iProp */,
 	/* [out] */ __RPC__out PROPERTYKEY* pkey)
 {
@@ -1158,7 +1126,7 @@ STDMETHODIMP CThumb::GetAt(
 	ATLTRACENOTIMPL( "IPropertyStore::GetAt" );
 }
 
-STDMETHODIMP CThumb::GetValue( 
+STDMETHODIMP CThumb::GetValue(
 	/* [in] */ __RPC__in REFPROPERTYKEY key,
 	/* [out] */ __RPC__out PROPVARIANT* pv)
 {
@@ -1202,8 +1170,7 @@ STDMETHODIMP CThumb::GetValue(
 		return S_OK;
 	}
 
-	if ( IsEqualPropertyKey( key, PKEY_ItemTypeText ) ||
-			IsEqualPropertyKey( key, PKEY_FileDescription ) )
+	if ( IsEqualPropertyKey( key, PKEY_ItemTypeText ) || IsEqualPropertyKey( key, PKEY_FileDescription ) )
 	{
 		pv->vt = VT_BSTR;
 		pv->bstrVal = m_Preview.ImageDescription().AllocSysString();
@@ -1265,7 +1232,7 @@ STDMETHODIMP CThumb::GetValue(
 			pv->uiVal = IMAGE_COMPRESSION_UNCOMPRESSED;
 			break;
 		case GFL_LZW:
-		case GFL_LZW_PREDICTOR:				
+		case GFL_LZW_PREDICTOR:
 			pv->uiVal = IMAGE_COMPRESSION_LZW;
 			break;
 		case GFL_JPEG:
@@ -1301,7 +1268,7 @@ STDMETHODIMP CThumb::GetValue(
 	return S_OK;
 }
 
-STDMETHODIMP CThumb::SetValue( 
+STDMETHODIMP CThumb::SetValue(
 	/* [in] */ __RPC__in REFPROPERTYKEY /* key */,
 	/* [in] */ __RPC__in REFPROPVARIANT /* propvar */)
 {
@@ -1317,7 +1284,7 @@ STDMETHODIMP CThumb::Commit()
 
 // IPropertySetStorage
 
-//STDMETHODIMP CThumb::Create( 
+//STDMETHODIMP CThumb::Create(
 //	/* [in] */ __RPC__in REFFMTID rfmtid,
 //	/* [unique][in] */ __RPC__in_opt const CLSID* /* pclsid */,
 //	/* [in] */ DWORD /* grfFlags */,
@@ -1336,7 +1303,7 @@ STDMETHODIMP CThumb::Commit()
 //	return STG_E_ACCESSDENIED;
 //}
 //
-//STDMETHODIMP CThumb::Open( 
+//STDMETHODIMP CThumb::Open(
 //	/* [in] */ __RPC__in REFFMTID rfmtid,
 //	/* [in] */ DWORD /* grfMode */,
 //	/* [out] */ __RPC__deref_out_opt IPropertyStorage** ppprstg)
@@ -1364,7 +1331,7 @@ STDMETHODIMP CThumb::Commit()
 //	return STG_E_INVALIDPARAMETER;
 //}
 //
-//STDMETHODIMP CThumb::Delete( 
+//STDMETHODIMP CThumb::Delete(
 //	/* [in] */ __RPC__in REFFMTID rfmtid)
 //{
 //	rfmtid;
@@ -1387,7 +1354,7 @@ STDMETHODIMP CThumb::Commit()
 
 // IPropertyStorage
 
-//STDMETHODIMP CThumb::ReadMultiple( 
+//STDMETHODIMP CThumb::ReadMultiple(
 //	/* [in] */ ULONG cpspec,
 //	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[ ],
 //	/* [size_is][out] */ __RPC__out_ecount_full(cpspec) PROPVARIANT rgpropvar[])
@@ -1413,7 +1380,7 @@ STDMETHODIMP CThumb::Commit()
 //	return S_OK;
 //}
 //
-//STDMETHODIMP CThumb::WriteMultiple( 
+//STDMETHODIMP CThumb::WriteMultiple(
 //	/* [in] */ ULONG /* cpspec */,
 //	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC /* rgpspec */ [ ],
 //	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPVARIANT /* rgpropvar */ [ ],
@@ -1422,14 +1389,14 @@ STDMETHODIMP CThumb::Commit()
 //	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::WriteMultiple()") );
 //}
 //
-//STDMETHODIMP CThumb::DeleteMultiple( 
+//STDMETHODIMP CThumb::DeleteMultiple(
 //	/* [in] */ ULONG /* cpspec */,
 //	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC /* rgpspec */ [])
 //{
 //	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::DeleteMultiple()") );
 //}
 //
-//STDMETHODIMP CThumb::ReadPropertyNames( 
+//STDMETHODIMP CThumb::ReadPropertyNames(
 //	/* [in] */ ULONG /* cpropid */,
 //	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID /* rgpropid */ [],
 //	/* [size_is][out] */ __RPC__out_ecount_full(cpropid) LPOLESTR /* rglpwstrName */ [])
@@ -1437,7 +1404,7 @@ STDMETHODIMP CThumb::Commit()
 //	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::ReadPropertyNames()") );
 //}
 //
-//STDMETHODIMP CThumb::WritePropertyNames( 
+//STDMETHODIMP CThumb::WritePropertyNames(
 //	/* [in] */ ULONG /* cpropid */,
 //	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID /* rgpropid */ [],
 //	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const LPOLESTR /* rglpwstrName */ [])
@@ -1445,14 +1412,14 @@ STDMETHODIMP CThumb::Commit()
 //	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::WritePropertyNames()") );
 //}
 //
-//STDMETHODIMP CThumb::DeletePropertyNames( 
+//STDMETHODIMP CThumb::DeletePropertyNames(
 //	/* [in] */ ULONG /* cpropid */,
 //	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID /* rgpropid */ [])
 //{
 //	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::DeletePropertyNames()") );
 //}
 //
-//STDMETHODIMP CThumb::Commit( 
+//STDMETHODIMP CThumb::Commit(
 //	/* [in] */ DWORD /* grfCommitFlags */)
 //{
 //	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::Commit()") );
@@ -1463,13 +1430,13 @@ STDMETHODIMP CThumb::Commit()
 //	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::Revert()") );
 //}
 //
-//STDMETHODIMP CThumb::Enum( 
+//STDMETHODIMP CThumb::Enum(
 //	/* [out] */ __RPC__deref_out_opt IEnumSTATPROPSTG** /* ppenum */)
 //{
 //	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::Enum()") );
 //}
 //
-//STDMETHODIMP CThumb::SetTimes( 
+//STDMETHODIMP CThumb::SetTimes(
 //	/* [in] */ __RPC__in const FILETIME* /* pctime */,
 //	/* [in] */ __RPC__in const FILETIME* /* patime */,
 //	/* [in] */ __RPC__in const FILETIME* /* pmtime */)
@@ -1477,13 +1444,13 @@ STDMETHODIMP CThumb::Commit()
 //	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::SetTimes()") );
 //}
 //
-//STDMETHODIMP CThumb::SetClass( 
+//STDMETHODIMP CThumb::SetClass(
 //	/* [in] */ __RPC__in REFCLSID /* clsid */)
 //{
 //	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::SetClass()") );
 //}
 //
-//STDMETHODIMP CThumb::Stat( 
+//STDMETHODIMP CThumb::Stat(
 //	/* [out] */ __RPC__out STATPROPSETSTG* /* pstatpsstg */)
 //{
 //	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::Stat()") );
@@ -1491,7 +1458,7 @@ STDMETHODIMP CThumb::Commit()
 
 // INamedPropertyStore
 
-//STDMETHODIMP CThumb::GetNamedValue( 
+//STDMETHODIMP CThumb::GetNamedValue(
 //	/* [string][in] */ __RPC__in_string LPCWSTR pszName,
 //	/* [out] */ __RPC__out PROPVARIANT* ppropvar)
 //{
@@ -1506,7 +1473,7 @@ STDMETHODIMP CThumb::Commit()
 //	return S_OK;
 //}
 //
-//STDMETHODIMP CThumb::SetNamedValue( 
+//STDMETHODIMP CThumb::SetNamedValue(
 //	/* [string][in] */ __RPC__in_string LPCWSTR pszName,
 //	 /* [in] */ __RPC__in REFPROPVARIANT /* propvar */)
 //{
@@ -1514,7 +1481,7 @@ STDMETHODIMP CThumb::Commit()
 //	return STG_E_ACCESSDENIED;
 //}
 //
-//STDMETHODIMP CThumb::GetNameCount( 
+//STDMETHODIMP CThumb::GetNameCount(
 //	/* [out] */ __RPC__out DWORD* pdwCount)
 //{
 //	if ( ! pdwCount )
@@ -1528,7 +1495,7 @@ STDMETHODIMP CThumb::Commit()
 //	return S_OK;
 //}
 //
-//STDMETHODIMP CThumb::GetNameAt( 
+//STDMETHODIMP CThumb::GetNameAt(
 //	/* [in] */ DWORD /* iProp */,
 //	/* [out] */ __RPC__deref_out_opt BSTR* /* pbstrName */)
 //{
@@ -1607,7 +1574,7 @@ STDMETHODIMP CThumb::Commit()
 // const DWORD IEIFLAG_QUALITY    = 0x0200;	// passed to the Extract method to indicate that a slower, higher quality image is desired, re-compute the thumbnail
 // const DWORD IEIFLAG_REFRESH    = 0x0400;	// returned from the extractor if it would like to have Refresh Thumbnail available
 
-STDMETHODIMP CThumb::GetLocation ( 
+STDMETHODIMP CThumb::GetLocation (
     /* [size_is][out] */ LPWSTR pszPathBuffer,
     /* [in] */ DWORD cch,
     /* [unique][out][in] */ DWORD* /* pdwPriority */,
@@ -1675,7 +1642,7 @@ STDMETHODIMP CThumb::GetLocation (
 	return m_Preview ? S_OK : E_FAIL;
 }
 
-STDMETHODIMP CThumb::Extract ( 
+STDMETHODIMP CThumb::Extract (
 	/* [out] */ HBITMAP *phBmpThumbnail)
 {
 	if ( ! phBmpThumbnail )
@@ -1704,7 +1671,7 @@ STDMETHODIMP CThumb::Extract (
 
 // IExtractImage2
 
-STDMETHODIMP CThumb::GetDateStamp ( 
+STDMETHODIMP CThumb::GetDateStamp (
 	/* [out] */ FILETIME *pDateStamp)
 {
 	if ( ! GetRegValue( _T("EnableThumbs"), 1ul ) )
@@ -1849,7 +1816,7 @@ STDMETHODIMP CThumb::GetIconLocation(UINT /* uFlags */, LPWSTR szIconFile, UINT 
 		{
 			CT2CW szFilenameW( m_sFilename );
 			DWORD len = min( (DWORD)( m_sFilename.GetLength() + 1 ), cch );
-			wcsncpy_s( szIconFile, cch, (LPCWSTR)szFilenameW, len );	
+			wcsncpy_s( szIconFile, cch, (LPCWSTR)szFilenameW, len );
 		}
 #ifdef ISTREAM_ENABLED
 		else if ( m_pStream )
@@ -2032,7 +1999,7 @@ STDMETHODIMP CThumb::Extract(LPCWSTR pszFile, UINT nIconIndex, HICON* phiconLarg
 //	PRINT_FORMAT2(CF_GDIOBJLAST) \
 //	PRINT_FORMAT_END
 //
-//STDMETHODIMP CThumb::GetData ( 
+//STDMETHODIMP CThumb::GetData (
 //	/* [unique][in] */ FORMATETC* pformatetcIn,
 //	/* [out] */ STGMEDIUM* /*pmedium*/)
 //{
@@ -2054,14 +2021,14 @@ STDMETHODIMP CThumb::Extract(LPCWSTR pszFile, UINT nIconIndex, HICON* phiconLarg
 //	return E_FAIL;*/
 //}
 //
-//STDMETHODIMP CThumb::GetDataHere ( 
+//STDMETHODIMP CThumb::GetDataHere (
 //	/* [unique][in] */ FORMATETC* /* pformatetc */,
 //	/* [out][in] */ STGMEDIUM* /* pmedium */)
 //{
 //	ATLTRACENOTIMPL ("IDataObject::GetDataHere");
 //}
 //
-//STDMETHODIMP CThumb::QueryGetData ( 
+//STDMETHODIMP CThumb::QueryGetData (
 //	/* [unique][in] */ FORMATETC* pformatetcIn)
 //{
 //	ATLTRACE ("IDataObject::QueryGetData() : ");
@@ -2069,21 +2036,21 @@ STDMETHODIMP CThumb::Extract(LPCWSTR pszFile, UINT nIconIndex, HICON* phiconLarg
 //	return E_INVALIDARG;
 //}
 //
-//STDMETHODIMP CThumb::GetCanonicalFormatEtc ( 
+//STDMETHODIMP CThumb::GetCanonicalFormatEtc (
 //	/* [unique][in] */ FORMATETC* /* pformatectIn */,
 //	/* [out] */ FORMATETC* /* pformatetcOut */)
 //{
 //	ATLTRACENOTIMPL ("IDataObject::GetCanonicalFormatEtc");
 //}
 //
-//STDMETHODIMP CThumb::SetData ( 
+//STDMETHODIMP CThumb::SetData (
 //	/* [unique][in] */ FORMATETC* pformatetcIn,
 //	/* [unique][in] */ STGMEDIUM* /*pmedium*/,
 //	/* [in] */ BOOL fRelease)
 //{
 //	ATLTRACE ("IDataObject::SetData(fRelease=%d) : ", fRelease);
 //	PRINT_FORMAT_ALL
-//	/*FILEDESCRIPTOR* src = (FILEDESCRIPTOR*) GlobalLock (pmedium->hGlobal);	
+//	/*FILEDESCRIPTOR* src = (FILEDESCRIPTOR*) GlobalLock (pmedium->hGlobal);
 //	SIZE_T len = GlobalSize (pmedium->hGlobal);
 //	GlobalUnlock (pmedium->hGlobal);
 //	if (fRelease)
@@ -2111,7 +2078,7 @@ STDMETHODIMP CThumb::Extract(LPCWSTR pszFile, UINT nIconIndex, HICON* phiconLarg
 //	}
 //};
 //
-//STDMETHODIMP CThumb::EnumFormatEtc ( 
+//STDMETHODIMP CThumb::EnumFormatEtc (
 //	/* [in] */ DWORD dwDirection,
 //	/* [out] */ IEnumFORMATETC** ppenumFormatEtc)
 //{
@@ -2131,7 +2098,7 @@ STDMETHODIMP CThumb::Extract(LPCWSTR pszFile, UINT nIconIndex, HICON* phiconLarg
 //	return pEnum->QueryInterface (IID_IEnumFORMATETC, (void**) ppenumFormatEtc);
 //}
 //
-//STDMETHODIMP CThumb::DAdvise ( 
+//STDMETHODIMP CThumb::DAdvise (
 //	/* [in] */ FORMATETC* /* pformatetc */,
 //	/* [in] */ DWORD /* advf */,
 //	/* [unique][in] */ IAdviseSink* /* pAdvSink */,
@@ -2140,13 +2107,13 @@ STDMETHODIMP CThumb::Extract(LPCWSTR pszFile, UINT nIconIndex, HICON* phiconLarg
 //	ATLTRACENOTIMPL ("IDataObject::DAdvise");
 //}
 //
-//STDMETHODIMP CThumb::DUnadvise ( 
+//STDMETHODIMP CThumb::DUnadvise (
 //	/* [in] */ DWORD /* dwConnection */)
 //{
 //	ATLTRACENOTIMPL ("IDataObject::DUnadvise");
 //}
 //
-//STDMETHODIMP CThumb::EnumDAdvise ( 
+//STDMETHODIMP CThumb::EnumDAdvise (
 //	/* [out] */ IEnumSTATDATA** /* ppenumAdvise */)
 //{
 //	ATLTRACENOTIMPL ("IDataObject::EnumDAdvise");
@@ -2154,7 +2121,7 @@ STDMETHODIMP CThumb::Extract(LPCWSTR pszFile, UINT nIconIndex, HICON* phiconLarg
 
 // IImageDecodeFilter
 
-//STDMETHODIMP CThumb::Initialize(IImageDecodeEventSink* pEventSink)    
+//STDMETHODIMP CThumb::Initialize(IImageDecodeEventSink* pEventSink)
 //{
 //	if ( ! pEventSink )
 //	{
@@ -2236,7 +2203,7 @@ STDMETHODIMP CThumb::Extract(LPCWSTR pszFile, UINT nIconIndex, HICON* phiconLarg
 //	return S_OK;
 //}
 //
-//STDMETHODIMP CThumb::Process(IStream* pStream)    
+//STDMETHODIMP CThumb::Process(IStream* pStream)
 //{
 //	HRESULT hr;
 //
@@ -2262,7 +2229,7 @@ STDMETHODIMP CThumb::Extract(LPCWSTR pszFile, UINT nIconIndex, HICON* phiconLarg
 //		if ( hr == S_FALSE )
 //			break;
 //	}
-//	
+//
 //	hr = m_pEventSink->OnBitsComplete();
 //	ATLTRACE( "CThumb - IImageDecodeFilter::Process() : Readed %u bytes\n", total );
 //
@@ -2383,7 +2350,7 @@ STDMETHODIMP CThumb::GetSite(REFIID riid, void **ppvSite)
 
 // IParentAndItem
 
-//STDMETHODIMP CThumb::SetParentAndItem( 
+//STDMETHODIMP CThumb::SetParentAndItem(
 //	/* [unique][in] */ __RPC__in_opt PCIDLIST_ABSOLUTE /*pidlParent*/,
 //	/* [unique][in] */ __RPC__in_opt IShellFolder * /*psf*/,
 //	/* [in] */ __RPC__in PCUITEMID_CHILD /*pidlChild*/)
@@ -2391,7 +2358,7 @@ STDMETHODIMP CThumb::GetSite(REFIID riid, void **ppvSite)
 //	ATLTRACENOTIMPL( _T("IParentAndItem::SetParentAndItem") );
 //}
 //
-//STDMETHODIMP CThumb::GetParentAndItem( 
+//STDMETHODIMP CThumb::GetParentAndItem(
 //	/* [out] */ __RPC__deref_out_opt PIDLIST_ABSOLUTE * /*ppidlParent*/,
 //	/* [out] */ __RPC__deref_out_opt IShellFolder ** /*ppsf*/,
 //	/* [out] */ __RPC__deref_out_opt PITEMID_CHILD * /*ppidlChild*/)
@@ -2401,7 +2368,7 @@ STDMETHODIMP CThumb::GetSite(REFIID riid, void **ppvSite)
 
 // IEmptyVolumeCache
 
-STDMETHODIMP CThumb::Initialize( 
+STDMETHODIMP CThumb::Initialize(
 	/* [in] */ HKEY /*hkRegKey*/,
 	/* [in] */ LPCWSTR pcwszVolume,
 	/* [out] */ LPWSTR *ppwszDisplayName,
@@ -2410,8 +2377,7 @@ STDMETHODIMP CThumb::Initialize(
 {
 	if ( ppwszDisplayName )
 	{
-		CString foo;
-		foo.LoadString( IDS_CACHE );
+		CString foo = _Module.m_oLangs.LoadString( IDS_CACHE );
 		size_t len = ( foo.GetLength() + 1 ) * sizeof( TCHAR );
 		*ppwszDisplayName = (LPWSTR)CoTaskMemAlloc( len );
 		CopyMemory( *ppwszDisplayName, (LPCTSTR)foo, len );
@@ -2419,8 +2385,7 @@ STDMETHODIMP CThumb::Initialize(
 
 	if ( ppwszDescription )
 	{
-		CString foo;
-		foo.LoadString( IDS_DESCRIPTION );
+		CString foo = _Module.m_oLangs.LoadString( IDS_DESCRIPTION );
 		size_t len = ( foo.GetLength() + 1 ) * sizeof( TCHAR );
 		*ppwszDescription = (LPWSTR)CoTaskMemAlloc( len );
 		CopyMemory( *ppwszDescription, (LPCTSTR)foo, len );
@@ -2428,7 +2393,7 @@ STDMETHODIMP CThumb::Initialize(
 
 	m_bCleanup = ( _Module.m_sDatabase.GetAt( 0 ) == *pcwszVolume );
 
-	if ( m_bCleanup ) 
+	if ( m_bCleanup )
 	{
 		return S_OK;
 	}
@@ -2441,7 +2406,7 @@ STDMETHODIMP CThumb::Initialize(
 	return S_FALSE;
 }
 
-STDMETHODIMP CThumb::GetSpaceUsed( 
+STDMETHODIMP CThumb::GetSpaceUsed(
 	/* [out] */ __RPC__out DWORDLONG *pdwlSpaceUsed,
 	/* [in] */ __RPC__in_opt IEmptyVolumeCacheCallBack* /*picb*/)
 {
@@ -2464,7 +2429,7 @@ STDMETHODIMP CThumb::GetSpaceUsed(
 	return S_OK;
 }
 
-STDMETHODIMP CThumb::Purge( 
+STDMETHODIMP CThumb::Purge(
 	/* [in] */ DWORDLONG /*dwlSpaceToFree*/,
 	/* [in] */ __RPC__in_opt IEmptyVolumeCacheCallBack * /*picb*/)
 {
@@ -2478,13 +2443,13 @@ STDMETHODIMP CThumb::Purge(
 	return S_OK;
 }
 
-STDMETHODIMP CThumb::ShowProperties( 
+STDMETHODIMP CThumb::ShowProperties(
 	/* [in] */ __RPC__in HWND /*hwnd*/)
 {
 	ATLTRACENOTIMPL( _T("IEmptyVolumeCache::ShowProperties") );
 }
 
-STDMETHODIMP CThumb::Deactivate( 
+STDMETHODIMP CThumb::Deactivate(
 	/* [out] */ __RPC__out DWORD* /*pdwFlags*/)
 {
 	return S_OK;
@@ -2492,7 +2457,7 @@ STDMETHODIMP CThumb::Deactivate(
 
 // IEmptyVolumeCache2
 
-STDMETHODIMP CThumb::InitializeEx( 
+STDMETHODIMP CThumb::InitializeEx(
 	/* [in] */ HKEY hkRegKey,
 	/* [in] */ LPCWSTR pcwszVolume,
 	/* [in] */ LPCWSTR /*pcwszKeyName*/,

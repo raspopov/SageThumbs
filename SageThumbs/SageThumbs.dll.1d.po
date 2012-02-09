@@ -1,0 +1,312 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SageThumbs.dll\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Nikolay Raspopov <raspopov@cherubicsoft.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Swedish\n"
+
+#. Dialog caption
+#: DIALOGCAPTION.202
+msgid "SageThumbs Options"
+msgstr "SageThumbs Inställningar"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.1
+msgid "OK"
+msgstr "OK"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2
+msgid "Cancel"
+msgstr "Avbryt"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.211
+msgid "Enable context menu in Explorer"
+msgstr "Aktivera kontextmeny i Utforskaren"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.212
+msgid "Enable thumbnails in Explorer"
+msgstr "Aktivera miniatyrer i Utforskaren"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.216
+msgid "Use thumbnails as icons in Explorer"
+msgstr "Använd miniatyr som ikon i Utforskaren"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.217
+msgid "Enable Windows thumbnail cache"
+msgstr "Aktivera Windows miniatyr-cache"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.215
+msgid "Prefer image file embedded thumbnails"
+msgstr "Använd filinbäddad miniatyrbild"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.203
+msgid "Use Windows Image/Fax Viewer"
+msgstr "Använd Windows Bildvisare"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "Markera/Avmarkera alla"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "Standard"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.213
+msgid "Clear..."
+msgstr "Töm cache..."
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.218
+msgid "Optimize"
+msgstr "Optimera"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483649
+msgid "Context menu preview size"
+msgstr "Storlek i kontextmenyns förhandsgranskning"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483650
+msgid "Width x Height:"
+msgstr "Bredd x Höjd:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483651
+msgid "X"
+msgstr "X"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483652
+msgid "pixels"
+msgstr "Pixel"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483653
+msgid "Supported file types"
+msgstr "Filtypsstöd"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483654
+msgid "System-wide tweaks"
+msgstr "Överordnade inställningar"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483655
+msgid "Language:"
+msgstr "Språk:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483656
+msgid "Maximum size of image file:"
+msgstr "Maximal filstorlek:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483657
+msgid "MB"
+msgstr "MB"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483658
+msgid "Convert options"
+msgstr "Konverteringsalternativ"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483659
+msgid "JPEG quality (0 - lowest, 100 - best):"
+msgstr "JPEG-kvallitet (0 - lägst, 100 - högst):"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483660
+msgid "PNG compression (0 - lowest, 9 - best):"
+msgstr "PNG-kompression (0 - lägst, 9 - högst):"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "Visa filikon på miniatyrer"
+
+#. String resource
+#: STRING.100
+msgid "SageThumbs"
+msgstr "SageThumbs"
+
+#. String resource
+#: STRING.101
+msgid "Change various SageThumbs options"
+msgstr "Ändra diverse inställningar"
+
+#. String resource
+#: STRING.102
+msgid "Type: "
+msgstr "Typ: "
+
+#. String resource
+#: STRING.103
+msgid "Sizes (pixels): "
+msgstr "Storlek (Pixel): "
+
+#. String resource
+#: STRING.104
+msgid "Size (bytes): "
+msgstr "Storlek (Byte): "
+
+#. String resource
+#: STRING.105
+msgid "Modified: "
+msgstr "Ändrad: "
+
+#. String resource
+#: STRING.106
+msgid "Colors (bits): "
+msgstr "Färger (Bit): "
+
+#. String resource
+#: STRING.107
+msgid "Compression: "
+msgstr "Kompression: "
+
+#. String resource
+#: STRING.108
+msgid "Resolution: "
+msgstr "Upplösning: "
+
+#. String resource
+#: STRING.109
+msgid "Can't open image file"
+msgstr "Kan inte öppna bildfil"
+
+#. String resource
+#: STRING.110
+msgid "Can't save image file"
+msgstr "Kan inte spara bildfil"
+
+#. String resource
+#: STRING.111
+msgid "Can't send mail"
+msgstr "Kan inte skicka e-post"
+
+#. String resource
+#: STRING.112
+msgid "Nothing to send"
+msgstr "Det finns inget att skicka"
+
+#. String resource
+#: STRING.113
+msgid "Can't open clipboard"
+msgstr "Kan inte öppna Urklipp"
+
+#. String resource
+#: STRING.114
+msgid "Please confirm thumbnail cache clearing."
+msgstr "Bekräfta tömning av miniatyr-cache."
+
+#. String resource
+#: STRING.115
+msgid "Thumbnail cache size: %u KB"
+msgstr "Miniatyrcache-storlek: %u KB"
+
+#. String resource
+#: STRING.116
+msgid "SageThumbs thumbnail cache"
+msgstr "SageThumbs miniatyr-cache"
+
+#. String resource
+#: STRING.117
+msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
+msgstr "Töm SageThumbs miniatyr-Cache. Användardata påverkas inte."
+
+#. String resource
+#: STRING.118
+msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
+msgstr "Kan inte verkställa alla inställningar. Konfigurera SageThumbs under ett Windows-konto med administratörsrättigheter."
+
+#. String resource
+#: STRING.119
+msgid "Convert to PNG"
+msgstr "Konvertera till PNG"
+
+#. String resource
+#: STRING.120
+msgid "Converting..."
+msgstr "Konverterar..."
+
+#. String resource
+#: STRING.121
+msgid "Sending..."
+msgstr "Skickar..."
+
+#. String resource
+#: STRING.122
+msgid "Applying settings..."
+msgstr "Verkställer inställnigar..."
+
+#. String resource
+#: STRING.123
+msgid "Updating..."
+msgstr "Uppdaterar..."
+
+#. String resource
+#: STRING.203
+msgid "SageThumbs Options..."
+msgstr "SageThumbs inställningar..."
+
+#. String resource
+#: STRING.204
+msgid "Copy to clipboard"
+msgstr "Kopiera till Urklipp"
+
+#. String resource
+#: STRING.205
+msgid "Set tiled wallpaper"
+msgstr "Använd som skrivbordsbakgrund ´Sida vid sida'"
+
+#. String resource
+#: STRING.206
+msgid "Set centered wallpaper"
+msgstr "Använd som centrerad skrivbordsbakgrund"
+
+#. String resource
+#: STRING.207
+msgid "Set stretched wallpaper"
+msgstr "Använd som anpassad skrivbordsbakgrund"
+
+#. String resource
+#: STRING.208
+msgid "Send image by mail..."
+msgstr "Skicka bild med e-post..."
+
+#. String resource
+#: STRING.209
+msgid "Send thumbnail by mail..."
+msgstr "Skicka miniatyr med e-post..."
+
+#. String resource
+#: STRING.210
+msgid "Convert to JPG"
+msgstr "Konvertera till JPG"
+
+#. String resource
+#: STRING.211
+msgid "Convert to GIF"
+msgstr "Konvertera till GIF"
+
+#. String resource
+#: STRING.212
+msgid "Convert to BMP"
+msgstr "Konvertera till BMP"
+

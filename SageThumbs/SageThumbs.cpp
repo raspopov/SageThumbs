@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2011.
+Copyright (C) Nikolay Raspopov, 2004-2012.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -43,9 +43,9 @@ struct
 }
 static const Handlers[] =
 {
-	{ false, true,  _T("IconHandler") },							// IExtractIconA and IExtractIconW (Windows 2000)
+	{ false, true , _T("IconHandler") },							// IExtractIconA and IExtractIconW (Windows 2000)
 	{ false, false, _T("{BB2E617C-0920-11D1-9A0B-00C04FC2D6C1}") },	// IExtractImage (Windows 2000)
-	{ false, true,  _T("{00021500-0000-0000-C000-000000000046}") },	// IQueryInfo (Windows 2000)
+	{ false, true , _T("{00021500-0000-0000-C000-000000000046}") },	// IQueryInfo (Windows 2000)
 	{ false, false, _T("{E357FCCD-A995-4576-B01F-234630154E96}") },	// IThumbnailProvider (Windows Vista)
 	{ false, false, _T("PropertyHandler") },						// IPropertyStore (Windows Vista)
 	{ true , true , _T("DataHandler") },							// IDataObject (Windows 2000)
@@ -53,7 +53,7 @@ static const Handlers[] =
 	{ false, false, NULL }
 };
 
-// Properties are displayed on the Details tab of the Properties dialog box. This is the complete list of properties that the file type supports. 
+// Properties are displayed on the Details tab of the Properties dialog box. This is the complete list of properties that the file type supports.
 LPCTSTR FullDetails	=		_T("prop:System.PropGroup.Image;")
 							_T("System.FileDescription;")
 							_T("System.Image.Dimensions;")
@@ -140,8 +140,6 @@ CSageThumbsModule::CSageThumbsModule()
 	, m_hGFL		( NULL )
 	, m_hGFLe		( NULL )
 	, m_hSQLite		( NULL )
-	, m_hLangDLL	( NULL )
-	, m_CurLangID	( STANDARD_LANGID )
 {
 	m_OSVersion.dwOSVersionInfoSize = sizeof( m_OSVersion );
 	GetVersionEx( &m_OSVersion );
@@ -150,10 +148,7 @@ CSageThumbsModule::CSageThumbsModule()
 		m_sModuleFileName.GetBuffer( MAX_LONG_PATH ), MAX_LONG_PATH );
 	m_sModuleFileName.ReleaseBuffer();
 	ATLTRACE( "Module path: %s\n", (LPCSTR)CT2A( m_sModuleFileName ) );
-
-	m_sModule = PathFindFileName( m_sModuleFileName );
-	m_sHome = m_sModuleFileName.Left( m_sModuleFileName.GetLength() - m_sModule.GetLength() );
-	m_sModule = m_sModule.Left( m_sModule.GetLength() - 4 ); // cut ".dll"
+	m_sHome = m_sModuleFileName.Left( m_sModuleFileName.ReverseFind( _T('\\') ) + 1 );
 
 	// Get database filename
 	m_sDatabase = GetRegValue( _T("Database"), CString() );
@@ -219,30 +214,18 @@ BOOL CSageThumbsModule::DllMain(DWORD dwReason, LPVOID lpReserved) throw()
 
 HRESULT CSageThumbsModule::DllRegisterServer() throw()
 {
-	CHECKPOINT_BEGIN(DllRegisterServer)
-
 	HRESULT hr = CAtlDllModuleT< CSageThumbsModule >::DllRegisterServer( FALSE );
 
 	RegisterExtensions( GetDesktopWindow() );
-
-	ATLTRACE ("DllRegisterServer : ");
-	CHECKPOINT(DllRegisterServer)
-	ATLTRACE ("\n");
 
 	return hr;
 }
 
 HRESULT CSageThumbsModule::DllUnregisterServer() throw()
 {
-	CHECKPOINT_BEGIN(DllUnregisterServer)
-
 	HRESULT hr = CAtlDllModuleT< CSageThumbsModule >::DllUnregisterServer( FALSE );
 
 	UnregisterExtensions();
-
-	ATLTRACE ("DllUnregisterServer : ");
-	CHECKPOINT(DllUnregisterServer)
-	ATLTRACE ("\n");
 
 	return hr;
 }
@@ -258,9 +241,7 @@ BOOL CSageThumbsModule::RegisterExtensions(HWND hWnd)
 		if ( SUCCEEDED( hr ) )
 		{
 			pProgress->SetTitle( _Module.GetAppName() );
-			CString sProcess;
-			sProcess.LoadString( IDS_APPLYING ); 
-			pProgress->SetLine( 1, sProcess, FALSE, NULL );
+			pProgress->SetLine( 1, m_oLangs.LoadString( IDS_APPLYING ), FALSE, NULL );
 			pProgress->StartProgressDialog( hWnd, NULL, PROGDLG_NORMAL | PROGDLG_NOCANCEL | PROGDLG_AUTOTIME, NULL );
 		}
 	}
@@ -302,9 +283,7 @@ BOOL CSageThumbsModule::RegisterExtensions(HWND hWnd)
 
 	if ( pProgress )
 	{
-		CString sProcess;
-		sProcess.LoadString( IDS_UPDATING ); 
-		pProgress->SetLine( 2, sProcess, FALSE, NULL );
+		pProgress->SetLine( 2, m_oLangs.LoadString( IDS_UPDATING ), FALSE, NULL );
 		pProgress->SetProgress( total, total );
 	}
 
@@ -431,11 +410,11 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 
 		if ( bEnableOverlay && ! sDefaultIcon.IsEmpty() )
 		{
-			bOK = SetRegValue( _T("TypeOverlay"), sDefaultIcon, sDefaultKey, HKEY_CLASSES_ROOT ) && bOK; 
+			bOK = SetRegValue( _T("TypeOverlay"), sDefaultIcon, sDefaultKey, HKEY_CLASSES_ROOT ) && bOK;
 		}
 		else
 		{
-			bOK = DeleteRegValue( _T("TypeOverlay"), sDefaultKey, HKEY_CLASSES_ROOT ) && bOK; 
+			bOK = DeleteRegValue( _T("TypeOverlay"), sDefaultKey, HKEY_CLASSES_ROOT ) && bOK;
 		}
 	}
 
@@ -492,19 +471,17 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 	{
 		CString sHandlerTypeKey = sType + _T("\\ShellEx\\") + Handlers[ i ].szName;
 		CString sHandlerProgIDKey = sDefaultKey + _T("\\ShellEx\\") + Handlers[ i ].szName;
-
 		bool bDelete =	( i == 0 && ! bEnableIcons ) ||		// IExtractIcon
 						( i == 1 && ! bEnableThumbs ) ||	// IExtractImage
 						( i == 2 && ! bEnableInfo ) ||		// IQueryInfo
 						( i == 3 && ! bEnableThumbs ) ||	// IThumbnailProvider
 						Handlers[ i ].bDelete;
-
 		if ( Handlers[ i ].bUseProgID )
 		{
 			if ( bDelete )
 				bOK = UnregisterValue( HKEY_CLASSES_ROOT, sHandlerProgIDKey ) && bOK;
 			else
-				bOK = RegisterValue( HKEY_CLASSES_ROOT, sHandlerProgIDKey ) && bOK;
+				bOK = RegisterValue( HKEY_CLASSES_ROOT, sHandlerProgIDKey, _T(""), CLSID_THUMB, NULL ) && bOK;
 
 			// Clean wrong registration
 			bOK = DeleteRegKey( HKEY_CLASSES_ROOT, sHandlerTypeKey ) && bOK;
@@ -514,7 +491,7 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 			if ( bDelete )
 				bOK = UnregisterValue( HKEY_CLASSES_ROOT, sHandlerTypeKey ) && bOK;
 			else
-				bOK = RegisterValue( HKEY_CLASSES_ROOT, sHandlerTypeKey ) && bOK;
+				bOK = RegisterValue( HKEY_CLASSES_ROOT, sHandlerTypeKey, _T(""), CLSID_THUMB, NULL ) && bOK;
 
 			// Clean wrong registration
 			bOK = DeleteRegKey( HKEY_CLASSES_ROOT, sHandlerProgIDKey ) && bOK;
@@ -523,17 +500,17 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 
 	// Register IPropertyStore handler
 	CString sPropKey = PropertyHandlers + sType;
-	bOK = RegisterValue( HKEY_LOCAL_MACHINE, sPropKey ) && bOK;
+	bOK = RegisterValue( HKEY_LOCAL_MACHINE, sPropKey, _T(""), CLSID_THUMB, NULL ) && bOK;
 	CString sSysKey = _T("SystemFileAssociations\\") + sType;
-//	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ConflictPrompt"), ConflictPrompt, _T("ConflictPrompt.") REG_SAGETHUMBS_BAK ) && bOK;
-	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ExtendedTileInfo"), ExtendedTileInfo, _T("ExtendedTileInfo.") REG_SAGETHUMBS_BAK ) && bOK;
-	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("TileInfo"), TileInfo, _T("TileInfo.") REG_SAGETHUMBS_BAK ) && bOK;
-	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("FullDetails"), FullDetails, _T("FullDetails.") REG_SAGETHUMBS_BAK ) && bOK;
-	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("InfoTip"), InfoTip, _T("InfoTip.") REG_SAGETHUMBS_BAK ) && bOK;
-	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("PreviewDetails"), PreviewDetails, _T("PreviewDetails.") REG_SAGETHUMBS_BAK ) && bOK;
-	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("PreviewTitle"), PreviewTitle, _T("PreviewTitle.") REG_SAGETHUMBS_BAK ) && bOK;
-	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ContentViewModeForBrowse"), ContentViewModeForBrowse, _T("ContentViewModeForBrowse.") REG_SAGETHUMBS_BAK ) && bOK;
-	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ContentViewModeForSearch"), ContentViewModeForSearch, _T("ContentViewModeForSearch.") REG_SAGETHUMBS_BAK ) && bOK;
+//	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ConflictPrompt"), ConflictPrompt, NULL ) && bOK;
+	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ExtendedTileInfo"), ExtendedTileInfo, NULL ) && bOK;
+	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("TileInfo"), TileInfo, NULL ) && bOK;
+	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("FullDetails"), FullDetails, NULL ) && bOK;
+	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("InfoTip"), InfoTip, NULL ) && bOK;
+	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("PreviewDetails"), PreviewDetails, NULL ) && bOK;
+	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("PreviewTitle"), PreviewTitle, NULL ) && bOK;
+	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ContentViewModeForBrowse"), ContentViewModeForBrowse, NULL ) && bOK;
+	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ContentViewModeForSearch"), ContentViewModeForSearch, NULL ) && bOK;
 
 	SetRegValue( sDefaultKey, sFileExt + _T("\\OpenWithProgids"), HKEY_CURRENT_USER );
 	SetRegValue( _T("Progid"), sDefaultKey, sFileExt + _T("\\UserChoice"), HKEY_CURRENT_USER );
@@ -560,7 +537,7 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt, bool bFull)
 	CString sDefaultKey = REG_SAGETHUMBS_IMG + sType;
 	CString sCurrentKey = GetRegValue( _T(""), _T(""), sType, HKEY_CLASSES_ROOT );
 
-	bOK = DeleteRegValue( _T("TypeOverlay"), sCurrentKey, HKEY_CLASSES_ROOT ) && bOK; 
+	bOK = DeleteRegValue( _T("TypeOverlay"), sCurrentKey, HKEY_CLASSES_ROOT ) && bOK;
 
 	/*CString sContentExt = GetContentType( szExt );
 	CString sContentKey = _T("MIME\\DataBase\\Content Type\\image/") + sContentExt;
@@ -662,7 +639,7 @@ void CSageThumbsModule::FixProgID(LPCTSTR szExt)
 	if ( ! sDefaultType.IsEmpty() )
 	{
 		// Restore standard image type
-		SetRegValue( _T(""), sDefaultType, sType, HKEY_CLASSES_ROOT ); 
+		SetRegValue( _T(""), sDefaultType, sType, HKEY_CLASSES_ROOT );
 		return;
 	}
 
@@ -687,7 +664,7 @@ void CSageThumbsModule::FixProgID(LPCTSTR szExt)
 				oOrphanProgIDs.AddTail( sProgID );
 		}
 		RegCloseKey( hKey );
-	
+
 		// Clean unused ProgID
 		for ( POSITION pos = oOrphanProgIDs.GetHeadPosition(); pos; )
 		{
@@ -734,7 +711,7 @@ void CSageThumbsModule::FixProgID(LPCTSTR szExt)
 
 	// Clean orphan extension key
 	DeleteRegValue( _T(""), sType, HKEY_CLASSES_ROOT );
-	
+
 	CString sPerceivedType = GetRegValue( _T("PerceivedType"), _T(""), sType, HKEY_CLASSES_ROOT );
 	if ( sPerceivedType.CompareNoCase( GetPerceivedType( szExt ) ) == 0 )
 	{
@@ -744,81 +721,10 @@ void CSageThumbsModule::FixProgID(LPCTSTR szExt)
 	CString sContentType = GetRegValue( _T("Content Type"), _T(""), sType, HKEY_CLASSES_ROOT );
 	if ( sContentType.CompareNoCase( GetContentType( szExt ) ) == 0 )
 	{
-		DeleteRegValue( _T("Content Type"), sType, HKEY_CLASSES_ROOT );	
+		DeleteRegValue( _T("Content Type"), sType, HKEY_CLASSES_ROOT );
 	}
 
 	DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sType );
-}
-
-LANGID CSageThumbsModule::GetLang()
-{
-	return m_CurLangID;
-}
-
-BOOL CSageThumbsModule::LoadLang(LANGID LangID)
-{
-	if ( LangID == 0 )
-		// Использование предыдущей настройки языка
-		LangID = (LANGID)(DWORD)GetRegValue( _T("Lang"), 0ul );
-
-	if ( LangID == m_CurLangID )
-		// Загрузка того же самого языка
-		return TRUE;
-
-	// Выгрузка старого языка
-	UnLoadLang();
-
-	// Попытка загрузки локализаций, вначале указанной затем системные
-	if ( ( LangID ? LoadLangIDDLL( LangID ) : false ) ||
-		LoadLangIDDLL( GetUserDefaultLangID() & 0xff ) ||
-		LoadLangIDDLL( GetSystemDefaultLangID() & 0xff ) )
-	{
-		// Сохранение загруженного языка в реестре
-		SetRegValue( _T("Lang"), m_CurLangID );
-		return TRUE;
-	}
-	else
-		return FALSE;
-}
-
-void CSageThumbsModule::UnLoadLang ()
-{
-	// Выгрузка языка
-	if ( m_hLangDLL )
-	{
-		FreeLibrary( m_hLangDLL );
-		m_hLangDLL = NULL;
-	}
-
-	// Установка стандартного языка
-	m_CurLangID = STANDARD_LANGID;
-	_AtlBaseModule.SetResourceInstance( _AtlBaseModule.GetModuleInstance() );
-}
-
-BOOL CSageThumbsModule::LoadLangIDDLL (LANGID LangID)
-{
-	ATLASSERT( LangID != 0 );
-	ATLASSERT( m_hLangDLL == NULL );
-
-	if ( LangID == STANDARD_LANGID )
-	{
-		// Загрузка встроенного языка
-		m_CurLangID = STANDARD_LANGID;
-		return TRUE;
-	}
-
-	CString strLangIDDLL;
-	strLangIDDLL.Format( _T("%s%s%.2x.dll"), (LPCTSTR)m_sHome, (LPCTSTR)m_sModule, LangID );
-	HMODULE hInstance = LoadLibrary( strLangIDDLL );
-	if ( hInstance )
-	{
-		_AtlBaseModule.SetResourceInstance (hInstance);
-		m_CurLangID = LangID;
-		m_hLangDLL = hInstance;
-		return TRUE;
-	}
-	ATLTRACE ( "LoadLangIDDLL(%.2x) failed: %d\n", LangID, GetLastError ());
-	return FALSE;
 }
 
 void CSageThumbsModule::FillExtMap()
@@ -849,7 +755,7 @@ void CSageThumbsModule::FillExtMap()
 			}
 		}
 	}
-    							
+
 	// Загрузка данных о расширении
 	i = 1;
 	const CString key = CString( REG_SAGETHUMBS ) + _T("\\");
@@ -861,7 +767,7 @@ void CSageThumbsModule::FillExtMap()
 		DWORD dwEnabled = GetRegValue( _T("Enabled"), EXT_DEFAULT( p->m_key ) ? 0ul : 1ul, key + p->m_key );
 		p->m_value.enabled = ( dwEnabled != 0 );
 
-		//ATLTRACE( "%4d. %c %8s \"%s\"\n", i, ( p->m_value.enabled ? '+' : '-' ), (LPCSTR)CT2A( p->m_key ), (LPCSTR)CT2A( p->m_value.info ) );	
+		//ATLTRACE( "%4d. %c %8s \"%s\"\n", i, ( p->m_value.enabled ? '+' : '-' ), (LPCSTR)CT2A( p->m_key ), (LPCSTR)CT2A( p->m_value.info ) );
 	}
 
 	ATLTRACE( "Loaded %d formats, %d extensions. ", count, m_oExtMap.GetCount() );
@@ -872,32 +778,25 @@ BOOL CSageThumbsModule::Initialize()
 {
 	ATLTRACE ( "CSageThumbsModule::Initialize ()\n" );
 
-	CHECKPOINT_BEGIN(LoadLibrarySQLite)
+	m_oLangs.Load( m_sModuleFileName );
+	m_oLangs.Select( (LANGID)(DWORD)GetRegValue( _T("Lang"), (DWORD)LANG_NEUTRAL ) );
+	SetRegValue( _T("Lang"), m_oLangs.GetLang() );
+
 	m_hSQLite = ::LoadLibrary( m_sHome + LIB_SQLITE );
 	if ( ! m_hSQLite )
 		// Ошибка загрузки
 		return FALSE;
-	CHECKPOINT(LoadLibrarySQLite)
 
 	// Загрузка библиотек
-	CHECKPOINT_BEGIN(LoadLibraryGFL)
 	m_hGFL = ::LoadLibrary( m_sHome + LIB_GFL );
 	if ( ! m_hGFL )
 		// Ошибка загрузки
 		return FALSE;
-	CHECKPOINT(LoadLibraryGFL)
 
-	CHECKPOINT_BEGIN(LoadLibraryGFLE)
 	m_hGFLe = ::LoadLibrary( m_sHome + LIB_GFLE );
 	if ( ! m_hGFLe )
 		// Ошибка загрузки
 		return FALSE;
-	CHECKPOINT(LoadLibraryGFLE)
-
-	// Загрузка локализации
-	CHECKPOINT_BEGIN(LoadLangs)
-	LoadLang ();
-	CHECKPOINT(LoadLangs)
 
 	CHECKPOINT_BEGIN(GFLInit)
 
@@ -991,7 +890,7 @@ BOOL CSageThumbsModule::Initialize()
 void CSageThumbsModule::UnInitialize ()
 {
 	ATLTRACE ( "CSageThumbsModule::UnInitialize ()\n" );
-	
+
 	if ( m_hGFLe )
 	{
 		FreeLibrary( m_hGFLe );
@@ -1015,7 +914,7 @@ void CSageThumbsModule::UnInitialize ()
 		__FUnloadDelayLoadedDLL2( LIB_SQLITE );
 	}
 
-	UnLoadLang ();
+	m_oLangs.Empty();
 }
 
 extern "C" BOOL WINAPI DllMain(HINSTANCE /* hInstance */, DWORD dwReason, LPVOID lpReserved)
@@ -1064,7 +963,7 @@ STDAPI DllInstall(BOOL bInstall, LPCWSTR pszCmdLine)
 	}
 
 	if ( bInstall )
-	{	
+	{
 		hr = DllRegisterServer();
 		if ( FAILED( hr ) )
 		{
@@ -1091,7 +990,7 @@ void CALLBACK Options (HWND hwnd, HINSTANCE /* hinst */, LPSTR /* lpszCmdLine */
 	InitCommonControlsEx( &init );
 
 	COptionsDialog dlg;
-	dlg.DoModal( hwnd );
+	while ( dlg.DoModal( hwnd ) == IDRETRY );
 
 	OleUninitialize();
 }
@@ -1409,6 +1308,13 @@ BOOL RegisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue, L
 	CString buf = GetRegValue( szName, _T(""), szKey, hRoot );
 	if ( buf.CompareNoCase( szValue ) != 0 )
 	{
+		if ( ! szBackupName && ! buf.IsEmpty() )
+		{
+			// Don't replace existing value
+			ATLTRACE( "Registration skipped due existing key : %s\\%s=\"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( buf ) );
+			return TRUE;
+		}
+
 		// Set new value
 		if ( ! SetRegValue( szName, szValue, szKey, hRoot ) )
 			return FALSE;
@@ -1429,9 +1335,9 @@ BOOL UnregisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue,
 
 	// Check backup
 	CString buf = GetRegValue( szName, _T(""), szKey, hRoot );
-	CString backup_buf = GetRegValue( szBackupName, _T(""), szKey, hRoot );
+	CString backup_buf = szBackupName ? GetRegValue( szBackupName, _T(""), szKey, hRoot ) : CString();
 	if ( buf.CompareNoCase( szValue ) == 0 )
-	{			
+	{
 		// Check backup value
 		if ( ! backup_buf.IsEmpty() )
 		{
@@ -1448,7 +1354,7 @@ BOOL UnregisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue,
 	if ( ! backup_buf.IsEmpty() )
 	{
 		// Delete backup value
-		bOK = DeleteRegValue( szBackupName, szKey, hRoot ) && bOK; 
+		bOK = DeleteRegValue( szBackupName, szKey, hRoot ) && bOK;
 	}
 
 	// Clean-up empty key

@@ -51,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,0,0,12
- PRODUCTVERSION 2,0,0,12
+ FILEVERSION 2,0,0,13
+ PRODUCTVERSION 2,0,0,13
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -70,12 +70,12 @@ BEGIN
             VALUE "Comments", "http://www.cherubicsoft.com/"
             VALUE "CompanyName", "CherubicSoft"
             VALUE "FileDescription", "SageThumbs Shell Extension"
-            VALUE "FileVersion", "2.0.0.12"
+            VALUE "FileVersion", "2.0.0.13"
             VALUE "InternalName", "SageThumbs.dll"
-            VALUE "LegalCopyright", "Copyright © 2004-2011 Nikolay Raspopov"
+            VALUE "LegalCopyright", "Copyright © 2004-2012 Nikolay Raspopov"
             VALUE "OriginalFilename", "SageThumbs.dll"
             VALUE "ProductName", "SageThumbs Shell Extension"
-            VALUE "ProductVersion", "2.0.0.12"
+            VALUE "ProductVersion", "2.0.0.13"
         END
     END
     BLOCK "VarFileInfo"
@@ -190,6 +190,16 @@ END
 //
 
 IDR_SAGETHUMBS          BITMAP                  ".\\res\\SageThumbs.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// PO
+//
+
+29                      PO                      "sagethumbs.dll.1d.p_"
+22                      PO                      "sagethumbs.dll.16.p_"
+25                      PO                      "sagethumbs.dll.19.p_"
+0x10                    PO                      "sagethumbs.dll.10.p_"
 
 /////////////////////////////////////////////////////////////////////////////
 //

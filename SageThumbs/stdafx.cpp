@@ -20,6 +20,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #include "stdafx.h"
 #include <InitGuid.h>
+#include "..\Localization\Localization.cpp"
 
 DEFINE_GUID(CLSID_WindowsThumbnailer,0x889900c3,0x59f3,0x4c2f,0xae,0x21,0xa4,0x09,0xea,0x01,0xe6,0x05);
 
@@ -36,7 +37,7 @@ CString GetSpecialFolderPath(int csidl)
 
 		CoTaskMemFree( pidl );
 	}
-	
+
 	return buf;
 }
 
@@ -51,7 +52,7 @@ BOOL IsProcessElevated()
 
 	TOKEN_ELEVATION elevation = {};
 	DWORD dwSize = 0;
-	if ( ! GetTokenInformation( hToken, TokenElevation, &elevation, 
+	if ( ! GetTokenInformation( hToken, TokenElevation, &elevation,
 		sizeof( elevation ), &dwSize ) )
 	{
 		ATLTRACE( "GetTokenInformation error: %d\n", GetLastError() );
@@ -70,7 +71,7 @@ void CleanWindowsCache()
 	if ( SUCCEEDED( hr ) )
 	{
 		pWindowsThumbnailer->Purge( 0, NULL );
-	}	
+	}
 }
 
 BOOL LoadIcon(LPCTSTR szFilename, HICON* phSmallIcon, HICON* phLargeIcon, HICON* phHugeIcon, int nIcon)
@@ -148,7 +149,6 @@ public:
 			crc32_table[i] = c;
 		}
 	}
-
 };
 
 static CCRC32 _CRC32;

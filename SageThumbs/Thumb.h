@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2011.
+Copyright (C) Nikolay Raspopov, 2004-2012.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -73,10 +73,11 @@ Thumbnail Image Handler Vista:
 	1. Query for IClassFactory
 	2. Shell item load
 	3. Query for IExtractImage
-	4. IExtractImage::GetLocation		-> Load info and image
-	5. Query for IThumbnailProvider
-	6. IThumbnailProvider::GetThumbnail
-	7. Release
+	4. Query for unknown {2968087C-7490-430F-BB8B-2156610D825A}
+	5. IExtractImage::GetLocation		-> Load info and image
+	6. Query for IThumbnailProvider
+	7. IThumbnailProvider::GetThumbnail
+	8. Release
 
 Data Handler:
 	1. Query for IClassFactory
@@ -196,7 +197,7 @@ public:
 
 	HRESULT FinalConstruct();
 	void FinalRelease();
-	
+
 	void OnAddConnection(bool /*bThisIsFirstLock*/)
 	{
 		ATLTRACE( "CTumbs - IExternalConnection::AddConnection()\n" );
@@ -225,24 +226,24 @@ public:
 	STDMETHOD(GetCurFile)(LPOLESTR*);
 
 // IParentAndItem
-	//STDMETHOD(SetParentAndItem)( 
+	//STDMETHOD(SetParentAndItem)(
 	//	/* [unique][in] */ __RPC__in_opt PCIDLIST_ABSOLUTE pidlParent,
 	//	/* [unique][in] */ __RPC__in_opt IShellFolder *psf,
 	//	/* [in] */ __RPC__in PCUITEMID_CHILD pidlChild);
-	//STDMETHOD(GetParentAndItem)( 
+	//STDMETHOD(GetParentAndItem)(
 	//	/* [out] */ __RPC__deref_out_opt PIDLIST_ABSOLUTE *ppidlParent,
 	//	/* [out] */ __RPC__deref_out_opt IShellFolder **ppsf,
 	//	/* [out] */ __RPC__deref_out_opt PITEMID_CHILD *ppidlChild);
 
 // IInitializeWithStream
 #ifdef ISTREAM_ENABLED
-	STDMETHOD(Initialize)( 
+	STDMETHOD(Initialize)(
 		/* [in] */ IStream *pstream,
 		/* [in] */ DWORD grfMode);
 #endif // ISTREAM_ENABLED
 
 // IInitializeWithItem
-	STDMETHOD(Initialize)( 
+	STDMETHOD(Initialize)(
 		/* [in] */ __RPC__in_opt IShellItem *psi,
 		/* [in] */ DWORD grfMode);
 
@@ -253,115 +254,115 @@ public:
 	STDMETHOD(GetThumbnail)(UINT cx, HBITMAP *phbmp, WTS_ALPHATYPE *pdwAlpha);
 
 // IPropertyStoreCapabilities
-	STDMETHOD(IsPropertyWritable)( 
+	STDMETHOD(IsPropertyWritable)(
 		/* [in] */ __RPC__in REFPROPERTYKEY key);
 
 // IPropertyStore
-	STDMETHOD(GetCount)( 
+	STDMETHOD(GetCount)(
 		/* [out] */ __RPC__out DWORD *cProps);
-	STDMETHOD(GetAt)( 
+	STDMETHOD(GetAt)(
 		/* [in] */ DWORD iProp,
 		/* [out] */ __RPC__out PROPERTYKEY *pkey);
-	STDMETHOD(GetValue)( 
+	STDMETHOD(GetValue)(
 		/* [in] */ __RPC__in REFPROPERTYKEY key,
 		/* [out] */ __RPC__out PROPVARIANT *pv);
-	STDMETHOD(SetValue)( 
+	STDMETHOD(SetValue)(
 		/* [in] */ __RPC__in REFPROPERTYKEY key,
 		/* [in] */ __RPC__in REFPROPVARIANT propvar);
 	STDMETHOD(Commit)(void);
 
 // IPropertySetStorage
-	//STDMETHOD(Create)( 
+	//STDMETHOD(Create)(
 	//	/* [in] */ __RPC__in REFFMTID rfmtid,
 	//	/* [unique][in] */ __RPC__in_opt const CLSID *pclsid,
 	//	/* [in] */ DWORD grfFlags,
 	//	/* [in] */ DWORD grfMode,
 	//	/* [out] */ __RPC__deref_out_opt IPropertyStorage **ppprstg);
-	//STDMETHOD(Open)( 
+	//STDMETHOD(Open)(
 	//	/* [in] */ __RPC__in REFFMTID rfmtid,
 	//	/* [in] */ DWORD grfMode,
 	//	/* [out] */ __RPC__deref_out_opt IPropertyStorage **ppprstg);
-	//STDMETHOD(Delete)( 
+	//STDMETHOD(Delete)(
 	//	/* [in] */ __RPC__in REFFMTID rfmtid);
-	//STDMETHOD(Enum)( 
+	//STDMETHOD(Enum)(
 	//	/* [out] */ __RPC__deref_out_opt IEnumSTATPROPSETSTG **ppenum);
 
 // IPropertyStorage
-	//STDMETHOD(ReadMultiple)( 
+	//STDMETHOD(ReadMultiple)(
 	//	/* [in] */ ULONG cpspec,
 	//	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[  ],
 	//	/* [size_is][out] */ __RPC__out_ecount_full(cpspec) PROPVARIANT rgpropvar[  ]);
-	//STDMETHOD(WriteMultiple)( 
+	//STDMETHOD(WriteMultiple)(
 	//	/* [in] */ ULONG cpspec,
 	//	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[  ],
 	//	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPVARIANT rgpropvar[  ],
 	//	/* [in] */ PROPID propidNameFirst);
-	//STDMETHOD(DeleteMultiple)( 
+	//STDMETHOD(DeleteMultiple)(
 	//	/* [in] */ ULONG cpspec,
 	//	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[  ]);
-	//STDMETHOD(ReadPropertyNames)( 
+	//STDMETHOD(ReadPropertyNames)(
 	//	/* [in] */ ULONG cpropid,
 	//	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID rgpropid[  ],
 	//	/* [size_is][out] */ __RPC__out_ecount_full(cpropid) LPOLESTR rglpwstrName[  ]);
-	//STDMETHOD(WritePropertyNames)( 
+	//STDMETHOD(WritePropertyNames)(
 	//	/* [in] */ ULONG cpropid,
 	//	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID rgpropid[  ],
 	//	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const LPOLESTR rglpwstrName[  ]);
-	//STDMETHOD(DeletePropertyNames)( 
+	//STDMETHOD(DeletePropertyNames)(
 	//	/* [in] */ ULONG cpropid,
 	//	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID rgpropid[  ]);
-	//STDMETHOD(Commit)( 
+	//STDMETHOD(Commit)(
 	//	/* [in] */ DWORD grfCommitFlags);
 	//STDMETHOD(Revert)();
-	//STDMETHOD(Enum)( 
+	//STDMETHOD(Enum)(
 	//	/* [out] */ __RPC__deref_out_opt IEnumSTATPROPSTG **ppenum);
-	//STDMETHOD(SetTimes)( 
+	//STDMETHOD(SetTimes)(
 	//	/* [in] */ __RPC__in const FILETIME *pctime,
 	//	/* [in] */ __RPC__in const FILETIME *patime,
 	//	/* [in] */ __RPC__in const FILETIME *pmtime);
-	//STDMETHOD(SetClass)( 
+	//STDMETHOD(SetClass)(
 	//	/* [in] */ __RPC__in REFCLSID clsid);
-	//STDMETHOD(Stat)( 
+	//STDMETHOD(Stat)(
 	//	/* [out] */ __RPC__out STATPROPSETSTG *pstatpsstg);
 
 // INamedPropertyStore
-	//STDMETHOD(GetNamedValue)( 
+	//STDMETHOD(GetNamedValue)(
 	//	/* [string][in] */ __RPC__in_string LPCWSTR pszName,
 	//	/* [out] */ __RPC__out PROPVARIANT *ppropvar);
-	//STDMETHOD(SetNamedValue)( 
+	//STDMETHOD(SetNamedValue)(
 	//	/* [string][in] */ __RPC__in_string LPCWSTR pszName,
 	//	/* [in] */ __RPC__in REFPROPVARIANT propvar);
-	//STDMETHOD(GetNameCount)( 
+	//STDMETHOD(GetNameCount)(
 	//	/* [out] */ __RPC__out DWORD *pdwCount);
-	//STDMETHOD(GetNameAt)( 
+	//STDMETHOD(GetNameAt)(
 	//	/* [in] */ DWORD iProp,
 	//	/* [out] */ __RPC__deref_out_opt BSTR *pbstrName);
 
 // IPreviewHandler
-	//STDMETHOD(SetWindow)( 
+	//STDMETHOD(SetWindow)(
 	//	/* [in] */ __RPC__in HWND hwnd,
 	//	/* [in] */ __RPC__in const RECT *prc);
-	//STDMETHOD(SetRect)( 
+	//STDMETHOD(SetRect)(
 	//	/* [in] */ __RPC__in const RECT *prc);
 	//STDMETHOD(DoPreview)(void);
 	//STDMETHOD(Unload)(void);
 	//STDMETHOD(SetFocus)(void);
-	//STDMETHOD(QueryFocus)( 
+	//STDMETHOD(QueryFocus)(
 	//	/* [out] */ __RPC__deref_out_opt HWND *phwnd);
-	//STDMETHOD(TranslateAccelerator)( 
+	//STDMETHOD(TranslateAccelerator)(
 	//	/* [in] */ __RPC__in MSG *pmsg);
 
 // IOleWindow
-	//STDMETHOD(GetWindow)( 
+	//STDMETHOD(GetWindow)(
 	//	/* [out] */ __RPC__deref_out_opt HWND *phwnd);
-	//STDMETHOD(ContextSensitiveHelp)( 
+	//STDMETHOD(ContextSensitiveHelp)(
 	//	/* [in] */ BOOL fEnterMode);
 
 // IExtractImage
 	STDMETHOD (GetLocation) (LPWSTR pszPathBuffer, DWORD cch, DWORD *pdwPriority,
-		const SIZE *prgSize, DWORD dwRecClrDepth, DWORD *pdwFlags);        
+		const SIZE *prgSize, DWORD dwRecClrDepth, DWORD *pdwFlags);
 	STDMETHOD (Extract) (HBITMAP *phBmpThumbnail);
- 
+
 // IExtractImage2
 	STDMETHOD (GetDateStamp) (FILETIME *pDateStamp);
 
@@ -405,40 +406,40 @@ public:
 		UINT nIconSize);
 
 // IDataObject
-	//STDMETHOD(GetData)( 
+	//STDMETHOD(GetData)(
 	//	/* [unique][in] */ FORMATETC *pformatetcIn,
 	//	/* [out] */ STGMEDIUM *pmedium);
-	//STDMETHOD(GetDataHere)( 
+	//STDMETHOD(GetDataHere)(
 	//	/* [unique][in] */ FORMATETC *pformatetc,
 	//	/* [out][in] */ STGMEDIUM *pmedium);
-	//STDMETHOD(QueryGetData)( 
+	//STDMETHOD(QueryGetData)(
 	//	/* [unique][in] */ FORMATETC *pformatetc);
-	//STDMETHOD(GetCanonicalFormatEtc)( 
+	//STDMETHOD(GetCanonicalFormatEtc)(
 	//	/* [unique][in] */ FORMATETC *pformatectIn,
 	//	/* [out] */ FORMATETC *pformatetcOut);
-	//STDMETHOD(SetData)( 
+	//STDMETHOD(SetData)(
 	//	/* [unique][in] */ FORMATETC *pformatetc,
 	//	/* [unique][in] */ STGMEDIUM *pmedium,
 	//	/* [in] */ BOOL fRelease);
-	//STDMETHOD(EnumFormatEtc)( 
+	//STDMETHOD(EnumFormatEtc)(
 	//	/* [in] */ DWORD dwDirection,
 	//	/* [out] */ IEnumFORMATETC **ppenumFormatEtc);
-	//STDMETHOD(DAdvise)( 
+	//STDMETHOD(DAdvise)(
 	//	/* [in] */ FORMATETC *pformatetc,
 	//	/* [in] */ DWORD advf,
 	//	/* [unique][in] */ IAdviseSink *pAdvSink,
 	//	/* [out] */ DWORD *pdwConnection);
-	//STDMETHOD(DUnadvise)( 
+	//STDMETHOD(DUnadvise)(
 	//	/* [in] */ DWORD dwConnection);
-	//STDMETHOD(EnumDAdvise)( 
+	//STDMETHOD(EnumDAdvise)(
 	//	/* [out] */ IEnumSTATDATA **ppenumAdvise);
 
 // IImageDecodeFilter
-	//STDMETHOD(Initialize)( 
-	//	/* [in] */ IImageDecodeEventSink *pEventSink);	    
-	//STDMETHOD(Process)( 
-	//	/* [in] */ IStream *pStream);	    
-	//STDMETHOD(Terminate)( 
+	//STDMETHOD(Initialize)(
+	//	/* [in] */ IImageDecodeEventSink *pEventSink);
+	//STDMETHOD(Process)(
+	//	/* [in] */ IStream *pStream);
+	//STDMETHOD(Terminate)(
 	//	/* [in] */ HRESULT hrStatus);
 
 // IObjectWithSite
@@ -451,29 +452,29 @@ public:
 	//STDMETHOD(GetItemData)(LPCSHCOLUMNID pscid, LPCSHCOLUMNDATA pscd, VARIANT *pvarData);
 
 // IEmptyVolumeCache
-	STDMETHOD(Initialize)( 
+	STDMETHOD(Initialize)(
 		/* [in] */ HKEY hkRegKey,
 		/* [in] */ LPCWSTR pcwszVolume,
 		/* [out] */ LPWSTR *ppwszDisplayName,
 		/* [out] */ LPWSTR *ppwszDescription,
 		/* [out] */ DWORD *pdwFlags);
 
-	STDMETHOD(GetSpaceUsed)( 
+	STDMETHOD(GetSpaceUsed)(
 		/* [out] */ __RPC__out DWORDLONG *pdwlSpaceUsed,
 		/* [in] */ __RPC__in_opt IEmptyVolumeCacheCallBack *picb);
 
-	STDMETHOD(Purge)( 
+	STDMETHOD(Purge)(
 		/* [in] */ DWORDLONG dwlSpaceToFree,
 		/* [in] */ __RPC__in_opt IEmptyVolumeCacheCallBack *picb);
 
-	STDMETHOD(ShowProperties)( 
+	STDMETHOD(ShowProperties)(
 		/* [in] */ __RPC__in HWND hwnd);
 
-	STDMETHOD(Deactivate)( 
+	STDMETHOD(Deactivate)(
 		/* [out] */ __RPC__out DWORD *pdwFlags);
 
 // IEmptyVolumeCache2
-	STDMETHOD(InitializeEx)( 
+	STDMETHOD(InitializeEx)(
 		/* [in] */ HKEY hkRegKey,
 		/* [in] */ LPCWSTR pcwszVolume,
 		/* [in] */ LPCWSTR pcwszKeyName,
@@ -495,13 +496,13 @@ protected:
 	CComPtr< IStream >				m_pStream;			// Стрим файла
 #endif ISTREAM_ENABLED
 
-	CString							m_sFilename;		// Full file name 
-	BOOL							m_bCleanup;		// Флаг пропуска очистки
+	CString							m_sFilename;		// Full file name
+	BOOL							m_bCleanup;			// Флаг пропуска очистки
 
-	void ConvertTo(HWND hWnd, int ext);			// Конвертирование в нужное расширение
-	void SetWallpaper(HWND hwnd, WORD reason);	// Установка обоев
-	void SendByMail(HWND hwnd, WORD reason);	// Посылка по почте
-	void CopyToClipboard(HWND hwnd);			// Копирование в буфер обмена
+	void ConvertTo(HWND hWnd, int ext);					// Конвертирование в нужное расширение
+	void SetWallpaper(HWND hwnd, WORD reason);			// Установка обоев
+	void SendByMail(HWND hwnd, WORD reason);			// Посылка по почте
+	void CopyToClipboard(HWND hwnd);					// Копирование в буфер обмена
 
 	STDMETHOD(MenuMessageHandler)(UINT, WPARAM, LPARAM, LRESULT*);
 	STDMETHOD(OnMeasureItem)(MEASUREITEMSTRUCT*, LRESULT*);

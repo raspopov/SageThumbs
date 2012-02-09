@@ -50,6 +50,7 @@
 #define IDC_ENABLE_THUMBS               212
 #define IDC_CLEAR                       213
 #define IDC_FILE_SIZE                   214
+#define IDR_PO1                         214
 #define IDC_EMBEDDED                    215
 #define IDC_ENABLE_ICONS                216
 #define IDC_ENABLE_WINCACHE             217
@@ -66,7 +67,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        211
+#define _APS_NEXT_RESOURCE_VALUE        215
 #define _APS_NEXT_COMMAND_VALUE         32768
 #define _APS_NEXT_CONTROL_VALUE         225
 #define _APS_NEXT_SYMED_VALUE           103

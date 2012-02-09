@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2011.
+Copyright (C) Nikolay Raspopov, 2004-2012.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -27,43 +27,13 @@ COptionsDialog::COptionsDialog()
 {
 }
 
-LRESULT COptionsDialog::AddLanguage (LANGID lang, LANGID selected)
-{
-	LCID lcID =  MAKELCID (MAKELANGID (lang, SUBLANG_NEUTRAL), SORT_DEFAULT);
-	TCHAR szNativeLangName [64] = {};
-	GetLocaleInfo (lcID, LOCALE_SNATIVELANGNAME, szNativeLangName, 64);
-	TCHAR szLangName [64] = {};
-	GetLocaleInfo (lcID, LOCALE_SENGLANGUAGE, szLangName, 64);
-	CString strName;
-	strName.Format (_T("%s - %s"), szLangName, szNativeLangName);
-	LRESULT nIndex = SendDlgItemMessage (IDC_LANG, CB_ADDSTRING, 0,
-		(LPARAM) (LPCTSTR) strName);
-	SendDlgItemMessage (IDC_LANG, CB_SETITEMDATA, nIndex, lang);
-	if (lang == selected)
-		SendDlgItemMessage (IDC_LANG, CB_SETCURSEL, nIndex);
-	return nIndex;
-}
-
-LANGID COptionsDialog::GetLanguage()
-{
-	LRESULT nIndex = SendDlgItemMessage (IDC_LANG, CB_GETCURSEL);
-	if (nIndex != CB_ERR)
-	{
-		LANGID lang = (LANGID) SendDlgItemMessage (IDC_LANG, CB_GETITEMDATA, nIndex);
-		if ( lang != CB_ERR )
-			return lang;
-	}
-	return _Module.GetLang();
-}
-
 void COptionsDialog::ShowAbout()
 {
 	// Загрузка информации о базе данных
 	WIN32_FILE_ATTRIBUTE_DATA wfadDatabase = {};
 	GetFileAttributesEx( _Module.m_sDatabase, GetFileExInfoStandard, &wfadDatabase );
-	CString sDatabaseSize, sDatabaseSizeFmt;
-	sDatabaseSizeFmt.LoadString( IDS_DATABASE_SIZE );
-	sDatabaseSize.Format( sDatabaseSizeFmt, ( wfadDatabase.nFileSizeLow >> 10 ) );
+	CString sDatabaseSize;
+	sDatabaseSize.Format( _Module.m_oLangs.LoadString( IDS_DATABASE_SIZE ), ( wfadDatabase.nFileSizeLow >> 10 ) );
 	SetDlgItemText( IDC_CACHE_SIZE, sDatabaseSize );
 
 	// Загрузка информации о версии
@@ -108,27 +78,9 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 {
 	bHandled = TRUE;
 
-	// Загрузка списка доступных языков
-	SendDlgItemMessage( IDC_LANG, CB_RESETCONTENT );
-	AddLanguage( STANDARD_LANGID, _Module.GetLang() );
-	WIN32_FIND_DATA wfd = {};
-	HANDLE ff = FindFirstFile( _Module.m_sHome + _Module.m_sModule + _T("??.dll"), &wfd );
-	if ( ff != INVALID_HANDLE_VALUE )
-	{
-		do
-		{
-			if ( ! ( wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) &&
-				wfd.cFileName [10] != '.' &&
-				wfd.cFileName [11] != '.' &&
-				wfd.cFileName [12] == '.' )
-			{
-				AddLanguage( ( hs2b( wfd.cFileName [10] ) << 4 ) |
-					hs2b( wfd.cFileName [11] ), _Module.GetLang() );
-			}
-		}
-		while ( FindNextFile( ff, &wfd ) );
-		FindClose( ff );
-	}
+	_Module.m_oLangs.Reload();
+	_Module.m_oLangs.FillComboBox( GetDlgItem( IDC_LANG ) );
+	_Module.m_oLangs.Translate( m_hWnd, IDD );
 
 	ShowAbout();
 
@@ -177,7 +129,7 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 		LVITEM lvi = {};
 		lvi.mask = LVIF_TEXT;
 		lvi.pszText = (LPTSTR)(LPCTSTR)p->m_key;
-		int index = ListView_InsertItem( pList, &lvi );				
+		int index = ListView_InsertItem( pList, &lvi );
 		lvi.iItem++;
 		ListView_SetItemText( pList, index, 1, (LPTSTR)(LPCTSTR)p->m_value.info);
 		ListView_SetCheckState( pList, index, p->m_value.enabled ? TRUE : FALSE );
@@ -314,7 +266,8 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 		SetRegValue( _T("Enabled"), bEnabled ? 1ul : 0u, key + ext );
 	}
 
-	_Module.LoadLang( GetLanguage () );
+	_Module.m_oLangs.Select( GetDlgItem( IDC_LANG ) );
+	SetRegValue( _T("Lang"), _Module.m_oLangs.GetLang() );
 
 	if ( ! _Module.RegisterExtensions( m_hWnd ) )
 	{
@@ -422,6 +375,19 @@ LRESULT COptionsDialog::OnOptimize(WORD /* wNotifyCode */, WORD /* wID */, HWND 
 	}
 
 	ShowAbout();
+
+	return TRUE;
+}
+
+LRESULT COptionsDialog::OnCbnSelchangeLang(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& bHandled)
+{
+	bHandled = TRUE;
+
+	// Reload dialog with new options
+	_Module.m_oLangs.Select( GetDlgItem( IDC_LANG ) );
+	SetRegValue( _T("Lang"), _Module.m_oLangs.GetLang() );
+
+	EndDialog( IDRETRY );
 
 	return TRUE;
 }

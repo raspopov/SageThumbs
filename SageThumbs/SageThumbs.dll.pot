@@ -1,0 +1,311 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SageThumbs.dll\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Dialog caption
+#: DIALOGCAPTION.202
+msgid "SageThumbs Options"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.1
+msgid "OK"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2
+msgid "Cancel"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.211
+msgid "Enable context menu in Explorer"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.212
+msgid "Enable thumbnails in Explorer"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.216
+msgid "Use thumbnails as icons in Explorer"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.217
+msgid "Enable Windows thumbnail cache"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.215
+msgid "Prefer image file embedded thumbnails"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.203
+msgid "Use Windows Image/Fax Viewer"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.213
+msgid "Clear..."
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.218
+msgid "Optimize"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483649
+msgid "Context menu preview size"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483650
+msgid "Width x Height:"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483651
+msgid "X"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483652
+msgid "pixels"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483653
+msgid "Supported file types"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483654
+msgid "System-wide tweaks"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483655
+msgid "Language:"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483656
+msgid "Maximum size of image file:"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483657
+msgid "MB"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483658
+msgid "Convert options"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483659
+msgid "JPEG quality (0 - lowest, 100 - best):"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483660
+msgid "PNG compression (0 - lowest, 9 - best):"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr ""
+
+#. String resource
+#: STRING.100
+msgid "SageThumbs"
+msgstr ""
+
+#. String resource
+#: STRING.101
+msgid "Change various SageThumbs options"
+msgstr ""
+
+#. String resource
+#: STRING.102
+msgid "Type: "
+msgstr ""
+
+#. String resource
+#: STRING.103
+msgid "Sizes (pixels): "
+msgstr ""
+
+#. String resource
+#: STRING.104
+msgid "Size (bytes): "
+msgstr ""
+
+#. String resource
+#: STRING.105
+msgid "Modified: "
+msgstr ""
+
+#. String resource
+#: STRING.106
+msgid "Colors (bits): "
+msgstr ""
+
+#. String resource
+#: STRING.107
+msgid "Compression: "
+msgstr ""
+
+#. String resource
+#: STRING.108
+msgid "Resolution: "
+msgstr ""
+
+#. String resource
+#: STRING.109
+msgid "Can't open image file"
+msgstr ""
+
+#. String resource
+#: STRING.110
+msgid "Can't save image file"
+msgstr ""
+
+#. String resource
+#: STRING.111
+msgid "Can't send mail"
+msgstr ""
+
+#. String resource
+#: STRING.112
+msgid "Nothing to send"
+msgstr ""
+
+#. String resource
+#: STRING.113
+msgid "Can't open clipboard"
+msgstr ""
+
+#. String resource
+#: STRING.114
+msgid "Please confirm thumbnail cache clearing."
+msgstr ""
+
+#. String resource
+#: STRING.115
+msgid "Thumbnail cache size: %u KB"
+msgstr ""
+
+#. String resource
+#: STRING.116
+msgid "SageThumbs thumbnail cache"
+msgstr ""
+
+#. String resource
+#: STRING.117
+msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
+msgstr ""
+
+#. String resource
+#: STRING.118
+msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
+msgstr ""
+
+#. String resource
+#: STRING.119
+msgid "Convert to PNG"
+msgstr ""
+
+#. String resource
+#: STRING.120
+msgid "Converting..."
+msgstr ""
+
+#. String resource
+#: STRING.121
+msgid "Sending..."
+msgstr ""
+
+#. String resource
+#: STRING.122
+msgid "Applying settings..."
+msgstr ""
+
+#. String resource
+#: STRING.123
+msgid "Updating..."
+msgstr ""
+
+#. String resource
+#: STRING.203
+msgid "SageThumbs Options..."
+msgstr ""
+
+#. String resource
+#: STRING.204
+msgid "Copy to clipboard"
+msgstr ""
+
+#. String resource
+#: STRING.205
+msgid "Set tiled wallpaper"
+msgstr ""
+
+#. String resource
+#: STRING.206
+msgid "Set centered wallpaper"
+msgstr ""
+
+#. String resource
+#: STRING.207
+msgid "Set stretched wallpaper"
+msgstr ""
+
+#. String resource
+#: STRING.208
+msgid "Send image by mail..."
+msgstr ""
+
+#. String resource
+#: STRING.209
+msgid "Send thumbnail by mail..."
+msgstr ""
+
+#. String resource
+#: STRING.210
+msgid "Convert to JPG"
+msgstr ""
+
+#. String resource
+#: STRING.211
+msgid "Convert to GIF"
+msgstr ""
+
+#. String resource
+#: STRING.212
+msgid "Convert to BMP"
+msgstr ""
+

@@ -100,30 +100,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SageThumbs\French\French_10.vcxproj">
-      <Project>{8fbc691b-d1e0-40f9-8943-4b45a8bef1ed}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <Private>false</Private>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-    </ProjectReference>
-    <ProjectReference Include="..\SageThumbs\German\German_10.vcxproj">
-      <Project>{8fbc691b-d1e0-40f9-8943-4b45a8bef1ef}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <Private>false</Private>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-    </ProjectReference>
-    <ProjectReference Include="..\SageThumbs\Russian\Russian_10.vcxproj">
-      <Project>{dcd6131e-89f0-4123-9831-8e1a515f745c}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <Private>false</Private>
-      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-      <LinkLibraryDependencies>true</LinkLibraryDependencies>
-      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
-    </ProjectReference>
     <ProjectReference Include="..\SageThumbs\SageThumbs_10.vcxproj">
       <Project>{d63f7293-39cc-4b91-88a6-1c3855ee5dc3}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>

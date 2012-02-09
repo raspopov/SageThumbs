@@ -1,3 +1,4 @@
+
 SageThumbs Shell Extension
 
 ========================================================================
@@ -25,7 +26,7 @@ Please read carefully the following information.
 
 System Requirements:
 
-  * Windows 2000/XP/2003/Vista/2008/7 32/64-bit
+  * Windows XP/2003/Vista/2008/7 32/64-bit
   * About 5 Mb of disk space + additional space for cache
 
 ========================================================================
@@ -43,7 +44,26 @@ External plugins:
 
 ========================================================================
 
+Translation:
+
+	SageThumbs can be easily translated to other languages.
+
+	* Download and install PoEdit:
+	* Copy "SageThumbs.dll.pot" file (can be found in SageThumbs installation folder) under new name "SageThumbs.dll.XX.po" near original file. Where "XX" is 2-digit hexadecimal code of language, see "Language Codes Table": For example Russian has code 0x19 so its a "SageThumbs.dll.19.po".
+	* Open new file in PoEdit, translate and save as UTF-8 (its by default)
+	* Open SageThumbs options and select new language in it
+	* Send file to me: raspopov@cherubicsoft.com
+
+========================================================================
+
 Versions:
+
+2.0.0.13
+  * New user-friendly translation method using PoEdit
+  * Shortened main menu text (without "32/64-bit")
+  * SageThumbs now works in "compatible" mode (overwrite no other shell extensions)
+  * Excluded "vst" extension by default
+  * Dropped support for Windows 2000
 
 2.0.0.12
   * "Maximum size of image file" option limits image thumbnail generation only
@@ -210,8 +230,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Copyrights:
 
 SageThumbs
-Copyright (C) Nikolay Raspopov, 2004-2011.
-E-Mail: ryo-oh-ki@narod.ru
+Copyright (C) Nikolay Raspopov, 2004-2012.
+E-Mail: raspopov@cherubicsoft.com
 Web site: http://www.cherubicsoft.com/projects/sagethumbs
 
 GFL Library, GFL SDK and XnView

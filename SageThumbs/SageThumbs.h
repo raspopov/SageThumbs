@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2011.
+Copyright (C) Nikolay Raspopov, 2004-2012.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -20,8 +20,14 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #pragma once
 
+class CSageThumbsModule;
+class CWaitCursor;
+
 // #define GFL_THREAD_SAFE	// When enabled GFL calls guarded by critical section
 // #define ISTREAM_ENABLED	// Enable support for IInitializeWithStream interface
+
+//extern BitsDescriptionMap	_BitsMap;
+extern CSageThumbsModule	_Module;		// Application
 
 #define LIB_GFL				"libgfl340.dll"	// Name of GFL library (case sensitive)
 #define LIB_GFLE			"libgfle340.dll"// Name of GFLe library (case sensitive)
@@ -30,13 +36,13 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define REG_SAGETHUMBS		_T("Software\\SageThumbs")
 #define REG_SAGETHUMBS_BAK	_T("SageThumbs.bak")
 #define REG_SAGETHUMBS_IMG	_T("SageThumbsImage")
-#define JPEG_DEFAULT		85ul			// JPEG default quality
-#define PNG_DEFAULT			6ul				// PNG default compression
-#define THUMB_STORE_SIZE	256ul			// Minimum thumbnail size for database
-#define THUMB_MIN_SIZE		32ul			// Минимальный размер просмотра в пикселях
-#define THUMB_MAX_SIZE		512ul			// Максимальный размер просмотра в пикселях 
-#define FILE_MAX_SIZE		10ul			// Максимальный размер файла в Мб
-#define STANDARD_LANGID		0x09			// Стандартный встроенный язык - English
+#define JPEG_DEFAULT		85ul			// JPEG default quality (0-100)
+#define PNG_DEFAULT			6ul				// PNG default compression (0-9)
+#define THUMB_STORE_SIZE	256ul			// Minimum thumbnail size for database, pixels
+#define THUMB_MIN_SIZE		32ul			// Thumbnail minimum size, pixels
+#define THUMB_MAX_SIZE		512ul			// Thumbnail maximum size, pixels
+#define FILE_MAX_SIZE		10ul			// Default maximum file size, MB
+#define STANDARD_LANGID		0x09			// Default language ID - English
 
 // Disabled by default
 #define EXT_DEFAULT(ext) \
@@ -46,6 +52,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	 (ext)==_T("cur")|| \
 	 (ext)==_T("pdf")|| \
 	 (ext)==_T("sys")|| \
+	 (ext)==_T("vst")|| \
 	 (ext)==_T("wmz"))
 
 // SQL для создания базы данных
@@ -112,10 +119,10 @@ public:
 
 	OSVERSIONINFO			m_OSVersion;			// OS version
 	CString					m_sModuleFileName;		// This module full filename
-	CString					m_sModule;				// This module name without extension
 	CString					m_sHome;				// Installation folder
 	CString					m_sDatabase;			// Database filename
 	CExtMap					m_oExtMap;				// Supported image extensions
+	CLocalization			m_oLangs;				// Translations
 
 	BOOL DllMain(DWORD dwReason, LPVOID lpReserved) throw();
 	HRESULT DllRegisterServer() throw();
@@ -126,9 +133,6 @@ public:
 
 	BOOL RegisterExtensions(HWND hWnd = NULL);
 	BOOL UnregisterExtensions();
-
-	LANGID GetLang();					// Текущий загруженный язык
-	BOOL LoadLang(LANGID LangID = 0);	// Загрузка языка (LangID == 0 - из реестра)
 
 	// Обновление настроек Explorer'a
 	void UpdateShell();
@@ -146,31 +150,23 @@ public:
 
 	inline CString GetAppName() const
 	{
-		CString sTitle;
-		sTitle.LoadString( IDS_PROJNAME );
+		return m_oLangs.LoadString( IDS_PROJNAME ) +
 #ifdef WIN64
-		return sTitle + _T(" 64-bit");
+			_T(" 64-bit");
 #else
-		return sTitle + _T(" 32-bit");
+			_T(" 32-bit");
 #endif
 	}
 
 	inline int MsgBox(HWND hWnd, UINT nText, UINT nType = MB_OK | MB_ICONEXCLAMATION)
 	{
-		CString sText;
-		sText.LoadString( nText );
-		return MessageBox( hWnd, sText, GetAppName(), nType );
+		return MessageBox( hWnd, m_oLangs.LoadString( nText ), GetAppName(), nType );
 	}
 
 protected:
 	HMODULE					m_hGFL;
 	HMODULE					m_hGFLe;
 	HMODULE					m_hSQLite;
-	HINSTANCE				m_hLangDLL;
-	LANGID					m_CurLangID;
-
-	void UnLoadLang ();
-	BOOL LoadLangIDDLL(LANGID LangID);
 
 	BOOL RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableThumbs, bool bEnableIcons, bool bEnableInfo, bool bEnableOverlay);
 	BOOL UnregisterExt(LPCTSTR szExt, bool bFull);
@@ -192,9 +188,6 @@ protected:
 #endif // GFL_THREAD_SAFE
 };
 
-//extern BitsDescriptionMap	_BitsMap;
-extern CSageThumbsModule	_Module;
-
 // Макросы для измерения времени
 #ifdef _DEBUG
 	#define CHECKPOINT_BEGIN(liLast) \
@@ -208,8 +201,8 @@ extern CSageThumbsModule	_Module;
 		ATLTRACE ("%s %ld ms\n", #liLast, (DWORD) ((liCurrent.QuadPart - liLast.QuadPart) / ( liFrequency.QuadPart / 1000 ) )); \
 	}
 #else // _DEBUG
-	#define CHECKPOINT_BEGIN(liLast)
-	#define CHECKPOINT(liLast)
+	#define CHECKPOINT_BEGIN	__noop
+	#define CHECKPOINT			__noop
 #endif // _DEBUG
 
 BOOL GetRegValue(LPCTSTR szName, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);

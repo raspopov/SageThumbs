@@ -288,11 +288,54 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\SageThumbs Online.url" />
+    <CustomBuild Include="SageThumbs.dll.16.po">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compress...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compress...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compress...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compress...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="SageThumbs.dll.19.po">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compress...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compress...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compress...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compress...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+    </CustomBuild>
     <None Include="SageThumbs.def" />
-    <None Include="res\bitmap1.bmp" />
     <None Include="res\SageThumbs.bmp" />
     <None Include="res\SageThumbs.ico" />
-    <None Include="SageThumbs.ico" />
+    <CustomBuild Include="SageThumbs.dll.1d.po">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compress...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compress...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compress...</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compress...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+    </CustomBuild>
     <None Include="res\SageThumbs.rc2">
       <FileType>Text</FileType>
     </None>
@@ -300,6 +343,25 @@
     <None Include="res\Thumb.rgs" />
     <None Include="..\license.txt" />
     <None Include="..\ReadMe.txt" />
+    <CustomBuild Include="SageThumbs.dll.10.po">
+      <FileType>Document</FileType>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)..\Localization\compress.exe "%(FullPath)" "%(RootDir)%(Directory)%(Filename).p_"</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compress...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compress...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compress...</Message>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compress...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
+    </CustomBuild>
+    <None Include="sagethumbs.dll.10.p_" />
+    <None Include="sagethumbs.dll.16.p_" />
+    <None Include="sagethumbs.dll.19.p_" />
+    <None Include="sagethumbs.dll.1d.p_" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h" />
@@ -318,18 +380,6 @@
   <ItemGroup>
     <ProjectReference Include="..\sqlite3\sqlite3_10.vcxproj">
       <Project>{0a0b10c7-cdf6-4a48-8f7b-b66a88154aae}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="French\French_10.vcxproj">
-      <Project>{8fbc691b-d1e0-40f9-8943-4b45a8bef1ed}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="German\German_10.vcxproj">
-      <Project>{8fbc691b-d1e0-40f9-8943-4b45a8bef1ef}</Project>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="Russian\Russian_10.vcxproj">
-      <Project>{dcd6131e-89f0-4123-9831-8e1a515f745c}</Project>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>
