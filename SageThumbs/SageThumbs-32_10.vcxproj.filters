@@ -120,5 +120,20 @@
     <CustomBuild Include="SageThumbs.dll.10.po">
       <Filter>Translations</Filter>
     </CustomBuild>
+    <CustomBuild Include="SageThumbs.dll.21.po">
+      <Filter>Translations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SageThumbs.dll.04.po">
+      <Filter>Translations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SageThumbs.dll.07.po">
+      <Filter>Translations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SageThumbs.dll.0a.po">
+      <Filter>Translations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SageThumbs.dll.0c.po">
+      <Filter>Translations</Filter>
+    </CustomBuild>
   </ItemGroup>
 </Project>
