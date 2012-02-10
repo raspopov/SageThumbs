@@ -28,22 +28,22 @@ msgstr "Cancelar"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.211
 msgid "Enable context menu in Explorer"
-msgstr "Abilitar o menu de contexto no Explorer"
+msgstr "Habilitar o menu de contexto no Explorer"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.212
 msgid "Enable thumbnails in Explorer"
-msgstr "Abilitar Miniaturas no Explorer"
+msgstr "Habilitar miniaturas no Explorer"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.216
 msgid "Use thumbnails as icons in Explorer"
-msgstr "Use miniaturas como ícones no Explorer"
+msgstr "Usar miniaturas como ícones no Explorer"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.217
 msgid "Enable Windows thumbnail cache"
-msgstr "Abilitar cache das Miniaturas no Windows"
+msgstr "Habilitar cache das miniaturas no Windows"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.215
@@ -78,7 +78,7 @@ msgstr "Otimizar"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483649
 msgid "Context menu preview size"
-msgstr "Tamanho do Preview no menu de contexto"
+msgstr "Tamanho da visualização no menu de contexto"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483650
@@ -93,7 +93,7 @@ msgstr "X"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483652
 msgid "pixels"
-msgstr "Pixel"
+msgstr "pixels"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483653
@@ -103,7 +103,7 @@ msgstr "Tipos de arquivos suportados"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483654
 msgid "System-wide tweaks"
-msgstr "Systema - Tweaks"
+msgstr "Ajustes finos de sistema"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483655
@@ -113,7 +113,7 @@ msgstr "Idioma:"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483656
 msgid "Maximum size of image file:"
-msgstr "Tamanho maximo para a imagem:"
+msgstr "Tamanho máximo para a imagem:"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483657
@@ -123,22 +123,22 @@ msgstr "MB"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483658
 msgid "Convert options"
-msgstr "Opções de Conversão"
+msgstr "Opções de conversão"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483659
 msgid "JPEG quality (0 - lowest, 100 - best):"
-msgstr "Qualidade do JPEG (0 - Ruim, 100 - Otima):"
+msgstr "Qualidade do JPEG (0 - mínima, 100 - máxima):"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483660
 msgid "PNG compression (0 - lowest, 9 - best):"
-msgstr "Compressão PNG (0 - Ruim, 9 - Otima):"
+msgstr "Compressão PNG (0 - mínima, 9 - máxima):"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.225
 msgid "Show type overlay on thumbnails"
-msgstr "Exibir type overlay nas miniaturas"
+msgstr "Exibir tipo superposto nas miniaturas"
 
 #. String resource
 #: STRING.100
@@ -148,7 +148,7 @@ msgstr "SageThumbs"
 #. String resource
 #: STRING.101
 msgid "Change various SageThumbs options"
-msgstr "Mude várias opções do Sagethumbs"
+msgstr "Mudar várias opções do SageThumbs"
 
 #. String resource
 #: STRING.102
@@ -158,12 +158,12 @@ msgstr "Tipo: "
 #. String resource
 #: STRING.103
 msgid "Sizes (pixels): "
-msgstr "Tamanho (Pixel): "
+msgstr "Tamanho (pixels): "
 
 #. String resource
 #: STRING.104
 msgid "Size (bytes): "
-msgstr "Tamanho (Bytes): "
+msgstr "Tamanho (bytes): "
 
 #. String resource
 #: STRING.105
@@ -173,7 +173,7 @@ msgstr "Modificado: "
 #. String resource
 #: STRING.106
 msgid "Colors (bits): "
-msgstr "Cores (Bit): "
+msgstr "Cores (bits): "
 
 #. String resource
 #: STRING.107
@@ -188,12 +188,12 @@ msgstr "Resolução: "
 #. String resource
 #: STRING.109
 msgid "Can't open image file"
-msgstr "Não é possível abrir arquivo de imagem"
+msgstr "Não é possível abrir o arquivo de imagem"
 
 #. String resource
 #: STRING.110
 msgid "Can't save image file"
-msgstr "Não é possível salvar arquivo de imagem"
+msgstr "Não é possível salvar o arquivo de imagem"
 
 #. String resource
 #: STRING.111
@@ -208,7 +208,7 @@ msgstr "Nada para enviar"
 #. String resource
 #: STRING.113
 msgid "Can't open clipboard"
-msgstr "Não é possível abrir área de transferência"
+msgstr "Não é possível abrir a área de transferência."
 
 #. String resource
 #: STRING.114
@@ -223,17 +223,17 @@ msgstr "Tamanho do cache das miniaturas: %u KB"
 #. String resource
 #: STRING.116
 msgid "SageThumbs thumbnail cache"
-msgstr "Cache das miniaturas do Sagethumbs"
+msgstr "Cache das miniaturas do SageThumbs"
 
 #. String resource
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
-msgstr "Limpar Cache de miniaturas do Sagethumbs. Nenhum dado de usuário será afetada."
+msgstr "Limpar cache de miniaturas do SageThumbs. Nenhum dado de usuário será afetado."
 
 #. String resource
 #: STRING.118
 msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
-msgstr "Não é possível aplicar as alterações. Por favor use o Sagethumbs com privilégios administrativos."
+msgstr "Não é possível aplicar alterações. Por favor, use o SageThumbs com privilégios administrativos."
 
 #. String resource
 #: STRING.119
@@ -243,7 +243,7 @@ msgstr "Converter para PNG"
 #. String resource
 #: STRING.120
 msgid "Converting..."
-msgstr "Convertento..."
+msgstr "Convertendo..."
 
 #. String resource
 #: STRING.121
@@ -263,17 +263,17 @@ msgstr "Atualizando..."
 #. String resource
 #: STRING.203
 msgid "SageThumbs Options..."
-msgstr "Opções do Sagethumbs..."
+msgstr "Opções do SageThumbs..."
 
 #. String resource
 #: STRING.204
 msgid "Copy to clipboard"
-msgstr "Copiar para o área de transferência"
+msgstr "Copiar para a área de transferência"
 
 #. String resource
 #: STRING.205
 msgid "Set tiled wallpaper"
-msgstr "Definir papel de parede - Lado a Lado"
+msgstr "Definir papel de parede - Lado a lado"
 
 #. String resource
 #: STRING.206
@@ -283,7 +283,7 @@ msgstr "Definir papel de parede - Centralizado"
 #. String resource
 #: STRING.207
 msgid "Set stretched wallpaper"
-msgstr "Definir papel de parede - Prencher"
+msgstr "Definir papel de parede - Estendido"
 
 #. String resource
 #: STRING.208

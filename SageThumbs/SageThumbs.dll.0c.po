@@ -28,17 +28,17 @@ msgstr "Annuler"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.211
 msgid "Enable context menu in Explorer"
-msgstr "Activer le menu contextuel dans l'explorateur Windows"
+msgstr "Activer le menu contextuel dans l'Explorateur Windows"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.212
 msgid "Enable thumbnails in Explorer"
-msgstr "Activer les miniatures dans l'explorateur Windows"
+msgstr "Activer les miniatures dans l'Explorateur Windows"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.216
 msgid "Use thumbnails as icons in Explorer"
-msgstr "Utiliser les miniatures dans l'explorateur Windows"
+msgstr "Utiliser les miniatures comme icônes dans l'Explorateur Windows"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.217
@@ -48,7 +48,7 @@ msgstr "Activer le cache Windows pour les miniatures"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.215
 msgid "Prefer image file embedded thumbnails"
-msgstr "Préferer les miniatures intégrées des fichiers images"
+msgstr "Préférer les miniatures intégrées aux fichiers images"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.203
@@ -58,7 +58,7 @@ msgstr "Utiliser la visionneuse Image/Fax de Windows"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.210
 msgid "Select/Deselect all"
-msgstr "Tout sélectionner/désélectionner"
+msgstr "Sélectionner/Désélectionner tout"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.223
@@ -98,12 +98,12 @@ msgstr "pixels"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483653
 msgid "Supported file types"
-msgstr "Types de fichiers supportés"
+msgstr "Types de fichiers acceptés"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483654
 msgid "System-wide tweaks"
-msgstr "Réglages du système"
+msgstr "Réglages au niveau système"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483655
@@ -118,7 +118,7 @@ msgstr "Taille maximale du fichier image:"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483657
 msgid "MB"
-msgstr "MB"
+msgstr "Mo"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483658
@@ -138,7 +138,7 @@ msgstr "Compression PNG (0 - faible, 9 - haute):"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.225
 msgid "Show type overlay on thumbnails"
-msgstr "Show type overlay on thumbnails"
+msgstr "Afficher le type en incrustation sur les miniatures"
 
 #. String resource
 #: STRING.100
@@ -188,12 +188,12 @@ msgstr "Résolution: "
 #. String resource
 #: STRING.109
 msgid "Can't open image file"
-msgstr "Ouverture du fichier image impossible"
+msgstr "Impossible d'ouvrir le fichier image"
 
 #. String resource
 #: STRING.110
 msgid "Can't save image file"
-msgstr "Sauvegarde du fichier image impossible"
+msgstr "Impossible d'enregistrer le fichier image"
 
 #. String resource
 #: STRING.111
@@ -208,17 +208,17 @@ msgstr "Rien à envoyer"
 #. String resource
 #: STRING.113
 msgid "Can't open clipboard"
-msgstr "Ouverture du presse-papier impossible"
+msgstr "Impossible d'ouvrir le presse-papiers"
 
 #. String resource
 #: STRING.114
 msgid "Please confirm thumbnail cache clearing."
-msgstr "Veuillez confirmer le vidage du cache des miniatures."
+msgstr "Veuillez confirmer l'effacement du cache des miniatures."
 
 #. String resource
 #: STRING.115
 msgid "Thumbnail cache size: %u KB"
-msgstr "Taille du cache des miniatures: %u KB"
+msgstr "Taille du cache des miniatures: %u Ko"
 
 #. String resource
 #: STRING.116
@@ -228,12 +228,12 @@ msgstr "Cache des miniatures SageThumbs"
 #. String resource
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
-msgstr "Vidage du cache des miniatures SageThumbs. Les données de l'utilisateur ne seront pas affectées."
+msgstr "Effacement du cache des miniatures SageThumbs. Les données de l'utilisateur ne seront pas affectées."
 
 #. String resource
 #: STRING.118
 msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
-msgstr "Certains paramètres n'ont pas été appliqué. Veuillez utiliser SageThumbs avec un compte administrateur."
+msgstr "Certains paramètres n'ont pas pu être appliqués. Ouvrez SageThumbs avec un compte administrateur."
 
 #. String resource
 #: STRING.119
@@ -243,22 +243,22 @@ msgstr "Convertir en PNG"
 #. String resource
 #: STRING.120
 msgid "Converting..."
-msgstr "Converting..."
+msgstr "Conversion en cours..."
 
 #. String resource
 #: STRING.121
 msgid "Sending..."
-msgstr "Sending..."
+msgstr "Envoi en cours..."
 
 #. String resource
 #: STRING.122
 msgid "Applying settings..."
-msgstr "Applying settings..."
+msgstr "Application des paramètres..."
 
 #. String resource
 #: STRING.123
 msgid "Updating..."
-msgstr "Updating..."
+msgstr "Actualisation en cours..."
 
 #. String resource
 #: STRING.203
@@ -273,17 +273,17 @@ msgstr "Copier dans le presse-papiers"
 #. String resource
 #: STRING.205
 msgid "Set tiled wallpaper"
-msgstr "Mettre l'image en fond d'écran en mode mosaïque"
+msgstr "Placer en papier peint mosaïque"
 
 #. String resource
 #: STRING.206
 msgid "Set centered wallpaper"
-msgstr "Centrer l'image en fond d'écran"
+msgstr "Placer en papier peint centré"
 
 #. String resource
 #: STRING.207
 msgid "Set stretched wallpaper"
-msgstr "Étirer l'image en fond d'écran"
+msgstr "Placer en papier peint étiré"
 
 #. String resource
 #: STRING.208
