@@ -48,11 +48,17 @@ Translation:
 
 	SageThumbs can be easily translated to other languages.
 
-	* Download and install PoEdit:
-	* Copy "SageThumbs.dll.pot" file (can be found in SageThumbs installation folder) under new name "SageThumbs.dll.XX.po" near original file. Where "XX" is 2-digit hexadecimal code of language, see "Language Codes Table": For example Russian has code 0x19 so its a "SageThumbs.dll.19.po".
+	* Download and install PoEdit: http://www.poedit.net/download.php
+	* Copy "SageThumbs.dll.pot" file (can be found in SageThumbs installation
+      folder) under new name "SageThumbs.dll.XX.po" near original files i.e. near
+      "32\SageThumbs.dll" and "64\SageThumbs.dll". Where "XX" is 2-digit hexadecimal
+      code of language, see "Language Codes Table":
+      http://msdn.microsoft.com/en-us/library/windows/desktop/dd318693.aspx
+      For example Russian has code 0x19 so its a "SageThumbs.dll.19.po".
 	* Open new file in PoEdit, translate and save as UTF-8 (its by default)
 	* Open SageThumbs options and select new language in it
-	* Send file to me: raspopov@cherubicsoft.com
+	* E-mail file to me: raspopov@cherubicsoft.com
+      It will be definitely included in next version.
 
 ========================================================================
 
@@ -64,6 +70,7 @@ Versions:
   * SageThumbs now works in "compatible" mode (overwrite no other shell extensions)
   * Excluded "vst" extension by default
   * Dropped support for Windows 2000
+  * Added Indonesian translation
 
 2.0.0.12
   * "Maximum size of image file" option limits image thumbnail generation only

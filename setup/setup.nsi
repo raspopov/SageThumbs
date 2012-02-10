@@ -8,6 +8,8 @@
 
 SetCompressor /SOLID lzma
 
+!addplugindir .
+
 !include "x64.nsh"
 
 !include "WordFunc.nsh"
@@ -56,12 +58,10 @@ Var STARTMENU_FOLDER
 !macro InstallSageThumb _SRC _DST
 	SetOutPath ${_DST}
 	File /oname=SageThumbs.dll.tmp		"${_SRC}\SageThumbs.dll"
-	File /oname=SageThumbs.dll.pot.tmp	"${_SRC}\SageThumbs.dll.pot"
 	File /oname=libgfl340.dll.tmp		"${_SRC}\libgfl340.dll"
 	File /oname=libgfle340.dll.tmp		"${_SRC}\libgfle340.dll"
 	File /oname=sqlite3.dll.tmp			"${_SRC}\sqlite3.dll"
 	Rename /REBOOTOK "${_DST}\SageThumbs.dll.tmp"		"${_DST}\SageThumbs.dll"
-	Rename /REBOOTOK "${_DST}\SageThumbs.dll.pot.tmp"	"${_DST}\SageThumbs.dll.pot"
 	Rename /REBOOTOK "${_DST}\libgfl340.dll.tmp"		"${_DST}\libgfl340.dll"
 	Rename /REBOOTOK "${_DST}\libgfle340.dll.tmp"		"${_DST}\libgfle340.dll"
 	Rename /REBOOTOK "${_DST}\sqlite3.dll.tmp"			"${_DST}\sqlite3.dll"
@@ -152,7 +152,6 @@ Section "!${TITLE}"
 	!insertmacro "FreeSageThumbs" "$INSTDIR\32"
 ok32:
 	Delete "$INSTDIR\32\SageThumbs*.dll"
-	Delete "$INSTDIR\32\SageThumbs.dll.pot"
 	Delete "$INSTDIR\32\libgfl*.dll"
 	Delete "$INSTDIR\32\sqlite3.dll"
 	Delete "$INSTDIR\32\*.tmp"
@@ -170,7 +169,6 @@ ok32:
 	!insertmacro "FreeSageThumbs" "$INSTDIR\64"
 ok64:
 	Delete "$INSTDIR\64\SageThumbs*.dll"
-	Delete "$INSTDIR\64\SageThumbs.dll.pot"
 	Delete "$INSTDIR\64\libgfl*.dll"
 	Delete "$INSTDIR\64\sqlite3.dll"
 	Delete "$INSTDIR\64\*.tmp"
@@ -213,6 +211,7 @@ ok64:
 
 # Install common files and uninstaller
 	SetOutPath $INSTDIR
+	File "..\SageThumbs\SageThumbs.dll.pot"
 	File "..\license.txt"
 	File "..\readme.txt"
 	WriteUninstaller "Uninst.exe"
@@ -277,7 +276,6 @@ Section "Uninstall"
 	Delete /REBOOTOK "$INSTDIR\32\SageThumbs.dll"
 ok32:
 	Delete /REBOOTOK "$INSTDIR\32\SageThumbs*.dll"
-	Delete /REBOOTOK "$INSTDIR\32\SageThumbs.dll.pot"
 	Delete /REBOOTOK "$INSTDIR\32\libgfl*.dll"
 	Delete /REBOOTOK "$INSTDIR\32\sqlite3.dll"
 	Delete /REBOOTOK "$INSTDIR\32\*.tmp"
@@ -299,7 +297,6 @@ ok32:
 	Delete /REBOOTOK "$INSTDIR\64\SageThumbs.dll"
 ok64:
 	Delete /REBOOTOK "$INSTDIR\64\SageThumbs*.dll"
-	Delete /REBOOTOK "$INSTDIR\64\SageThumbs.dll.pot"
 	Delete /REBOOTOK "$INSTDIR\64\libgfl*.dll"
 	Delete /REBOOTOK "$INSTDIR\64\sqlite3.dll"
 	Delete /REBOOTOK "$INSTDIR\64\*.tmp"
@@ -321,6 +318,7 @@ ok64:
 	RmDir  "$SMPROGRAMS\$STARTMENU_FOLDER"
 
 # Delete common files and uninstaller
+	Delete /REBOOTOK "$INSTDIR\SageThumbs.dll.pot"
 	Delete /REBOOTOK "$INSTDIR\license.txt"
 	Delete /REBOOTOK "$INSTDIR\readme.txt"
 	Delete /REBOOTOK "$INSTDIR\Uninst.exe"

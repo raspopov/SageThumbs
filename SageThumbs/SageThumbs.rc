@@ -196,10 +196,15 @@ IDR_SAGETHUMBS          BITMAP                  ".\\res\\SageThumbs.bmp"
 // PO
 //
 
-29                      PO                      "sagethumbs.dll.1d.p_"
-22                      PO                      "sagethumbs.dll.16.p_"
-25                      PO                      "sagethumbs.dll.19.p_"
+0x04                    PO                      "sagethumbs.dll.04.p_"
+0x07                    PO                      "sagethumbs.dll.07.p_"
+0x0a                    PO                      "sagethumbs.dll.0a.p_"
+0x0c                    PO                      "sagethumbs.dll.0c.p_"
 0x10                    PO                      "sagethumbs.dll.10.p_"
+0x16                    PO                      "sagethumbs.dll.16.p_"
+0x19                    PO                      "sagethumbs.dll.19.p_"
+0x1d                    PO                      "sagethumbs.dll.1d.p_"
+0x21                    PO                      "sagethumbs.dll.21.p_"
 
 /////////////////////////////////////////////////////////////////////////////
 //

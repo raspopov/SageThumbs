@@ -1,0 +1,312 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SageThumbs.dll\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Nikolay Raspopov <raspopov@cherubicsoft.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Chinese\n"
+
+#. Dialog caption
+#: DIALOGCAPTION.202
+msgid "SageThumbs Options"
+msgstr "SageThumbs 设置"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.1
+msgid "OK"
+msgstr "确定"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2
+msgid "Cancel"
+msgstr "取消"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.211
+msgid "Enable context menu in Explorer"
+msgstr "在资源管理器中启用SageThumbs"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.212
+msgid "Enable thumbnails in Explorer"
+msgstr "在资源管理器中启用缩略图"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.216
+msgid "Use thumbnails as icons in Explorer"
+msgstr "在资源管理器中使用缩略图图标"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.217
+msgid "Enable Windows thumbnail cache"
+msgstr "启用缩略图缓存"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.215
+msgid "Prefer image file embedded thumbnails"
+msgstr "图像嵌入缩略图"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.203
+msgid "Use Windows Image/Fax Viewer"
+msgstr "使用图像查看器/ Windows传真"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "选择全部"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "默认"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.213
+msgid "Clear..."
+msgstr "清除缩略图缓存"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.218
+msgid "Optimize"
+msgstr "优化缩略图缓存"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483649
+msgid "Context menu preview size"
+msgstr "预览大小"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483650
+msgid "Width x Height:"
+msgstr "宽度 X 高度："
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483651
+msgid "X"
+msgstr "X"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483652
+msgid "pixels"
+msgstr "像素"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483653
+msgid "Supported file types"
+msgstr "支持文件类型"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483654
+msgid "System-wide tweaks"
+msgstr "使用范围"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483655
+msgid "Language:"
+msgstr "语言:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483656
+msgid "Maximum size of image file:"
+msgstr "图像文件最大:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483657
+msgid "MB"
+msgstr "MB"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483658
+msgid "Convert options"
+msgstr "转换设置"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483659
+msgid "JPEG quality (0 - lowest, 100 - best):"
+msgstr "JPEG质量（0最低，100最好）："
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483660
+msgid "PNG compression (0 - lowest, 9 - best):"
+msgstr "PNG质量（0最低，9最好）："
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "在缩略图上显示文件格式"
+
+#. String resource
+#: STRING.100
+msgid "SageThumbs"
+msgstr "SageThumbs"
+
+#. String resource
+#: STRING.101
+msgid "Change various SageThumbs options"
+msgstr "更换SageThumbs选项"
+
+#. String resource
+#: STRING.102
+msgid "Type: "
+msgstr "类型："
+
+#. String resource
+#: STRING.103
+msgid "Sizes (pixels): "
+msgstr "大小 (像素)："
+
+#. String resource
+#: STRING.104
+msgid "Size (bytes): "
+msgstr "\"大小 (字节)："
+
+#. String resource
+#: STRING.105
+msgid "Modified: "
+msgstr "修改："
+
+#. String resource
+#: STRING.106
+msgid "Colors (bits): "
+msgstr "颜色 (位)："
+
+#. String resource
+#: STRING.107
+msgid "Compression: "
+msgstr "压缩："
+
+#. String resource
+#: STRING.108
+msgid "Resolution: "
+msgstr "分辨率："
+
+#. String resource
+#: STRING.109
+msgid "Can't open image file"
+msgstr "无法打开图像"
+
+#. String resource
+#: STRING.110
+msgid "Can't save image file"
+msgstr "无法保存图像"
+
+#. String resource
+#: STRING.111
+msgid "Can't send mail"
+msgstr "无法发送电子邮件"
+
+#. String resource
+#: STRING.112
+msgid "Nothing to send"
+msgstr "没有发送"
+
+#. String resource
+#: STRING.113
+msgid "Can't open clipboard"
+msgstr "无法打开剪贴板"
+
+#. String resource
+#: STRING.114
+msgid "Please confirm thumbnail cache clearing."
+msgstr "请确认数据库清理工作。"
+
+#. String resource
+#: STRING.115
+msgid "Thumbnail cache size: %u KB"
+msgstr "缩略图缓存的大小： %u KB"
+
+#. String resource
+#: STRING.116
+msgid "SageThumbs thumbnail cache"
+msgstr "SageThumbs 缩略图缓存"
+
+#. String resource
+#: STRING.117
+msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
+msgstr "清理 SageThumbs 缩略图缓存。用户数据不会被删除。"
+
+#. String resource
+#: STRING.118
+msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
+msgstr "无法应用所有设置，请确认在具有管理员权限的帐户下的运行SageThumbs。"
+
+#. String resource
+#: STRING.119
+msgid "Convert to PNG"
+msgstr "转换为 PNG 格式"
+
+#. String resource
+#: STRING.120
+msgid "Converting..."
+msgstr "转换中..."
+
+#. String resource
+#: STRING.121
+msgid "Sending..."
+msgstr "发送中..."
+
+#. String resource
+#: STRING.122
+msgid "Applying settings..."
+msgstr "应用设置中..."
+
+#. String resource
+#: STRING.123
+msgid "Updating..."
+msgstr "更新中..."
+
+#. String resource
+#: STRING.203
+msgid "SageThumbs Options..."
+msgstr "SageThumbs设置..."
+
+#. String resource
+#: STRING.204
+msgid "Copy to clipboard"
+msgstr "复制到剪贴板"
+
+#. String resource
+#: STRING.205
+msgid "Set tiled wallpaper"
+msgstr "设为平铺墙纸"
+
+#. String resource
+#: STRING.206
+msgid "Set centered wallpaper"
+msgstr "设为居中墙纸"
+
+#. String resource
+#: STRING.207
+msgid "Set stretched wallpaper"
+msgstr "设为拉伸墙纸"
+
+#. String resource
+#: STRING.208
+msgid "Send image by mail..."
+msgstr "邮件发送图像..."
+
+#. String resource
+#: STRING.209
+msgid "Send thumbnail by mail..."
+msgstr "邮件发送略缩图..."
+
+#. String resource
+#: STRING.210
+msgid "Convert to JPG"
+msgstr "转换为 JPG 格式"
+
+#. String resource
+#: STRING.211
+msgid "Convert to GIF"
+msgstr "转换为 GIF 格式"
+
+#. String resource
+#: STRING.212
+msgid "Convert to BMP"
+msgstr "转换为 BMP 格式"
+

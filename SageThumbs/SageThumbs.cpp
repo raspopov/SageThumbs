@@ -733,8 +733,6 @@ void CSageThumbsModule::FillExtMap()
 	CLock oLock( m_pSection );
 #endif // GFL_THREAD_SAFE
 
-	CHECKPOINT_BEGIN( FillExtMap )
-
 	m_oExtMap.RemoveAll();
 
 	// Загрузка расширений через GFL
@@ -771,7 +769,6 @@ void CSageThumbsModule::FillExtMap()
 	}
 
 	ATLTRACE( "Loaded %d formats, %d extensions. ", count, m_oExtMap.GetCount() );
-	CHECKPOINT( FillExtMap )
 }
 
 BOOL CSageThumbsModule::Initialize()
@@ -797,8 +794,6 @@ BOOL CSageThumbsModule::Initialize()
 	if ( ! m_hGFLe )
 		// Ошибка загрузки
 		return FALSE;
-
-	CHECKPOINT_BEGIN(GFLInit)
 
 	// Get XnView folder
 #ifdef WIN64
@@ -877,8 +872,6 @@ BOOL CSageThumbsModule::Initialize()
 	ATLTRACE( "gflLibraryInit : GFL Version %s\n", gflGetVersion() );
 
 	FillExtMap ();
-
-	CHECKPOINT(GFLInit)
 
 	// Инициализация карты битовых масок форматов файлов
 	//for (int i = 0; _Bits [i].ext; ++i)
