@@ -116,13 +116,13 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,343,260,70,16
     COMBOBOX        IDC_LANG,286,7,127,60,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Enable context menu in Explorer",IDC_ENABLE_MENU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,31,196,10
-    CONTROL         "Enable thumbnails in Explorer",IDC_ENABLE_THUMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,44,196,10
+    CONTROL         "Enable thumbnails in Explorer",IDC_ENABLE_THUMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,43,196,10
     CONTROL         "Use thumbnails as icons in Explorer",IDC_ENABLE_ICONS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,56,196,10
     CONTROL         "Enable Windows thumbnail cache",IDC_ENABLE_WINCACHE,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,83,196,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,82,196,10
     CONTROL         "Prefer image file embedded thumbnails",IDC_EMBEDDED,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,96,196,10
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,95,196,10
     EDITTEXT        IDC_FILE_SIZE,122,110,30,14,ES_AUTOHSCROLL | ES_NUMBER
     EDITTEXT        IDC_WIDTH,83,136,30,14,ES_AUTOHSCROLL | ES_NUMBER
     EDITTEXT        IDC_HEIGHT,122,136,30,14,ES_AUTOHSCROLL | ES_NUMBER
@@ -150,7 +150,6 @@ BEGIN
     GROUPBOX        "Convert options",IDC_STATIC,7,159,196,49
     RTEXT           "JPEG quality (0 - lowest, 100 - best):",IDC_STATIC,14,173,144,8
     RTEXT           "PNG compression (0 - lowest, 9 - best):",IDC_STATIC,14,190,144,8
-    LTEXT           "",IDC_STATIC,98,216,8,8
     GROUPBOX        "",IDC_CACHE_SIZE,7,242,196,34
     CONTROL         "Show type overlay on thumbnails",IDC_ENABLE_OVERLAY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,69,196,10
@@ -196,15 +195,15 @@ IDR_SAGETHUMBS          BITMAP                  ".\\res\\SageThumbs.bmp"
 // PO
 //
 
-0x04                    PO                      "sagethumbs.dll.04.p_"
-0x07                    PO                      "sagethumbs.dll.07.p_"
-0x0a                    PO                      "sagethumbs.dll.0a.p_"
-0x0c                    PO                      "sagethumbs.dll.0c.p_"
-0x10                    PO                      "sagethumbs.dll.10.p_"
-0x16                    PO                      "sagethumbs.dll.16.p_"
-0x19                    PO                      "sagethumbs.dll.19.p_"
-0x1d                    PO                      "sagethumbs.dll.1d.p_"
-0x21                    PO                      "sagethumbs.dll.21.p_"
+4                       PO                      "sagethumbs.dll.04.p_"
+7                       PO                      "sagethumbs.dll.07.p_"
+10                      PO                      "sagethumbs.dll.0a.p_"
+12                      PO                      "sagethumbs.dll.0c.p_"
+16                      PO                      "sagethumbs.dll.10.p_"
+22                      PO                      "sagethumbs.dll.16.p_"
+25                      PO                      "sagethumbs.dll.19.p_"
+29                      PO                      "sagethumbs.dll.1d.p_"
+33                      PO                      "sagethumbs.dll.21.p_"
 
 /////////////////////////////////////////////////////////////////////////////
 //
