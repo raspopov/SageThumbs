@@ -425,7 +425,11 @@ CString CLocalization::GetLangName(LANGID nLangID)
 	GetLocaleInfo( lcID, LOCALE_SNATIVELANGNAME, strNativeLangName.GetBuffer( 80 ), 80 );
 	strNativeLangName.ReleaseBuffer();
 
-	return strLangName + _T(" - ") + strNativeLangName;
+	CString strNativeCountry;
+	GetLocaleInfo( lcID, LOCALE_SNATIVECTRYNAME, strNativeCountry.GetBuffer( 80 ), 80 );
+	strNativeCountry.ReleaseBuffer();
+
+	return strLangName + _T(" - ") + strNativeLangName + _T(" (") + strNativeCountry + _T(")");
 }
 
 BOOL CLocalization::Select(HWND hwndCombo)
