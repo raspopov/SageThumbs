@@ -72,6 +72,21 @@
     <None Include="sagethumbs.dll.10.p_">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="sagethumbs.dll.04.p_">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sagethumbs.dll.07.p_">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sagethumbs.dll.0a.p_">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sagethumbs.dll.0c.p_">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sagethumbs.dll.21.p_">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">

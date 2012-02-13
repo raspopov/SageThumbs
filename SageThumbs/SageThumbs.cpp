@@ -750,6 +750,14 @@ void CSageThumbsModule::FillExtMap()
 				CString sExt = (LPCTSTR)CA2T( info.Extension [ j ] );
 				sExt.MakeLower();
 				m_oExtMap.SetAt( sExt, data );
+
+				// GFL bug fix for short extensions
+				if ( sExt == _T("pspbrus") )		// PaintShopPro Brush
+					m_oExtMap.SetAt( _T("pspbrush"), data );
+				else if ( sExt == _T("pspfram") )	// PaintShopPro Frame
+					m_oExtMap.SetAt( _T("pspframe"), data );
+				else if ( sExt == _T("pspimag") )	// PaintShopPro Image"
+					m_oExtMap.SetAt( _T("pspimage"), data );
 			}
 		}
 	}

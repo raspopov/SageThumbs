@@ -420,6 +420,10 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
     </CustomBuild>
+    <None Include="sagethumbs.dll.04.p_" />
+    <None Include="sagethumbs.dll.07.p_" />
+    <None Include="sagethumbs.dll.0a.p_" />
+    <None Include="sagethumbs.dll.0c.p_" />
     <None Include="sagethumbs.dll.10.p_" />
     <None Include="sagethumbs.dll.16.p_" />
     <None Include="sagethumbs.dll.19.p_" />
@@ -439,6 +443,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(RootDir)%(Directory)%(Filename).p_</Outputs>
     </CustomBuild>
+    <None Include="sagethumbs.dll.21.p_" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h" />
