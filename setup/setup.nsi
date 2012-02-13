@@ -1,5 +1,5 @@
 !define TITLE		"SageThumbs"
-!define VERSION		"2.0.0.13"
+!define VERSION		"2.0.0.14"
 !define COMPANY		"Cherubic Software"
 !define FILENAME	"sagethumbs_${VERSION}_setup.exe"
 !define COPYRIGHT	"Copyright © 2004-2012 Nikolay Raspopov"
@@ -31,9 +31,12 @@ Var STARTMENU_FOLDER
 	!define MUI_COMPONENTSPAGE_NODESC
 	!define MUI_FINISHPAGE_NOAUTOCLOSE
 	!define MUI_UNFINISHPAGE_NOAUTOCLOSE
-	!define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU"
-	!define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\SageThumbs"
-	!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
+	!define MUI_STARTMENUPAGE_REGISTRY_ROOT			"HKCU"
+	!define MUI_STARTMENUPAGE_REGISTRY_KEY			"Software\SageThumbs"
+	!define MUI_STARTMENUPAGE_REGISTRY_VALUENAME	"Start Menu Folder"
+	!define MUI_LANGDLL_REGISTRY_ROOT				"HKCU"
+	!define MUI_LANGDLL_REGISTRY_KEY				"Software\SageThumbs"
+	!define MUI_LANGDLL_REGISTRY_VALUENAME			"Setup Language"
 	!insertmacro MUI_PAGE_WELCOME
 	!insertmacro MUI_PAGE_LICENSE "..\license.txt"
 	!insertmacro MUI_PAGE_COMPONENTS
@@ -54,6 +57,8 @@ Var STARTMENU_FOLDER
 	!insertmacro MUI_LANGUAGE "PortugueseBR"
 	!insertmacro MUI_LANGUAGE "SimpChinese"
 	!insertmacro MUI_LANGUAGE "Spanish"
+	!insertmacro MUI_LANGUAGE "Indonesian"
+	!insertmacro MUI_RESERVEFILE_LANGDLL
 
 !macro InstallSageThumb _SRC _DST
 	SetOutPath ${_DST}
@@ -210,7 +215,8 @@ ok64:
 	${EndIf}
 
 # Install common files and uninstaller
-	SetOutPath $INSTDIR
+	SetOutPath "$INSTDIR"
+	File "Repair.exe"
 	File "..\SageThumbs\SageThumbs.dll.pot"
 	File "..\license.txt"
 	File "..\readme.txt"
@@ -218,28 +224,33 @@ ok64:
 	WriteRegStr HKCU "Software\SageThumbs" "Install" $INSTDIR
 	DeleteRegKey  HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs"
 	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "DisplayName" "${TITLE} ${VERSION}"
+	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "ModifyPath" "$INSTDIR\Repair.exe"
 	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "UninstallString" "$INSTDIR\Uninst.exe"
 	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "InstallLocation" "$INSTDIR"
 	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "DisplayIcon" "$INSTDIR\32\SageThumbs.dll"
 	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "DisplayVersion" "${VERSION}"
 	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "Publisher" "${COMPANY}"
 	WriteRegStr   HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "URLInfoAbout" "${URL}"
-	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "NoModify" 1
-	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "NoRepair" 1
+	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "NoModify" 0
+	WriteRegDWORD HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SageThumbs" "NoRepair" 0
 
 # Install start menu items
 	!insertmacro MUI_STARTMENU_WRITE_BEGIN Application
 	CreateDirectory "$SMPROGRAMS\$STARTMENU_FOLDER"
+	SetOutPath "$INSTDIR\32"
 	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\SageThumbs 32-bit Options.lnk" "control.exe" "$\"$INSTDIR\32\SageThumbs.dll$\"" "$INSTDIR\32\SageThumbs.dll" 0
 	${If} ${RunningX64}
+	SetOutPath "$INSTDIR\64"
 	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\SageThumbs 64-bit Options.lnk" "control.exe" "$\"$INSTDIR\64\SageThumbs.dll$\"" "$INSTDIR\64\SageThumbs.dll" 0
 	${EndIf}
+	SetOutPath "$INSTDIR"
+	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Repair ${TITLE}.lnk" "$INSTDIR\Repair.exe" "" "$INSTDIR\Repair.exe" 0
 	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Read Me.lnk" "$INSTDIR\readme.txt" "" "$INSTDIR\readme.txt" 0
 	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk" "$INSTDIR\license.txt" "" "$INSTDIR\license.txt" 0
-	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall SageThumbs.lnk" "$INSTDIR\Uninst.exe" "" "$INSTDIR\Uninst.exe" 0
+	CreateShortCut "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall ${TITLE}.lnk" "$INSTDIR\Uninst.exe" "" "$INSTDIR\Uninst.exe" 0
 	!insertmacro MUI_STARTMENU_WRITE_END
 	SetOutPath "$SMPROGRAMS\$STARTMENU_FOLDER"
-	File "..\SageThumbs Online.url"
+	File "..\${TITLE} Online.url"
 
 # Registration
 	IfRebootFlag reboot 0
@@ -314,10 +325,19 @@ ok64:
 	
 # Delete start menu items
 	!insertmacro MUI_STARTMENU_GETFOLDER Application $STARTMENU_FOLDER
-	Delete "$SMPROGRAMS\$STARTMENU_FOLDER\*.*"
+	Delete "$SMPROGRAMS\$STARTMENU_FOLDER\${TITLE} 32-bit Options.lnk"
+	${If} ${RunningX64}
+	Delete "$SMPROGRAMS\$STARTMENU_FOLDER\${TITLE} 64-bit Options.lnk"
+	${EndIf}
+	Delete "$SMPROGRAMS\$STARTMENU_FOLDER\Repair ${TITLE}.lnk"
+	Delete "$SMPROGRAMS\$STARTMENU_FOLDER\Read Me.lnk"
+	Delete "$SMPROGRAMS\$STARTMENU_FOLDER\License.lnk"
+	Delete "$SMPROGRAMS\$STARTMENU_FOLDER\Uninstall ${TITLE}.lnk"
+	Delete "$SMPROGRAMS\$STARTMENU_FOLDER\${TITLE} Online.url"
 	RmDir  "$SMPROGRAMS\$STARTMENU_FOLDER"
 
 # Delete common files and uninstaller
+	Delete /REBOOTOK "$INSTDIR\Repair.exe"
 	Delete /REBOOTOK "$INSTDIR\SageThumbs.dll.pot"
 	Delete /REBOOTOK "$INSTDIR\license.txt"
 	Delete /REBOOTOK "$INSTDIR\readme.txt"
@@ -341,6 +361,7 @@ Function .onInit
 	Pop $R0
 	StrCmp $R0 0 +2
 	Abort
+	!insertmacro MUI_LANGDLL_DISPLAY
 FunctionEnd
 
 Function un.onInit
@@ -350,6 +371,7 @@ Function un.onInit
 	Pop $R0
 	StrCmp $R0 0 +2
 	Abort
+	!insertmacro MUI_UNGETLANGUAGE
 FunctionEnd
 
 !appendfile "setup.trg" "[${__TIMESTAMP__}] ${TITLE} ${VERSION} ${FILENAME}$\n"
