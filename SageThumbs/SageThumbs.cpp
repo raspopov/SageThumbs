@@ -349,7 +349,7 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 	FixProgID( szExt );
 
 	// Register extension
-	CString sCurrentKey = GetRegValue( _T(""), _T(""), sType, HKEY_CLASSES_ROOT );
+	CString sCurrentKey = GetRegValue( _T(""), CString(), sType, HKEY_CLASSES_ROOT );
 	if ( sCurrentKey.IsEmpty() )
 	{
 		// Use default key
@@ -377,7 +377,7 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 		bOK = SetRegValue( sCurrentKey, sType + _T("\\OpenWithProgids"), HKEY_CLASSES_ROOT ) && bOK;
 
 		// Use this key
-		sDefaultKey = GetRegValue( _T(""), _T(""), sType, HKEY_CLASSES_ROOT );
+		sDefaultKey = GetRegValue( _T(""), CString(), sType, HKEY_CLASSES_ROOT );
 	}
 
 	// Save our key as alternate ProgID too
@@ -394,14 +394,14 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 	}
 	else
 	{
-		sDefaultIcon = GetRegValue( _T(""), _T(""), sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT );
+		sDefaultIcon = GetRegValue( _T(""), CString(), sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT );
 		if ( sDefaultIcon.IsEmpty() )
 		{
-			sDefaultIcon = GetRegValue( _T(""), _T(""), _T("jpegfile\\DefaultIcon"), HKEY_CLASSES_ROOT );
+			sDefaultIcon = GetRegValue( _T(""), CString(), _T("jpegfile\\DefaultIcon"), HKEY_CLASSES_ROOT );
 			if ( sDefaultIcon.IsEmpty() )
-				sDefaultIcon = GetRegValue( _T(""), _T(""), _T("pngfile\\DefaultIcon"), HKEY_CLASSES_ROOT );
+				sDefaultIcon = GetRegValue( _T(""), CString(), _T("pngfile\\DefaultIcon"), HKEY_CLASSES_ROOT );
 			if ( sDefaultIcon.IsEmpty() )
-				sDefaultIcon = GetRegValue( _T(""), _T(""), _T("giffile\\DefaultIcon"), HKEY_CLASSES_ROOT );
+				sDefaultIcon = GetRegValue( _T(""), CString(), _T("giffile\\DefaultIcon"), HKEY_CLASSES_ROOT );
 			if ( ! sDefaultIcon.IsEmpty() )
 			{
 				bOK = SetRegValue( _T(""), sDefaultIcon, sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT ) && bOK;
@@ -427,14 +427,14 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 	}
 
 	// Perceived Type Fix (optional)
-	CString sPerceivedType = GetRegValue( _T("PerceivedType"), _T(""), sType, HKEY_CLASSES_ROOT );
+	CString sPerceivedType = GetRegValue( _T("PerceivedType"), CString(), sType, HKEY_CLASSES_ROOT );
 	if ( sPerceivedType.IsEmpty() )
 	{
 		SetRegValue( _T("PerceivedType"), GetPerceivedType( szExt ), sType, HKEY_CLASSES_ROOT );
 	}
 
 	// Content Type Fix (optional)
-	CString sContentType = GetRegValue( _T("Content Type"), _T(""), sType, HKEY_CLASSES_ROOT );
+	CString sContentType = GetRegValue( _T("Content Type"), CString(), sType, HKEY_CLASSES_ROOT );
 	if ( sContentType.IsEmpty() )
 	{
 		sContentType = GetContentType( szExt );
@@ -481,7 +481,13 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 			if ( bDelete )
 				bOK = UnregisterValue( HKEY_CLASSES_ROOT, sHandlerProgIDKey ) && bOK;
 			else
-				bOK = RegisterValue( HKEY_CLASSES_ROOT, sHandlerProgIDKey, _T(""), CLSID_THUMB, NULL ) && bOK;
+			{
+				// Check for existing CLSID
+				CString buf = GetRegValue( _T(""), CString(), sHandlerProgIDKey, HKEY_CLASSES_ROOT );
+				bool bValid = ! buf.IsEmpty() && ( buf.CompareNoCase( CLSID_THUMB ) != 0 ) && IsValidCLSID( buf );
+
+				bOK = RegisterValue( HKEY_CLASSES_ROOT, sHandlerProgIDKey, _T(""), CLSID_THUMB, bValid ? NULL : REG_SAGETHUMBS_BAK ) && bOK;
+			}
 
 			// Clean wrong registration
 			bOK = DeleteRegKey( HKEY_CLASSES_ROOT, sHandlerTypeKey ) && bOK;
@@ -491,7 +497,13 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 			if ( bDelete )
 				bOK = UnregisterValue( HKEY_CLASSES_ROOT, sHandlerTypeKey ) && bOK;
 			else
-				bOK = RegisterValue( HKEY_CLASSES_ROOT, sHandlerTypeKey, _T(""), CLSID_THUMB, NULL ) && bOK;
+			{
+				// Check for existing CLSID
+				CString buf = GetRegValue( _T(""), CString(), sHandlerTypeKey, HKEY_CLASSES_ROOT );
+				bool bValid = ! buf.IsEmpty() && ( buf.CompareNoCase( CLSID_THUMB ) != 0 ) && IsValidCLSID( buf );
+
+				bOK = RegisterValue( HKEY_CLASSES_ROOT, sHandlerTypeKey, _T(""), CLSID_THUMB, bValid ? NULL : REG_SAGETHUMBS_BAK ) && bOK;
+			}
 
 			// Clean wrong registration
 			bOK = DeleteRegKey( HKEY_CLASSES_ROOT, sHandlerProgIDKey ) && bOK;
@@ -499,8 +511,16 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 	}
 
 	// Register IPropertyStore handler
-	CString sPropKey = PropertyHandlers + sType;
-	bOK = RegisterValue( HKEY_LOCAL_MACHINE, sPropKey, _T(""), CLSID_THUMB, NULL ) && bOK;
+	{
+		CString sPropKey = PropertyHandlers + sType;
+
+		// Check for existing CLSID
+		CString buf = GetRegValue( _T(""), CString(), sPropKey, HKEY_LOCAL_MACHINE );
+		bool bValid = ! buf.IsEmpty() && ( buf.CompareNoCase( CLSID_THUMB ) != 0 ) && IsValidCLSID( buf );
+
+		bOK = RegisterValue( HKEY_LOCAL_MACHINE, sPropKey, _T(""), CLSID_THUMB, bValid ? NULL : REG_SAGETHUMBS_BAK ) && bOK;
+	}
+
 	CString sSysKey = _T("SystemFileAssociations\\") + sType;
 //	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ConflictPrompt"), ConflictPrompt, NULL ) && bOK;
 	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ExtendedTileInfo"), ExtendedTileInfo, NULL ) && bOK;
@@ -535,7 +555,7 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt, bool bFull)
 	sType += szExt;
 	CString sFileExt = FileExts + sType;
 	CString sDefaultKey = REG_SAGETHUMBS_IMG + sType;
-	CString sCurrentKey = GetRegValue( _T(""), _T(""), sType, HKEY_CLASSES_ROOT );
+	CString sCurrentKey = GetRegValue( _T(""), CString(), sType, HKEY_CLASSES_ROOT );
 
 	bOK = DeleteRegValue( _T("TypeOverlay"), sCurrentKey, HKEY_CLASSES_ROOT ) && bOK;
 
@@ -592,7 +612,7 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt, bool bFull)
 		bOK = UnregisterValue( HKEY_CLASSES_ROOT, sType, _T(""), sDefaultKey ) && bOK;
 
 		// Test for unused key and delete it
-		sCurrentKey = GetRegValue( _T(""), _T(""), sType, HKEY_CLASSES_ROOT );
+		sCurrentKey = GetRegValue( _T(""), CString(), sType, HKEY_CLASSES_ROOT );
 		if ( sCurrentKey.CompareNoCase( sDefaultKey ) != 0 &&
 			IsKeyExists( HKEY_CLASSES_ROOT, sDefaultKey ) )
 		{
@@ -630,7 +650,7 @@ void CSageThumbsModule::FixProgID(LPCTSTR szExt)
 	CString sFileExt = FileExts + sType;
 
 	// Test for orphan extension key
-	CString sCurrentKey = GetRegValue( _T(""), _T(""), sType, HKEY_CLASSES_ROOT );
+	CString sCurrentKey = GetRegValue( _T(""), CString(), sType, HKEY_CLASSES_ROOT );
 	if ( ! sCurrentKey.IsEmpty() && IsKeyExists( HKEY_CLASSES_ROOT, sCurrentKey ) )
 		return;
 
@@ -712,13 +732,13 @@ void CSageThumbsModule::FixProgID(LPCTSTR szExt)
 	// Clean orphan extension key
 	DeleteRegValue( _T(""), sType, HKEY_CLASSES_ROOT );
 
-	CString sPerceivedType = GetRegValue( _T("PerceivedType"), _T(""), sType, HKEY_CLASSES_ROOT );
+	CString sPerceivedType = GetRegValue( _T("PerceivedType"), CString(), sType, HKEY_CLASSES_ROOT );
 	if ( sPerceivedType.CompareNoCase( GetPerceivedType( szExt ) ) == 0 )
 	{
 		DeleteRegValue( _T("PerceivedType"), sType, HKEY_CLASSES_ROOT );
 	}
 
-	CString sContentType = GetRegValue( _T("Content Type"), _T(""), sType, HKEY_CLASSES_ROOT );
+	CString sContentType = GetRegValue( _T("Content Type"), CString(), sType, HKEY_CLASSES_ROOT );
 	if ( sContentType.CompareNoCase( GetContentType( szExt ) ) == 0 )
 	{
 		DeleteRegValue( _T("Content Type"), sType, HKEY_CLASSES_ROOT );
@@ -787,18 +807,18 @@ BOOL CSageThumbsModule::Initialize()
 	m_oLangs.Select( (LANGID)(DWORD)GetRegValue( _T("Lang"), (DWORD)LANG_NEUTRAL ) );
 	SetRegValue( _T("Lang"), m_oLangs.GetLang() );
 
-	m_hSQLite = ::LoadLibrary( m_sHome + LIB_SQLITE );
+	m_hSQLite = LoadLibrary( m_sHome + LIB_SQLITE );
 	if ( ! m_hSQLite )
 		// Ошибка загрузки
 		return FALSE;
 
 	// Загрузка библиотек
-	m_hGFL = ::LoadLibrary( m_sHome + LIB_GFL );
+	m_hGFL = LoadLibrary( m_sHome + LIB_GFL );
 	if ( ! m_hGFL )
 		// Ошибка загрузки
 		return FALSE;
 
-	m_hGFLe = ::LoadLibrary( m_sHome + LIB_GFLE );
+	m_hGFLe = LoadLibrary( m_sHome + LIB_GFLE );
 	if ( ! m_hGFLe )
 		// Ошибка загрузки
 		return FALSE;
@@ -815,7 +835,7 @@ BOOL CSageThumbsModule::Initialize()
 	if ( sPlugins.IsEmpty() )
 	{
 		// 	UninstallString = "C:\Program Files\XnView\unins000.exe"
-		CString buf = GetRegValue( REG_XNVIEW_PATH1, _T(""), REG_XNVIEW_KEY, HKEY_LOCAL_MACHINE );
+		CString buf = GetRegValue( REG_XNVIEW_PATH1, CString(), REG_XNVIEW_KEY, HKEY_LOCAL_MACHINE );
 		if ( ! buf.IsEmpty() )
 		{
 			buf.Trim (_T("\""));
@@ -832,7 +852,7 @@ BOOL CSageThumbsModule::Initialize()
 	if ( sPlugins.IsEmpty() )
 	{
 		// Inno Setup: App Path = C:\Program Files\XnView
-		CString buf = GetRegValue( REG_XNVIEW_PATH2, _T(""), REG_XNVIEW_KEY, HKEY_LOCAL_MACHINE );
+		CString buf = GetRegValue( REG_XNVIEW_PATH2, CString(), REG_XNVIEW_KEY, HKEY_LOCAL_MACHINE );
 		if ( ! buf.IsEmpty() )
 		{
 			buf.Trim (_T("\""));
@@ -1024,6 +1044,57 @@ LONG APIENTRY CPlApplet(HWND hwnd, UINT uMsg, LPARAM /* lParam1 */, LPARAM lPara
 		break;
 	}
 	return FALSE;
+}
+
+bool IsValidCLSID(const CString& sCLSID)
+{
+	static CRBMap < CString, bool > oCLSIDCache;
+	bool bIsValid = false;
+	if ( oCLSIDCache.Lookup( sCLSID, bIsValid ) )
+		return bIsValid;
+
+	CString sPath = GetRegValue( _T(""), CString(), _T("CLSID\\") + sCLSID + _T("\\InprocServer32"), HKEY_CLASSES_ROOT );
+	sPath.Trim();
+	if ( sPath.IsEmpty() )
+	{
+		sPath = GetRegValue( _T(""), CString(), _T("CLSID\\") + sCLSID + _T("\\LocalServer32"), HKEY_CLASSES_ROOT );
+		sPath.Trim();
+	}
+	if ( ! sPath.IsEmpty() )
+	{
+		// Test for quoted path
+		if ( sPath.GetAt( 0 ) == _T('\"') )
+		{
+			int nSlash = sPath.Find( _T('\"'), 1 );
+			if ( nSlash != -1 )
+			{
+				sPath = sPath.Mid( 1, nSlash - 1 );
+				sPath.Trim();
+			}
+		}
+
+		if ( HMODULE hModule = LoadLibraryEx( sPath, NULL, LOAD_LIBRARY_AS_DATAFILE ) )
+		{
+			FreeLibrary( hModule );
+			bIsValid = true;
+		}
+		else
+		{
+			// Test for path with arguments
+			PathRemoveArgs( sPath.GetBuffer( MAX_PATH ) );
+			sPath.ReleaseBuffer();
+			sPath.Trim();
+			if ( HMODULE hModule = LoadLibraryEx( sPath, NULL, LOAD_LIBRARY_AS_DATAFILE ) )
+			{
+				FreeLibrary( hModule );
+				bIsValid = true;
+			}
+		}
+	}
+
+	ATLTRACE( "IsValidCSID( %s ) detected %s CLSID path: \"%s\"\n", (LPCSTR)CT2A( sCLSID ), ( bIsValid ? "good" : "bad" ), (LPCSTR)CT2A( sPath ) );
+	oCLSIDCache.SetAt( sCLSID, bIsValid );
+	return bIsValid;
 }
 
 BOOL GetRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot)
@@ -1306,7 +1377,7 @@ LPCTSTR GetKeyName(HKEY hRoot)
 BOOL RegisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue, LPCTSTR szBackupName)
 {
 	// Check for new value
-	CString buf = GetRegValue( szName, _T(""), szKey, hRoot );
+	CString buf = GetRegValue( szName, CString(), szKey, hRoot );
 	if ( buf.CompareNoCase( szValue ) != 0 )
 	{
 		if ( ! szBackupName && ! buf.IsEmpty() )
@@ -1335,8 +1406,8 @@ BOOL UnregisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue,
 	BOOL bOK = TRUE;
 
 	// Check backup
-	CString buf = GetRegValue( szName, _T(""), szKey, hRoot );
-	CString backup_buf = szBackupName ? GetRegValue( szBackupName, _T(""), szKey, hRoot ) : CString();
+	CString buf = GetRegValue( szName, CString(), szKey, hRoot );
+	CString backup_buf = szBackupName ? GetRegValue( szBackupName, CString(), szKey, hRoot ) : CString();
 	if ( buf.CompareNoCase( szValue ) == 0 )
 	{
 		// Check backup value

@@ -205,6 +205,7 @@ protected:
 	#define CHECKPOINT			__noop
 #endif // _DEBUG
 
+bool IsValidCLSID(const CString& sCLSID);
 BOOL GetRegValue(LPCTSTR szName, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
 DWORD GetRegValue(LPCTSTR szName, DWORD dwDefault, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
 CString GetRegValue(LPCTSTR szName, const CString& sDefault, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);

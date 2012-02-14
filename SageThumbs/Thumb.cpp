@@ -1885,14 +1885,14 @@ STDMETHODIMP CThumb::Extract(LPCWSTR pszFile, UINT nIconIndex, HICON* phiconLarg
 		}
 
 		CString sDefaultIcon;
-		CString sDefaultKey = GetRegValue( _T(""), _T(""), sExt, HKEY_CLASSES_ROOT );
+		CString sDefaultKey = GetRegValue( _T(""), CString(), sExt, HKEY_CLASSES_ROOT );
 		if ( sDefaultKey.IsEmpty() )
 		{
-			sDefaultIcon = GetRegValue( _T(""), _T(""), sExt + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT );
+			sDefaultIcon = GetRegValue( _T(""), CString(), sExt + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT );
 		}
 		else
 		{
-			sDefaultIcon = GetRegValue( _T(""), _T(""), sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT );
+			sDefaultIcon = GetRegValue( _T(""), CString(), sDefaultKey + _T("\\DefaultIcon"), HKEY_CLASSES_ROOT );
 		}
 		if ( sDefaultIcon.IsEmpty() )
 		{

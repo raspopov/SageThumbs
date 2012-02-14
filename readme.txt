@@ -67,6 +67,7 @@ Versions:
   * Fixed PaintShopPro extensions (pspbrush, pspframe and pspimage)
   * Added "SageThumbs Repair Utility"
   * Updated installer
+  * Improved "compatible" mode (added invalid extension detection)
 
 2.0.0.13
   * New user-friendly translation method using PoEdit

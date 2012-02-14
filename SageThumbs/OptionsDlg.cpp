@@ -153,7 +153,7 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 	const bool bWinCache = GetRegValue( _T("WinCache"), 1ul ) != 0;
 	CheckDlgButton( IDC_ENABLE_WINCACHE, bWinCache ? BST_CHECKED : BST_UNCHECKED );
 
-	const bool bUseFax = GetRegValue( _T(""), _T(""), ShellImagePreview, HKEY_CLASSES_ROOT ).CompareNoCase( CLSID_FAX ) == 0;
+	const bool bUseFax = GetRegValue( _T(""), CString(), ShellImagePreview, HKEY_CLASSES_ROOT ).CompareNoCase( CLSID_FAX ) == 0;
 	CheckDlgButton( IDC_USE_FAX, bUseFax ? BST_CHECKED : BST_UNCHECKED );
 
 	if ( _Module.m_OSVersion.dwMajorVersion >= 6 && ! IsProcessElevated() )
