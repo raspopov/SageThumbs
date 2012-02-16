@@ -60,6 +60,9 @@
     <None Include="..\license.txt" />
     <None Include="..\ReadMe.txt" />
     <None Include="..\SageThumbs Online.url" />
+    <None Include="sagethumbs.dll.15.p_">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="sagethumbs.dll.16.p_">
       <Filter>Resource Files</Filter>
     </None>
@@ -127,6 +130,9 @@
       <Filter>Translations</Filter>
     </CustomBuild>
     <CustomBuild Include="SageThumbs.dll.1d.po">
+      <Filter>Translations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SageThumbs.dll.15.po">
       <Filter>Translations</Filter>
     </CustomBuild>
     <CustomBuild Include="SageThumbs.dll.16.po">

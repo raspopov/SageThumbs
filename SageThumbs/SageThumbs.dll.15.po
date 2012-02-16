@@ -1,0 +1,318 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SageThumbs.dll\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Nikolay Raspopov <raspopov@cherubicsoft.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Polish\n"
+"X-Poedit-Country: POLAND\n"
+
+#. Dialog caption
+#: DIALOGCAPTION.202
+msgid "SageThumbs Options"
+msgstr "Opcje SageThumbs"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.1
+msgid "OK"
+msgstr "OK"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2
+msgid "Cancel"
+msgstr "Anuluj"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.211
+msgid "Enable context menu in Explorer"
+msgstr "Włącz menu kontekstowe w Eksploratorze"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.212
+msgid "Enable thumbnails in Explorer"
+msgstr "Włącz miniaturki w Eksploratorze"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.216
+msgid "Use thumbnails as icons in Explorer"
+msgstr "Użyj miniaturek jako ikony w Eksploratorze"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.217
+msgid "Enable Windows thumbnail cache"
+msgstr "Buforuj miniatury"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.215
+msgid "Prefer image file embedded thumbnails"
+msgstr "Preferuj wbudowane miniatury plików graficznych"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.203
+msgid "Use Windows Image/Fax Viewer"
+msgstr "Użytj Podglądu Obrazu/Faksu"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "Zaznacz/Odznacz wszystkie"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "Domyślnie"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.213
+msgid "Clear..."
+msgstr "Wyczyść..."
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.218
+msgid "Optimize"
+msgstr "Optymalizuj"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483649
+msgid "Context menu preview size"
+msgstr "Wielkość podglądu w menu kontekstowym"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483650
+msgid "Width x Height:"
+msgstr "Szerokość x Wysokośc"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483651
+msgid "X"
+msgstr "X"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483652
+msgid "pixels"
+msgstr "piksele"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483653
+msgid "Supported file types"
+msgstr "Wspierane typy pliku"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483654
+msgid "System-wide tweaks"
+msgstr "Ustawienia systemowe"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483655
+msgid "Language:"
+msgstr "Język:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483656
+msgid "Maximum size of image file:"
+msgstr "Maksymalny rozmiar pliku z obrazem:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483657
+msgid "MB"
+msgstr "MB"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483658
+msgid "Convert options"
+msgstr "Opcje konwersji"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483659
+msgid "JPEG quality (0 - lowest, 100 - best):"
+msgstr "Jakość JPEG (0 - najgorsza jakość, 100 - najlepsza)"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483660
+msgid "PNG compression (0 - lowest, 9 - best):"
+msgstr "Kompresja PNG (0 - najgorsza, 9 - najlepsza)"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "Pokaż nakładkę z typem na miniaturach"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr ""
+
+#. String resource
+#: STRING.100
+msgid "SageThumbs"
+msgstr "SageThumbs"
+
+#. String resource
+#: STRING.101
+msgid "Change various SageThumbs options"
+msgstr "Zmień różne opcje SageThumbs"
+
+#. String resource
+#: STRING.102
+msgid "Type: "
+msgstr "Typ:"
+
+#. String resource
+#: STRING.103
+msgid "Sizes (pixels): "
+msgstr "Rozmiary (piksele):"
+
+#. String resource
+#: STRING.104
+msgid "Size (bytes): "
+msgstr "Rozmiar (bajty):"
+
+#. String resource
+#: STRING.105
+msgid "Modified: "
+msgstr "Zmodyfikowany:"
+
+#. String resource
+#: STRING.106
+msgid "Colors (bits): "
+msgstr "Kolory (bity):"
+
+#. String resource
+#: STRING.107
+msgid "Compression: "
+msgstr "Kompresja:"
+
+#. String resource
+#: STRING.108
+msgid "Resolution: "
+msgstr "Rozdzielczość:"
+
+#. String resource
+#: STRING.109
+msgid "Can't open image file"
+msgstr "Nie można otworzyć obrazu pliku"
+
+#. String resource
+#: STRING.110
+msgid "Can't save image file"
+msgstr "Nie można zapisać obrazu pliku"
+
+#. String resource
+#: STRING.111
+msgid "Can't send mail"
+msgstr "Nie można wysłać maila"
+
+#. String resource
+#: STRING.112
+msgid "Nothing to send"
+msgstr "Nic nie ma do wysłania"
+
+#. String resource
+#: STRING.113
+msgid "Can't open clipboard"
+msgstr "Nie mogę otworzyć schowka"
+
+#. String resource
+#: STRING.114
+msgid "Please confirm thumbnail cache clearing."
+msgstr "Proszę potwierdzić wyczyszczenie bufora miniatur."
+
+#. String resource
+#: STRING.115
+msgid "Thumbnail cache size: %u KB"
+msgstr "Wielkość buforu miniatur: %u KB"
+
+#. String resource
+#: STRING.116
+msgid "SageThumbs thumbnail cache"
+msgstr "Buform miniatur SageThumbs"
+
+#. String resource
+#: STRING.117
+msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
+msgstr "Wyczyść bufor miniatur SageThumbrs. Żadne dane użytkonika nie zostaną usunięte."
+
+#. String resource
+#: STRING.118
+msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
+msgstr "Nie można zastosować wszystkich ustawień. Proszę uruchomić SageThumbs z prawami administratora."
+
+#. String resource
+#: STRING.119
+msgid "Convert to PNG"
+msgstr "Konwertuj do formatu PNG"
+
+#. String resource
+#: STRING.120
+msgid "Converting..."
+msgstr "Konwersja..."
+
+#. String resource
+#: STRING.121
+msgid "Sending..."
+msgstr "Wysyłanie..."
+
+#. String resource
+#: STRING.122
+msgid "Applying settings..."
+msgstr "Stosowanie ustawień..."
+
+#. String resource
+#: STRING.123
+msgid "Updating..."
+msgstr "Aktualizacja..."
+
+#. String resource
+#: STRING.203
+msgid "SageThumbs Options..."
+msgstr "Opcje SageThumbs..."
+
+#. String resource
+#: STRING.204
+msgid "Copy to clipboard"
+msgstr "Skopiuj do schowka"
+
+#. String resource
+#: STRING.205
+msgid "Set tiled wallpaper"
+msgstr "Ustaw jako tapetę w formie kafelek"
+
+#. String resource
+#: STRING.206
+msgid "Set centered wallpaper"
+msgstr "Ustaw jako wyśrodkowaną tapetę"
+
+#. String resource
+#: STRING.207
+msgid "Set stretched wallpaper"
+msgstr "Ustaw rozciągniętą tapetę"
+
+#. String resource
+#: STRING.208
+msgid "Send image by mail..."
+msgstr "Wyślij obrazek via email..."
+
+#. String resource
+#: STRING.209
+msgid "Send thumbnail by mail..."
+msgstr "Wyślij miniaturke przez email..."
+
+#. String resource
+#: STRING.210
+msgid "Convert to JPG"
+msgstr "Konwersja do formatu JPG"
+
+#. String resource
+#: STRING.211
+msgid "Convert to GIF"
+msgstr "Konwersja do formatu GIF"
+
+#. String resource
+#: STRING.212
+msgid "Convert to BMP"
+msgstr "Konwersja do BMP"
+
