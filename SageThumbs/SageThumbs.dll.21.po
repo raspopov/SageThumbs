@@ -140,6 +140,11 @@ msgstr "Kompresi PNG (0 - terendah, 9 - terbaik):"
 msgid "Show type overlay on thumbnails"
 msgstr "Show type overlay on thumbnails"
 
+#. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr ""
+
 #. String resource
 #: STRING.100
 msgid "SageThumbs"

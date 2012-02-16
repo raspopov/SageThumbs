@@ -140,6 +140,11 @@ msgstr "PNG сжатие (0 - хуже, 9 - лучше):"
 msgid "Show type overlay on thumbnails"
 msgstr "Отображать тип файла на эскизе"
 
+#. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr "Показывать эскиз в подменю"
+
 #. String resource
 #: STRING.100
 msgid "SageThumbs"

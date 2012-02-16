@@ -140,7 +140,26 @@ STDMETHODIMP CThumb::Initialize(LPCITEMIDLIST, IDataObject* pDO, HKEY)
 #define ID_CONVERT_GIF_ITEM			10
 #define ID_CONVERT_BMP_ITEM			11
 #define ID_CONVERT_PNG_ITEM			12
-#define ID_END_ITEM					13
+#define ID_THUMBNAIL_INFO_ITEM		13
+#define ID_END_ITEM					14
+
+static const LPCTSTR szVerbs[ ID_END_ITEM ] =
+{
+	_T("submenu"),
+	_T("clipboard_image"),
+	_T("thumbnail"),
+	_T("options"),
+	_T("wallpaper_stretch"),
+	_T("wallpaper_tile"),
+	_T("wallpaper_center"),
+	_T("mail_image"),
+	_T("mail_thumbnail"),
+	_T("convert_jpg"),
+	_T("convert_gif"),
+	_T("convert_bmp"),
+	_T("convert_png"),
+	_T("info")
+};
 
 STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst, UINT uidCmdLast, UINT uFlags)
 {
@@ -166,6 +185,31 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 		return E_FAIL;
 	}
 
+/*#ifdef _DEBUG
+	ATLTRACE( "Menu:\n" );
+	UINT count = GetMenuItemCount( hMenu );
+	for ( UINT i = 0; i < count; ++i )
+	{
+		TCHAR szItem[ 256 ] = {};
+		MENUITEMINFO mii = { sizeof( MENUITEMINFO ), MIIM_FTYPE | MIIM_ID | MIIM_STRING | MIIM_BITMAP | MIIM_CHECKMARKS };
+		mii.dwTypeData = szItem;
+		mii.cch = _countof( szItem );
+		GetMenuItemInfo( hMenu, i, TRUE, &mii );
+		ATLTRACE( "%2u. wID=%5d fType=0x%08x %s%s%s", i, mii.wID, mii.fType,
+			( mii.hbmpItem ? "{bitmap} " : "" ),
+			( mii.hbmpChecked ? "{check} " : "" ),
+			( mii.hbmpUnchecked ? "{uncheck} " : "" )  );
+		if ( mii.fType & MFT_BITMAP )
+			ATLTRACE( "MFT_BITMAP " );
+		else if ( mii.fType & MFT_SEPARATOR )
+			ATLTRACE( "MFT_SEPARATOR " );
+		else if ( mii.fMask & MIIM_STRING )
+			ATLTRACE( "MFT_STRING \"%s\" ", (LPCSTR)CT2A( (LPCTSTR)mii.dwTypeData ) );
+		ATLTRACE( "\n" );
+	}
+#endif // _DEBUG*/
+
+	bool bPreviewInSubMenu = GetRegValue( _T("SubMenu"), 1ul ) != 0;
 	bool bSingleFile = ( m_Filenames.GetCount () == 1 );
 
 	// Store the menu item's ID so we can check against it later when
@@ -274,11 +318,27 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 	if ( bSingleFile )
 	{
 		// Загрузка файла
-		m_Preview.LoadImage( m_Filenames.GetHead(), m_cx, m_cy );
+		DWORD width = GetRegValue( _T("Width"), THUMB_STORE_SIZE );
+		DWORD height = GetRegValue( _T("Height"), THUMB_STORE_SIZE );
+		m_Preview.LoadImage( m_Filenames.GetHead(), width, height );
 
 		if ( m_Preview )
 		{
-			if ( ! InsertMenu( hSubMenu, 0, MF_BYPOSITION | MF_OWNERDRAW, uidCmdFirst + ID_THUMBNAIL_ITEM, 0 ) )
+			HBITMAP hPreview = m_Preview.GetImage( width, height );
+
+			BITMAP bm = {};
+			GetObject( hPreview, sizeof( BITMAP ), &bm );
+			ATLTRACE( "Bitmap %dx%d bytes=%d bits=%d planes=%d type=%d\n", bm.bmHeight, bm.bmWidth, bm.bmWidthBytes, bm.bmBitsPixel, bm.bmPlanes, bm.bmType );
+
+			if ( ! InsertMenu( ( bPreviewInSubMenu ? hSubMenu : hMenu ), ( bPreviewInSubMenu ? 0 : uIndex++ ),
+				MF_BYPOSITION | MF_BITMAP, uidCmdFirst + ID_THUMBNAIL_ITEM, (LPCTSTR)hPreview ) )
+			{
+				ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert image menu item)\n" );
+				return E_FAIL;
+			}
+
+			if ( ! InsertMenu( ( bPreviewInSubMenu ? hSubMenu : hMenu ), ( bPreviewInSubMenu ? 1:  uIndex++ ),
+				MF_BYPOSITION | MF_STRING | MF_DISABLED, uidCmdFirst + ID_THUMBNAIL_INFO_ITEM, _T("( ") + m_Preview.GetTitleString() + _T(" )") ) )
 			{
 				ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert image menu item)\n" );
 				return E_FAIL;
@@ -288,12 +348,12 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 
 	CString sAppName = _Module.m_oLangs.LoadString( IDS_PROJNAME );
 	MENUITEMINFO mii = { sizeof( MENUITEMINFO ) };
-	mii.fMask  = MIIM_STRING | MIIM_SUBMENU | MIIM_ID | MIIM_BITMAP;
+	mii.fMask  = MIIM_STRING | MIIM_SUBMENU | MIIM_ID | MIIM_CHECKMARKS;
 	mii.wID = uidCmdFirst + ID_SUBMENU_ITEM;
 	mii.hSubMenu = hSubMenu;
 	mii.dwTypeData = (LPTSTR)(LPCTSTR)sAppName;
 	mii.cch = (UINT)sAppName.GetLength();
-	mii.hbmpItem = (HBITMAP)LoadImage( _AtlBaseModule.GetResourceInstance(), MAKEINTRESOURCE( IDR_SAGETHUMBS ), IMAGE_BITMAP, 16, 16, LR_SHARED );
+	mii.hbmpChecked = mii.hbmpUnchecked = (HBITMAP)LoadImage( _AtlBaseModule.GetResourceInstance(), MAKEINTRESOURCE( IDR_SAGETHUMBS ), IMAGE_BITMAP, 16, 16, LR_SHARED );
 	if ( ! InsertMenuItem ( hMenu, uIndex++, TRUE, &mii ) )
 	{
 		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert main menu)\n" );
@@ -314,16 +374,14 @@ STDMETHODIMP CThumb::GetCommandString (
 	UINT_PTR uCmd, UINT uFlags, UINT* /*puReserved*/,
 	LPSTR pszName, UINT cchMax )
 {
-	ATLTRACE( "0x%08x::IContextMenu::GetCommandString (%d, %d, 0x%08x \"%s\", %d) ", this, uCmd, uFlags, pszName, pszName, cchMax);
-
 	CString tmp;
 	switch ( uFlags )
 	{
 	case GCS_VERBA:
 	case GCS_VERBW:
-		if ( uCmd == ID_THUMBNAIL_ITEM )
+		if ( uCmd < ID_END_ITEM )
 		{
-			tmp = _T("preview");
+			tmp = CString( _T("SageThumbs.") ) + szVerbs[ uCmd ];
 		}
 		break;
 
@@ -335,6 +393,7 @@ STDMETHODIMP CThumb::GetCommandString (
 			tmp = _Module.GetAppName();
 			break;
 		case ID_THUMBNAIL_ITEM:
+		case ID_THUMBNAIL_INFO_ITEM:
 			tmp = m_Preview.GetMenuTipString ();
 			break;
 		case ID_OPTIONS_ITEM:
@@ -371,18 +430,17 @@ STDMETHODIMP CThumb::GetCommandString (
 			tmp = _Module.m_oLangs.LoadString (IDS_CONVERT_PNG);
 			break;
 		default:
-			ATLTRACE( "E_INVALIDARG\n" );
+			ATLTRACE( "0x%08x::IContextMenu::GetCommandString (%d, %d, 0x%08x \"%s\", %d) E_INVALIDARG\n", this, uCmd, uFlags, pszName, pszName, cchMax);
 			return E_INVALIDARG;
 		}
 		break;
 
 	case GCS_VALIDATEA:
 	case GCS_VALIDATEW:
-		ATLTRACE( "S_OK\n" );
 		return S_OK;
 
 	default:
-		ATLTRACE( "E_INVALIDARG\n" );
+		ATLTRACE( "0x%08x::IContextMenu::GetCommandString (%d, %d, 0x%08x \"%s\", %d) E_INVALIDARG\n", this, uCmd, uFlags, pszName, pszName, cchMax);
 		return E_INVALIDARG;
 	}
 
@@ -391,7 +449,6 @@ STDMETHODIMP CThumb::GetCommandString (
 	else
 		strncpy_s( (LPSTR)pszName, cchMax, (LPCSTR)CT2A( tmp ), cchMax );
 
-	ATLTRACE( "S_OK\n" );
 	return S_OK;
 }
 
@@ -684,9 +741,12 @@ STDMETHODIMP CThumb::InvokeCommand(LPCMINVOKECOMMANDINFO pInfo)
 	{
 	case ID_THUMBNAIL_ITEM:
 		// Open the bitmap in the default paint program.
-		SHAddToRecentDocs (SHARD_PATH, m_Filenames.GetHead ());
-		ShellExecute (pInfo->hwnd, _T("open"), m_Filenames.GetHead (),
-			NULL, NULL, SW_SHOWNORMAL);
+		SHAddToRecentDocs( SHARD_PATH, m_Filenames.GetHead() );
+		ShellExecute( pInfo->hwnd, _T("open"), m_Filenames.GetHead(), NULL, NULL, SW_SHOWNORMAL );
+		break;
+
+	case ID_THUMBNAIL_INFO_ITEM:
+		// Disabled
 		break;
 
 	case ID_OPTIONS_ITEM:
@@ -747,7 +807,7 @@ STDMETHODIMP CThumb::HandleMenuMsg2(UINT uMsg, WPARAM wParam, LPARAM lParam, LRE
 	return MenuMessageHandler (uMsg, wParam, lParam, (pResult ? pResult : &res));
 }
 
-STDMETHODIMP CThumb::MenuMessageHandler(UINT uMsg, WPARAM /*wParam*/, LPARAM lParam, LRESULT* pResult)
+STDMETHODIMP CThumb::MenuMessageHandler(UINT uMsg, WPARAM /*wParam*/, LPARAM /*lParam*/, LRESULT* /*pResult*/)
 {
 	switch (uMsg)
 	{
@@ -757,125 +817,19 @@ STDMETHODIMP CThumb::MenuMessageHandler(UINT uMsg, WPARAM /*wParam*/, LPARAM lPa
 
 	case WM_MEASUREITEM:
 		ATLTRACE ( "0x%08x::WM_MEASUREITEM\n", this);
-		return OnMeasureItem ((MEASUREITEMSTRUCT*) lParam, pResult);
+		break;
 
 	case WM_DRAWITEM:
 		ATLTRACE ( "0x%08x::WM_DRAWITEM\n", this);
-		return OnDrawItem ((DRAWITEMSTRUCT*) lParam, pResult);
+		break;
 
 	case WM_MENUCHAR:
 		ATLTRACE ( "0x%08x::WM_MENUCHAR\n", this);
 		break;
 
 	default:
-		ATLTRACE ( "0x%08x::Unknown message\n", this);
+		ATLTRACE ( "0x%08x::Unknown message %u\n", this, uMsg );
 	}
-	return S_OK;
-}
-
-STDMETHODIMP CThumb::OnMeasureItem(MEASUREITEMSTRUCT* pmis, LRESULT* pResult)
-{
-	// Check that we're getting called for our own menu item.
-	if ( ID_THUMBNAIL_ITEM != pmis->itemID - m_uOurItemID )
-		return S_OK;
-
-	// Загрузка размеров из реестра
-	DWORD width = GetRegValue( _T("Width"), THUMB_STORE_SIZE );
-	DWORD height = GetRegValue( _T("Height"), THUMB_STORE_SIZE );
-
-	// Расчет всех размеров
-	m_Preview.CalcSize( pmis->itemWidth, pmis->itemHeight, width, height );
-	pmis->itemWidth += 4;
-	pmis->itemHeight += 24;
-
-	*pResult = TRUE;
-	return S_OK;
-}
-
-STDMETHODIMP CThumb::OnDrawItem(DRAWITEMSTRUCT* pdis, LRESULT* pResult)
-{
-	// Check that we're getting called for our own menu item.
-	if ( ID_THUMBNAIL_ITEM != pdis->itemID - m_uOurItemID )
-		return S_OK;
-
-	// Загрузка размеров из реестра
-	DWORD width = GetRegValue( _T("Width"), THUMB_STORE_SIZE );
-	DWORD height = GetRegValue( _T("Height"), THUMB_STORE_SIZE );
-
-	UINT cx, cy;
-	m_Preview.CalcSize( cx, cy, width, height );
-
-	RECT rcItem =
-	{
-		pdis->rcItem.left + 1, pdis->rcItem.top + 1,
-		pdis->rcItem.right - 1, pdis->rcItem.bottom - 21
-	};
-	RECT rcText =
-	{
-		rcItem.left, rcItem.bottom + 2, rcItem.right, pdis->rcItem.bottom - 2
-	};
-
-	RECT rcDraw;
-	rcDraw.left = ( rcItem.right + rcItem.left - cx ) / 2;
-	rcDraw.top = ( rcItem.top + rcItem.bottom - cy ) / 2;
-	rcDraw.right = rcDraw.left + cx;
-	rcDraw.bottom = rcDraw.top + cy;
-
-	// Отрисовка
-
-	// Windows XP: Enables or disables flat menu appearance for native User menus.
-	// When enabled, the menu bar uses COLOR_MENUBAR for the menubar background,
-	// COLOR_MENU for the menu-popup background,
-	// COLOR_MENUHILIGHT for the fill of the current menu selection, and
-	// COLOR_HILIGHT for the outline of the current menu selection.
-	// If disabled, menus are drawn using the same metrics and colors as
-	// in Windows 2000 and earlier.
-	BOOL bFlatMenu = FALSE;
-	SystemParametersInfo (SPI_GETFLATMENU, 0, &bFlatMenu, 0);
-	HBRUSH FillBrush = GetSysColorBrush (
-		(pdis->itemState & ODS_SELECTED) ?
-		(bFlatMenu ? COLOR_MENUHILIGHT : COLOR_HIGHLIGHT) : COLOR_MENU);
-	HBRUSH old_brush = (HBRUSH) SelectObject (pdis->hDC, FillBrush);
-	HPEN FillPen = CreatePen (PS_SOLID, 1, GetSysColor (
-		(pdis->itemState & ODS_SELECTED) ? COLOR_HIGHLIGHT : COLOR_MENU));
-	HPEN old_pen = (HPEN) SelectObject (pdis->hDC, FillPen);
-
-	Rectangle (pdis->hDC, pdis->rcItem.left, pdis->rcItem.top,
-		pdis->rcItem.right, pdis->rcItem.bottom);
-
-	if ( HBITMAP hThumbnail = m_Preview.GetImage( cx, cy ) )
-	{
-		if ( HDC hMemDC = CreateCompatibleDC( pdis->hDC ) )
-		{
-			HBITMAP hOldBitmap = (HBITMAP)SelectObject( hMemDC, hThumbnail );
-
-			//BLENDFUNCTION bf = { AC_SRC_OVER, 0, 255, AC_SRC_ALPHA };
-			//if ( ! AlphaBlend( pdis->hDC, rcDraw.left, rcDraw.top, cx, cy, hMemDC, 0, 0, cx, cy, bf ) )
-			//{
-				BitBlt( pdis->hDC, rcDraw.left, rcDraw.top, cx, cy, hMemDC, 0, 0, SRCCOPY );
-			//}
-
-			SelectObject( hMemDC, hOldBitmap );
-			DeleteDC( hMemDC );
-		}
-		DeleteObject( hThumbnail );
-	}
-
-	int old_mode = SetBkMode (pdis->hDC, TRANSPARENT);
-	COLORREF old_color = SetTextColor (pdis->hDC, GetSysColor (
-		(pdis->itemState & ODS_SELECTED) ? COLOR_HIGHLIGHTTEXT : COLOR_MENUTEXT));
-
-	DrawText (pdis->hDC, m_Preview.GetTitleString (), -1, &rcText,
-		DT_SINGLELINE | DT_CENTER | DT_VCENTER | DT_NOPREFIX);
-
-	SetTextColor (pdis->hDC, old_color);
-	SetBkMode (pdis->hDC, old_mode);
-
-	SelectObject (pdis->hDC, old_pen);
-	DeleteObject (FillPen);
-	SelectObject (pdis->hDC, old_brush);
-
-	*pResult = TRUE;
 	return S_OK;
 }
 

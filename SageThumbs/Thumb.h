@@ -505,8 +505,6 @@ protected:
 	void CopyToClipboard(HWND hwnd);					// Копирование в буфер обмена
 
 	STDMETHOD(MenuMessageHandler)(UINT, WPARAM, LPARAM, LRESULT*);
-	STDMETHOD(OnMeasureItem)(MEASUREITEMSTRUCT*, LRESULT*);
-	STDMETHOD(OnDrawItem)(DRAWITEMSTRUCT*, LRESULT*);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(Thumb), CThumb)

@@ -140,6 +140,11 @@ msgstr "Compressão PNG (0 - mínima, 9 - máxima):"
 msgid "Show type overlay on thumbnails"
 msgstr "Exibir tipo superposto nas miniaturas"
 
+#. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr ""
+
 #. String resource
 #: STRING.100
 msgid "SageThumbs"

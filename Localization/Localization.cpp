@@ -691,7 +691,7 @@ BOOL CLocalization::LoadPoFromString(LANGID nLangID, const CStringA& sContent)
 				if ( mode == mode_msgstr )
 				{
 					// Save previous string
-					if ( ! sRef.IsEmpty() )
+					if ( ! sRef.IsEmpty() && ! sString.IsEmpty() )
 						Add( sRef, Decode( sString ) );
 
 					sString.Empty();
@@ -788,7 +788,7 @@ BOOL CLocalization::LoadPoFromString(LANGID nLangID, const CStringA& sContent)
 	if ( bRet )
 	{
 		// Save last string
-		if ( ! sRef.IsEmpty() )
+		if ( ! sRef.IsEmpty() && ! sString.IsEmpty() )
 			Add( sRef, Decode( sString ) );
 	}
 	else

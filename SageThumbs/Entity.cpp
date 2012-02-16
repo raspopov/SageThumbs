@@ -574,7 +574,7 @@ HRESULT CEntity::LoadImage(IStream* pStream, UINT cx, UINT cy)
 
 	if ( m_hGflBitmap->Type != GFL_RGBA )
 	{
-		gflChangeColorDepth( m_hGflBitmap, NULL, GFL_MODE_TO_RGBA, GFL_MODE_ADAPTIVE );
+		Change_Color_Depth( m_hGflBitmap );
 	}
 
 	ATLTRACE( "CEntity::LoadImage(%ux%u) : S_OK (from stream)\n", cx, cy );

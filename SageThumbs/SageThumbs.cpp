@@ -1494,7 +1494,7 @@ HRESULT CSageThumbsModule::LoadBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap)
 		{
 			if ( (*bitmap)->Type != GFL_RGBA )
 			{
-				gflChangeColorDepth( *bitmap, NULL, GFL_MODE_TO_RGBA, GFL_MODE_ADAPTIVE );
+				Change_Color_Depth( *bitmap );
 			}
 			hr = S_OK;
 		}
@@ -1545,7 +1545,7 @@ HRESULT CSageThumbsModule::LoadThumbnailE(LPCTSTR filename, int width, int heigh
 		{
 			if ( (*bitmap)->Type != GFL_RGBA )
 			{
-				gflChangeColorDepth( *bitmap, NULL, GFL_MODE_TO_RGBA, GFL_MODE_ADAPTIVE );
+				Change_Color_Depth( *bitmap );
 			}
 			hr = S_OK;
 		}
@@ -1591,7 +1591,7 @@ HRESULT CSageThumbsModule::LoadBitmapFromMemoryE(LPCVOID data, UINT data_length,
 		{
 			if ( (*bitmap)->Type != GFL_RGBA )
 			{
-				gflChangeColorDepth( *bitmap, NULL, GFL_MODE_TO_RGBA, GFL_MODE_ADAPTIVE );
+				Change_Color_Depth( *bitmap );
 			}
 			hr = S_OK;
 		}

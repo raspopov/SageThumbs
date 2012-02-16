@@ -239,6 +239,8 @@ GFL_UINT32 GFLAPI IStreamTell(GFL_HANDLE handle) throw();
 GFL_UINT32 GFLAPI IStreamSeek(GFL_HANDLE handle, GFL_INT32 offset, GFL_INT32 origin) throw();
 #endif // ISTREAM_ENABLED
 
+#define Change_Color_Depth(x) gflChangeColorDepth( (x), NULL, GFL_MODE_TO_RGBA, GFL_MODE_ADAPTIVE )
+
 // Ёкспортируемые функции
 STDAPI DllCanUnloadNow(void);
 STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv);

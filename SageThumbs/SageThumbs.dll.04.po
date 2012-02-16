@@ -140,6 +140,11 @@ msgstr "PNG质量（0最低，9最好）："
 msgid "Show type overlay on thumbnails"
 msgstr "在缩略图上显示文件格式"
 
+#. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr ""
+
 #. String resource
 #: STRING.100
 msgid "SageThumbs"

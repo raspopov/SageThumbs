@@ -138,6 +138,9 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 	const bool bEnableMenu = GetRegValue( _T("EnableMenu"), 1ul ) != 0;
 	CheckDlgButton( IDC_ENABLE_MENU, bEnableMenu ? BST_CHECKED : BST_UNCHECKED );
 
+	const bool bSubMenu = GetRegValue( _T("SubMenu"), 1ul ) != 0;
+	CheckDlgButton( IDC_SUBMENU, bSubMenu ? BST_CHECKED : BST_UNCHECKED );
+
 	const bool bEnableThumbs = GetRegValue( _T("EnableThumbs"), 1ul ) != 0;
 	CheckDlgButton( IDC_ENABLE_THUMBS, bEnableThumbs ? BST_CHECKED : BST_UNCHECKED );
 
@@ -227,6 +230,9 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 
 	const bool bEnableMenu = IsDlgButtonChecked( IDC_ENABLE_MENU ) == BST_CHECKED;
 	SetRegValue( _T("EnableMenu"), bEnableMenu ? 1ul : 0ul );
+
+	const bool bSubMenu = IsDlgButtonChecked( IDC_SUBMENU ) == BST_CHECKED;
+	SetRegValue( _T("SubMenu"), bSubMenu ? 1ul : 0ul );
 
 	const bool bEnableThumbs = IsDlgButtonChecked( IDC_ENABLE_THUMBS ) == BST_CHECKED;
 	SetRegValue( _T("EnableThumbs"), bEnableThumbs ? 1ul : 0ul );
