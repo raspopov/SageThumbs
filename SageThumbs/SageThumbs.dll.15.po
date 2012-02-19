@@ -144,7 +144,7 @@ msgstr "Pokaż nakładkę z typem na miniaturach"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.226
 msgid "Show preview in submenu"
-msgstr ""
+msgstr "Pokaż podgląd w podmenu"
 
 #. String resource
 #: STRING.100
