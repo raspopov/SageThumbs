@@ -64,10 +64,13 @@ SageThumbs can be easily translated to other languages.
 Versions:
 
 2.0.0.14
-  * Fixed PaintShopPro extensions (pspbrush, pspframe and pspimage)
-  * Added "SageThumbs Repair Utility"
-  * Updated installer
   * Improved "compatible" mode (added invalid extension detection)
+  * Fixed PaintShopPro extensions (pspbrush, pspframe and pspimage)
+  * Fixed shifted icon in context menu on Windows XP
+  * Added new option "Show preview in submenu"
+  * Added "SageThumbs Repair Utility"
+  * Added Polish translation
+  * Updated installer
 
 2.0.0.13
   * New user-friendly translation method using PoEdit
