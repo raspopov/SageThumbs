@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: SageThumbs.dll\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Nikolay Raspopov <raspopov@cherubicsoft.com>\n"
+"Last-Translator: Krzysztof Cislo <krzysztof.cislo@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -54,7 +54,7 @@ msgstr "Preferuj wbudowane miniatury plików graficznych"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.203
 msgid "Use Windows Image/Fax Viewer"
-msgstr "Użytj Podglądu Obrazu/Faksu"
+msgstr "Użytj podglądu Obrazu/Faksu"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.210
@@ -84,22 +84,22 @@ msgstr "Wielkość podglądu w menu kontekstowym"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483650
 msgid "Width x Height:"
-msgstr "Szerokość x Wysokośc"
+msgstr "Szer x Wys"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483651
 msgid "X"
-msgstr "X"
+msgstr "x"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483652
 msgid "pixels"
-msgstr "piksele"
+msgstr "pikseli"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483653
 msgid "Supported file types"
-msgstr "Wspierane typy pliku"
+msgstr "Typy plików"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483654
@@ -114,7 +114,7 @@ msgstr "Język:"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483656
 msgid "Maximum size of image file:"
-msgstr "Maksymalny rozmiar pliku z obrazem:"
+msgstr "Maksymalny rozmiar pliku:"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483657
@@ -129,7 +129,7 @@ msgstr "Opcje konwersji"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483659
 msgid "JPEG quality (0 - lowest, 100 - best):"
-msgstr "Jakość JPEG (0 - najgorsza jakość, 100 - najlepsza)"
+msgstr "Jakość JPEG (0 - najgorsza, 100 - najlepsza)"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483660
@@ -214,12 +214,12 @@ msgstr "Nic nie ma do wysłania"
 #. String resource
 #: STRING.113
 msgid "Can't open clipboard"
-msgstr "Nie mogę otworzyć schowka"
+msgstr "Nie można otworzyć schowka"
 
 #. String resource
 #: STRING.114
 msgid "Please confirm thumbnail cache clearing."
-msgstr "Proszę potwierdzić wyczyszczenie bufora miniatur."
+msgstr "Potwierdź wyczyszczenie buforu miniatur."
 
 #. String resource
 #: STRING.115
@@ -274,7 +274,7 @@ msgstr "Opcje SageThumbs..."
 #. String resource
 #: STRING.204
 msgid "Copy to clipboard"
-msgstr "Skopiuj do schowka"
+msgstr "Kopiuj do schowka"
 
 #. String resource
 #: STRING.205
@@ -314,5 +314,5 @@ msgstr "Konwersja do formatu GIF"
 #. String resource
 #: STRING.212
 msgid "Convert to BMP"
-msgstr "Konwersja do BMP"
+msgstr "Konwersja do formatu BMP"
 
