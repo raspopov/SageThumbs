@@ -51,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,0,0,14
- PRODUCTVERSION 2,0,0,14
+ FILEVERSION 2,0,0,15
+ PRODUCTVERSION 2,0,0,15
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -70,12 +70,12 @@ BEGIN
             VALUE "Comments", "http://www.cherubicsoft.com/"
             VALUE "CompanyName", "CherubicSoft"
             VALUE "FileDescription", "SageThumbs Shell Extension"
-            VALUE "FileVersion", "2.0.0.14"
+            VALUE "FileVersion", "2.0.0.15"
             VALUE "InternalName", "SageThumbs.dll"
             VALUE "LegalCopyright", "Copyright © 2004-2012 Nikolay Raspopov"
             VALUE "OriginalFilename", "SageThumbs.dll"
             VALUE "ProductName", "SageThumbs Shell Extension"
-            VALUE "ProductVersion", "2.0.0.14"
+            VALUE "ProductVersion", "2.0.0.15"
         END
     END
     BLOCK "VarFileInfo"
@@ -114,11 +114,14 @@ FONT 8, "MS Shell Dlg", 400, 0, 0xCC
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,267,284,70,16
     PUSHBUTTON      "Cancel",IDCANCEL,343,284,70,16
-    COMBOBOX        IDC_LANG,286,7,127,60,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_LANG,222,19,183,60,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Enable context menu in Explorer",IDC_ENABLE_MENU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,31,196,10
+    CONTROL         "Show preview in submenu",IDC_SUBMENU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,44,189,10
     CONTROL         "Enable thumbnails in Explorer",IDC_ENABLE_THUMBS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,59,196,10
     CONTROL         "Use thumbnails as icons in Explorer",IDC_ENABLE_ICONS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,73,196,10
+    CONTROL         "Show type overlay on thumbnails",IDC_ENABLE_OVERLAY,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,87,196,10
     CONTROL         "Enable Windows thumbnail cache",IDC_ENABLE_WINCACHE,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,101,196,10
     CONTROL         "Prefer image file embedded thumbnails",IDC_EMBEDDED,
@@ -131,20 +134,20 @@ BEGIN
     EDITTEXT        IDC_PNG,166,208,30,14,ES_AUTOHSCROLL
     CONTROL         "",IDC_PNG_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,198,208,11,14
     CONTROL         "Use Windows Image/Fax Viewer",IDC_USE_FAX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,247,182,11
-    CONTROL         "Select/Deselect all",IDC_SELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,222,50,110,8
-    PUSHBUTTON      "Default",IDC_DEFAULT,335,42,70,16
-    CONTROL         "",IDC_TYPES_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SORTASCENDING | LVS_NOLABELWRAP | LVS_ALIGNLEFT | LVS_NOCOLUMNHEADER | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,222,64,183,202
     PUSHBUTTON      "Clear...",IDC_CLEAR,14,277,69,16
     PUSHBUTTON      "Optimize",IDC_OPTIMIZE,126,277,70,16
-    ICON            IDR_SAGETHUMBS,IDC_STATIC,7,7,21,20
+    CONTROL         "Select/Deselect all",IDC_SELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,222,56,110,8
+    PUSHBUTTON      "Default",IDC_DEFAULT,335,48,70,16
+    CONTROL         "",IDC_TYPES_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SORTASCENDING | LVS_NOLABELWRAP | LVS_ALIGNLEFT | LVS_NOCOLUMNHEADER | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,222,70,183,196
+    ICON            IDR_SAGETHUMBS,IDC_STATIC,7,7,20,20
     LTEXT           "",IDC_COPYRIGHT,34,7,169,24
     GROUPBOX        "Context menu preview size",IDC_STATIC,7,146,196,31
     RTEXT           "Width x Height:",IDC_STATIC,14,158,67,8
     CTEXT           "X",IDC_STATIC,114,158,8,8
     LTEXT           "pixels",IDC_STATIC,155,158,41,8
-    GROUPBOX        "Supported file types",IDC_STATIC,214,32,199,243
+    GROUPBOX        "Supported file types",IDC_STATIC,214,36,199,239
     GROUPBOX        "System-wide tweaks",IDC_STATIC,7,235,196,28
-    RTEXT           "Language:",IDC_STATIC,214,9,65,8
+    LTEXT           "Language:",IDC_STATIC,214,7,191,8
     RTEXT           "Maximum size of image file:",IDC_STATIC,14,132,105,8
     LTEXT           "MB",IDC_STATIC,155,132,41,8
     GROUPBOX        "Convert options",IDC_STATIC,7,179,196,49
@@ -152,9 +155,6 @@ BEGIN
     RTEXT           "PNG compression (0 - lowest, 9 - best):",IDC_STATIC,14,210,144,8
     LTEXT           "",IDC_STATIC,98,240,8,8
     GROUPBOX        "",IDC_CACHE_SIZE,7,266,196,34
-    CONTROL         "Show type overlay on thumbnails",IDC_ENABLE_OVERLAY,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,87,196,10
-    CONTROL         "Show preview in submenu",IDC_SUBMENU,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,44,189,10
 END
 
 

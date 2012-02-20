@@ -63,6 +63,10 @@ SageThumbs can be easily translated to other languages.
 
 Versions:
 
+2.0.0.15
+  * Minor interface fixes
+  * Updated translations
+
 2.0.0.14
   * Improved "compatible" mode (added invalid extension detection)
   * Fixed PaintShopPro extensions (pspbrush, pspframe and pspimage)

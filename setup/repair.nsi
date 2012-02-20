@@ -1,5 +1,5 @@
 !define TITLE		"SageThumbs Repair Utility"
-!define VERSION		"2.0.0.14"
+!define VERSION		"2.0.0.15"
 !define COMPANY		"Cherubic Software"
 !define FILENAME	"repair.exe"
 !define COPYRIGHT	"Copyright © 2004-2012 Nikolay Raspopov"
