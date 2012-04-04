@@ -66,6 +66,7 @@ Versions:
 2.0.0.15
   * Minor interface fixes
   * Updated translations
+  * Added Japanese translation
 
 2.0.0.14
   * Improved "compatible" mode (added invalid extension detection)
