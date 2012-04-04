@@ -138,7 +138,7 @@ msgstr "Compressione PNG (0 - più bassa, 9 - più alta):"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.225
 msgid "Show type overlay on thumbnails"
-msgstr "Mostra di tipo overlay nelle miniature"
+msgstr "Mostra tipo di overlay nelle miniature"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.226
