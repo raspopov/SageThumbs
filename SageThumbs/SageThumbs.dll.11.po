@@ -1,0 +1,316 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SageThumbs.dll\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Shoichi Ito <shoichi@nagano-nct.ac.jp>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Dialog caption
+#: DIALOGCAPTION.202
+msgid "SageThumbs Options"
+msgstr "SageThumbs オプション"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.1
+msgid "OK"
+msgstr "OK"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2
+msgid "Cancel"
+msgstr "キャンセル"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.211
+msgid "Enable context menu in Explorer"
+msgstr "Explorer上でコンテキストメニューを使用する"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.212
+msgid "Enable thumbnails in Explorer"
+msgstr "Explorer上でサムネイル表示を行う"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.216
+msgid "Use thumbnails as icons in Explorer"
+msgstr "Explorer上でサムネイルをアイコンとして使用する"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.217
+msgid "Enable Windows thumbnail cache"
+msgstr "Windowsのサムネイルキャッシュを使用する"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.215
+msgid "Prefer image file embedded thumbnails"
+msgstr "画像ファイルに埋め込まれたサムネイルを優先する"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.203
+msgid "Use Windows Image/Fax Viewer"
+msgstr "Windowsの画像/Faxビューアを使用する"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "すべて選択/選択解除"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "デフォルト"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.213
+msgid "Clear..."
+msgstr "消去..."
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.218
+msgid "Optimize"
+msgstr "最適化"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483649
+msgid "Context menu preview size"
+msgstr "コンテキストメニューのプレビューサイズ"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483650
+msgid "Width x Height:"
+msgstr "幅 x 高さ:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483651
+msgid "X"
+msgstr "X"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483652
+msgid "pixels"
+msgstr "ピクセル"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483653
+msgid "Supported file types"
+msgstr "サポートされているファイル形式"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483654
+msgid "System-wide tweaks"
+msgstr "システム全体の設定"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483655
+msgid "Language:"
+msgstr "言語:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483656
+msgid "Maximum size of image file:"
+msgstr "画像ファイルの最大サイズ: "
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483657
+msgid "MB"
+msgstr "MB"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483658
+msgid "Convert options"
+msgstr "変換オプション"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483659
+msgid "JPEG quality (0 - lowest, 100 - best):"
+msgstr "JPEG画質 (0が最低, 100が最高)"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483660
+msgid "PNG compression (0 - lowest, 9 - best):"
+msgstr "PNG圧縮(0が最低, 9が最高)"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "サムネイル上にファイルタイプアイコンを重ねて表示する"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr "サブメニューでプレビューを表示"
+
+#. String resource
+#: STRING.100
+msgid "SageThumbs"
+msgstr "SageThumbs"
+
+#. String resource
+#: STRING.101
+msgid "Change various SageThumbs options"
+msgstr "SageThumbs"
+
+#. String resource
+#: STRING.102
+msgid "Type: "
+msgstr "タイプ: "
+
+#. String resource
+#: STRING.103
+msgid "Sizes (pixels): "
+msgstr "サイズ(ピクセル): "
+
+#. String resource
+#: STRING.104
+msgid "Size (bytes): "
+msgstr "サイズ(バイト): "
+
+#. String resource
+#: STRING.105
+msgid "Modified: "
+msgstr "変更: "
+
+#. String resource
+#: STRING.106
+msgid "Colors (bits): "
+msgstr "色数(ビット): "
+
+#. String resource
+#: STRING.107
+msgid "Compression: "
+msgstr "圧縮: "
+
+#. String resource
+#: STRING.108
+msgid "Resolution: "
+msgstr "解像度: "
+
+#. String resource
+#: STRING.109
+msgid "Can't open image file"
+msgstr "画像ファイルを開けません"
+
+#. String resource
+#: STRING.110
+msgid "Can't save image file"
+msgstr "画像ファイルを保存できません"
+
+#. String resource
+#: STRING.111
+msgid "Can't send mail"
+msgstr "メールを送信できません"
+
+#. String resource
+#: STRING.112
+msgid "Nothing to send"
+msgstr "送信するものがありません"
+
+#. String resource
+#: STRING.113
+msgid "Can't open clipboard"
+msgstr "クリップボードを開けません"
+
+#. String resource
+#: STRING.114
+msgid "Please confirm thumbnail cache clearing."
+msgstr "サムネイルキャッシュを消去します。よろしいですか?"
+
+#. String resource
+#: STRING.115
+msgid "Thumbnail cache size: %u KB"
+msgstr "サムネイルキャッシュサイズ: %u KB"
+
+#. String resource
+#: STRING.116
+msgid "SageThumbs thumbnail cache"
+msgstr "SageThumbs サムネイルキャッシュ"
+
+#. String resource
+#: STRING.117
+msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
+msgstr "SageThumbs のサムネイルキャッシュを消去します。ユーザーデータには影響ありません。"
+
+#. String resource
+#: STRING.118
+msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
+msgstr "すべての設定を適用できませんでした。管理者権限を持つアカウントでご利用ください。"
+
+#. String resource
+#: STRING.119
+msgid "Convert to PNG"
+msgstr "PNGに変換"
+
+#. String resource
+#: STRING.120
+msgid "Converting..."
+msgstr "変換中..."
+
+#. String resource
+#: STRING.121
+msgid "Sending..."
+msgstr "送信中..."
+
+#. String resource
+#: STRING.122
+msgid "Applying settings..."
+msgstr "設定を適用しています..."
+
+#. String resource
+#: STRING.123
+msgid "Updating..."
+msgstr "更新中..."
+
+#. String resource
+#: STRING.203
+msgid "SageThumbs Options..."
+msgstr "SageThumbs のオプション..."
+
+#. String resource
+#: STRING.204
+msgid "Copy to clipboard"
+msgstr "クリップボードにコピー"
+
+#. String resource
+#: STRING.205
+msgid "Set tiled wallpaper"
+msgstr "壁紙に設定(並べる)"
+
+#. String resource
+#: STRING.206
+msgid "Set centered wallpaper"
+msgstr "壁紙に設定(中央に配置)"
+
+#. String resource
+#: STRING.207
+msgid "Set stretched wallpaper"
+msgstr "壁紙に設定(引き伸ばす)"
+
+#. String resource
+#: STRING.208
+msgid "Send image by mail..."
+msgstr "画像をメールで送信..."
+
+#. String resource
+#: STRING.209
+msgid "Send thumbnail by mail..."
+msgstr "サムネイルをメールで送信..."
+
+#. String resource
+#: STRING.210
+msgid "Convert to JPG"
+msgstr "JPEGに変換"
+
+#. String resource
+#: STRING.211
+msgid "Convert to GIF"
+msgstr "GIFに変換"
+
+#. String resource
+#: STRING.212
+msgid "Convert to BMP"
+msgstr "BMPに変換"
+

@@ -58,6 +58,7 @@ Var STARTMENU_FOLDER
 	!insertmacro MUI_LANGUAGE "SimpChinese"
 	!insertmacro MUI_LANGUAGE "Spanish"
 	!insertmacro MUI_LANGUAGE "Indonesian"
+	!insertmacro MUI_LANGUAGE "Japanese"
 	!insertmacro MUI_RESERVEFILE_LANGDLL
 
 !macro InstallSageThumb _SRC _DST

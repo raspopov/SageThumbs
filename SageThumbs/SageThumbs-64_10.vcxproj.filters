@@ -75,6 +75,9 @@
     <None Include="sagethumbs.dll.10.p_">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="sagethumbs.dll.11.p_">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="sagethumbs.dll.04.p_">
       <Filter>Resource Files</Filter>
     </None>
@@ -139,6 +142,9 @@
       <Filter>Translations</Filter>
     </CustomBuild>
     <CustomBuild Include="SageThumbs.dll.10.po">
+      <Filter>Translations</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SageThumbs.dll.11.po">
       <Filter>Translations</Filter>
     </CustomBuild>
     <CustomBuild Include="SageThumbs.dll.21.po">
