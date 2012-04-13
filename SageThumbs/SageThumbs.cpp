@@ -348,6 +348,14 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 
 	FixProgID( szExt );
 
+	CString sUserChoice = GetRegValue( _T("Progid"), CString(), sFileExt + _T("\\UserChoice"), HKEY_CURRENT_USER );
+	if ( sUserChoice.IsEmpty() )	
+	{
+		sUserChoice = sDefaultKey;
+		SetRegValue( _T("Progid"), sUserChoice, sFileExt + _T("\\UserChoice"), HKEY_CURRENT_USER );
+	}
+	bool bOurUserChoice = ( sUserChoice.CompareNoCase( sDefaultKey ) == 0 );
+
 	// Register extension
 	CString sCurrentKey = GetRegValue( _T(""), CString(), sType, HKEY_CLASSES_ROOT );
 	if ( sCurrentKey.IsEmpty() )
@@ -491,6 +499,22 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 
 			// Clean wrong registration
 			bOK = DeleteRegKey( HKEY_CLASSES_ROOT, sHandlerTypeKey ) && bOK;
+
+			// User choice
+			if ( ! bOurUserChoice )
+			{
+				CString sUserChoiceProgIDKey = sUserChoice + _T("\\ShellEx\\") + Handlers[ i ].szName;
+				if ( bDelete )
+					bOK = UnregisterValue( HKEY_CLASSES_ROOT, sUserChoiceProgIDKey ) && bOK;
+				else
+				{
+					// Check for existing CLSID
+					CString buf = GetRegValue( _T(""), CString(), sUserChoiceProgIDKey, HKEY_CLASSES_ROOT );
+					bool bValid = ! buf.IsEmpty() && ( buf.CompareNoCase( CLSID_THUMB ) != 0 ) && IsValidCLSID( buf );
+
+					bOK = RegisterValue( HKEY_CLASSES_ROOT, sUserChoiceProgIDKey, _T(""), CLSID_THUMB, bValid ? NULL : REG_SAGETHUMBS_BAK ) && bOK;
+				}
+			}
 		}
 		else
 		{
@@ -533,9 +557,10 @@ BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableT
 	bOK = RegisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ContentViewModeForSearch"), ContentViewModeForSearch, NULL ) && bOK;
 
 	SetRegValue( sDefaultKey, sFileExt + _T("\\OpenWithProgids"), HKEY_CURRENT_USER );
-	SetRegValue( _T("Progid"), sDefaultKey, sFileExt + _T("\\UserChoice"), HKEY_CURRENT_USER );
 
 	// Clean empty keys
+	if ( ! sUserChoice.IsEmpty() )
+		DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sUserChoice + _T("\\ShellEx") );
 	DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sType + _T("\\ShellEx") );
 	DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sType );
 	if ( ! sDefaultKey.IsEmpty() )
@@ -557,6 +582,8 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt, bool bFull)
 	CString sDefaultKey = REG_SAGETHUMBS_IMG + sType;
 	CString sCurrentKey = GetRegValue( _T(""), CString(), sType, HKEY_CLASSES_ROOT );
 
+	CString sUserChoice = GetRegValue( _T("Progid"), CString(), sFileExt + _T("\\UserChoice"), HKEY_CURRENT_USER );
+
 	bOK = DeleteRegValue( _T("TypeOverlay"), sCurrentKey, HKEY_CLASSES_ROOT ) && bOK;
 
 	/*CString sContentExt = GetContentType( szExt );
@@ -575,10 +602,12 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt, bool bFull)
 	for ( int i = 0; Handlers[ i ].szName; ++i )
 	{
 		bOK = UnregisterValue( HKEY_CLASSES_ROOT, sType + _T("\\ShellEx\\") + Handlers[ i ].szName ) && bOK;
+
 		if ( ! sCurrentKey.IsEmpty() )
-		{
 			bOK = UnregisterValue( HKEY_CLASSES_ROOT, sCurrentKey + _T("\\ShellEx\\") + Handlers[ i ].szName ) && bOK;
-		}
+
+		if ( bFull && ! sUserChoice.IsEmpty() )
+			bOK = UnregisterValue( HKEY_CLASSES_ROOT, sUserChoice + _T("\\ShellEx\\") + Handlers[ i ].szName ) && bOK;
 	}
 
 	// Unregister IPropertyStore handler
@@ -632,6 +661,8 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt, bool bFull)
 		}
 
 		// Clean empty keys
+		if ( ! sUserChoice.IsEmpty() )
+			DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sUserChoice + _T("\\ShellEx") );
 		DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sFileExt + _T("\\OpenWithList") );
 		DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sFileExt + _T("\\OpenWithProgids") );
 		DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sFileExt + _T("\\UserChoice") );

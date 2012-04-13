@@ -64,9 +64,9 @@ SageThumbs can be easily translated to other languages.
 Versions:
 
 2.0.0.15
+  * Fixed "Use thumbnails as icons in Explorer" option sometimes broken in Windows 7 (thanks to uhfath)
   * Minor interface fixes
   * Updated translations
-  * Added Japanese translation
 
 2.0.0.14
   * Improved "compatible" mode (added invalid extension detection)

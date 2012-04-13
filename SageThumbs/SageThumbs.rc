@@ -71,7 +71,7 @@ BEGIN
             VALUE "CompanyName", "CherubicSoft"
             VALUE "FileDescription", "SageThumbs Shell Extension"
             VALUE "FileVersion", "2.0.0.15"
-            VALUE "InternalName", "SageThumbs.dll"
+            VALUE "InternalName", "SageThumbs"
             VALUE "LegalCopyright", "Copyright © 2004-2012 Nikolay Raspopov"
             VALUE "OriginalFilename", "SageThumbs.dll"
             VALUE "ProductName", "SageThumbs Shell Extension"
@@ -135,7 +135,7 @@ BEGIN
     CONTROL         "",IDC_PNG_SPIN,"msctls_updown32",UDS_SETBUDDYINT | UDS_ALIGNRIGHT | UDS_AUTOBUDDY | UDS_ARROWKEYS,198,208,11,14
     CONTROL         "Use Windows Image/Fax Viewer",IDC_USE_FAX,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,14,247,182,11
     PUSHBUTTON      "Clear...",IDC_CLEAR,14,277,69,16
-    PUSHBUTTON      "Optimize",IDC_OPTIMIZE,126,277,70,16
+    PUSHBUTTON      "Optimize",IDC_OPTIMIZE,127,277,70,16
     CONTROL         "Select/Deselect all",IDC_SELECT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,222,56,110,8
     PUSHBUTTON      "Default",IDC_DEFAULT,335,48,70,16
     CONTROL         "",IDC_TYPES_LIST,"SysListView32",LVS_REPORT | LVS_SINGLESEL | LVS_SORTASCENDING | LVS_NOLABELWRAP | LVS_ALIGNLEFT | LVS_NOCOLUMNHEADER | LVS_NOSORTHEADER | WS_BORDER | WS_TABSTOP,222,70,183,196
@@ -197,17 +197,17 @@ IDR_SAGETHUMBS          BITMAP                  ".\\res\\SageThumbs.bmp"
 // PO
 //
 
-4                       PO                      "sagethumbs.dll.04.p_"
-7                       PO                      "sagethumbs.dll.07.p_"
-10                      PO                      "sagethumbs.dll.0a.p_"
-12                      PO                      "sagethumbs.dll.0c.p_"
-16                      PO                      "sagethumbs.dll.10.p_"
-17                      PO                      "sagethumbs.dll.11.p_"
-21                      PO                      "sagethumbs.dll.15.p_"
-22                      PO                      "sagethumbs.dll.16.p_"
-25                      PO                      "sagethumbs.dll.19.p_"
-29                      PO                      "sagethumbs.dll.1d.p_"
-33                      PO                      "sagethumbs.dll.21.p_"
+4                       PO                      "sagethumbs.dll.04.po_"
+7                       PO                      "sagethumbs.dll.07.po_"
+10                      PO                      "sagethumbs.dll.0a.po_"
+12                      PO                      "sagethumbs.dll.0c.po_"
+16                      PO                      "sagethumbs.dll.10.po_"
+17                      PO                      "sagethumbs.dll.11.po_"
+21                      PO                      "sagethumbs.dll.15.po_"
+22                      PO                      "sagethumbs.dll.16.po_"
+25                      PO                      "sagethumbs.dll.19.po_"
+29                      PO                      "sagethumbs.dll.1d.po_"
+33                      PO                      "sagethumbs.dll.21.po_"
 
 /////////////////////////////////////////////////////////////////////////////
 //
