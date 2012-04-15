@@ -83,23 +83,23 @@
   </Site>
   <Program_Info>
     <Program_Name>SageThumbs</Program_Name>
-    <Program_Version>2.0.0.14</Program_Version>
-    <Program_Release_Month>02</Program_Release_Month>
-    <Program_Release_Day>19</Program_Release_Day>
+    <Program_Version>2.0.0.15</Program_Version>
+    <Program_Release_Month>04</Program_Release_Month>
+    <Program_Release_Day>15</Program_Release_Day>
     <Program_Release_Year>2012</Program_Release_Year>
     <Program_Cost_Dollars>0</Program_Cost_Dollars>
     <Program_Type>Freeware</Program_Type>
     <Program_Release_Status>New Release</Program_Release_Status>
     <Program_Install_Support>Install and Uninstall</Program_Install_Support>
     <Program_OS_Support>WinXP,WinVista,WinVista x64,Win7 x32,Win7 x64,WinServer</Program_OS_Support>
-    <Program_Language>English,ChineseSimplified,French,German,Indonesian,Italian,Polish,Portuguese,Russian,Spanish,Swedish</Program_Language>
-    <Program_Change_Info>Improved "compatible" mode (added invalid extension detection). Fixed PaintShopPro extensions (pspbrush, pspframe and pspimage). Fixed shifted icon in context menu on Windows XP. Added new option "Show preview in submenu". Added "SageThumbs Repair Utility". Added Polish translation.</Program_Change_Info>
+    <Program_Language>English,ChineseSimplified,French,German,Indonesian,Italian,Japanese,Polish,Portuguese,Russian,Spanish,Swedish</Program_Language>
+    <Program_Change_Info>Fixed "Use thumbnails as icons in Explorer" option sometimes broken in Windows 7 (thanks to uhfath). Minor interface fixes. Updated translations.</Program_Change_Info>
     <Program_System_Requirements>About 5 Mb of disk space + additional space for cache</Program_System_Requirements>
     <Program_Category_Class>Graphic Apps::Viewers</Program_Category_Class>
     <File_Info>
-      <File_Size_Bytes>2065904</File_Size_Bytes>
-      <File_Size_K>2017</File_Size_K>
-      <File_Size_MB>1.97</File_Size_MB>
+      <File_Size_Bytes>2074147</File_Size_Bytes>
+      <File_Size_K>2025</File_Size_K>
+      <File_Size_MB>1.98</File_Size_MB>
       <Filename_Versioned></Filename_Versioned>
       <Filename_Previous></Filename_Previous>
       <Filename_Generic></Filename_Generic>
@@ -133,7 +133,7 @@
       <Application_XML_File_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs.xml</Application_XML_File_URL>
     </Application_URLs>
     <Download_URLs>
-      <Primary_Download_URL>http://sagethumbs.googlecode.com/files/sagethumbs_2.0.0.14_setup.exe</Primary_Download_URL>
+      <Primary_Download_URL>http://sagethumbs.googlecode.com/files/sagethumbs_2.0.0.15_setup.exe</Primary_Download_URL>
       <Secondary_Download_URL></Secondary_Download_URL>
       <Additional_Download_URL_1></Additional_Download_URL_1>
       <Additional_Download_URL_2></Additional_Download_URL_2>
