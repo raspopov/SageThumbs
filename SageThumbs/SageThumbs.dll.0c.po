@@ -3,12 +3,14 @@ msgstr ""
 "Project-Id-Version: SageThumbs.dll\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Nikolay Raspopov <raspopov@cherubicsoft.com>\n"
-"Language-Team: \n"
+"Last-Translator: \n"
+"Language-Team: Damien Bigot <bigotdamien@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: French\n"
+"X-Poedit-Language: Français\n"
+"X-Poedit-Country: France\n"
+"X-Poedit-SourceCharset: utf-8\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -28,52 +30,52 @@ msgstr "Annuler"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.211
 msgid "Enable context menu in Explorer"
-msgstr "Activer le menu contextuel dans l'Explorateur Windows"
+msgstr "Activer le menu contextuel dans l'Explorateur"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.212
 msgid "Enable thumbnails in Explorer"
-msgstr "Activer les miniatures dans l'Explorateur Windows"
+msgstr "Activer les miniatures dans l'Explorateur"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.216
 msgid "Use thumbnails as icons in Explorer"
-msgstr "Utiliser les miniatures comme icônes dans l'Explorateur Windows"
+msgstr "Utiliser les miniatures comme icônes dans l'Explorateur"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.217
 msgid "Enable Windows thumbnail cache"
-msgstr "Activer le cache Windows pour les miniatures"
+msgstr "Activer le cache des miniatures Windows"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.215
 msgid "Prefer image file embedded thumbnails"
-msgstr "Préférer les miniatures intégrées aux fichiers images"
+msgstr "Privilégier les miniatures intégrées aux fichiers images"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.203
 msgid "Use Windows Image/Fax Viewer"
-msgstr "Utiliser la visionneuse Image/Fax de Windows"
+msgstr "Utiliser la visionneuse par défaut de Windows"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.210
 msgid "Select/Deselect all"
-msgstr "Sélectionner/Désélectionner tout"
+msgstr "Tous/aucun"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.223
 msgid "Default"
-msgstr "Défaut"
+msgstr "Par défaut"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.213
 msgid "Clear..."
-msgstr "Effacer..."
+msgstr "Vider le cache"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.218
 msgid "Optimize"
-msgstr "Optimisation"
+msgstr "Optimiser le cache"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483649
@@ -83,12 +85,12 @@ msgstr "Taille de l'aperçu dans le menu contextuel"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483650
 msgid "Width x Height:"
-msgstr "Largeur x Hauteur:"
+msgstr "Largeur x Hauteur"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483651
 msgid "X"
-msgstr "X"
+msgstr "x"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483652
@@ -98,22 +100,22 @@ msgstr "pixels"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483653
 msgid "Supported file types"
-msgstr "Types de fichiers acceptés"
+msgstr "Types de fichiers supportés"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483654
 msgid "System-wide tweaks"
-msgstr "Réglages au niveau système"
+msgstr "Réglages système"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483655
 msgid "Language:"
-msgstr "Langue:"
+msgstr "Langue :"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483656
 msgid "Maximum size of image file:"
-msgstr "Taille maximale du fichier image:"
+msgstr "Taille maximale du fichier image :"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483657
@@ -128,22 +130,22 @@ msgstr "Options de conversion"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483659
 msgid "JPEG quality (0 - lowest, 100 - best):"
-msgstr "Qualité JPEG (0 - faible, 100 - haute):"
+msgstr "Qualité JPG (0 = faible, 100 = élevé) :"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483660
 msgid "PNG compression (0 - lowest, 9 - best):"
-msgstr "Compression PNG (0 - faible, 9 - haute):"
+msgstr "Compression PNG (0 = rapide, 9 = optimale) :"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.225
 msgid "Show type overlay on thumbnails"
-msgstr "Afficher le type en incrustation sur les miniatures"
+msgstr "Incruster le type de fichier dans les miniatures"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.226
 msgid "Show preview in submenu"
-msgstr ""
+msgstr "Aperçu dans le menu contextuel"
 
 #. String resource
 #: STRING.100
@@ -153,7 +155,7 @@ msgstr "SageThumbs"
 #. String resource
 #: STRING.101
 msgid "Change various SageThumbs options"
-msgstr "Modifier diverses options de SageThumbs"
+msgstr "Modifier les options de SageThumbs."
 
 #. String resource
 #: STRING.102
@@ -163,7 +165,7 @@ msgstr "Type: "
 #. String resource
 #: STRING.103
 msgid "Sizes (pixels): "
-msgstr "Dimensions (pixels): "
+msgstr "Tailles (pixels): "
 
 #. String resource
 #: STRING.104
@@ -173,7 +175,7 @@ msgstr "Taille (octets): "
 #. String resource
 #: STRING.105
 msgid "Modified: "
-msgstr "Modifié: "
+msgstr "Modifier le: "
 
 #. String resource
 #: STRING.106
@@ -193,52 +195,52 @@ msgstr "Résolution: "
 #. String resource
 #: STRING.109
 msgid "Can't open image file"
-msgstr "Impossible d'ouvrir le fichier image"
+msgstr "Impossible d'ouvrir l'image"
 
 #. String resource
 #: STRING.110
 msgid "Can't save image file"
-msgstr "Impossible d'enregistrer le fichier image"
+msgstr "Impossible d'enregistrer l'image"
 
 #. String resource
 #: STRING.111
 msgid "Can't send mail"
-msgstr "Le courriel n'a pas pu être envoyé"
+msgstr "Impossible d'envoyer l'e-mail"
 
 #. String resource
 #: STRING.112
 msgid "Nothing to send"
-msgstr "Rien à envoyer"
+msgstr "Aucun fichier à envoyer"
 
 #. String resource
 #: STRING.113
 msgid "Can't open clipboard"
-msgstr "Impossible d'ouvrir le presse-papiers"
+msgstr "Impossible d'ouvrir le presse-papier"
 
 #. String resource
 #: STRING.114
 msgid "Please confirm thumbnail cache clearing."
-msgstr "Veuillez confirmer l'effacement du cache des miniatures."
+msgstr "Voulez-vous vraiment vider le cache ?"
 
 #. String resource
 #: STRING.115
 msgid "Thumbnail cache size: %u KB"
-msgstr "Taille du cache des miniatures: %u Ko"
+msgstr "Taille du cache des miniatures : %u Ko"
 
 #. String resource
 #: STRING.116
 msgid "SageThumbs thumbnail cache"
-msgstr "Cache des miniatures SageThumbs"
+msgstr "Cache des miniatures de SageThumbs"
 
 #. String resource
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
-msgstr "Effacement du cache des miniatures SageThumbs. Les données de l'utilisateur ne seront pas affectées."
+msgstr "Vide le cache des miniatures de SageThumbs. Aucune données personnelles ne sera affectées."
 
 #. String resource
 #: STRING.118
 msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
-msgstr "Certains paramètres n'ont pas pu être appliqués. Ouvrez SageThumbs avec un compte administrateur."
+msgstr "Impossible d'appliquer tous les paramètres. Veuillez exécuter SageThumbs en tant qu'administrateur."
 
 #. String resource
 #: STRING.119
@@ -263,7 +265,7 @@ msgstr "Application des paramètres..."
 #. String resource
 #: STRING.123
 msgid "Updating..."
-msgstr "Actualisation en cours..."
+msgstr "Mise à jour en cours..."
 
 #. String resource
 #: STRING.203
@@ -273,32 +275,32 @@ msgstr "Options de SageThumbs..."
 #. String resource
 #: STRING.204
 msgid "Copy to clipboard"
-msgstr "Copier dans le presse-papiers"
+msgstr "Copier dans le presse-papier"
 
 #. String resource
 #: STRING.205
 msgid "Set tiled wallpaper"
-msgstr "Placer en papier peint mosaïque"
+msgstr "Choisir comme arrière-plan mosaïque du Bureau"
 
 #. String resource
 #: STRING.206
 msgid "Set centered wallpaper"
-msgstr "Placer en papier peint centré"
+msgstr "Choisir comme arrière-plan centré du Bureau"
 
 #. String resource
 #: STRING.207
 msgid "Set stretched wallpaper"
-msgstr "Placer en papier peint étiré"
+msgstr "Choisir comme arrière-plan étiré du Bureau"
 
 #. String resource
 #: STRING.208
 msgid "Send image by mail..."
-msgstr "Envoyer l'image par courriel..."
+msgstr "Envoyer l'image par e-mail"
 
 #. String resource
 #: STRING.209
 msgid "Send thumbnail by mail..."
-msgstr "Envoyer la miniature par courriel..."
+msgstr "Envoyer la miniature par e-mail"
 
 #. String resource
 #: STRING.210
