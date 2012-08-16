@@ -1,0 +1,320 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SageThumbs.dll\n"
+"POT-Creation-Date: 2012.08.06.\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Morva Kristóf <kristof92@gmail.com>\n"
+"Language-Team: ModBase\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Dialog caption
+#: DIALOGCAPTION.202
+msgid "SageThumbs Options"
+msgstr "SageThumbs Beállítások"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.1
+msgid "OK"
+msgstr "OK"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2
+msgid "Cancel"
+msgstr "Mégse"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.211
+msgid "Enable context menu in Explorer"
+msgstr "Környezeti menü engedélyezése az Intézőben"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.212
+msgid "Enable thumbnails in Explorer"
+msgstr "Miniatűrök engedélyezése az Intézőben"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.216
+msgid "Use thumbnails as icons in Explorer"
+msgstr "A miniatűrök ikonként való használata az Intézőben"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.217
+msgid "Enable Windows thumbnail cache"
+msgstr "A miniatűrök betöltése a gyorsítótárba"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.215
+msgid "Prefer image file embedded thumbnails"
+msgstr "Képfájlba ágyazott miniatűrök használata"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.203
+msgid "Use Windows Image/Fax Viewer"
+msgstr "Windows Kép- és Faxmegjelenítő használata"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "Kijelöli/Visszajelöli mindet"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "Alapértelmezett"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.213
+msgid "Clear..."
+msgstr "Törlés..."
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.218
+msgid "Optimize"
+msgstr "Optimalizálás"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483649
+msgid "Context menu preview size"
+msgstr "Előnézet mérete a környezeti menüben"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483650
+msgid "Width x Height:"
+msgstr "Szélesség x Magasság:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483651
+msgid "X"
+msgstr "X"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483652
+msgid "pixels"
+msgstr "képpont"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483653
+msgid "Supported file types"
+msgstr "Támogatott fájl típusok"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483654
+msgid "System-wide tweaks"
+msgstr "Rendszerre vonatkozó lehetőségek"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483655
+msgid "Language:"
+msgstr "Nyelv:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483656
+msgid "Maximum size of image file:"
+msgstr "A képfájl maximális mérete:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483657
+msgid "MB"
+msgstr "MB"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483658
+msgid "Convert options"
+msgstr "Konvertálási beállítások"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483659
+msgid "JPEG quality (0 - lowest, 100 - best):"
+msgstr "JPEG minőség (0 - legalacsonyabb, 100 - legjobb):"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483660
+msgid "PNG compression (0 - lowest, 9 - best):"
+msgstr "PNG tömörítés (0 - legalacsonyabb, 9 - legjobb):"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "Típus megjelenítése a miniatűrökön"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr "Előnézet megjelenítése az almenüben"
+
+#. String resource
+#: STRING.100
+msgid "SageThumbs"
+msgstr "SageThumbs"
+
+#. String resource
+#: STRING.101
+msgid "Change various SageThumbs options"
+msgstr "Különféle SageThumbs beállítások módosítása"
+
+#. String resource
+#: STRING.102
+msgid "Type: "
+msgstr "Típus:"
+
+#. String resource
+#: STRING.103
+msgid "Sizes (pixels): "
+msgstr "Méret (képpont):"
+
+#. String resource
+#: STRING.104
+msgid "Size (bytes): "
+msgstr "Méret (bájt):"
+
+#. String resource
+#: STRING.105
+msgid "Modified: "
+msgstr "Módosítva:"
+
+#. String resource
+#: STRING.106
+msgid "Colors (bits): "
+msgstr "Szín (bit):"
+
+#. String resource
+#: STRING.107
+msgid "Compression: "
+msgstr "Tömörítés:"
+
+#. String resource
+#: STRING.108
+msgid "Resolution: "
+msgstr "Felbontás:"
+
+#. String resource
+#: STRING.109
+msgid "Can't open image file"
+msgstr "Nem nyitható meg a képfájl"
+
+#. String resource
+#: STRING.110
+msgid "Can't save image file"
+msgstr "Nem menthető el a képfájl"
+
+#. String resource
+#: STRING.111
+msgid "Can't send mail"
+msgstr "E-mail nem küldhető"
+
+#. String resource
+#: STRING.112
+msgid "Nothing to send"
+msgstr "Nincs mit elküldeni"
+
+#. String resource
+#: STRING.113
+msgid "Can't open clipboard"
+msgstr "Nem lehet megnyitni a vágólap"
+
+#. String resource
+#: STRING.114
+msgid "Please confirm thumbnail cache clearing."
+msgstr "Kérlek erősítsd meg a gyorsítótár ürítését."
+
+#. String resource
+#: STRING.115
+msgid "Thumbnail cache size: %u KB"
+msgstr "Miniatűrök gyorsítótár mérete: %u KB"
+
+#. String resource
+#: STRING.116
+msgid "SageThumbs thumbnail cache"
+msgstr "SageThumbs miniatűr gyorsítótár"
+
+#. String resource
+#: STRING.117
+msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
+msgstr ""
+"SageThumbs minatűr gyorsítótár ürítése. Felhasználói adatokat nem érint."
+
+#. String resource
+#: STRING.118
+msgid ""
+"Can not apply all settings. Please use SageThumbs under account with "
+"administrative privileges."
+msgstr ""
+"Nem lehet minden beállítást alkalmazni. Kérlem használd a SageThumbs "
+"alkalmazást rendszergazdai jogokkal."
+
+#. String resource
+#: STRING.119
+msgid "Convert to PNG"
+msgstr "Konvertálás PNG formátumba"
+
+#. String resource
+#: STRING.120
+msgid "Converting..."
+msgstr "Konvertálás..."
+
+#. String resource
+#: STRING.121
+msgid "Sending..."
+msgstr "Küldés..."
+
+#. String resource
+#: STRING.122
+msgid "Applying settings..."
+msgstr "Beállítások alkalmazása..."
+
+#. String resource
+#: STRING.123
+msgid "Updating..."
+msgstr "Frissítés..."
+
+#. String resource
+#: STRING.203
+msgid "SageThumbs Options..."
+msgstr "SageThumbs Beállítások..."
+
+#. String resource
+#: STRING.204
+msgid "Copy to clipboard"
+msgstr "Másolás a vágólapra"
+
+#. String resource
+#: STRING.205
+msgid "Set tiled wallpaper"
+msgstr "Beállítás mozaikos háttérképként"
+
+#. String resource
+#: STRING.206
+msgid "Set centered wallpaper"
+msgstr "Beállítás központosított háttérképként"
+
+#. String resource
+#: STRING.207
+msgid "Set stretched wallpaper"
+msgstr "Beállítás nyújtott háttérképként"
+
+#. String resource
+#: STRING.208
+msgid "Send image by mail..."
+msgstr "Kép küldése e-mailben..."
+
+#. String resource
+#: STRING.209
+msgid "Send thumbnail by mail..."
+msgstr "Miniatűr küldése e-mailben..."
+
+#. String resource
+#: STRING.210
+msgid "Convert to JPG"
+msgstr "Konvertálás JPG formátumba"
+
+#. String resource
+#: STRING.211
+msgid "Convert to GIF"
+msgstr "Konvertálás GIF formátumba"
+
+#. String resource
+#: STRING.212
+msgid "Convert to BMP"
+msgstr "Konvertálás BMP formátumba"
