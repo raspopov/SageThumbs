@@ -8,7 +8,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Italian\n"
+"Language: it\n"
+"X-Generator: Poedit 1.5.4\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -38,7 +39,7 @@ msgstr "Attiva le anteprime in Explorer"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.216
 msgid "Use thumbnails as icons in Explorer"
-msgstr "Usa le anteprime come icone in Explorer"
+msgstr "Utilizza le anteprime come icone in Explorer"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.217
@@ -63,7 +64,7 @@ msgstr "Seleziona/Deseleziona tutto"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.223
 msgid "Default"
-msgstr "Default"
+msgstr "Predefinito"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.213
@@ -163,7 +164,7 @@ msgstr "Tipo: "
 #. String resource
 #: STRING.103
 msgid "Sizes (pixels): "
-msgstr "Dimensioni (pixels): "
+msgstr "Dimensioni (pixel): "
 
 #. String resource
 #: STRING.104
@@ -178,7 +179,7 @@ msgstr "Modificato: "
 #. String resource
 #: STRING.106
 msgid "Colors (bits): "
-msgstr "Colori (bits): "
+msgstr "Colori (bit): "
 
 #. String resource
 #: STRING.107
@@ -193,17 +194,17 @@ msgstr "Risoluzione: "
 #. String resource
 #: STRING.109
 msgid "Can't open image file"
-msgstr "Impossibile aprire il file immagine"
+msgstr "Non posso aprire il file immagine"
 
 #. String resource
 #: STRING.110
 msgid "Can't save image file"
-msgstr "Impossibile salvare il file immagine"
+msgstr "Non posso salvare il file immagine"
 
 #. String resource
 #: STRING.111
 msgid "Can't send mail"
-msgstr "Impossibile inviare email"
+msgstr "Non posso inviare email"
 
 #. String resource
 #: STRING.112
@@ -213,7 +214,7 @@ msgstr "Nulla da inviare"
 #. String resource
 #: STRING.113
 msgid "Can't open clipboard"
-msgstr "Impossibile aprire gli appunti"
+msgstr "Non posso aprire gli appunti"
 
 #. String resource
 #: STRING.114
@@ -233,12 +234,18 @@ msgstr "Cache delle anteprime di SageThumbs"
 #. String resource
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
-msgstr "Pulisci la cache delle anteprime di SageThumbs. Nessun dato personale verrà modificato."
+msgstr ""
+"Pulisci la cache delle anteprime di SageThumbs. Nessun dato personale verrà "
+"modificato."
 
 #. String resource
 #: STRING.118
-msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
-msgstr "Impossibile applicare tutte le impostazioni. Per risolvere, utilizzare SageThumbs con i privilegi di amministrazione."
+msgid ""
+"Can not apply all settings. Please use SageThumbs under account with "
+"administrative privileges."
+msgstr ""
+"Non posso applicare tutte le impostazioni. Per risolvere, utilizza "
+"SageThumbs con i privilegi di amministrazione."
 
 #. String resource
 #: STRING.119
@@ -248,22 +255,22 @@ msgstr "Convertire in PNG"
 #. String resource
 #: STRING.120
 msgid "Converting..."
-msgstr "Conversione in corso..."
+msgstr "Sto convertendo..."
 
 #. String resource
 #: STRING.121
 msgid "Sending..."
-msgstr "Invio in corso..."
+msgstr "Sto inviando..."
 
 #. String resource
 #: STRING.122
 msgid "Applying settings..."
-msgstr "Applicazione impostazioni..."
+msgstr "Sto applicando le impostazioni..."
 
 #. String resource
 #: STRING.123
 msgid "Updating..."
-msgstr "Aggiornamento in corso..."
+msgstr "Sto aggiornando..."
 
 #. String resource
 #: STRING.203
@@ -303,15 +310,14 @@ msgstr "Invia l'anteprima per email..."
 #. String resource
 #: STRING.210
 msgid "Convert to JPG"
-msgstr "Convertire in JPG"
+msgstr "Converti in JPG"
 
 #. String resource
 #: STRING.211
 msgid "Convert to GIF"
-msgstr "Convertire in GIF"
+msgstr "Converti in GIF"
 
 #. String resource
 #: STRING.212
 msgid "Convert to BMP"
-msgstr "Convertire in BMP"
-
+msgstr "Converti in BMP"
