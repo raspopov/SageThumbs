@@ -127,12 +127,12 @@ msgstr "Konvertálási beállítások"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483659
 msgid "JPEG quality (0 - lowest, 100 - best):"
-msgstr "JPEG minőség (0 - legalacsonyabb, 100 - legjobb):"
+msgstr "JPEG minőség (0 - min, 100 - max):"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483660
 msgid "PNG compression (0 - lowest, 9 - best):"
-msgstr "PNG tömörítés (0 - legalacsonyabb, 9 - legjobb):"
+msgstr "PNG tömörítés (0 - min, 9 - max):"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.225
@@ -233,7 +233,7 @@ msgstr "SageThumbs miniatűr gyorsítótár"
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
 msgstr ""
-"SageThumbs minatűr gyorsítótár ürítése. Felhasználói adatokat nem érint."
+"SageThumbs miniatűr gyorsítótár ürítése. Felhasználói adatokat nem érint."
 
 #. String resource
 #: STRING.118
@@ -241,7 +241,7 @@ msgid ""
 "Can not apply all settings. Please use SageThumbs under account with "
 "administrative privileges."
 msgstr ""
-"Nem lehet minden beállítást alkalmazni. Kérlem használd a SageThumbs "
+"Nem lehet minden beállítást alkalmazni. Kérlek használd a SageThumbs "
 "alkalmazást rendszergazdai jogokkal."
 
 #. String resource
