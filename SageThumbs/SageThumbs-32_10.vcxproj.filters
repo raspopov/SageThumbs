@@ -92,6 +92,9 @@
     <None Include="sagethumbs.dll.11.po_">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="sagethumbs.dll.29.po_">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">
