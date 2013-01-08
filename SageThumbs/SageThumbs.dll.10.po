@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: SageThumbs.dll\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: Marcello <marcello_gianola@yahoo.it>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -34,22 +34,22 @@ msgstr "Attiva il menu contestuale in Explorer"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.212
 msgid "Enable thumbnails in Explorer"
-msgstr "Attiva le anteprime in Explorer"
+msgstr "Attiva le miniature in Explorer"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.216
 msgid "Use thumbnails as icons in Explorer"
-msgstr "Utilizza le anteprime come icone in Explorer"
+msgstr "Utilizza le miniature come icone in Explorer"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.217
 msgid "Enable Windows thumbnail cache"
-msgstr "Attiva la cache di Windows per le anteprime"
+msgstr "Attiva la cache delle miniature di Windows"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.215
 msgid "Prefer image file embedded thumbnails"
-msgstr "Preferire le anteprime integrate del file immagine"
+msgstr "Preferire le miniature integrate del file immagine"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.203
@@ -139,7 +139,7 @@ msgstr "Compressione PNG (0 - più bassa, 9 - più alta):"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.225
 msgid "Show type overlay on thumbnails"
-msgstr "Mostra tipo di overlay nelle miniature"
+msgstr "Visualizza tipo di overlay nelle miniature"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.226
@@ -219,23 +219,23 @@ msgstr "Non posso aprire gli appunti"
 #. String resource
 #: STRING.114
 msgid "Please confirm thumbnail cache clearing."
-msgstr "Per favore, conferma la pulizia della cache delle anteprime."
+msgstr "Per favore, conferma la pulizia della cache delle miniature."
 
 #. String resource
 #: STRING.115
 msgid "Thumbnail cache size: %u KB"
-msgstr "Dimensione della cache delle anteprime: %u KB"
+msgstr "Dimensione della cache delle miniature: %u KB"
 
 #. String resource
 #: STRING.116
 msgid "SageThumbs thumbnail cache"
-msgstr "Cache delle anteprime di SageThumbs"
+msgstr "Cache delle miniature di SageThumbs"
 
 #. String resource
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
 msgstr ""
-"Pulisci la cache delle anteprime di SageThumbs. Nessun dato personale verrà "
+"Pulisci la cache delle miniature di SageThumbs. Nessun dato personale verrà "
 "modificato."
 
 #. String resource
@@ -305,7 +305,7 @@ msgstr "Invia l'immagine per email..."
 #. String resource
 #: STRING.209
 msgid "Send thumbnail by mail..."
-msgstr "Invia l'anteprima per email..."
+msgstr "Invia la miniatura per email..."
 
 #. String resource
 #: STRING.210
