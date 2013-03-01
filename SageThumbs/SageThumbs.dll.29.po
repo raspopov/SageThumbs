@@ -3,16 +3,17 @@ msgstr ""
 "Project-Id-Version: SageThumbs.dll\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator:  <>\n"
-"Language-Team:  <>\n"
+"Last-Translator: IRIman <iriman@chmail.ir>\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.5\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
 msgid "SageThumbs Options"
-msgstr "گزینه سیج تامبز"
+msgstr "‫گزینه‌های SageThumbs"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.1
@@ -27,62 +28,62 @@ msgstr "لغو"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.211
 msgid "Enable context menu in Explorer"
-msgstr "فعالسازی کلیک راست در اکسپلورر"
+msgstr "فعال کردن منوی زمینه در کاوشگر"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.212
 msgid "Enable thumbnails in Explorer"
-msgstr "فعالسازی بندانگشتی در اکسپلورر"
+msgstr "فعال کردن تصاویر بندانگشتی در کاوشگر"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.216
 msgid "Use thumbnails as icons in Explorer"
-msgstr "استفاده از بندانگشتی بعنوان آیکون در اکسپلورر"
+msgstr "استفاده از تصاویر بندانگشتی به‌عنوان آیکون در کاوشگر"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.217
 msgid "Enable Windows thumbnail cache"
-msgstr "فعالسازی کش بندانگشتی ویندوز"
+msgstr "فعال کردن حافظه‌ی نهان تصاویر بندانگشتی"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.215
 msgid "Prefer image file embedded thumbnails"
-msgstr "ترجیح فایل عکس جاسازی شده بندانگشتی"
+msgstr "اولویت با تصاویر بندانگشتی همراه با خودِ عکس"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.203
 msgid "Use Windows Image/Fax Viewer"
-msgstr "استفاده از ویندوزایمیج/فکس ویوور"
+msgstr "‫استفاده از برنامه‌ی Image/Fax Viewer ویندوز"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.210
 msgid "Select/Deselect all"
-msgstr "انتخاب/لغو انتخاب همه"
+msgstr "انتخاب کردن/نکردن همه"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.223
 msgid "Default"
-msgstr "پیش فرض"
+msgstr "پیش‌فرض"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.213
 msgid "Clear..."
-msgstr "پاکسازی..."
+msgstr "‫پاک‌سازی..."
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.218
 msgid "Optimize"
-msgstr "بهسازی"
+msgstr "بهینه‌سازی"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483649
 msgid "Context menu preview size"
-msgstr "اندازه پیشنمایش کلیک راست"
+msgstr "ابعاد تصویر پیش‌نمایش در منوی زمینه"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483650
 msgid "Width x Height:"
-msgstr "عرض x ارتفاع:"
+msgstr "ارتفاع × عرض:"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483651
@@ -92,17 +93,17 @@ msgstr "X"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483652
 msgid "pixels"
-msgstr "پیکسل"
+msgstr "(پیکسل)"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483653
 msgid "Supported file types"
-msgstr "انواع فایل پشتیبانی شده"
+msgstr "قالب‌های پشتیبانی شده"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483654
 msgid "System-wide tweaks"
-msgstr "تنظیم سیستمی"
+msgstr "تنظیمات فراگیر"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483655
@@ -112,97 +113,97 @@ msgstr "زبان:"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483656
 msgid "Maximum size of image file:"
-msgstr "حداکثر اندازه فایل عکس:"
+msgstr "بیشترین حجم عکس:"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483657
 msgid "MB"
-msgstr "مگابایت"
+msgstr "(مگابایت)"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483658
 msgid "Convert options"
-msgstr "گزینه های تبدیل"
+msgstr "گزینه‌های تبدیل"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483659
 msgid "JPEG quality (0 - lowest, 100 - best):"
-msgstr "(کیفیت جیپگ (0 - پائين ترين، 100 - بهترین:"
+msgstr "‫کیفیت JPEG ‏(0 - پایین‌ترین، 100 - بهترین)"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483660
 msgid "PNG compression (0 - lowest, 9 - best):"
-msgstr "(فشرده سازی پی اِن جی (0 - پائين ترين، 9 - بهترین:"
+msgstr "‫فشرده‌سازی PNG ‏(0 - پایین‌ترین، 9 - بهترین)"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.225
 msgid "Show type overlay on thumbnails"
-msgstr "نمایش نوع جایگذاشت در بندانگشتی"
+msgstr "قالب پرونده را روی تصاویر بندانگشتی نشان بده"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.226
 msgid "Show preview in submenu"
-msgstr "نمایش پیشنمایش در زیرمنو"
+msgstr "نشان دادن پیش‌نمایش در زیرمنو"
 
 #. String resource
 #: STRING.100
 msgid "SageThumbs"
-msgstr "سیج تامبز"
+msgstr "SageThumbs"
 
 #. String resource
 #: STRING.101
 msgid "Change various SageThumbs options"
-msgstr "تغییر گزینه های گوناگون سیج تامبز"
+msgstr "‫گزینه‌های متنوع SageThumbs را تغییر دهید"
 
 #. String resource
 #: STRING.102
 msgid "Type: "
-msgstr "نوع: "
+msgstr "‫قالب:"
 
 #. String resource
 #: STRING.103
 msgid "Sizes (pixels): "
-msgstr "(اندازه (پیکسل: "
+msgstr "‫ابعاد (پیکسل):"
 
 #. String resource
 #: STRING.104
 msgid "Size (bytes): "
-msgstr "(اندازه (بایت: "
+msgstr "‫حجم (بایت):"
 
 #. String resource
 #: STRING.105
 msgid "Modified: "
-msgstr "ویرایش شده:"
+msgstr "‫اصلاح شده:"
 
 #. String resource
 #: STRING.106
 msgid "Colors (bits): "
-msgstr "(رنگ (بیت: "
+msgstr "‫رنگ (بیت):"
 
 #. String resource
 #: STRING.107
 msgid "Compression: "
-msgstr "فشرده سازی: "
+msgstr "‫فشردگی:"
 
 #. String resource
 #: STRING.108
 msgid "Resolution: "
-msgstr "نسبت دید: "
+msgstr "‫وضوح:"
 
 #. String resource
 #: STRING.109
 msgid "Can't open image file"
-msgstr "فایل عکس را نمیتوان باز کرد"
+msgstr "نمی‌توان تصویر را باز کرد"
 
 #. String resource
 #: STRING.110
 msgid "Can't save image file"
-msgstr "فایل عکس را نمیتوان ذخیره کرد"
+msgstr "نمی‌توان تصویر را ذخیره  کرد"
 
 #. String resource
 #: STRING.111
 msgid "Can't send mail"
-msgstr "ایمیل را نمیتوان ارسال کرد"
+msgstr "نمی‌توان نامه را فرستاد"
 
 #. String resource
 #: STRING.112
@@ -212,105 +213,111 @@ msgstr "چیزی برای ارسال نیست"
 #. String resource
 #: STRING.113
 msgid "Can't open clipboard"
-msgstr "کلیپ برد را نمیتوان بازکرد"
+msgstr "‫نمی‌توان حافظه‌ی Clipboard را باز کرد"
 
 #. String resource
 #: STRING.114
 msgid "Please confirm thumbnail cache clearing."
-msgstr "لطفا پاکسازی کش بندانگشتی را تایید کنید"
+msgstr "‫لطفاً پاکسازی حافظه‌ی نهانِ تصاویر بندانگشتی را تأیید نمایید."
 
 #. String resource
 #: STRING.115
 msgid "Thumbnail cache size: %u KB"
-msgstr "اندازه کش بندانگشتی: %u کیلوبایت"
+msgstr "‫حجم حافظه‌ی نهانِ تصاویر بندانگشتی: %u کیلوبایت"
 
 #. String resource
 #: STRING.116
 msgid "SageThumbs thumbnail cache"
-msgstr "کش بندانگشتی سیج تامبز"
+msgstr "‫حافظه‌ی نهانِ تصاویر بندانگشتی برنامه‌ی SageThumbs"
 
 #. String resource
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
-msgstr "پاکسازی کش بندانگشتی سیج تامبز.روی داده کاربر اثر نمیگذارد"
+msgstr ""
+"‫حافظه‌ی نهانِ تصاویر بندانگشتی برنامه‌ی SageThumbs را پاک کن. این کار تأثیری بر "
+"اطلاعات کاربر ندارد."
 
 #. String resource
 #: STRING.118
-msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
-msgstr "نمیتوان همه تنظیمات را اِعمال کرد. لطفا از سیج تامبز تحت اکانت آدمین استفاده کنید"
+msgid ""
+"Can not apply all settings. Please use SageThumbs under account with "
+"administrative privileges."
+msgstr ""
+"‫نمی‌توان همه‌ی تنظیمات را اِعمال کرد. لطفاً ‫برنامه‌ی ‫SageThumbs را تحت کاربری با "
+"سطح دسترسی مدیر اجرا ‫نمایید."
 
 #. String resource
 #: STRING.119
 msgid "Convert to PNG"
-msgstr "تبدیل به پی اِن جی"
+msgstr "‫تبدیل به PNG"
 
 #. String resource
 #: STRING.120
 msgid "Converting..."
-msgstr "تبدیل..."
+msgstr "‫در حال تبدیل کردن..."
 
 #. String resource
 #: STRING.121
 msgid "Sending..."
-msgstr "ارسال..."
+msgstr "‫در حال فرستادن..."
 
 #. String resource
 #: STRING.122
 msgid "Applying settings..."
-msgstr "اِعمال تنظیمات..."
+msgstr "‫در حال اِعمال تنظیمات..."
 
 #. String resource
 #: STRING.123
 msgid "Updating..."
-msgstr "بروزرسانی..."
+msgstr "‫به‌روز رسانی..."
 
 #. String resource
 #: STRING.203
 msgid "SageThumbs Options..."
-msgstr "گزینه سیج تامبز..."
+msgstr "‫گزینه‌های SageThumbs ..."
 
 #. String resource
 #: STRING.204
 msgid "Copy to clipboard"
-msgstr "کپی به کلیپ برد"
+msgstr "‫کپی به حافظه‌ی Cipboard ..."
 
 #. String resource
 #: STRING.205
 msgid "Set tiled wallpaper"
-msgstr "تنظیم والپیپر آجری شده"
+msgstr "‫استفاده به عنوان پس‌زمینه (کاشی)"
 
 #. String resource
 #: STRING.206
 msgid "Set centered wallpaper"
-msgstr "تنظیم والپیپر درمرکز قرارگرفته"
+msgstr "‫استفاده به عنوان پس‌زمینه (وسط صفحه)"
 
 #. String resource
 #: STRING.207
 msgid "Set stretched wallpaper"
-msgstr "تنظیم والپیپر کشیده شده"
+msgstr "‫استفاده به عنوان پس‌زمینه (کشیدن تصویر)"
 
 #. String resource
 #: STRING.208
 msgid "Send image by mail..."
-msgstr "ارسال عکس با ایمیل..."
+msgstr "‫ارسال تصویر به‌وسیله‌ی نامه..."
 
 #. String resource
 #: STRING.209
 msgid "Send thumbnail by mail..."
-msgstr "ارسال بندانگشتی با ایمیل.."
+msgstr "‫ارسال تصویر بندانگشتی به‌وسیله‌ی نامه..."
 
 #. String resource
 #: STRING.210
 msgid "Convert to JPG"
-msgstr "تبدیل به جیپگ"
+msgstr "‫تبدیل به JPG"
 
 #. String resource
 #: STRING.211
 msgid "Convert to GIF"
-msgstr "تبدیل به گیف"
+msgstr "‫تبدیل به GIF"
 
 #. String resource
 #: STRING.212
 msgid "Convert to BMP"
-msgstr "تبدیل به بیت مپ"
+msgstr "‫تبدیل به BMP"
 
