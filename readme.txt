@@ -26,7 +26,7 @@ Please read carefully the following information.
 
 System Requirements:
 
-  * Windows XP/2003/Vista/2008/7 32/64-bit
+  * Windows XP/2003/Vista/2008/7/8 32/64-bit
   * About 5 Mb of disk space + additional space for cache
 
 ========================================================================
@@ -62,6 +62,12 @@ SageThumbs can be easily translated to other languages.
 ========================================================================
 
 Versions:
+
+2.0.0.16
+  * Added Turkish translation
+  * Added Hungarian translation
+  * Added Persian (Farsi) translation
+  * Updated translations
 
 2.0.0.15
   * Fixed "Use thumbnails as icons in Explorer" option sometimes broken in Windows 7 (thanks to uhfath)
@@ -250,7 +256,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Copyrights:
 
 SageThumbs
-Copyright (C) Nikolay Raspopov, 2004-2012.
+Copyright (C) Nikolay Raspopov, 2004-2013.
 E-Mail: raspopov@cherubicsoft.com
 Web site: http://www.cherubicsoft.com/projects/sagethumbs
 

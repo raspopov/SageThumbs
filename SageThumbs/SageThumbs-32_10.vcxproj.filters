@@ -56,6 +56,12 @@
     <None Include="..\license.txt" />
     <None Include="..\ReadMe.txt" />
     <None Include="..\SageThumbs Online.url" />
+    <None Include="sagethumbs.dll.04.po_">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sagethumbs.dll.07.po_">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="sagethumbs.dll.0a.po_">
       <Filter>Resource Files</Filter>
     </None>
@@ -65,16 +71,10 @@
     <None Include="sagethumbs.dll.0e.po_">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="sagethumbs.dll.1d.po_">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="sagethumbs.dll.04.po_">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="sagethumbs.dll.07.po_">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include="sagethumbs.dll.10.po_">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sagethumbs.dll.11.po_">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="sagethumbs.dll.15.po_">
@@ -86,10 +86,13 @@
     <None Include="sagethumbs.dll.19.po_">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="sagethumbs.dll.21.po_">
+    <None Include="sagethumbs.dll.1d.po_">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="sagethumbs.dll.11.po_">
+    <None Include="sagethumbs.dll.1f.po_">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sagethumbs.dll.21.po_">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="sagethumbs.dll.29.po_">
