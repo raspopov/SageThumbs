@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2012.
+Copyright (C) Nikolay Raspopov, 2004-2013.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -212,10 +212,6 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 	bool bPreviewInSubMenu = GetRegValue( _T("SubMenu"), 1ul ) != 0;
 	bool bSingleFile = ( m_Filenames.GetCount () == 1 );
 
-	// Store the menu item's ID so we can check against it later when
-	// WM_MEASUREITEM/WM_DRAWITEM are sent.
-	m_uOurItemID = uidCmdFirst;
-
 	int nPos = 0;
 
 	// Creating submenu items
@@ -324,17 +320,36 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 
 		if ( m_Preview )
 		{
-			HBITMAP hPreview = m_Preview.GetImage( width, height );
+			// Store the menu item's ID so we can check against it later when
+			// WM_MEASUREITEM/WM_DRAWITEM are sent.
+			m_uOurItemID = uidCmdFirst + ID_THUMBNAIL_ITEM;
 
-			BITMAP bm = {};
-			GetObject( hPreview, sizeof( BITMAP ), &bm );
-			ATLTRACE( "Bitmap %dx%d bytes=%d bits=%d planes=%d type=%d\n", bm.bmHeight, bm.bmWidth, bm.bmWidthBytes, bm.bmBitsPixel, bm.bmPlanes, bm.bmType );
-
-			if ( ! InsertMenu( ( bPreviewInSubMenu ? hSubMenu : hMenu ), ( bPreviewInSubMenu ? 0 : uIndex++ ),
-				MF_BYPOSITION | MF_BITMAP, uidCmdFirst + ID_THUMBNAIL_ITEM, (LPCTSTR)hPreview ) )
+			if ( IsThemeActive() )
 			{
-				ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert image menu item)\n" );
-				return E_FAIL;
+				HBITMAP hPreview = m_Preview.GetImage( width, height );
+
+				BITMAP bm = {};
+				GetObject( hPreview, sizeof( BITMAP ), &bm );
+				ATLTRACE( "Bitmap %dx%d bytes=%d bits=%d planes=%d type=%d\n", bm.bmHeight, bm.bmWidth, bm.bmWidthBytes, bm.bmBitsPixel, bm.bmPlanes, bm.bmType );
+
+				if ( ! InsertMenu( ( bPreviewInSubMenu ? hSubMenu : hMenu ), ( bPreviewInSubMenu ? 0 : uIndex++ ), MF_BYPOSITION | MF_BITMAP, m_uOurItemID, (LPCTSTR)hPreview ) )
+				{
+					ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert image menu item)\n" );
+					return E_FAIL;
+				}
+			}
+			else
+			{
+				MENUITEMINFO mii = {};
+				mii.cbSize = sizeof (MENUITEMINFO);
+				mii.fMask  = MIIM_ID | MIIM_TYPE;
+				mii.fType  = MFT_OWNERDRAW;
+				mii.wID    = m_uOurItemID;
+				if ( ! InsertMenuItem( ( bPreviewInSubMenu ? hSubMenu : hMenu ), ( bPreviewInSubMenu ? 0 : uIndex++ ), TRUE, &mii ) )
+				{
+					ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert image menu item)\n" );
+					return E_FAIL;
+				}
 			}
 
 			if ( ! InsertMenu( ( bPreviewInSubMenu ? hSubMenu : hMenu ), ( bPreviewInSubMenu ? 1:  uIndex++ ),
@@ -501,7 +516,7 @@ void CThumb::ConvertTo(HWND hWnd, int ext)
 		}
 
 		GFL_BITMAP* hBitmap = NULL;
-		if ( SUCCEEDED( _Module.LoadBitmap( filename, &hBitmap ) ) )
+		if ( SUCCEEDED( _Module.LoadGFLBitmap( filename, &hBitmap ) ) )
 		{
 			GFL_SAVE_PARAMS params = {};
 			gflGetDefaultSaveParams( &params );
@@ -550,7 +565,7 @@ void CThumb::SetWallpaper(HWND hWnd, WORD reason)
 	CString filename( m_Filenames.GetHead() );
 
 	GFL_BITMAP* hBitmap = NULL;
-	if ( SUCCEEDED( _Module.LoadBitmap( filename, &hBitmap ) ) )
+	if ( SUCCEEDED( _Module.LoadGFLBitmap( filename, &hBitmap ) ) )
 	{
 		GFL_SAVE_PARAMS params = {};
 		gflGetDefaultSaveParams( &params );
@@ -706,17 +721,22 @@ void CThumb::SendByMail(HWND hWnd, WORD reason)
 
 void CThumb::CopyToClipboard(HWND hwnd)
 {
-	CString filename( m_Filenames.GetHead() );
-
 	GFL_BITMAP* pBitmap = NULL;
 	HBITMAP hBitmap = NULL;
-	if ( SUCCEEDED( _Module.LoadBitmap( filename, &pBitmap ) ) &&
+	if ( SUCCEEDED( _Module.LoadGFLBitmap( m_Filenames.GetHead(), &pBitmap ) ) &&
 		 SUCCEEDED( _Module.ConvertBitmap( pBitmap, &hBitmap ) ) )
 	{
 		if ( OpenClipboard ( hwnd ) )
 		{
 			EmptyClipboard();
-			SetClipboardData( CF_BITMAP, hBitmap );
+			
+			if ( SetClipboardData( CF_BITMAP, hBitmap ) )
+			{
+				// OK
+			}
+			else
+				_Module.MsgBox( hwnd, IDS_ERR_CLIPBOARD );
+
 			CloseClipboard();
 		}
 		else
@@ -807,7 +827,7 @@ STDMETHODIMP CThumb::HandleMenuMsg2(UINT uMsg, WPARAM wParam, LPARAM lParam, LRE
 	return MenuMessageHandler (uMsg, wParam, lParam, (pResult ? pResult : &res));
 }
 
-STDMETHODIMP CThumb::MenuMessageHandler(UINT uMsg, WPARAM /*wParam*/, LPARAM /*lParam*/, LRESULT* /*pResult*/)
+STDMETHODIMP CThumb::MenuMessageHandler(UINT uMsg, WPARAM /*wParam*/, LPARAM lParam, LRESULT* pResult)
 {
 	switch (uMsg)
 	{
@@ -817,11 +837,11 @@ STDMETHODIMP CThumb::MenuMessageHandler(UINT uMsg, WPARAM /*wParam*/, LPARAM /*l
 
 	case WM_MEASUREITEM:
 		ATLTRACE ( "0x%08x::WM_MEASUREITEM\n", this);
-		break;
+		return OnMeasureItem( (MEASUREITEMSTRUCT*)lParam, pResult );
 
 	case WM_DRAWITEM:
 		ATLTRACE ( "0x%08x::WM_DRAWITEM\n", this);
-		break;
+		return OnDrawItem( (DRAWITEMSTRUCT*)lParam, pResult );
 
 	case WM_MENUCHAR:
 		ATLTRACE ( "0x%08x::WM_MENUCHAR\n", this);
@@ -830,6 +850,61 @@ STDMETHODIMP CThumb::MenuMessageHandler(UINT uMsg, WPARAM /*wParam*/, LPARAM /*l
 	default:
 		ATLTRACE ( "0x%08x::Unknown message %u\n", this, uMsg );
 	}
+	return S_OK;
+}
+
+STDMETHODIMP CThumb::OnMeasureItem(MEASUREITEMSTRUCT* pmis, LRESULT* pResult)
+{
+	// Check that we're getting called for our own menu item.
+	if ( m_uOurItemID != pmis->itemID )
+		return S_OK;
+
+	if ( ! m_Preview )
+		return S_OK;
+
+	pmis->itemWidth = m_Preview.Width();
+	pmis->itemHeight = m_Preview.Height();
+
+	*pResult = TRUE;
+
+	return S_OK;
+}
+
+STDMETHODIMP CThumb::OnDrawItem(DRAWITEMSTRUCT* pdis, LRESULT* pResult)
+{
+	// Check that we're getting called for our own menu item.
+	if ( m_uOurItemID != pdis->itemID )
+		return S_OK;
+
+	if ( ! m_Preview )
+		return S_OK;
+
+	const int width = pdis->rcItem.right - pdis->rcItem.left;
+	const int height = pdis->rcItem.bottom - pdis->rcItem.top;
+	const int x = pdis->rcItem.left + ( width - m_Preview.Width() ) / 2;
+	const int y = pdis->rcItem.top + ( height - m_Preview.Height() ) / 2;
+	const int cx = min( width, (int)m_Preview.Width() );
+	const int cy = min( height, (int)m_Preview.Height() );
+
+	if ( ( pdis->itemState & ODS_SELECTED ) )
+		FillRect( pdis->hDC, &pdis->rcItem, GetSysColorBrush( COLOR_HIGHLIGHT ) );
+	else
+		FillRect( pdis->hDC, &pdis->rcItem, GetSysColorBrush( COLOR_MENU ) );
+
+	// Отрисовка изображения
+	HBITMAP hBitmap = m_Preview.GetImage( width, height );
+	HDC hBitmapDC = CreateCompatibleDC( pdis->hDC );
+	HBITMAP hOldBitmap = (HBITMAP)SelectObject( hBitmapDC, hBitmap );
+	HBRUSH hPattern = CreateHatchBrush( HS_BDIAGONAL, GetSysColor( COLOR_HIGHLIGHT ) );
+	HBRUSH hOldBrush = (HBRUSH)SelectObject( pdis->hDC, hPattern );
+	StretchBlt( pdis->hDC, x, y, cx, cy, hBitmapDC, 0, 0, m_Preview.Width(), m_Preview.Height(), ( pdis->itemState & ODS_SELECTED ) ?  MERGECOPY : SRCCOPY );
+	SelectObject( hBitmapDC, hOldBitmap );
+	DeleteDC( hBitmapDC );
+	SelectObject( pdis->hDC, hOldBrush );
+	DeleteObject( hPattern );
+
+	*pResult = TRUE;
+
 	return S_OK;
 }
 

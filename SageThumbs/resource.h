@@ -63,6 +63,7 @@
 #define IDC_CACHE_SIZE                  224
 #define IDC_ENABLE_OVERLAY              225
 #define IDC_SUBMENU                     226
+#define IDC_CUSTOM                      227
 
 // Next default values for new objects
 // 
@@ -70,7 +71,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        215
 #define _APS_NEXT_COMMAND_VALUE         32768
-#define _APS_NEXT_CONTROL_VALUE         225
+#define _APS_NEXT_CONTROL_VALUE         228
 #define _APS_NEXT_SYMED_VALUE           103
 #endif
 #endif

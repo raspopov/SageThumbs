@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2012.
+Copyright (C) Nikolay Raspopov, 2004-2013.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -505,6 +505,8 @@ protected:
 	void CopyToClipboard(HWND hwnd);					// Копирование в буфер обмена
 
 	STDMETHOD(MenuMessageHandler)(UINT, WPARAM, LPARAM, LRESULT*);
+	STDMETHOD(OnMeasureItem)(MEASUREITEMSTRUCT* pmis, LRESULT* pResult);
+	STDMETHOD(OnDrawItem)(DRAWITEMSTRUCT* pdis, LRESULT* pResult);
 };
 
 OBJECT_ENTRY_AUTO(__uuidof(Thumb), CThumb)

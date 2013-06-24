@@ -135,6 +135,9 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 		ListView_SetCheckState( pList, index, p->m_value.enabled ? TRUE : FALSE );
 	}
 
+	const CString custom = GetRegValue( _T("Custom"), CString() );
+	SetDlgItemText( IDC_CUSTOM, custom );
+
 	const bool bEnableMenu = GetRegValue( _T("EnableMenu"), 1ul ) != 0;
 	CheckDlgButton( IDC_ENABLE_MENU, bEnableMenu ? BST_CHECKED : BST_UNCHECKED );
 
@@ -272,6 +275,10 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 		SetRegValue( _T("Enabled"), bEnabled ? 1ul : 0u, key + ext );
 	}
 
+	CString custom;
+	GetDlgItemText( IDC_CUSTOM, custom ); 
+	SetRegValue( _T("Custom"), custom );
+
 	_Module.m_oLangs.Select( GetDlgItem( IDC_LANG ) );
 	SetRegValue( _T("Lang"), _Module.m_oLangs.GetLang() );
 
@@ -325,7 +332,7 @@ LRESULT COptionsDialog::OnDefault(WORD /* wNotifyCode */, WORD /* wID */, HWND /
 		CString ext;
 		ListView_GetItemText( pList, index, 0, ext.GetBuffer( 65 ), 64 );
 		ext.ReleaseBuffer();
-		ListView_SetCheckState( pList, index, EXT_DEFAULT( ext ) ? FALSE : TRUE );
+		ListView_SetCheckState( pList, index, ( _Module.IsDisabledByDefault( ext ) ? FALSE : TRUE ) );
 	}
 
 	return TRUE;
