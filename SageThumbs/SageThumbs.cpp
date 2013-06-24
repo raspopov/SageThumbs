@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2012.
+Copyright (C) Nikolay Raspopov, 2004-2013.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -334,6 +334,26 @@ void CSageThumbsModule::UpdateShell()
 	SHChangeNotify( SHCNE_ASSOCCHANGED, SHCNF_IDLIST, NULL, NULL );
 	SystemParametersInfo( SPI_SETICONS, 0, NULL, SPIF_SENDCHANGE );
 	CoFreeUnusedLibraries();
+}
+
+bool CSageThumbsModule::IsDisabledByDefault(LPCTSTR szExt) const
+{
+	// Disable .png on Windows 8 due Metro bug
+	if ( m_OSVersion.dwMajorVersion >= 6 && m_OSVersion.dwMinorVersion >= 2 )
+	{
+		if ( _tcsicmp( szExt, _T("png") ) == 0 )
+			return true;
+	}
+
+	const LPCTSTR szDisabledExts [] = { _T("ico"), _T("icl"), _T("ani"), _T("cur"), _T("pdf"), _T("sys"), _T("vst"), _T("wmz") };
+
+	for ( int i = 0; i < _countof( szDisabledExts ); ++i )
+	{
+		if ( _tcsicmp( szExt, szDisabledExts[ i ] ) == 0 )
+			return true;
+	}
+
+	return false;
 }
 
 BOOL CSageThumbsModule::RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableThumbs, bool bEnableIcons, bool bEnableInfo, bool bEnableOverlay)
@@ -795,7 +815,7 @@ void CSageThumbsModule::FillExtMap()
 		GFL_ERROR err = gflGetFormatInformationByIndex (i, &info);
 		if ( err == GFL_NO_ERROR && ( info.Status & GFL_READ ) )
 		{
-			Ext data = { true, (LPCTSTR)CA2T( info.Description ) };
+			Ext data = { true, false, (LPCTSTR)CA2T( info.Description ) };
 			for ( UINT j = 0; j < info.NumberOfExtension; ++j )
 			{
 				CString sExt = (LPCTSTR)CA2T( info.Extension [ j ] );
@@ -807,10 +827,31 @@ void CSageThumbsModule::FillExtMap()
 					m_oExtMap.SetAt( _T("pspbrush"), data );
 				else if ( sExt == _T("pspfram") )	// PaintShopPro Frame
 					m_oExtMap.SetAt( _T("pspframe"), data );
-				else if ( sExt == _T("pspimag") )	// PaintShopPro Image"
+				else if ( sExt == _T("pspimag") )	// PaintShopPro Image
 					m_oExtMap.SetAt( _T("pspimage"), data );
 			}
 		}
+	}
+
+	// Загрузка расшерений пользователя
+	const CString sCustom = GetRegValue( _T("Custom"), CString() );
+	i = 0;
+	for (; ; )
+	{
+		CString sExt = sCustom.Tokenize( _T("*?<>:\r\n/\\\"| \t"), i );
+		if ( sExt.IsEmpty() )
+			// Больше нет
+			break;
+		sExt.Trim( _T(".") );
+		if ( sExt.IsEmpty() )
+			// Пустое расширение
+			continue;
+		sExt.MakeLower();
+		Ext data = { true, true, _T("SageThumbs Custom Type") };
+		if ( m_oExtMap.Lookup( sExt, data ) )
+			// Уже в списке
+			continue;		
+		m_oExtMap.SetAt( sExt, data );
 	}
 
 	// Загрузка данных о расширении
@@ -821,7 +862,7 @@ void CSageThumbsModule::FillExtMap()
 		CExtMap::CPair* p = m_oExtMap.GetNext (pos);
 
 		// Exclude bad extensions
-		DWORD dwEnabled = GetRegValue( _T("Enabled"), EXT_DEFAULT( p->m_key ) ? 0ul : 1ul, key + p->m_key );
+		DWORD dwEnabled = GetRegValue( _T("Enabled"), ( IsDisabledByDefault( p->m_key ) ? 0ul : 1ul ), key + p->m_key );
 		p->m_value.enabled = ( dwEnabled != 0 );
 
 		//ATLTRACE( "%4d. %c %8s \"%s\"\n", i, ( p->m_value.enabled ? '+' : '-' ), (LPCSTR)CT2A( p->m_key ), (LPCSTR)CT2A( p->m_value.info ) );
@@ -1034,12 +1075,7 @@ void CALLBACK Options (HWND hwnd, HINSTANCE /* hinst */, LPSTR /* lpszCmdLine */
 {
 	OleInitialize( NULL );
 
-	INITCOMMONCONTROLSEX init =
-	{
-		sizeof( INITCOMMONCONTROLSEX ),
-		ICC_WIN95_CLASSES | ICC_STANDARD_CLASSES
-	};
-	InitCommonControlsEx( &init );
+	InitCommonControls();
 
 	COptionsDialog dlg;
 	while ( dlg.DoModal( hwnd ) == IDRETRY );
@@ -1496,13 +1532,13 @@ HRESULT CSageThumbsModule::GetFileInformationE(LPCTSTR filename, GFL_FILE_INFORM
 	return hr;
 }
 
-HRESULT CSageThumbsModule::LoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::LoadGFLBitmap(LPCTSTR filename, GFL_BITMAP **bitmap)
 {
 #ifdef GFL_THREAD_SAFE
 	CLock oLock( m_pSection );
-	return LoadBitmapE( filename, bitmap );
+	return LoadGFLBitmapE( filename, bitmap );
 }
-HRESULT CSageThumbsModule::LoadBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::LoadGFLBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap)
 {
 #endif // GFL_THREAD_SAFE
 	GFL_ERROR err;
@@ -1511,7 +1547,7 @@ HRESULT CSageThumbsModule::LoadBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap)
 	{
 		*bitmap = NULL;
 
-		GFL_LOAD_PARAMS params;
+		GFL_LOAD_PARAMS params = {};
 		gflGetDefaultLoadParams( &params );
 		params.ColorModel = GFL_RGBA;
 		err = gflLoadBitmapT( filename, bitmap, &params, NULL);
@@ -1557,10 +1593,9 @@ HRESULT CSageThumbsModule::LoadThumbnailE(LPCTSTR filename, int width, int heigh
 	{
 		*bitmap = NULL;
 
-		GFL_LOAD_PARAMS params;
+		GFL_LOAD_PARAMS params = {};
 		gflGetDefaultThumbnailParams( &params );
 		params.Flags =
-			GFL_LOAD_ONLY_FIRST_FRAME |
 			GFL_LOAD_HIGH_QUALITY_THUMBNAIL |
 			( ( ::GetRegValue( _T("UseEmbedded"), 0ul ) != 0 ) ? GFL_LOAD_EMBEDDED_THUMBNAIL : 0 ) |
 			GFL_LOAD_PREVIEW_NO_CANVAS_RESIZE;
@@ -1608,7 +1643,7 @@ HRESULT CSageThumbsModule::LoadBitmapFromMemoryE(LPCVOID data, UINT data_length,
 	{
 		*bitmap = NULL;
 
-		GFL_LOAD_PARAMS params;
+		GFL_LOAD_PARAMS params = {};
 		gflGetDefaultLoadParams( &params );
 		params.ColorModel = GFL_RGBA;
 		err = gflLoadBitmapFromMemory( (const BYTE*)data, data_length, bitmap, &params, NULL );
@@ -1654,15 +1689,16 @@ HRESULT CSageThumbsModule::ConvertBitmapE(const GFL_BITMAP *bitmap, HBITMAP *phB
 	{
 		*phBitmap = NULL;
 
-		err = gflConvertBitmapIntoDIBSection( bitmap, phBitmap );
-		if ( err == GFL_NO_ERROR )
+		if ( ( err = gflConvertBitmapIntoDDB( bitmap, phBitmap ) ) == GFL_NO_ERROR )
+		{
+			hr = S_OK;
+		}
+		else if ( (err = gflConvertBitmapIntoDIBSection( bitmap, phBitmap ) ) == GFL_NO_ERROR )
 		{
 			hr = S_OK;
 		}
 		else
-		{
 			ATLTRACE ("E_FAIL (gflConvertBitmapIntoDDB) : %s\n", gflGetErrorString (err));
-		}
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{

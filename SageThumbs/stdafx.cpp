@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2011.
+Copyright (C) Nikolay Raspopov, 2004-2013.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -103,33 +103,23 @@ BOOL LoadIcon(LPCTSTR szFilename, HICON* phSmallIcon, HICON* phLargeIcon, HICON*
 		strIcon.GetAt( strIcon.GetLength() - 1 ) == _T('\"') )
 		strIcon = strIcon.Mid( 1, strIcon.GetLength() - 2 );
 
-	if ( phLargeIcon || phSmallIcon )
+	if ( phSmallIcon )
 	{
-		ExtractIconEx( strIcon, nIcon, phLargeIcon, phSmallIcon, 1 );
+		UINT nLoadedID;
+		PrivateExtractIcons( strIcon, nIcon, 16, 16, phSmallIcon, &nLoadedID, 1, 0 );
 	}
-
+	if ( phLargeIcon )
+	{
+		UINT nLoadedID;
+		PrivateExtractIcons( strIcon, nIcon, 32, 32, phLargeIcon, &nLoadedID, 1, 0 );
+	}
 	if ( phHugeIcon )
 	{
-		if ( HMODULE hUser32 = LoadLibrary( _T("user32.dll") ) )
-		{
-			tPrivateExtractIconsT pPrivateExtractIconsT = (tPrivateExtractIconsT)GetProcAddress( hUser32,
-#if UNICODE
-				"PrivateExtractIconsW"
-#else
-				"PrivateExtractIconsA"
-#endif
-				);
-			if ( pPrivateExtractIconsT )
-			{
-				UINT nLoadedID;
-				pPrivateExtractIconsT( strIcon, nIcon, 48, 48, phHugeIcon, &nLoadedID, 1, 0 );
-			}
-			FreeLibrary( hUser32 );
-		}
+		UINT nLoadedID;
+		PrivateExtractIcons( strIcon, nIcon, 48, 48, phHugeIcon, &nLoadedID, 1, 0 );
 	}
 
-	return ( phLargeIcon && *phLargeIcon ) || ( phSmallIcon && *phSmallIcon ) ||
-		( phHugeIcon && *phHugeIcon );
+	return ( phLargeIcon && *phLargeIcon ) || ( phSmallIcon && *phSmallIcon ) || ( phHugeIcon && *phHugeIcon );
 }
 
 // CRC 32

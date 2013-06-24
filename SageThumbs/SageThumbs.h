@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2012.
+Copyright (C) Nikolay Raspopov, 2004-2013.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -44,17 +44,6 @@ extern CSageThumbsModule	_Module;		// Application
 #define FILE_MAX_SIZE		10ul			// Default maximum file size, MB
 #define STANDARD_LANGID		0x09			// Default language ID - English
 
-// Disabled by default
-#define EXT_DEFAULT(ext) \
-	((ext)==_T("ico")|| \
-	 (ext)==_T("icl")|| \
-	 (ext)==_T("ani")|| \
-	 (ext)==_T("cur")|| \
-	 (ext)==_T("pdf")|| \
-	 (ext)==_T("sys")|| \
-	 (ext)==_T("vst")|| \
-	 (ext)==_T("wmz"))
-
 // SQL дл€ создани€ базы данных
 const LPCTSTR RECREATE_DATABASE =
 	_T("PRAGMA foreign_keys = ON;")
@@ -95,6 +84,7 @@ const LPCTSTR OPTIMIZE_DATABASE =
 typedef struct
 {
 	bool	enabled;
+	bool	custom;
 	CString	info;
 } Ext;
 
@@ -137,8 +127,11 @@ public:
 	// ќбновление настроек Explorer'a
 	void UpdateShell();
 
+	// Image extensions disabled by default
+	bool IsDisabledByDefault(LPCTSTR szExt) const;
+
 	HRESULT GetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info);
-	HRESULT LoadBitmap(LPCTSTR filename, GFL_BITMAP **bitmap);
+	HRESULT LoadGFLBitmap(LPCTSTR filename, GFL_BITMAP **bitmap);
 	HRESULT LoadThumbnail(LPCTSTR filename, int width, int height, GFL_BITMAP **bitmap);
 	HRESULT LoadBitmapFromMemory(LPCVOID data, UINT data_length, GFL_BITMAP **bitmap);
 	HRESULT ConvertBitmap(const GFL_BITMAP* bitmap, HBITMAP* phBitmap);
@@ -188,22 +181,6 @@ protected:
 #endif // GFL_THREAD_SAFE
 };
 
-// ћакросы дл€ измерени€ времени
-#ifdef _DEBUG
-	#define CHECKPOINT_BEGIN(liLast) \
-		LARGE_INTEGER liLast; \
-		QueryPerformanceCounter (&liLast);
-	#define CHECKPOINT(liLast) { \
-		LARGE_INTEGER liCurrent; \
-		QueryPerformanceCounter (&liCurrent); \
-		LARGE_INTEGER liFrequency; \
-		QueryPerformanceFrequency (&liFrequency); \
-		ATLTRACE ("%s %ld ms\n", #liLast, (DWORD) ((liCurrent.QuadPart - liLast.QuadPart) / ( liFrequency.QuadPart / 1000 ) )); \
-	}
-#else // _DEBUG
-	#define CHECKPOINT_BEGIN	__noop
-	#define CHECKPOINT			__noop
-#endif // _DEBUG
 
 bool IsValidCLSID(const CString& sCLSID);
 BOOL GetRegValue(LPCTSTR szName, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);

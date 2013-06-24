@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2011.
+Copyright (C) Nikolay Raspopov, 2004-2013.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -20,13 +20,22 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #pragma once
 
+// Windows XP as target platform
+#define  _WIN32_WINNT	0x0600
+
 #include <SDKDDKVer.h>
 
 #define STRICT
 
 #ifndef _SECURE_ATL
-	#define _SECURE_ATL 1
+	#define _SECURE_ATL	1
 #endif
+
+#ifndef VC_EXTRALEAN
+#define VC_EXTRALEAN
+#endif
+
+#define WIN32_LEAN_AND_MEAN
 
 #define _ATL_FREE_THREADED
 #define _ATL_NO_AUTOMATIC_NAMESPACE
@@ -34,6 +43,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _ATL_CSTRING_NO_CRT
 #define _ATL_ALL_WARNINGS
 #define ATL_NO_ASSERT_ON_DESTROY_NONEXISTENT_WINDOW
+//#define _NTOSP_
 
 #ifdef _DEBUG
 	//#define _ATL_DEBUG_INTERFACES
@@ -63,9 +73,33 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <ocmm.h>
 #include <propkey.h>
 #include <richedit.h>
+#include <shellapi.h>
 #include <shlobj.h>
 #include <sddl.h>
 #include <thumbcache.h>
+#include <uxtheme.h>
+
+// Windows 2000 compatibility
+
+#ifndef BCM_FIRST
+	#define BCM_FIRST				0x1600
+#endif
+
+#ifndef BCM_SETSHIELD
+	#define BCM_SETSHIELD			(BCM_FIRST + 0x000C)
+#endif
+
+#ifndef PROGDLG_MARQUEEPROGRESS
+	#define PROGDLG_MARQUEEPROGRESS	0x00000020
+#endif
+
+#ifndef PROGDLG_NOCANCEL
+	#define PROGDLG_NOCANCEL		0x00000040
+#endif
+
+#ifndef PERCEIVED_TYPE_IMAGE
+	#define PERCEIVED_TYPE_IMAGE	2
+#endif
 
 #include "..\Localization\Localization.h"
 
