@@ -5,10 +5,11 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: Nikolay Raspopov <raspopov@cherubicsoft.com>\n"
 "Language-Team: \n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Russian\n"
+"X-Generator: Poedit 1.5.5\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -31,6 +32,11 @@ msgid "Enable context menu in Explorer"
 msgstr "Включить меню в Проводнике"
 
 #. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr "Показывать эскиз в подменю"
+
+#. Dialog control
 #: DIALOGCONTROL.202.Button.212
 msgid "Enable thumbnails in Explorer"
 msgstr "Включить эскизы в Проводнике"
@@ -39,6 +45,11 @@ msgstr "Включить эскизы в Проводнике"
 #: DIALOGCONTROL.202.Button.216
 msgid "Use thumbnails as icons in Explorer"
 msgstr "Использовать эскизы вместо иконок"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "Отображать тип файла на эскизе"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.217
@@ -56,16 +67,6 @@ msgid "Use Windows Image/Fax Viewer"
 msgstr "Использовать Windows Image/Fax Viewer"
 
 #. Dialog control
-#: DIALOGCONTROL.202.Button.210
-msgid "Select/Deselect all"
-msgstr "Выбрать/Очистить всё"
-
-#. Dialog control
-#: DIALOGCONTROL.202.Button.223
-msgid "Default"
-msgstr "По умолчанию"
-
-#. Dialog control
 #: DIALOGCONTROL.202.Button.213
 msgid "Clear..."
 msgstr "Очистить..."
@@ -74,6 +75,16 @@ msgstr "Очистить..."
 #: DIALOGCONTROL.202.Button.218
 msgid "Optimize"
 msgstr "Оптимизировать"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "Выбрать/Очистить всё"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "По умолчанию"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483649
@@ -136,14 +147,9 @@ msgid "PNG compression (0 - lowest, 9 - best):"
 msgstr "PNG сжатие (0 - хуже, 9 - лучше):"
 
 #. Dialog control
-#: DIALOGCONTROL.202.Button.225
-msgid "Show type overlay on thumbnails"
-msgstr "Отображать тип файла на эскизе"
-
-#. Dialog control
-#: DIALOGCONTROL.202.Button.226
-msgid "Show preview in submenu"
-msgstr "Показывать эскиз в подменю"
+#: DIALOGCONTROL.202.Static.2147483662
+msgid "Custom file types (use spaces as delimiters):"
+msgstr "Пользовательские типы (разделители - пробелы):"
 
 #. String resource
 #: STRING.100
@@ -233,12 +239,17 @@ msgstr "Кэш эскизов SageThumbs"
 #. String resource
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
-msgstr "Очистка кеша эскизов SageThumbs. Пользовательские данные не будут затронуты."
+msgstr ""
+"Очистка кеша эскизов SageThumbs. Пользовательские данные не будут затронуты."
 
 #. String resource
 #: STRING.118
-msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
-msgstr "Не могу применить настройки. Пожалуйста, используйте SageThumbs под аккаунтом с административными привилегиями."
+msgid ""
+"Can not apply all settings. Please use SageThumbs under account with "
+"administrative privileges."
+msgstr ""
+"Не могу применить настройки. Пожалуйста, используйте SageThumbs под "
+"аккаунтом с административными привилегиями."
 
 #. String resource
 #: STRING.119
@@ -314,4 +325,3 @@ msgstr "Конвертировать в GIF"
 #: STRING.212
 msgid "Convert to BMP"
 msgstr "Конвертировать в BMP"
-

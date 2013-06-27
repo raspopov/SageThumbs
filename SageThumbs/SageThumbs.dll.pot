@@ -30,6 +30,11 @@ msgid "Enable context menu in Explorer"
 msgstr ""
 
 #. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr ""
+
+#. Dialog control
 #: DIALOGCONTROL.202.Button.212
 msgid "Enable thumbnails in Explorer"
 msgstr ""
@@ -37,6 +42,11 @@ msgstr ""
 #. Dialog control
 #: DIALOGCONTROL.202.Button.216
 msgid "Use thumbnails as icons in Explorer"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
 msgstr ""
 
 #. Dialog control
@@ -55,16 +65,6 @@ msgid "Use Windows Image/Fax Viewer"
 msgstr ""
 
 #. Dialog control
-#: DIALOGCONTROL.202.Button.210
-msgid "Select/Deselect all"
-msgstr ""
-
-#. Dialog control
-#: DIALOGCONTROL.202.Button.223
-msgid "Default"
-msgstr ""
-
-#. Dialog control
 #: DIALOGCONTROL.202.Button.213
 msgid "Clear..."
 msgstr ""
@@ -72,6 +72,16 @@ msgstr ""
 #. Dialog control
 #: DIALOGCONTROL.202.Button.218
 msgid "Optimize"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
 msgstr ""
 
 #. Dialog control
@@ -135,13 +145,8 @@ msgid "PNG compression (0 - lowest, 9 - best):"
 msgstr ""
 
 #. Dialog control
-#: DIALOGCONTROL.202.Button.225
-msgid "Show type overlay on thumbnails"
-msgstr ""
-
-#. Dialog control
-#: DIALOGCONTROL.202.Button.226
-msgid "Show preview in submenu"
+#: DIALOGCONTROL.202.Static.2147483662
+msgid "Custom file types (use spaces as delimiters):"
 msgstr ""
 
 #. String resource

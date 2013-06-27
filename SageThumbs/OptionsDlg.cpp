@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2012.
+Copyright (C) Nikolay Raspopov, 2004-2013.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -122,21 +122,30 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 	}
 
 	ListView_DeleteAllItems( pList );
+	CString sCustom;
 	for ( POSITION pos = _Module.m_oExtMap.GetHeadPosition(); pos; )
 	{
 		const CExtMap::CPair* p = _Module.m_oExtMap.GetNext( pos );
 
-		LVITEM lvi = {};
-		lvi.mask = LVIF_TEXT;
-		lvi.pszText = (LPTSTR)(LPCTSTR)p->m_key;
-		int index = ListView_InsertItem( pList, &lvi );
-		lvi.iItem++;
-		ListView_SetItemText( pList, index, 1, (LPTSTR)(LPCTSTR)p->m_value.info);
-		ListView_SetCheckState( pList, index, p->m_value.enabled ? TRUE : FALSE );
+		if ( p->m_value.custom )
+		{
+			if ( p->m_value.enabled )
+			{
+				if ( ! sCustom.IsEmpty() )
+					sCustom += _T(" ");
+				sCustom += p->m_key;
+			}
+		}
+		else
+		{
+			LVITEM lvi = { LVIF_TEXT };
+			lvi.pszText = (LPTSTR)(LPCTSTR)p->m_key;
+			const int index = ListView_InsertItem( pList, &lvi );
+			ListView_SetItemText( pList, index, 1, (LPTSTR)(LPCTSTR)p->m_value.info);
+			ListView_SetCheckState( pList, index, p->m_value.enabled ? TRUE : FALSE );
+		}
 	}
-
-	const CString custom = GetRegValue( _T("Custom"), CString() );
-	SetDlgItemText( IDC_CUSTOM, custom );
+	SetDlgItemText( IDC_CUSTOM, sCustom );
 
 	const bool bEnableMenu = GetRegValue( _T("EnableMenu"), 1ul ) != 0;
 	CheckDlgButton( IDC_ENABLE_MENU, bEnableMenu ? BST_CHECKED : BST_UNCHECKED );
@@ -260,24 +269,26 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 
 	const CWindow& pList = GetDlgItem( IDC_TYPES_LIST );
 	const int len = ListView_GetItemCount( pList );
-	const CString key = CString( REG_SAGETHUMBS ) + _T("\\");
 	for ( int index = 0; index < len; ++index )
 	{
-		CString ext;
-		ListView_GetItemText( pList, index, 0, ext.GetBuffer( 65 ), 64 );
-		ext.ReleaseBuffer ();
-
-		bool bEnabled = ListView_GetCheckState( pList, index ) != 0;
-		if ( CExtMap::CPair* p = _Module.m_oExtMap.Lookup( ext ) )
+		CString sExt;
+		ListView_GetItemText( pList, index, 0, sExt.GetBuffer( MAX_PATH ), MAX_PATH );
+		sExt.ReleaseBuffer ();
+		const bool bEnabled = ( ListView_GetCheckState( pList, index ) != 0 );
+		if ( CExtMap::CPair* p = _Module.m_oExtMap.Lookup( sExt ) )
 		{
-			p->m_value.enabled = bEnabled;
+			if ( p->m_value.enabled != bEnabled )
+			{
+				p->m_value.enabled = bEnabled;
+				SetRegValue( _T("Enabled"), bEnabled ? 1ul : 0u, CString( REG_SAGETHUMBS ) + _T("\\") + sExt );
+			}
 		}
-		SetRegValue( _T("Enabled"), bEnabled ? 1ul : 0u, key + ext );
 	}
 
-	CString custom;
-	GetDlgItemText( IDC_CUSTOM, custom ); 
-	SetRegValue( _T("Custom"), custom );
+	// Parse user-defined custom extensions
+	CString sCustom;
+	GetDlgItemText( IDC_CUSTOM, sCustom ); 
+	_Module.AddCustomTypes( sCustom );
 
 	_Module.m_oLangs.Select( GetDlgItem( IDC_LANG ) );
 	SetRegValue( _T("Lang"), _Module.m_oLangs.GetLang() );

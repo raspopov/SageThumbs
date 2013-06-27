@@ -260,7 +260,8 @@ BOOL CSageThumbsModule::RegisterExtensions(HWND hWnd)
 		bOK = SetRegValue( _T("TypeOverlay"), _T(""), _T("SystemFileAssociations\\image"), HKEY_CLASSES_ROOT ) && bOK;
 
 	// Register common associations
-	DWORD total = (DWORD)m_oExtMap.GetCount(), count = 0;
+	const DWORD total = (DWORD)m_oExtMap.GetCount();
+	DWORD count = 0;
 	for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; ++count )
 	{
 		if ( const CExtMap::CPair* p = m_oExtMap.GetNext( pos ) )
@@ -275,7 +276,7 @@ BOOL CSageThumbsModule::RegisterExtensions(HWND hWnd)
 			if ( p->m_value.enabled )
 				bOK = RegisterExt( p->m_key, p->m_value.info, bEnableThumbs, bEnableIcons, bEnableInfo, bEnableOverlay ) && bOK;
 			else
-				bOK = UnregisterExt( p->m_key, false ) && bOK;
+				bOK = UnregisterExt( p->m_key, p->m_value.custom ) && bOK;
 		}
 	}
 
@@ -622,18 +623,27 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt, bool bFull)
 	for ( int i = 0; Handlers[ i ].szName; ++i )
 	{
 		bOK = UnregisterValue( HKEY_CLASSES_ROOT, sType + _T("\\ShellEx\\") + Handlers[ i ].szName ) && bOK;
+		DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sType + _T("\\ShellEx\\") + Handlers[ i ].szName );
 
 		if ( ! sCurrentKey.IsEmpty() )
+		{
 			bOK = UnregisterValue( HKEY_CLASSES_ROOT, sCurrentKey + _T("\\ShellEx\\") + Handlers[ i ].szName ) && bOK;
+			DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sCurrentKey + _T("\\ShellEx\\") + Handlers[ i ].szName );
+		}
 
 		if ( bFull && ! sUserChoice.IsEmpty() )
+		{
 			bOK = UnregisterValue( HKEY_CLASSES_ROOT, sUserChoice + _T("\\ShellEx\\") + Handlers[ i ].szName ) && bOK;
+			DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sUserChoice + _T("\\ShellEx\\") + Handlers[ i ].szName );
+		}
 	}
 
 	// Unregister IPropertyStore handler
-	CString sPropKey = PropertyHandlers + sType;
+	const CString sPropKey = PropertyHandlers + sType;
 	bOK = UnregisterValue( HKEY_LOCAL_MACHINE, sPropKey ) && bOK;
-	CString sSysKey = _T("SystemFileAssociations\\") + sType;
+	DeleteEmptyRegKey( HKEY_LOCAL_MACHINE, sPropKey );
+
+	const CString sSysKey = _T("SystemFileAssociations\\") + sType;
 //	bOK = UnregisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ConflictPrompt"), ConflictPrompt, _T("ConflictPrompt.") REG_SAGETHUMBS_BAK ) && bOK;
 	bOK = UnregisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ExtendedTileInfo"), ExtendedTileInfo, _T("ExtendedTileInfo.") REG_SAGETHUMBS_BAK ) && bOK;
 	bOK = UnregisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("TileInfo"), TileInfo, _T("TileInfo.") REG_SAGETHUMBS_BAK ) && bOK;
@@ -643,10 +653,8 @@ BOOL CSageThumbsModule::UnregisterExt(LPCTSTR szExt, bool bFull)
 	bOK = UnregisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("PreviewTitle"), PreviewTitle, _T("PreviewTitle.") REG_SAGETHUMBS_BAK ) && bOK;
 	bOK = UnregisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ContentViewModeForBrowse"), ContentViewModeForBrowse, _T("ContentViewModeForBrowse.") REG_SAGETHUMBS_BAK ) && bOK;
 	bOK = UnregisterValue( HKEY_CLASSES_ROOT, sSysKey, _T("ContentViewModeForSearch"), ContentViewModeForSearch, _T("ContentViewModeForSearch.") REG_SAGETHUMBS_BAK ) && bOK;
-
-	// Clean empty keys
-	DeleteEmptyRegKey( HKEY_LOCAL_MACHINE, sPropKey );
 	DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sSysKey );
+
 	DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sType + _T("\\ShellEx") );
 	DeleteEmptyRegKey( HKEY_CLASSES_ROOT, sType );
 	if ( ! sCurrentKey.IsEmpty() )
@@ -804,12 +812,13 @@ void CSageThumbsModule::FillExtMap()
 	CLock oLock( m_pSection );
 #endif // GFL_THREAD_SAFE
 
+	const CString key = CString( REG_SAGETHUMBS ) + _T("\\");
+
 	m_oExtMap.RemoveAll();
 
 	// Загрузка расширений через GFL
-	int count = gflGetNumberOfFormat();
-	int i = 0;
-	for ( ; i < count; ++i )
+	const int count = gflGetNumberOfFormat();
+	for ( int i = 0; i < count; ++i )
 	{
 		GFL_FORMAT_INFORMATION info = {};
 		GFL_ERROR err = gflGetFormatInformationByIndex (i, &info);
@@ -820,55 +829,110 @@ void CSageThumbsModule::FillExtMap()
 			{
 				CString sExt = (LPCTSTR)CA2T( info.Extension [ j ] );
 				sExt.MakeLower();
-				m_oExtMap.SetAt( sExt, data );
 
 				// GFL bug fix for short extensions
 				if ( sExt == _T("pspbrus") )		// PaintShopPro Brush
-					m_oExtMap.SetAt( _T("pspbrush"), data );
+					sExt = _T("pspbrush");
 				else if ( sExt == _T("pspfram") )	// PaintShopPro Frame
-					m_oExtMap.SetAt( _T("pspframe"), data );
+					sExt = _T("pspframe");
 				else if ( sExt == _T("pspimag") )	// PaintShopPro Image
-					m_oExtMap.SetAt( _T("pspimage"), data );
+					sExt = _T("pspimage");
+				
+				m_oExtMap.SetAt( sExt, data );
 			}
 		}
 	}
 
-	// Загрузка расшерений пользователя
-	const CString sCustom = GetRegValue( _T("Custom"), CString() );
-	i = 0;
-	for (; ; )
+	// Load user-defined custom extensions
+	HKEY hKey;
+	LRESULT res = RegOpenKeyEx( HKEY_CURRENT_USER, key, 0, KEY_READ, &hKey );
+	if ( res == ERROR_SUCCESS )
 	{
-		CString sExt = sCustom.Tokenize( _T("*?<>:\r\n/\\\"| \t"), i );
-		if ( sExt.IsEmpty() )
-			// Больше нет
-			break;
-		sExt.Trim( _T(".") );
-		if ( sExt.IsEmpty() )
-			// Пустое расширение
-			continue;
-		sExt.MakeLower();
-		Ext data = { true, true, _T("SageThumbs Custom Type") };
-		if ( m_oExtMap.Lookup( sExt, data ) )
-			// Уже в списке
-			continue;		
-		m_oExtMap.SetAt( sExt, data );
+		for ( int i = 0;; ++i )
+		{
+			CString sExt;
+			res = RegEnumKey( hKey, i, sExt.GetBuffer( MAX_PATH ), MAX_PATH );
+			sExt.ReleaseBuffer();
+			if ( res != ERROR_SUCCESS )
+				break;
+			Ext foo;
+			if ( ! m_oExtMap.Lookup( sExt, foo ) )
+			{
+				const Ext data = { true, true, CUSTOM_TYPE };
+				m_oExtMap.SetAt( sExt, data );
+			}
+		}
+		RegCloseKey( hKey );
 	}
 
-	// Загрузка данных о расширении
-	i = 1;
-	const CString key = CString( REG_SAGETHUMBS ) + _T("\\");
-	for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; ++i )
+	// Load extensions "enable/disable" state
+	for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; )
 	{
 		CExtMap::CPair* p = m_oExtMap.GetNext (pos);
 
-		// Exclude bad extensions
-		DWORD dwEnabled = GetRegValue( _T("Enabled"), ( IsDisabledByDefault( p->m_key ) ? 0ul : 1ul ), key + p->m_key );
+		DWORD dwEnabled = GetRegValue( _T("Enabled"), 2ul, key + p->m_key );
+		if ( dwEnabled == 2 )
+		{
+			// No extension
+			dwEnabled = ( IsDisabledByDefault( p->m_key ) ? 0ul : 1ul );		// Use default
+			SetRegValue( _T("Enabled"), p->m_value.enabled, key + p->m_key );	// Explicit create key
+		}
 		p->m_value.enabled = ( dwEnabled != 0 );
-
-		//ATLTRACE( "%4d. %c %8s \"%s\"\n", i, ( p->m_value.enabled ? '+' : '-' ), (LPCSTR)CT2A( p->m_key ), (LPCSTR)CT2A( p->m_value.info ) );
 	}
 
 	ATLTRACE( "Loaded %d formats, %d extensions. ", count, m_oExtMap.GetCount() );
+}
+
+void CSageThumbsModule::AddCustomTypes(const CString& sCustom)
+{
+	const CString key = CString( REG_SAGETHUMBS ) + _T("\\");
+
+	// Disable all old custom extensions
+	for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; )
+	{
+		CExtMap::CPair* p = m_oExtMap.GetNext (pos);
+		if ( p->m_value.custom )
+		{
+			p->m_value.enabled = false;
+		}
+	}
+
+	// Parse custom extensions string
+	for ( int i = 0; ; )
+	{
+		CString sExt = sCustom.Tokenize( _T(";,*?<>:\r\n/\\\"\'| \t"), i );
+		if ( sExt.IsEmpty() )
+			// No more
+			break;
+		sExt.Trim( _T(".") );
+		if ( sExt.IsEmpty() )
+			// Skip empty
+			continue;
+		sExt.MakeLower();
+
+		if ( CExtMap::CPair* p = _Module.m_oExtMap.Lookup( sExt ) )
+		{
+			// Re-enable custom extensions
+			p->m_value.enabled = true;
+		}
+		else
+		{
+			// New custom extension
+			const Ext data = { true, true, CUSTOM_TYPE };
+			_Module.m_oExtMap.SetAt( sExt, data );
+		}
+		SetRegValue( _T("Enabled"), 1ul, key + sExt );
+	}
+
+	// Commit changes to registry
+	for ( POSITION pos = m_oExtMap.GetHeadPosition(); pos; )
+	{
+		CExtMap::CPair* p = m_oExtMap.GetNext (pos);
+		if ( p->m_value.custom && ! p->m_value.enabled )
+		{
+			SetRegValue( _T("Enabled"), 0ul, key + p->m_key );
+		}
+	}
 }
 
 BOOL CSageThumbsModule::Initialize()

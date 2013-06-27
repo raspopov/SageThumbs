@@ -36,6 +36,7 @@ extern CSageThumbsModule	_Module;		// Application
 #define REG_SAGETHUMBS		_T("Software\\SageThumbs")
 #define REG_SAGETHUMBS_BAK	_T("SageThumbs.bak")
 #define REG_SAGETHUMBS_IMG	_T("SageThumbsImage")
+#define CUSTOM_TYPE			_T("SageThumbs Custom Type")
 #define JPEG_DEFAULT		85ul			// JPEG default quality (0-100)
 #define PNG_DEFAULT			6ul				// PNG default compression (0-9)
 #define THUMB_STORE_SIZE	256ul			// Minimum thumbnail size for database, pixels
@@ -140,6 +141,9 @@ public:
 
 	// Проверка, что файл подходит для загрузки по всем параметрам
 	bool IsGoodFile(LPCTSTR szFilename, Ext* pdata = NULL, WIN32_FIND_DATA* pfd = NULL) const;
+
+	// Add user-defined custom extensions from string
+	void AddCustomTypes(const CString& sCustom);
 
 	inline CString GetAppName() const
 	{

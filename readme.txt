@@ -64,6 +64,11 @@ SageThumbs can be easily translated to other languages.
 Versions:
 
 2.0.0.16
+  * Added user-defined file extensions
+  * PNG-files now disabled by default under Windows 8
+  * Fixed misplaced thumbnail in context menu under classic themes
+  * Fixed copy to clipboard function
+  * Fixed uninstallation minor bugs
   * Added Turkish translation
   * Added Hungarian translation
   * Added Persian (Farsi) translation
