@@ -69,6 +69,7 @@ Versions:
   * Fixed misplaced thumbnail in context menu under classic themes
   * Fixed copy to clipboard function
   * Fixed uninstallation minor bugs
+  * Added fixer of registry keys bad security rights (fixes incompatibility with Windows PhotoViewer)
   * Added Turkish translation
   * Added Hungarian translation
   * Added Persian (Farsi) translation

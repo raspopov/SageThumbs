@@ -195,13 +195,16 @@ BOOL SetRegValue(LPCTSTR szName, DWORD dwValue, LPCTSTR szKey = REG_SAGETHUMBS, 
 BOOL SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
 
 // Cleaning DENIED rights from key
-BOOL CleanRegKey(HKEY hRoot, LPCTSTR szKey);
+BOOL FixKeyRights(HKEY hRoot, LPCTSTR szKey);
+BOOL FixKey(__in HKEY hkey, __in_opt LPCTSTR pszSubKey);
 
+LSTATUS SHSetValueForced(__in HKEY hkey, __in_opt LPCTSTR pszSubKey, __in_opt LPCTSTR pszValue, __in DWORD dwType, __in_bcount_opt(cbData) LPCVOID pvData, __in DWORD cbData);
 BOOL DeleteRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot);
 BOOL DeleteRegKey(HKEY hRoot, LPCTSTR szSubKey);
 BOOL DeleteEmptyRegKey(HKEY hRoot, LPCTSTR szSubKey);
 
 LPCTSTR GetKeyName(HKEY hRoot);
+LPCTSTR GetShortKeyName(HKEY hRoot);
 
 BOOL RegisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName = _T(""), LPCTSTR szValue = CLSID_THUMB, LPCTSTR szBackupName = REG_SAGETHUMBS_BAK);
 BOOL UnregisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName = _T(""), LPCTSTR szValue = CLSID_THUMB, LPCTSTR szBackupName = REG_SAGETHUMBS_BAK);
@@ -212,6 +215,8 @@ CString GetContentExt(LPCTSTR szExt);
 CString GetContentType(LPCTSTR szExt);
 
 BOOL IsKeyExists(HKEY hRoot, LPCTSTR szKey);
+
+BOOL SetPrivilege(HANDLE hToken, LPCTSTR lpszPrivilege, BOOL bEnablePrivilege);
 
 // GFL callback functions for IStream handle
 #ifdef ISTREAM_ENABLED

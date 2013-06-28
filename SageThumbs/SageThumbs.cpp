@@ -874,8 +874,8 @@ void CSageThumbsModule::FillExtMap()
 		if ( dwEnabled == 2 )
 		{
 			// No extension
-			dwEnabled = ( IsDisabledByDefault( p->m_key ) ? 0ul : 1ul );		// Use default
-			SetRegValue( _T("Enabled"), p->m_value.enabled, key + p->m_key );	// Explicit create key
+			dwEnabled = ( IsDisabledByDefault( p->m_key ) ? 0ul : 1ul );						// Use default
+			SetRegValue( _T("Enabled"), ( p->m_value.enabled ? 1ul : 0ul ), key + p->m_key );	// Explicit create key
 		}
 		p->m_value.enabled = ( dwEnabled != 0 );
 	}
@@ -938,6 +938,13 @@ void CSageThumbsModule::AddCustomTypes(const CString& sCustom)
 BOOL CSageThumbsModule::Initialize()
 {
 	ATLTRACE ( "CSageThumbsModule::Initialize ()\n" );
+
+#ifdef _DEBUG
+	TCHAR user_name [256] = { _T("[unknown]") };
+	DWORD user_name_size = _countof( user_name );
+	GetUserName ( user_name, &user_name_size );
+	ATLTRACE( "Running under user: %s%s\n", (LPCSTR)CT2A( (LPCTSTR)user_name ), IsProcessElevated() ? " (Elevated)" : "" );
+#endif
 
 	m_oLangs.Load( m_sModuleFileName );
 	m_oLangs.Select( (LANGID)(DWORD)GetRegValue( _T("Lang"), (DWORD)LANG_NEUTRAL ) );
@@ -1276,16 +1283,243 @@ CString GetRegValue(LPCTSTR szName, const CString& sDefault, LPCTSTR szKey, HKEY
 	return sDefault;
 }
 
+BOOL SetPrivilege(HANDLE hToken, LPCTSTR lpszPrivilege, BOOL bEnablePrivilege) 
+{
+	TOKEN_PRIVILEGES tp = {};
+	LUID luid = {};
+	if ( ! LookupPrivilegeValue( NULL, lpszPrivilege, &luid ) )
+	{
+		ATLTRACE( "Failed to Lookup Privilege Value for \"%s\"\n", (LPCSTR)CT2A( lpszPrivilege ) );
+		return FALSE;
+	}
+
+	tp.PrivilegeCount = 1;
+	tp.Privileges[ 0 ].Luid = luid;
+	if ( bEnablePrivilege )
+		tp.Privileges[ 0 ].Attributes = SE_PRIVILEGE_ENABLED;
+	else
+		tp.Privileges[ 0 ].Attributes = 0;
+
+	if ( ! AdjustTokenPrivileges( hToken, FALSE, &tp, sizeof( TOKEN_PRIVILEGES ), NULL, NULL) || GetLastError() == ERROR_NOT_ALL_ASSIGNED )
+	{ 
+		ATLTRACE( "Failed to Adjust Token Privileges for \"%s\"\n", (LPCSTR)CT2A( lpszPrivilege ) );
+		return FALSE;
+	}
+
+	ATLTRACE( "Set privilege \"%s\" : %s\n", (LPCSTR)CT2A( lpszPrivilege ), bEnablePrivilege ? "Enabled" : "Disabled" );
+
+	return TRUE;
+}
+
+BOOL FixKeyRights(HKEY hRoot, LPCTSTR szKey)
+{
+	BOOL bOK = FALSE;
+	HKEY hKey = NULL;
+	LRESULT res = RegOpenKeyEx( hRoot, szKey, 0, READ_CONTROL | WRITE_DAC | ACCESS_SYSTEM_SECURITY, &hKey );
+	if ( res == ERROR_SUCCESS )
+	{
+		const SECURITY_INFORMATION si = DACL_SECURITY_INFORMATION;
+		LPCTSTR szGoodRights = _T("D:AI(A;ID;KR;;;BU)(A;CIIOID;GR;;;BU)(A;ID;KA;;;BA)(A;CIIOID;GA;;;BA)(A;ID;KA;;;SY)(A;CIIOID;GA;;;SY)(A;CIIOID;GA;;;CO)");
+		
+		CString sSSD;
+		DWORD dwSize = 0;
+		res = RegGetKeySecurity( hKey, si, NULL, &dwSize );
+		if ( res == ERROR_INSUFFICIENT_BUFFER )
+		{
+			CAutoVectorPtr< BYTE > pBuf( new BYTE[ dwSize ] );
+			PSECURITY_DESCRIPTOR pSD = (PSECURITY_DESCRIPTOR)(BYTE*)pBuf;
+			res = RegGetKeySecurity( hKey, si, pSD, &dwSize );
+			if ( res == ERROR_SUCCESS )
+			{
+				LPTSTR pSSD = NULL;
+				if ( ConvertSecurityDescriptorToStringSecurityDescriptor( pSD, SDDL_REVISION_1, si, &pSSD, NULL ) )
+				{
+					sSSD = pSSD;
+					LocalFree( pSSD );
+
+					/*bool bDenied = false;
+					for ( ;; )
+					{
+						int nFrom = sSSD.Find( _T("(D;") );
+						if ( nFrom == -1 )
+							break;
+						int nTo = sSSD.Find( _T(')'), nFrom );
+						if ( nTo == -1 )
+							break;
+						sSSD = sSSD.Left( nFrom ) + sSSD.Mid( nTo + 1 );
+						bDenied = true;
+					}*/
+
+					// If denied rights present or administrative access rights absent
+					if ( sSSD.Find( _T("(D;") ) != -1 || sSSD.Find( _T("(A;ID;KA;;;BA)(A;CIIOID;GA;;;BA)") ) == -1 )
+					{
+						ATLTRACE( "Found bad rights of key: %s\\%s : %s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( (LPCTSTR)sSSD ) );
+
+						PSECURITY_DESCRIPTOR pNewSD = NULL;
+						if ( ConvertStringSecurityDescriptorToSecurityDescriptor( szGoodRights /*sSSD*/, SDDL_REVISION_1, &pNewSD, NULL ) )
+						{
+							res = RegSetKeySecurity( hKey, si, pNewSD );
+							if ( res == ERROR_SUCCESS )
+							{
+								ATLTRACE( "Cleared bad rights of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
+								bOK = TRUE;
+							}							
+							else
+								ATLTRACE( "Failed to set security of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
+							LocalFree( pNewSD );
+						}
+						else
+							ATLTRACE( "Failed to convert security string of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
+					}
+					else
+					{
+						ATLTRACE( "Checked good rights of key: %s\\%s : %s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( (LPCTSTR)sSSD ) );
+						bOK = TRUE;
+					}
+				}
+				else
+					ATLTRACE( "Failed to convert security string of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
+			}
+			else
+				ATLTRACE( "Failed to get security of key: %s\\%s : %d\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), res );
+		}
+		else
+			ATLTRACE( "Failed to get security of key: %s\\%s : %d\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), res );
+
+		RegCloseKey( hKey );
+	}
+	else if ( res == ERROR_PATH_NOT_FOUND || res == ERROR_FILE_NOT_FOUND )
+	{
+		// OK
+		bOK = TRUE;
+	}
+	else
+	{
+		ATLTRACE( "Failed to open key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
+	}
+
+	return bOK;
+}
+
+BOOL FixKey(__in HKEY hkey, __in_opt LPCTSTR pszSubKey)
+{
+	CString strProtectedKeyPropertyHandlers = PropertyHandlers;
+	strProtectedKeyPropertyHandlers.MakeLower();
+	CString strProtectedKeyFileExts = FileExts;
+	strProtectedKeyFileExts.MakeLower();
+
+	BOOL bOK = FALSE;
+	HANDLE hToken = NULL;
+	if ( OpenProcessToken( GetCurrentProcess(), TOKEN_ALL_ACCESS, &hToken ) ) 
+	{
+		if ( SetPrivilege( hToken, SE_SECURITY_NAME, TRUE ) )
+		{
+			if ( SetPrivilege( hToken, SE_TAKE_OWNERSHIP_NAME, TRUE ) )
+			{
+				// Create a SID for the BUILTIN\Administrators group.
+				PSID pSIDAdmin = NULL;
+				SID_IDENTIFIER_AUTHORITY SIDAuthNT = SECURITY_NT_AUTHORITY;
+				if ( AllocateAndInitializeSid( &SIDAuthNT, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &pSIDAdmin ) ) 
+				{
+					bOK = TRUE;
+
+					CString strKey = pszSubKey, strPartialKey;
+					for ( int i = 0; ; )
+					{
+						CString strSubKey = strKey.Tokenize( _T("\\"), i );
+						if ( strSubKey.IsEmpty() )
+							break;
+
+						strSubKey.MakeLower();
+						if ( ! strPartialKey.IsEmpty() )
+							strPartialKey += _T("\\");
+						strPartialKey += strSubKey;
+						
+						if ( strProtectedKeyPropertyHandlers.Find( strPartialKey ) != -1 ||
+							 strProtectedKeyFileExts.Find( strPartialKey ) != -1 )
+						{
+							ATLTRACE( "Skipping key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hkey ) ), (LPCSTR)CT2A( (LPCTSTR)strPartialKey ) );
+							continue;
+						}
+					
+						// First try
+						if ( ! FixKeyRights( hkey, strPartialKey ) )
+						{
+							// Fix key owner
+							LSTATUS resSecurity = SetNamedSecurityInfo( (LPTSTR)(LPCTSTR)( CString( GetShortKeyName( hkey ) ) + _T("\\") + strPartialKey ),
+								SE_REGISTRY_KEY, OWNER_SECURITY_INFORMATION, pSIDAdmin, NULL, NULL, NULL );
+							if ( resSecurity == ERROR_SUCCESS )
+							{
+								ATLTRACE( "Setting new owner of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hkey ) ), (LPCSTR)CT2A( (LPCTSTR)strPartialKey ) );
+
+								// Second try
+								if ( ! FixKeyRights( hkey, strPartialKey ) )
+								{
+									bOK = FALSE;
+								}
+							}
+							else if ( resSecurity == ERROR_PATH_NOT_FOUND || resSecurity == ERROR_FILE_NOT_FOUND )
+							{
+								// OK
+							}
+							else
+							{
+								ATLTRACE( "Failed to set owner of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hkey ) ), (LPCSTR)CT2A( (LPCTSTR)strPartialKey ) );
+								bOK = FALSE;
+							}
+						}
+					}
+
+					FreeSid( pSIDAdmin );
+				}
+				else
+					ATLTRACE( "Failed to Allocate And Initialize Sid\n" );
+
+				SetPrivilege( hToken, SE_TAKE_OWNERSHIP_NAME, FALSE );
+			}
+			SetPrivilege( hToken, SE_SECURITY_NAME, FALSE );
+		}
+		CloseHandle( hToken );
+	}
+	else
+		ATLTRACE( "Failed to Open Process Token\n" );
+
+	return bOK;
+}
+
+LSTATUS SHSetValueForced(__in HKEY hkey, __in_opt LPCTSTR pszSubKey, __in_opt LPCTSTR pszValue, __in DWORD dwType, __in_bcount_opt(cbData) LPCVOID pvData, __in DWORD cbData)
+{
+	LSTATUS res;
+
+	// Remove wrong type value if any
+	if ( *pszValue )
+		DeleteRegValue( pszValue, pszSubKey, hkey );
+
+	for ( int attempt = 0; ; ++attempt )
+	{
+		res = SHSetValue( hkey, pszSubKey, pszValue, dwType, pvData, cbData );
+		if ( res == ERROR_SUCCESS )
+			break;
+
+		// Trying to fix access error
+		if ( res == ERROR_ACCESS_DENIED && attempt < 1 )
+		{
+			 FixKey( hkey, pszSubKey );
+		}
+		else
+			break;
+	}
+
+	return res;
+}
+
 BOOL SetRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot)
 {
 	if ( GetRegValue( szName, szKey, hRoot) )
 		// Already set
 		return TRUE;
 
-	// Remove wrong type value if any
-	DeleteRegValue( szName, szKey, hRoot );
-
-	LSTATUS res = SHSetValue( hRoot, szKey, szName, REG_NONE, NULL, 0 );
+	LSTATUS res = SHSetValueForced( hRoot, szKey, szName, REG_NONE, NULL, 0 );
 	if ( res != ERROR_SUCCESS )
 	{
 		ATLTRACE( "Got %s during value setting: %s\\%s \"%s\"\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
@@ -1309,10 +1543,7 @@ BOOL SetRegValue(LPCTSTR szName, DWORD dwValue, LPCTSTR szKey, HKEY hRoot)
 		return TRUE;
 	}
 
-	// Remove wrong type value if any
-	DeleteRegValue( szName, szKey, hRoot );
-
-	res = SHSetValue( hRoot, szKey, szName, REG_DWORD, &dwValue, sizeof( DWORD ) );
+	res = SHSetValueForced( hRoot, szKey, szName, REG_DWORD, &dwValue, sizeof( DWORD ) );
 	if ( res != ERROR_SUCCESS )
 	{
 		ATLTRACE( "Got %s during value setting: %s\\%s \"%s\" = %d\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), dwValue );
@@ -1334,10 +1565,6 @@ BOOL SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey, HKEY hRoo
 		return TRUE;
 	}
 
-	// Remove wrong type value if any (except default value)
-	if ( *szName )
-		DeleteRegValue( szName, szKey, hRoot );
-
 	if ( _istalpha( sValue.GetAt( 0 ) ) &&
 		sValue.GetAt( 1 ) == _T(':') &&
 		sValue.GetAt( 2 ) == _T('\\') )
@@ -1347,7 +1574,7 @@ BOOL SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey, HKEY hRoo
 		sCompact.ReleaseBuffer();
 		if ( bCompact )
 		{
-			res = SHSetValue( hRoot, szKey, szName, REG_EXPAND_SZ, sCompact, (DWORD)lengthof( sCompact ) );
+			res = SHSetValueForced( hRoot, szKey, szName, REG_EXPAND_SZ, sCompact, (DWORD)lengthof( sCompact ) );
 			if ( res != ERROR_SUCCESS )
 			{
 				ATLTRACE( "Got %s during value setting: %s\\%s \"%s\" = \"%s\"\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sCompact ) );
@@ -1359,7 +1586,7 @@ BOOL SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey, HKEY hRoo
 		}
 	}
 
-	res = SHSetValue( hRoot, szKey, szName, REG_SZ, sValue, (DWORD)lengthof( sValue ) );
+	res = SHSetValueForced( hRoot, szKey, szName, REG_SZ, sValue, (DWORD)lengthof( sValue ) );
 	if ( res != ERROR_SUCCESS )
 	{
 		ATLTRACE( "Got %s during value setting: %s\\%s \"%s\" = \"%s\"\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sValue ) );
@@ -1368,66 +1595,6 @@ BOOL SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey, HKEY hRoo
 
 	ATLTRACE( "Set value: %s\\%s \"%s\" = \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sValue ) );
 	return TRUE;
-}
-
-BOOL CleanRegKey(HKEY hRoot, LPCTSTR szKey)
-{
-	BOOL bOK = FALSE;
-	HKEY hKey = NULL;
-	LRESULT res = RegOpenKeyEx( hRoot, szKey, 0, KEY_READ | WRITE_DAC | ACCESS_SYSTEM_SECURITY, &hKey );
-	if ( res == ERROR_SUCCESS )
-	{
-		SECURITY_INFORMATION si = DACL_SECURITY_INFORMATION;
-		DWORD dwSize = 0;
-		res = RegGetKeySecurity( hKey, si, NULL, &dwSize );
-		if ( res == ERROR_INSUFFICIENT_BUFFER )
-		{
-			CAutoVectorPtr< BYTE > pBuf( new BYTE[ dwSize ] );
-			PSECURITY_DESCRIPTOR pSD = (PSECURITY_DESCRIPTOR)(BYTE*)pBuf;
-			res = RegGetKeySecurity( hKey, si, pSD, &dwSize );
-			if ( res == ERROR_SUCCESS )
-			{
-				LPTSTR pSSD = NULL;
-				if ( ConvertSecurityDescriptorToStringSecurityDescriptor( pSD,
-					SDDL_REVISION_1, DACL_SECURITY_INFORMATION, &pSSD, NULL ) )
-				{
-					CString sSSD = pSSD;
-					LocalFree( pSSD );
-
-					bool bAltered = false;
-					for ( ;; )
-					{
-						int nFrom = sSSD.Find( _T("(D;") );
-						if ( nFrom == -1 )
-							break;
-						int nTo = sSSD.Find( _T(')'), nFrom );
-						if ( nTo == -1 )
-							break;
-						sSSD = sSSD.Left( nFrom ) + sSSD.Mid( nTo + 1 );
-						bAltered = true;
-					}
-
-					if ( bAltered )
-					{
-						PSECURITY_DESCRIPTOR pNewSD = NULL;
-						if ( ConvertStringSecurityDescriptorToSecurityDescriptor( sSSD,
-							SDDL_REVISION_1, &pNewSD, NULL ) )
-						{
-							res = RegSetKeySecurity( hKey, si, pNewSD );
-							if ( res == ERROR_SUCCESS )
-							{
-								ATLTRACE( "Cleared DENIED rights from key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
-								bOK = TRUE;
-							}
-							LocalFree( pNewSD );
-						}
-					}
-				}
-			}
-		}
-		RegCloseKey( hKey );
-	}
-	return bOK;
 }
 
 BOOL DeleteRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot)
@@ -1447,7 +1614,7 @@ BOOL DeleteRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot)
 	if ( res != ERROR_ACCESS_DENIED )
 		return TRUE;
 
-	if ( CleanRegKey( hRoot, szKey ) )
+	if ( FixKey( hRoot, szKey ) )
 	{
 		// Second attempt
 		res = SHDeleteValue( hRoot, szKey, szName );
@@ -1502,6 +1669,23 @@ LPCTSTR GetKeyName(HKEY hRoot)
 		return _T("HKEY_CURRENT_CONFIG");
 	default:
 		return _T("{custom}");
+	}
+}
+
+LPCTSTR GetShortKeyName(HKEY hRoot)
+{
+	switch ( (DWORD_PTR)hRoot )
+	{
+	case HKEY_CLASSES_ROOT:
+		return _T("CLASSES_ROOT");
+	case HKEY_CURRENT_USER:
+		return _T("CURRENT_USER");
+	case HKEY_LOCAL_MACHINE:
+		return _T("MACHINE");
+	case HKEY_USERS:
+		return _T("USERS");
+	default:
+		return _T("");
 	}
 }
 
