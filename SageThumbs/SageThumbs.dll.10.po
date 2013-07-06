@@ -5,11 +5,11 @@ msgstr ""
 "PO-Revision-Date: \n"
 "Last-Translator: Marcello <marcello_gianola@yahoo.it>\n"
 "Language-Team: \n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: it\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.5.7\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -32,6 +32,11 @@ msgid "Enable context menu in Explorer"
 msgstr "Attiva il menu contestuale in Explorer"
 
 #. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr "Visualizza anteprima nel sottomenu"
+
+#. Dialog control
 #: DIALOGCONTROL.202.Button.212
 msgid "Enable thumbnails in Explorer"
 msgstr "Attiva le miniature in Explorer"
@@ -40,6 +45,11 @@ msgstr "Attiva le miniature in Explorer"
 #: DIALOGCONTROL.202.Button.216
 msgid "Use thumbnails as icons in Explorer"
 msgstr "Utilizza le miniature come icone in Explorer"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "Visualizza tipo di overlay nelle miniature"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.217
@@ -57,16 +67,6 @@ msgid "Use Windows Image/Fax Viewer"
 msgstr "Utilizza il visualizzatore Immagini/Fax di Windows"
 
 #. Dialog control
-#: DIALOGCONTROL.202.Button.210
-msgid "Select/Deselect all"
-msgstr "Seleziona/Deseleziona tutto"
-
-#. Dialog control
-#: DIALOGCONTROL.202.Button.223
-msgid "Default"
-msgstr "Predefinito"
-
-#. Dialog control
 #: DIALOGCONTROL.202.Button.213
 msgid "Clear..."
 msgstr "Pulisci..."
@@ -75,6 +75,16 @@ msgstr "Pulisci..."
 #: DIALOGCONTROL.202.Button.218
 msgid "Optimize"
 msgstr "Ottimizza"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "Seleziona/Deseleziona tutto"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "Predefinito"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483649
@@ -137,14 +147,9 @@ msgid "PNG compression (0 - lowest, 9 - best):"
 msgstr "Compressione PNG (0 - più bassa, 9 - più alta):"
 
 #. Dialog control
-#: DIALOGCONTROL.202.Button.225
-msgid "Show type overlay on thumbnails"
-msgstr "Visualizza tipo di overlay nelle miniature"
-
-#. Dialog control
-#: DIALOGCONTROL.202.Button.226
-msgid "Show preview in submenu"
-msgstr "Visualizza anteprima nel sottomenu"
+#: DIALOGCONTROL.202.Static.2147483662
+msgid "Custom file types (use spaces as delimiters):"
+msgstr "Tipi di file personalizzati (utilizzare gli spazi come delimitatori):"
 
 #. String resource
 #: STRING.100
