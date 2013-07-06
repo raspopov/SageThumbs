@@ -293,6 +293,7 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)..\Localization\compress.exe" "
     <ClCompile Include="Thumb.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\sagethumbs.xml" />
     <None Include="..\SageThumbs Online.url" />
     <None Include="SageThumbs.def" />
     <None Include="res\SageThumbs.bmp" />
