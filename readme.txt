@@ -51,9 +51,9 @@ SageThumbs can be easily translated to other languages.
   * Download and install PoEdit: http://www.poedit.net/download.php
   * Copy "SageThumbs.dll.pot" file (can be found in SageThumbs installation
     folder) under new name "SageThumbs.dll.XX.po" near original files i.e. near
-    "32\SageThumbs.dll" and "64\SageThumbs.dll". Where "XX" is 2-digit hexadecimal
+    "32\SageThumbs.dll" and "64\SageThumbs.dll". Where "XX" is 2-digit (or 4-digit) hexadecimal
     code of language, see: http://msdn.microsoft.com/en-us/library/windows/desktop/dd318693.aspx
-    For example Russian has code 0x19 so its a "SageThumbs.dll.19.po".
+    For example Russian has code 0x19 so it's a "SageThumbs.dll.19.po".
   * Open new file in PoEdit, translate and save as UTF-8 (its by default)
   * Open SageThumbs options and select new language in it
   * E-mail file to me: raspopov@cherubicsoft.com
@@ -73,6 +73,7 @@ Versions:
   * Added Turkish translation
   * Added Hungarian translation
   * Added Persian (Farsi) translation
+  * Added Chinese (Traditional) translation
   * Updated translations
 
 2.0.0.15
@@ -105,7 +106,7 @@ Versions:
   * Added new option "Show type overlay on thumbnails"
   * Separated 32-bit and 64-bit plugins folders
   * Fixed some issues under UAC
-  * Added Chinese translation
+  * Added Chinese (Simplified) translation
 
 2.0.0.10
   * Improved/optimized image property information (Windows Vista and above)

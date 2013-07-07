@@ -319,6 +319,7 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)..\Localization\compress.exe" "
     <None Include="sagethumbs.dll.1f.po_" />
     <None Include="sagethumbs.dll.21.po_" />
     <None Include="sagethumbs.dll.29.po_" />
+    <None Include="sagethumbs.dll.7c04.po_" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h" />

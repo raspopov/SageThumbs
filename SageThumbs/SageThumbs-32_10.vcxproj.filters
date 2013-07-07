@@ -98,6 +98,9 @@
     <None Include="sagethumbs.dll.29.po_">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="sagethumbs.dll.7c04.po_">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="..\sagethumbs.xml" />
   </ItemGroup>
   <ItemGroup>

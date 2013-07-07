@@ -1,0 +1,324 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SageThumbs.dll\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: You-Cheng Hsieh\n"
+"Language-Team: Chinese (Traditional)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+"Language: zh\n"
+
+#. Dialog caption
+#: DIALOGCAPTION.202
+msgid "SageThumbs Options"
+msgstr "SageThumbs 選項"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.1
+msgid "OK"
+msgstr "確定"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2
+msgid "Cancel"
+msgstr "取消"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.211
+msgid "Enable context menu in Explorer"
+msgstr "在檔案總管啟用右鍵選單"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr "在子選單顯示預覽"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.212
+msgid "Enable thumbnails in Explorer"
+msgstr "在檔案總管啟用縮圖"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.216
+msgid "Use thumbnails as icons in Explorer"
+msgstr "在檔案總管使用縮圖作為圖示"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "在縮圖上顯示檔案類型"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.217
+msgid "Enable Windows thumbnail cache"
+msgstr "啟用 Windows 縮圖快取"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.215
+msgid "Prefer image file embedded thumbnails"
+msgstr "偏好圖片檔內嵌的縮圖"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.203
+msgid "Use Windows Image/Fax Viewer"
+msgstr "使用 Windows 圖片/傳真檢視器"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.213
+msgid "Clear..."
+msgstr "清除..."
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.218
+msgid "Optimize"
+msgstr "最佳化"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "全選/取消全選"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "預設"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483649
+msgid "Context menu preview size"
+msgstr "右鍵選單預覽大小"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483650
+msgid "Width x Height:"
+msgstr "寬度 x 高度"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483651
+msgid "X"
+msgstr "X"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483652
+msgid "pixels"
+msgstr "像素"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483653
+msgid "Supported file types"
+msgstr "支援的檔案類型"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483654
+msgid "System-wide tweaks"
+msgstr "全系統的調整"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483655
+msgid "Language:"
+msgstr "語言:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483656
+msgid "Maximum size of image file:"
+msgstr "圖片檔的最大大小:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483657
+msgid "MB"
+msgstr "MB"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483658
+msgid "Convert options"
+msgstr "轉換選項"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483659
+msgid "JPEG quality (0 - lowest, 100 - best):"
+msgstr "JPEG 品質 (0 - 最低, 100 - 最好):"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483660
+msgid "PNG compression (0 - lowest, 9 - best):"
+msgstr "PNG 壓縮 (0 - 最低, 9 - 最好):"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483662
+msgid "Custom file types (use spaces as delimiters):"
+msgstr ""
+
+#. String resource
+#: STRING.100
+msgid "SageThumbs"
+msgstr "SageThumbs"
+
+#. String resource
+#: STRING.101
+msgid "Change various SageThumbs options"
+msgstr "改變各種 SageThumbs 選項"
+
+#. String resource
+#: STRING.102
+msgid "Type: "
+msgstr "類型: "
+
+#. String resource
+#: STRING.103
+msgid "Sizes (pixels): "
+msgstr "大小 (像素): "
+
+#. String resource
+#: STRING.104
+msgid "Size (bytes): "
+msgstr "大小 (位元組): "
+
+#. String resource
+#: STRING.105
+msgid "Modified: "
+msgstr ""
+
+#. String resource
+#: STRING.106
+msgid "Colors (bits): "
+msgstr "色彩 (位元): "
+
+#. String resource
+#: STRING.107
+msgid "Compression: "
+msgstr "壓縮: "
+
+#. String resource
+#: STRING.108
+msgid "Resolution: "
+msgstr "解析度: "
+
+#. String resource
+#: STRING.109
+msgid "Can't open image file"
+msgstr "無法開啟圖片檔"
+
+#. String resource
+#: STRING.110
+msgid "Can't save image file"
+msgstr "無法儲存圖片檔"
+
+#. String resource
+#: STRING.111
+msgid "Can't send mail"
+msgstr "無法寄出郵件"
+
+#. String resource
+#: STRING.112
+msgid "Nothing to send"
+msgstr "沒有東西可寄"
+
+#. String resource
+#: STRING.113
+msgid "Can't open clipboard"
+msgstr "無法開啟剪貼簿"
+
+#. String resource
+#: STRING.114
+msgid "Please confirm thumbnail cache clearing."
+msgstr "請確認清除縮圖快取。"
+
+#. String resource
+#: STRING.115
+msgid "Thumbnail cache size: %u KB"
+msgstr "縮圖快取大小: %u KB"
+
+#. String resource
+#: STRING.116
+msgid "SageThumbs thumbnail cache"
+msgstr "SageThumbs 縮圖快取"
+
+#. String resource
+#: STRING.117
+msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
+msgstr "清除 SageThumbs 縮圖快取。使用者資料不會被影響。"
+
+#. String resource
+#: STRING.118
+msgid ""
+"Can not apply all settings. Please use SageThumbs under account with "
+"administrative privileges."
+msgstr "無法套用所有設定。請以系統管理者帳號權限來使用 SageThumbs。"
+
+#. String resource
+#: STRING.119
+msgid "Convert to PNG"
+msgstr "轉換成 PNG"
+
+#. String resource
+#: STRING.120
+msgid "Converting..."
+msgstr "正在轉換..."
+
+#. String resource
+#: STRING.121
+msgid "Sending..."
+msgstr "正在寄出..."
+
+#. String resource
+#: STRING.122
+msgid "Applying settings..."
+msgstr "套用設定..."
+
+#. String resource
+#: STRING.123
+msgid "Updating..."
+msgstr "正在更新..."
+
+#. String resource
+#: STRING.203
+msgid "SageThumbs Options..."
+msgstr "SageThumbs 選項"
+
+#. String resource
+#: STRING.204
+msgid "Copy to clipboard"
+msgstr "複製到剪貼簿"
+
+#. String resource
+#: STRING.205
+msgid "Set tiled wallpaper"
+msgstr "設為鋪排的桌布"
+
+#. String resource
+#: STRING.206
+msgid "Set centered wallpaper"
+msgstr "設為置中的桌布"
+
+#. String resource
+#: STRING.207
+msgid "Set stretched wallpaper"
+msgstr "設為延展的桌布"
+
+#. String resource
+#: STRING.208
+msgid "Send image by mail..."
+msgstr "以郵件寄出圖片..."
+
+#. String resource
+#: STRING.209
+msgid "Send thumbnail by mail..."
+msgstr "以郵件寄出縮圖..."
+
+#. String resource
+#: STRING.210
+msgid "Convert to JPG"
+msgstr "轉換成 JPG"
+
+#. String resource
+#: STRING.211
+msgid "Convert to GIF"
+msgstr "轉換成 GIF"
+
+#. String resource
+#: STRING.212
+msgid "Convert to BMP"
+msgstr "轉換成 BMP"
