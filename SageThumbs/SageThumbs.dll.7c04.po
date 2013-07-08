@@ -1,4 +1,4 @@
-msgid ""
+﻿msgid ""
 msgstr ""
 "Project-Id-Version: SageThumbs.dll\n"
 "POT-Creation-Date: \n"
@@ -149,7 +149,7 @@ msgstr "PNG 壓縮 (0 - 最低, 9 - 最好):"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483662
 msgid "Custom file types (use spaces as delimiters):"
-msgstr ""
+msgstr "自訂檔案類型 (使用空白作為分隔):"
 
 #. String resource
 #: STRING.100
@@ -179,7 +179,7 @@ msgstr "大小 (位元組): "
 #. String resource
 #: STRING.105
 msgid "Modified: "
-msgstr ""
+msgstr "修改: "
 
 #. String resource
 #: STRING.106
@@ -243,9 +243,7 @@ msgstr "清除 SageThumbs 縮圖快取。使用者資料不會被影響。"
 
 #. String resource
 #: STRING.118
-msgid ""
-"Can not apply all settings. Please use SageThumbs under account with "
-"administrative privileges."
+msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
 msgstr "無法套用所有設定。請以系統管理者帳號權限來使用 SageThumbs。"
 
 #. String resource
@@ -322,3 +320,4 @@ msgstr "轉換成 GIF"
 #: STRING.212
 msgid "Convert to BMP"
 msgstr "轉換成 BMP"
+
