@@ -1403,10 +1403,9 @@ BOOL FixKeyRights(HKEY hRoot, LPCTSTR szKey)
 
 BOOL FixKey(__in HKEY hkey, __in_opt LPCTSTR pszSubKey)
 {
-	CString strProtectedKeyPropertyHandlers = PropertyHandlers;
-	strProtectedKeyPropertyHandlers.MakeLower();
-	CString strProtectedKeyFileExts = FileExts;
-	strProtectedKeyFileExts.MakeLower();
+	if ( hkey != HKEY_CLASSES_ROOT )
+		// Skip
+		return FALSE;
 
 	BOOL bOK = FALSE;
 	HANDLE hToken = NULL;
@@ -1434,13 +1433,6 @@ BOOL FixKey(__in HKEY hkey, __in_opt LPCTSTR pszSubKey)
 						if ( ! strPartialKey.IsEmpty() )
 							strPartialKey += _T("\\");
 						strPartialKey += strSubKey;
-						
-						if ( strProtectedKeyPropertyHandlers.Find( strPartialKey ) != -1 ||
-							 strProtectedKeyFileExts.Find( strPartialKey ) != -1 )
-						{
-							ATLTRACE( "Skipping key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hkey ) ), (LPCSTR)CT2A( (LPCTSTR)strPartialKey ) );
-							continue;
-						}
 					
 						// First try
 						if ( ! FixKeyRights( hkey, strPartialKey ) )
