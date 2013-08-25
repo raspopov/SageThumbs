@@ -165,11 +165,11 @@ protected:
 	HMODULE					m_hGFLe;
 	HMODULE					m_hSQLite;
 
-	BOOL RegisterExt(LPCTSTR szExt, LPCTSTR szInfo, bool bEnableThumbs, bool bEnableIcons, bool bEnableInfo, bool bEnableOverlay);
-	BOOL UnregisterExt(LPCTSTR szExt, bool bFull);
+	BOOL RegisterExt(const CString& sExt, const CString& sInfo, bool bEnableThumbs, bool bEnableIcons, bool bEnableInfo, bool bEnableOverlay);
+	BOOL UnregisterExt(const CString& sExt, bool bFull);
 
 	// Restore file extension lost ProgID using several methods
-	void FixProgID(LPCTSTR szExt);
+	BOOL FindAndFixProgID(const CString& sExt, CAtlList< CString >& oGoodProgIDs);
 
 	void FillExtMap();
 
