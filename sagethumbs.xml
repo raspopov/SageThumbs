@@ -2,7 +2,7 @@
 <XML_DIZ_INFO>
   <MASTER_PAD_VERSION_INFO>
     <MASTER_PAD_VERSION>3.11</MASTER_PAD_VERSION>
-    <MASTER_PAD_EDITOR>RoboSoft 4.0.748</MASTER_PAD_EDITOR>
+    <MASTER_PAD_EDITOR>RoboSoft 4.0.756</MASTER_PAD_EDITOR>
     <MASTER_PAD_EDITOR_URL>http://robosoft.rudenko.com</MASTER_PAD_EDITOR_URL>
     <MASTER_PAD_INFO>Portable Application Description, or PAD for short, is a data set that is used by shareware authors to disseminate information to anyone interested in their software products. To find out more go to http://www.asp-shareware.org/pad</MASTER_PAD_INFO>
   </MASTER_PAD_VERSION_INFO>
@@ -83,23 +83,23 @@
   </Site>
   <Program_Info>
     <Program_Name>SageThumbs</Program_Name>
-    <Program_Version>2.0.0.15</Program_Version>
-    <Program_Release_Month>04</Program_Release_Month>
-    <Program_Release_Day>15</Program_Release_Day>
-    <Program_Release_Year>2012</Program_Release_Year>
+    <Program_Version>2.0.0.16</Program_Version>
+    <Program_Release_Month>08</Program_Release_Month>
+    <Program_Release_Day>25</Program_Release_Day>
+    <Program_Release_Year>2013</Program_Release_Year>
     <Program_Cost_Dollars>0</Program_Cost_Dollars>
     <Program_Type>Freeware</Program_Type>
     <Program_Release_Status>New Release</Program_Release_Status>
     <Program_Install_Support>Install and Uninstall</Program_Install_Support>
     <Program_OS_Support>WinXP,WinVista,WinVista x64,Win7 x32,Win7 x64,WinServer</Program_OS_Support>
-    <Program_Language>English,ChineseSimplified,French,German,Indonesian,Italian,Japanese,Polish,Portuguese,Russian,Spanish,Swedish</Program_Language>
-    <Program_Change_Info>Fixed "Use thumbnails as icons in Explorer" option sometimes broken in Windows 7 (thanks to uhfath). Minor interface fixes. Updated translations.</Program_Change_Info>
+    <Program_Language>English,Chinese,ChineseSimplified,ChineseTraditional,French,German,Hungarian,Indonesian,Italian,Japanese,Persian,Polish,Portuguese,Russian,Spanish,Swedish,Turkish</Program_Language>
+    <Program_Change_Info>Added user-defined extensions. PNG-files now disabled by default under Windows 8. Fixed misplaced thumbnail in context menu under classic themes. Fixed copy to clipboard function. Fixed incompatibility with Windows PhotoViewer. Added Turkish, Hungarian, Persian and Chinese translation.</Program_Change_Info>
     <Program_System_Requirements>About 5 Mb of disk space + additional space for cache</Program_System_Requirements>
     <Program_Category_Class>Graphic Apps::Viewers</Program_Category_Class>
     <File_Info>
-      <File_Size_Bytes>2074147</File_Size_Bytes>
-      <File_Size_K>2025</File_Size_K>
-      <File_Size_MB>1.98</File_Size_MB>
+      <File_Size_Bytes>2140132</File_Size_Bytes>
+      <File_Size_K>2089</File_Size_K>
+      <File_Size_MB>2.04</File_Size_MB>
       <Filename_Versioned></Filename_Versioned>
       <Filename_Previous></Filename_Previous>
       <Filename_Generic></Filename_Generic>
