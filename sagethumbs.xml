@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <XML_DIZ_INFO>
   <MASTER_PAD_VERSION_INFO>
-    <MASTER_PAD_VERSION>3.11</MASTER_PAD_VERSION>
-    <MASTER_PAD_EDITOR>RoboSoft 4.0.756</MASTER_PAD_EDITOR>
+    <MASTER_PAD_VERSION>4.0</MASTER_PAD_VERSION>
+    <MASTER_PAD_EDITOR>RoboSoft 4.0.787</MASTER_PAD_EDITOR>
     <MASTER_PAD_EDITOR_URL>http://robosoft.rudenko.com</MASTER_PAD_EDITOR_URL>
     <MASTER_PAD_INFO>Portable Application Description, or PAD for short, is a data set that is used by shareware authors to disseminate information to anyone interested in their software products. To find out more go to http://www.asp-shareware.org/pad</MASTER_PAD_INFO>
   </MASTER_PAD_VERSION_INFO>
@@ -47,6 +47,11 @@
       <General_Phone></General_Phone>
       <Fax_Phone></Fax_Phone>
     </Support_Info>
+    <GooglePlusPage></GooglePlusPage>
+    <LinkedinPage></LinkedinPage>
+    <TwitterCompanyPage></TwitterCompanyPage>
+    <FacebookCompanyPage></FacebookCompanyPage>
+    <CompanyStorePage></CompanyStorePage>
   </Company_Info>
   <NewsFeed>
     <NewsFeed_FORM>Y</NewsFeed_FORM>
@@ -91,7 +96,7 @@
     <Program_Type>Freeware</Program_Type>
     <Program_Release_Status>New Release</Program_Release_Status>
     <Program_Install_Support>Install and Uninstall</Program_Install_Support>
-    <Program_OS_Support>WinXP,WinVista,WinVista x64,Win7 x32,Win7 x64,WinServer</Program_OS_Support>
+    <Program_OS_Support>WinXP,WinVista,WinVista x64,Win7 x32,Win7 x64,WinServer,Windows 8</Program_OS_Support>
     <Program_Language>English,Chinese,ChineseSimplified,ChineseTraditional,French,German,Hungarian,Indonesian,Italian,Japanese,Persian,Polish,Portuguese,Russian,Spanish,Swedish,Turkish</Program_Language>
     <Program_Change_Info>Added user-defined extensions. PNG-files now disabled by default under Windows 8. Fixed misplaced thumbnail in context menu under classic themes. Fixed copy to clipboard function. Fixed incompatibility with Windows PhotoViewer. Added Turkish, Hungarian, Persian and Chinese translation.</Program_Change_Info>
     <Program_System_Requirements>About 5 Mb of disk space + additional space for cache</Program_System_Requirements>
@@ -123,6 +128,8 @@
     <Includes_JAVA_VM></Includes_JAVA_VM>
     <Includes_VB_Runtime></Includes_VB_Runtime>
     <Includes_DirectX></Includes_DirectX>
+    <FacebookProductPage></FacebookProductPage>
+    <GooglePlusProductPage></GooglePlusProductPage>
   </Program_Info>
   <Web_Info>
     <Application_URLs>
@@ -131,6 +138,7 @@
       <Application_Screenshot_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs-context-menu.png</Application_Screenshot_URL>
       <Application_Icon_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs-icon-32.gif</Application_Icon_URL>
       <Application_XML_File_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs.xml</Application_XML_File_URL>
+      <Video_Link_1_URL>http://www.youtube.com/watch?v=akvRrxlP7wQ</Video_Link_1_URL>
     </Application_URLs>
     <Download_URLs>
       <Primary_Download_URL>http://sagethumbs.googlecode.com/files/sagethumbs_2.0.0.16_setup.exe</Primary_Download_URL>
@@ -143,6 +151,25 @@
     <Distribution_Permissions>SageThumbs has been released under the GNU General Public License.</Distribution_Permissions>
     <EULA>SageThumbs has been released under the GNU General Public License.</EULA>
   </Permissions>
+  <PAD_Certification_Promotion>
+    <Apply_For_Certification>N</Apply_For_Certification>
+  </PAD_Certification_Promotion>
+  <Dynamic_PAD>
+    <Dynamic_Distributive>N</Dynamic_Distributive>
+  </Dynamic_PAD>
+  <AppStore>
+    <AppStore_AppID></AppStore_AppID>
+    <AppStore_Category></AppStore_Category>
+    <AppStore_Info_URL></AppStore_Info_URL>
+    <AppStore_Download_URL></AppStore_Download_URL>
+    <AppStore_Promo_Code_1></AppStore_Promo_Code_1>
+    <AppStore_Promo_Code_2></AppStore_Promo_Code_2>
+    <AppStore_Promo_Code_3></AppStore_Promo_Code_3>
+    <AppStore_Supported_Devices></AppStore_Supported_Devices>
+    <AppStore_Other_Applications></AppStore_Other_Applications>
+    <AppStore_Advantages_And_Unique_Features></AppStore_Advantages_And_Unique_Features>
+    <AppStore_Awards_And_Ratings></AppStore_Awards_And_Ratings>
+  </AppStore>
   <Program_Descriptions>
     <English>
       <Keywords>thumbnails,shell extension,explorer extension,windows extension,graphic viewer,image viewer,graphic,images,psd,jpg,gif,png,freeware,open source,gpl</Keywords>
