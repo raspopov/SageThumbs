@@ -142,8 +142,9 @@ struct __declspec(uuid("E8025004-1C42-11D2-BE2C-00A0C9A83DA1")) IColumnProvider;
 DEFINE_GUID(CLSID_WindowsThumbnailer,0x889900c3,0x59f3,0x4c2f,0xae,0x21,0xa4,0x09,0xea,0x01,0xe6,0x05);
 
 #define ShellImagePreview	_T("SystemFileAssociations\\image\\ShellEx\\ContextMenuHandlers\\ShellImagePreview")
-#define FileExts			_T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts\\")
-#define PropertyHandlers	_T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PropertySystem\\PropertyHandlers\\")
+#define FileExts			_T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts")
+#define KindMap				_T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\KindMap")
+#define PropertyHandlers	_T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PropertySystem\\PropertyHandlers")
 #define REG_XNVIEW_KEY		_T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\XnView_is1")
 #define REG_XNVIEW_PATH1	_T("UninstallString")
 #define REG_XNVIEW_PATH2	_T("Inno Setup: App Path")

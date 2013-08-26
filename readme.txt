@@ -63,6 +63,10 @@ SageThumbs can be easily translated to other languages.
 
 Versions:
 
+2.0.0.17
+  * Added support for "Kind association"
+  * Fixed file properties enumeration
+
 2.0.0.16
   * Added user-defined file extensions
   * PNG-files now disabled by default under Windows 8

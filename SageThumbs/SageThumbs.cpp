@@ -364,7 +364,7 @@ BOOL CSageThumbsModule::RegisterExt(const CString& sExt, const CString& sInfo, b
 	BOOL bOK = TRUE;
 
 	const CString sType = _T(".") + sExt;
-	const CString sFileExt = FileExts + sType;
+	const CString sFileExt = FileExts _T("\\") + sType;
 	CString sDefaultKey = REG_SAGETHUMBS_IMG + sType;
 	const CString sDefaultType = GetDefaultType( sExt );
 
@@ -447,6 +447,13 @@ BOOL CSageThumbsModule::RegisterExt(const CString& sExt, const CString& sInfo, b
 	{
 		dwEditFlags |= 0x00010000;
 		bOK = SetRegValue( _T("EditFlags"), dwEditFlags, sDefaultKey, HKEY_CLASSES_ROOT ) && bOK;
+	}
+
+	// KindMap (optional)
+	CString sKind = GetRegValue( sType, CString(), KindMap, HKEY_LOCAL_MACHINE );
+	if ( sKind.IsEmpty() )
+	{
+		bOK = SetRegValue( sType, KIND_PICTURE, KindMap, HKEY_LOCAL_MACHINE ) && bOK;
 	}
 
 	// Perceived Type Fix (optional)
@@ -558,7 +565,7 @@ BOOL CSageThumbsModule::RegisterExt(const CString& sExt, const CString& sInfo, b
 
 	// Register IPropertyStore handler
 	{
-		CString sPropKey = PropertyHandlers + sType;
+		CString sPropKey = PropertyHandlers _T("\\") + sType;
 
 		// Check for existing CLSID
 		CString buf = GetRegValue( _T(""), CString(), sPropKey, HKEY_LOCAL_MACHINE );
@@ -597,7 +604,7 @@ BOOL CSageThumbsModule::UnregisterExt(const CString& sExt, bool bFull)
 	BOOL bOK = TRUE;
 
 	const CString sType = _T(".") + sExt;
-	const CString sFileExt = FileExts + sType;
+	const CString sFileExt = FileExts _T("\\") + sType;
 	const CString sDefaultKey = REG_SAGETHUMBS_IMG + sType;
 	CString sCurrentKey = GetRegValue( _T(""), CString(), sType, HKEY_CLASSES_ROOT );
 
@@ -647,7 +654,7 @@ BOOL CSageThumbsModule::UnregisterExt(const CString& sExt, bool bFull)
 	}
 
 	// Unregister IPropertyStore handler
-	const CString sPropKey = PropertyHandlers + sType;
+	const CString sPropKey = PropertyHandlers _T("\\") + sType;
 	bOK = UnregisterValue( HKEY_LOCAL_MACHINE, sPropKey ) && bOK;
 	DeleteEmptyRegKey( HKEY_LOCAL_MACHINE, sPropKey );
 
@@ -711,7 +718,7 @@ BOOL CSageThumbsModule::UnregisterExt(const CString& sExt, bool bFull)
 BOOL CSageThumbsModule::FindAndFixProgID(const CString& sExt, CAtlList< CString >& oGoodProgIDs)
 {
 	const CString sType = _T(".") + sExt;
-	const CString sFileExt = FileExts + sType;
+	const CString sFileExt = FileExts _T("\\") + sType;
 
 	CAtlList< CString > oProgIDs;
 

@@ -1128,6 +1128,24 @@ STDMETHODIMP CThumb::IsPropertyWritable(
 
 // IPropertyStore
 
+const PROPERTYKEY props[] =
+{
+	PKEY_ItemTypeText,
+	PKEY_FileDescription,
+	PKEY_DRM_IsProtected,
+	PKEY_Image_Dimensions,
+	PKEY_Image_HorizontalSize,
+	PKEY_Image_VerticalSize,
+	PKEY_Image_ResolutionUnit,
+	PKEY_Image_HorizontalResolution,
+	PKEY_Image_VerticalResolution,
+	PKEY_Image_BitDepth,
+	PKEY_Image_Compression,
+	PKEY_Image_CompressionText,
+	PKEY_PerceivedType
+//	PKEY_Kind
+};
+
 STDMETHODIMP CThumb::GetCount(
 	/* [out] */ __RPC__out DWORD* cProps)
 {
@@ -1136,23 +1154,33 @@ STDMETHODIMP CThumb::GetCount(
 		ATLTRACE( "CThumb - IPropertyStore::GetCount() : E_POINTER\n" );
 		return E_POINTER;
 	}
-	*cProps = 0;
+
+	*cProps = _countof( props );
 
 	ATLTRACE( "CThumb - IPropertyStore::GetCount() : S_OK (%u)\n", *cProps );
 	return S_OK;
 }
 
 STDMETHODIMP CThumb::GetAt(
-	/* [in] */ DWORD /* iProp */,
+	/* [in] */ DWORD iProp,
 	/* [out] */ __RPC__out PROPERTYKEY* pkey)
 {
 	if ( ! pkey )
 	{
-		ATLTRACE( "CThumb - IPropertyStore::GetAt() : E_POINTER\n" );
+		ATLTRACE( "CThumb - IPropertyStore::GetAt(%u) : E_POINTER\n", iProp );
 		return E_POINTER;
 	}
 
-	ATLTRACENOTIMPL( "IPropertyStore::GetAt" );
+	if ( iProp >= _countof( props ) )
+	{
+		ATLTRACE( "CThumb - IPropertyStore::GetAt(%u) : E_INVALIDARG\n", iProp );
+		return E_INVALIDARG;
+	}
+
+	*pkey = props[ iProp ];
+
+	ATLTRACE( "CThumb - IPropertyStore::GetAt(%u) : S_OK\n", iProp );
+	return S_OK;
 }
 
 STDMETHODIMP CThumb::GetValue(
@@ -1293,22 +1321,45 @@ STDMETHODIMP CThumb::GetValue(
 		pv->vt = VT_I4;
 		pv->lVal = PERCEIVED_TYPE_IMAGE;
 	}
+	//else if ( IsEqualPropertyKey( key, PKEY_Kind ) )
+	//{
+	//	pv->vt = VT_ARRAY | VT_BSTR;
+	//	pv-> = CString( KIND_PICTURE ).AllocSysString();
+	//}
 
 	return S_OK;
 }
 
 STDMETHODIMP CThumb::SetValue(
-	/* [in] */ __RPC__in REFPROPERTYKEY /* key */,
+	/* [in] */ __RPC__in REFPROPERTYKEY key,
 	/* [in] */ __RPC__in REFPROPVARIANT /* propvar */)
 {
-	ATLTRACE( "CThumb - IPropertyStore::SetValue() : STG_E_ACCESSDENIED\n" );
-	return STG_E_ACCESSDENIED;
+	key;
+
+#ifdef _DEBUG
+	CStringA sPropName;
+	CComPtr< IPropertyDescription > pDesc;
+	if ( SUCCEEDED( PSGetPropertyDescription( key, IID_PPV_ARGS( &pDesc ) ) ) )
+	{
+		LPWSTR szPropName = NULL;
+		if ( SUCCEEDED( pDesc->GetCanonicalName( &szPropName ) ) )
+		{
+			sPropName = szPropName;
+			CoTaskMemFree( szPropName );
+		}
+		pDesc.Release();
+	}
+	ATLTRACE( "CThumb - IPropertyStore::SetValue(\"%s\") : E_INVALIDARG\n", (LPCSTR)sPropName );
+#endif
+
+	return E_INVALIDARG;
 }
 
 STDMETHODIMP CThumb::Commit()
 {
-	ATLTRACE( "CThumb - IPropertyStore::Commit() : STG_E_ACCESSDENIED\n" );
-	return STG_E_ACCESSDENIED;
+	ATLTRACE( "CThumb - IPropertyStore::Commit() : E_FAIL\n" );
+
+	return E_FAIL;
 }
 
 // IPropertySetStorage
