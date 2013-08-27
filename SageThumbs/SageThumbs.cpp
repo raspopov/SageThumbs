@@ -450,17 +450,17 @@ BOOL CSageThumbsModule::RegisterExt(const CString& sExt, const CString& sInfo, b
 	}
 
 	// KindMap (optional)
-	CString sKind = GetRegValue( sType, CString(), KindMap, HKEY_LOCAL_MACHINE );
+	const CString sKind = GetRegValue( sType, CString(), KindMap, HKEY_LOCAL_MACHINE );
 	if ( sKind.IsEmpty() )
 	{
 		bOK = SetRegValue( sType, KIND_PICTURE, KindMap, HKEY_LOCAL_MACHINE ) && bOK;
 	}
 
 	// Perceived Type Fix (optional)
-	CString sPerceivedType = GetRegValue( _T("PerceivedType"), CString(), sType, HKEY_CLASSES_ROOT );
+	const CString sPerceivedType = GetRegValue( _T("PerceivedType"), CString(), sType, HKEY_CLASSES_ROOT );
 	if ( sPerceivedType.IsEmpty() )
 	{
-		SetRegValue( _T("PerceivedType"), GetPerceivedType( sExt ), sType, HKEY_CLASSES_ROOT );
+		bOK = SetRegValue( _T("PerceivedType"), GetPerceivedType( sExt ), sType, HKEY_CLASSES_ROOT ) && bOK;
 	}
 
 	// Content Type Fix (optional)
@@ -468,34 +468,41 @@ BOOL CSageThumbsModule::RegisterExt(const CString& sExt, const CString& sInfo, b
 	if ( sContentType.IsEmpty() )
 	{
 		sContentType = GetContentType( sExt );
-		CString sContentKey = _T("MIME\\DataBase\\Content Type\\") + sContentType;
-
-		SetRegValue( _T("Content Type"), sContentType, sType, HKEY_CLASSES_ROOT );
-
-		// MIME Fix (optional)
-		SetRegValue( _T("AutoplayContentTypeHandler"), _T("PicturesContentHandler"), sContentKey, HKEY_CLASSES_ROOT );
-		SetRegValue( _T("Extension"), GetContentExt( sExt ), sContentKey, HKEY_CLASSES_ROOT );
-
-		// Set image filter only if it was free
-		/*CString sImageFilterCLSID = GetRegValue( _T("Image Filter CLSID"), _T(""), sContentKey, HKEY_CLASSES_ROOT );
-		if ( bEnableFilter && ( sImageFilterCLSID.IsEmpty() || sImageFilterCLSID.CompareNoCase( CLSID_THUMB ) == 0 ) )
-		{
-			bOK = SetRegValue( _T(""), CLSID_HTML, sDefaultKey + _T("\\CLSID"), HKEY_CLASSES_ROOT ) && bOK;
-			bOK = SetRegValue( _T("Image Filter CLSID"), CLSID_THUMB, sContentKey, HKEY_CLASSES_ROOT ) && bOK;
-			bOK = SetRegValue( _T("CLSID"), CLSID_HTML, sContentKey, HKEY_CLASSES_ROOT ) && bOK;
-
-			const BYTE Bits[ 6 ] = { 01, 00, 00, 00, 00, 00 };
-			SHSetValue( HKEY_CLASSES_ROOT, sContentKey + _T("\\Bits"), _T("0"), REG_BINARY, &Bits, sizeof( Bits ) );
-		}
-		else if ( ! bEnableFilter && sImageFilterCLSID.CompareNoCase( CLSID_THUMB ) == 0 )
-		{
-			bOK = DeleteRegValue( _T("Image Filter CLSID"), sContentKey, HKEY_CLASSES_ROOT ) && bOK;
-			bOK = DeleteRegValue( _T("CLSID"), sContentKey, HKEY_CLASSES_ROOT ) && bOK;
-			bOK = DeleteRegValue( _T("0"), sContentKey + _T("\\Bits"), HKEY_CLASSES_ROOT ) && bOK;
-			DeleteRegKey( HKEY_CLASSES_ROOT, sContentKey + _T("\\Bits") );
-			DeleteRegKey( HKEY_CLASSES_ROOT, sDefaultKey + _T("\\CLSID") );
-		}*/
+		bOK = SetRegValue( _T("Content Type"), sContentType, sType, HKEY_CLASSES_ROOT ) && bOK;
 	}
+
+	// MIME Fix (optional)
+	const CString sContentKey = _T("MIME\\DataBase\\Content Type\\") + sContentType;
+	const CString sHandler = GetRegValue( _T("AutoplayContentTypeHandler"), CString(), sContentKey, HKEY_CLASSES_ROOT );
+	if ( sHandler.IsEmpty() )
+	{
+		bOK = SetRegValue( _T("AutoplayContentTypeHandler"), _T("PicturesContentHandler"), sContentKey, HKEY_CLASSES_ROOT ) && bOK;
+	}
+	const CString sExtension = GetRegValue( _T("Extension"), CString(), sContentKey, HKEY_CLASSES_ROOT );
+	if ( sExtension.IsEmpty() || sExtension.GetAt( 0 ) != _T('.') )
+	{
+		bOK = SetRegValue( _T("Extension"), GetContentExt( sType ), sContentKey, HKEY_CLASSES_ROOT ) && bOK;
+	}
+
+	// Set image filter only if it was free
+	/*CString sImageFilterCLSID = GetRegValue( _T("Image Filter CLSID"), _T(""), sContentKey, HKEY_CLASSES_ROOT );
+	if ( bEnableFilter && ( sImageFilterCLSID.IsEmpty() || sImageFilterCLSID.CompareNoCase( CLSID_THUMB ) == 0 ) )
+	{
+		bOK = SetRegValue( _T(""), CLSID_HTML, sDefaultKey + _T("\\CLSID"), HKEY_CLASSES_ROOT ) && bOK;
+		bOK = SetRegValue( _T("Image Filter CLSID"), CLSID_THUMB, sContentKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = SetRegValue( _T("CLSID"), CLSID_HTML, sContentKey, HKEY_CLASSES_ROOT ) && bOK;
+
+		const BYTE Bits[ 6 ] = { 01, 00, 00, 00, 00, 00 };
+		SHSetValue( HKEY_CLASSES_ROOT, sContentKey + _T("\\Bits"), _T("0"), REG_BINARY, &Bits, sizeof( Bits ) );
+	}
+	else if ( ! bEnableFilter && sImageFilterCLSID.CompareNoCase( CLSID_THUMB ) == 0 )
+	{
+		bOK = DeleteRegValue( _T("Image Filter CLSID"), sContentKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = DeleteRegValue( _T("CLSID"), sContentKey, HKEY_CLASSES_ROOT ) && bOK;
+		bOK = DeleteRegValue( _T("0"), sContentKey + _T("\\Bits"), HKEY_CLASSES_ROOT ) && bOK;
+		DeleteRegKey( HKEY_CLASSES_ROOT, sContentKey + _T("\\Bits") );
+		DeleteRegKey( HKEY_CLASSES_ROOT, sDefaultKey + _T("\\CLSID") );
+	}*/
 
 	for ( int i = 0; Handlers[ i ].szName; ++i )
 	{
@@ -2117,17 +2124,17 @@ CString GetPerceivedType(LPCTSTR /* szExt */)
 
 CString GetContentExt(LPCTSTR szExt)
 {
-	if ( _tcsicmp( szExt, _T("jfif") ) == 0 ||
-		 _tcsicmp( szExt, _T("jpe") ) == 0 ||
-		 _tcsicmp( szExt, _T("jpeg") ) == 0 ||
-		 _tcsicmp( szExt, _T("jpg") ) == 0 )
-		return _T("jpeg");
-	else if ( _tcsicmp( szExt, _T("bmp") ) == 0 ||
-			  _tcsicmp( szExt, _T("dib") ) == 0 )
-		return _T("bmp");
-	else if ( _tcsicmp( szExt, _T("tif") ) == 0 ||
-			  _tcsicmp( szExt, _T("tiff") ) == 0 )
-		return _T("tif");
+	if ( _tcsicmp( szExt, _T(".jfif") ) == 0 ||
+		 _tcsicmp( szExt, _T(".jpe") ) == 0 ||
+		 _tcsicmp( szExt, _T(".jpeg") ) == 0 ||
+		 _tcsicmp( szExt, _T(".jpg") ) == 0 )
+		return _T(".jpeg");
+	else if ( _tcsicmp( szExt, _T(".bmp") ) == 0 ||
+			  _tcsicmp( szExt, _T(".dib") ) == 0 )
+		return _T(".bmp");
+	else if ( _tcsicmp( szExt, _T(".tif") ) == 0 ||
+			  _tcsicmp( szExt, _T(".tiff") ) == 0 )
+		return _T(".tif");
 	else
 		return szExt;
 }
