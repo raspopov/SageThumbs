@@ -66,6 +66,9 @@ Versions:
 2.0.0.17
   * Added support for "Kind association"
   * Fixed file properties enumeration
+  * Fixed MIME registration (issue #57)
+  * Added Korean translation (by JunHyung Lee)
+  * Added Hebrew translation (by Nitsan Rozenberg)
 
 2.0.0.16
   * Added user-defined file extensions

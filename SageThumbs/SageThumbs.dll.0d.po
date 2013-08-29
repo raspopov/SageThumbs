@@ -1,0 +1,323 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SageThumbs.dll\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: nitsan rozenberg <nitsanroz@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#. Dialog caption
+#: DIALOGCAPTION.202
+msgid "SageThumbs Options"
+msgstr "אפשרויות SageThumbs "
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.1
+msgid "OK"
+msgstr "אישור"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2
+msgid "Cancel"
+msgstr "ביטול"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.211
+msgid "Enable context menu in Explorer"
+msgstr "אפשר תפריט תוכן באקספלורר"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr "הראה תצוגה בתפריט משנה"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.212
+msgid "Enable thumbnails in Explorer"
+msgstr "אפשר תמונות ממוזערות באקספלורר"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.216
+msgid "Use thumbnails as icons in Explorer"
+msgstr "השתמש בתמונות ממוזערות לאייקונים באקספלורר"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "הצג סוג פרישה בתמונות ממוזערות"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.217
+msgid "Enable Windows thumbnail cache"
+msgstr "אפשר לוינדוז לייצר זכרון מטמון של תמונות ממוזערות"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.215
+msgid "Prefer image file embedded thumbnails"
+msgstr "העדף תמונות ממוזערות מוטמעות בקובץ תמונה"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.203
+msgid "Use Windows Image/Fax Viewer"
+msgstr "windows image/fax viewerהשתמש ב-"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.213
+msgid "Clear..."
+msgstr "נקה..."
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.218
+msgid "Optimize"
+msgstr "אופטימיזציה"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "בחר/נקה הכל"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "ברירת מחדל"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483649
+msgid "Context menu preview size"
+msgstr "גודל תצוגה מקדימה בתפריט תוכן"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483650
+msgid "Width x Height:"
+msgstr "רוחבXגובה:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483651
+msgid "X"
+msgstr "X"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483652
+msgid "pixels"
+msgstr "פיקסלים"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483653
+msgid "Supported file types"
+msgstr "סוגי קבצים נתמכים"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483654
+msgid "System-wide tweaks"
+msgstr "שפצורי רוחב מערכת"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483655
+msgid "Language:"
+msgstr "שפה:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483656
+msgid "Maximum size of image file:"
+msgstr "גודל מירבי של קובץ תמונה"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483657
+msgid "MB"
+msgstr "מ\"ב"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483658
+msgid "Convert options"
+msgstr "אפשרויות המרה"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483659
+msgid "JPEG quality (0 - lowest, 100 - best):"
+msgstr "איכות JPEG (0-100)"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483660
+msgid "PNG compression (0 - lowest, 9 - best):"
+msgstr "כיווץ PNG (0-9)"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483662
+msgid "Custom file types (use spaces as delimiters):"
+msgstr "סוגי קבצים מותאמים אישית (השתמש ברווח כחוצץ)"
+
+#. String resource
+#: STRING.100
+msgid "SageThumbs"
+msgstr "SageThumbs"
+
+#. String resource
+#: STRING.101
+msgid "Change various SageThumbs options"
+msgstr "שנה מבחר אפשרויות  של SageThumbs "
+
+#. String resource
+#: STRING.102
+msgid "Type: "
+msgstr "סוג:"
+
+#. String resource
+#: STRING.103
+msgid "Sizes (pixels): "
+msgstr "גדלים(פיקסלים):"
+
+#. String resource
+#: STRING.104
+msgid "Size (bytes): "
+msgstr "גודל(ביטים):"
+
+#. String resource
+#: STRING.105
+msgid "Modified: "
+msgstr "מותאם:"
+
+#. String resource
+#: STRING.106
+msgid "Colors (bits): "
+msgstr "צבעים(ביט):"
+
+#. String resource
+#: STRING.107
+msgid "Compression: "
+msgstr "כיווץ:"
+
+#. String resource
+#: STRING.108
+msgid "Resolution: "
+msgstr "רזולוציה:"
+
+#. String resource
+#: STRING.109
+msgid "Can't open image file"
+msgstr "לא מצליח לפתוח קובץ תמונה"
+
+#. String resource
+#: STRING.110
+msgid "Can't save image file"
+msgstr "לא מצליח לשמור קובץ תמונה"
+
+#. String resource
+#: STRING.111
+msgid "Can't send mail"
+msgstr "לא מצליח לשלוח מייל"
+
+#. String resource
+#: STRING.112
+msgid "Nothing to send"
+msgstr "אין מה לשלוח"
+
+#. String resource
+#: STRING.113
+msgid "Can't open clipboard"
+msgstr "אי אפשר לפתוח clipboard"
+
+#. String resource
+#: STRING.114
+msgid "Please confirm thumbnail cache clearing."
+msgstr "אנא אשר ניקוי זכרון מטמון של תמונות ממוזערות"
+
+#. String resource
+#: STRING.115
+msgid "Thumbnail cache size: %u KB"
+msgstr "גודל זכרון מטמון של תמונות ממוזערות: u%ק\"ב"
+
+#. String resource
+#: STRING.116
+msgid "SageThumbs thumbnail cache"
+msgstr " SageThumbs זכרון מטמון"
+
+#. String resource
+#: STRING.117
+msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
+msgstr "נקה זכרון מטמון של SageThumbs - מידע אישי לא יימחק"
+
+#. String resource
+#: STRING.118
+msgid ""
+"Can not apply all settings. Please use SageThumbs under account with "
+"administrative privileges."
+msgstr "אי אפשר ליישם את כל ההגדרות. אנא הכנס במשתמש עם הרשאות מנהל"
+
+#. String resource
+#: STRING.119
+msgid "Convert to PNG"
+msgstr "ממיר לPNG"
+
+#. String resource
+#: STRING.120
+msgid "Converting..."
+msgstr "מבצע המרה..."
+
+#. String resource
+#: STRING.121
+msgid "Sending..."
+msgstr "שולח..."
+
+#. String resource
+#: STRING.122
+msgid "Applying settings..."
+msgstr "מיישם הגדרות..."
+
+#. String resource
+#: STRING.123
+msgid "Updating..."
+msgstr "מעדכן..."
+
+#. String resource
+#: STRING.203
+msgid "SageThumbs Options..."
+msgstr "אפשרויות SageThumbs "
+
+#. String resource
+#: STRING.204
+msgid "Copy to clipboard"
+msgstr "מעתיק לclipboard"
+
+#. String resource
+#: STRING.205
+msgid "Set tiled wallpaper"
+msgstr "קבע כרקע שולחן עבודה נפרש בשכפול"
+
+#. String resource
+#: STRING.206
+msgid "Set centered wallpaper"
+msgstr "קבע כרקע שולחן עבודה ממורכז"
+
+#. String resource
+#: STRING.207
+msgid "Set stretched wallpaper"
+msgstr "קבע כרקע שולחן עבודה מתוח"
+
+#. String resource
+#: STRING.208
+msgid "Send image by mail..."
+msgstr "שלח תמונה במייל..."
+
+#. String resource
+#: STRING.209
+msgid "Send thumbnail by mail..."
+msgstr "שלח תמונה ממוזערת במייל..."
+
+#. String resource
+#: STRING.210
+msgid "Convert to JPG"
+msgstr "המר ל-JPG"
+
+#. String resource
+#: STRING.211
+msgid "Convert to GIF"
+msgstr "המר ל-GIF"
+
+#. String resource
+#: STRING.212
+msgid "Convert to BMP"
+msgstr "המר ל-BMP"
