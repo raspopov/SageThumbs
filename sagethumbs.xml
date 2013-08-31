@@ -86,25 +86,50 @@
     <Site_Description_450>SageThumbs is a powerful shell extension allowing to preview enormous amount of image formats directly in Windows Explorer by using Pierre-e Gougelet's GFL library (XnView's author).</Site_Description_450>
     <Site_Keywords>thumbnails,shell extension,explorer extension,windows extension,graphic viewer,image viewer,graphic,images,psd,jpg,gif,png,freeware,open source,gpl</Site_Keywords>
   </Site>
+  <PAD_Certification_Promotion>
+    <Apply_For_Certification>N</Apply_For_Certification>
+  </PAD_Certification_Promotion>
+  <Dynamic_PAD>
+    <Dynamic_Distributive>N</Dynamic_Distributive>
+  </Dynamic_PAD>
+  <Web_Info>
+    <Application_URLs>
+      <Video_Link_1_URL>http://www.youtube.com/watch?v=akvRrxlP7wQ</Video_Link_1_URL>
+      <Application_Info_URL>http://code.google.com/p/sagethumbs/</Application_Info_URL>
+      <Application_Order_URL>http://code.google.com/p/sagethumbs/</Application_Order_URL>
+      <Application_Screenshot_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs-context-menu.png</Application_Screenshot_URL>
+      <Application_Icon_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs-icon-32.gif</Application_Icon_URL>
+      <Application_XML_File_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs.xml</Application_XML_File_URL>
+    </Application_URLs>
+    <Download_URLs>
+      <Primary_Download_URL>http://sagethumbs.googlecode.com/files/sagethumbs_2.0.0.17_setup.exe</Primary_Download_URL>
+      <Secondary_Download_URL></Secondary_Download_URL>
+      <Additional_Download_URL_1></Additional_Download_URL_1>
+      <Additional_Download_URL_2></Additional_Download_URL_2>
+    </Download_URLs>
+  </Web_Info>
+  <ASBMPlannerID1stRound>4</ASBMPlannerID1stRound>
+  <Issues>11</Issues>
+  <ASBMPlannerID2ndRound>5</ASBMPlannerID2ndRound>
   <Program_Info>
     <Program_Name>SageThumbs</Program_Name>
-    <Program_Version>2.0.0.16</Program_Version>
+    <Program_Version>2.0.0.17</Program_Version>
     <Program_Release_Month>08</Program_Release_Month>
-    <Program_Release_Day>25</Program_Release_Day>
+    <Program_Release_Day>31</Program_Release_Day>
     <Program_Release_Year>2013</Program_Release_Year>
     <Program_Cost_Dollars>0</Program_Cost_Dollars>
     <Program_Type>Freeware</Program_Type>
     <Program_Release_Status>New Release</Program_Release_Status>
     <Program_Install_Support>Install and Uninstall</Program_Install_Support>
     <Program_OS_Support>WinXP,WinVista,WinVista x64,Win7 x32,Win7 x64,WinServer,Windows 8</Program_OS_Support>
-    <Program_Language>English,Chinese,ChineseSimplified,ChineseTraditional,French,German,Hungarian,Indonesian,Italian,Japanese,Persian,Polish,Portuguese,Russian,Spanish,Swedish,Turkish</Program_Language>
-    <Program_Change_Info>Added user-defined extensions. PNG-files now disabled by default under Windows 8. Fixed misplaced thumbnail in context menu under classic themes. Fixed copy to clipboard function. Fixed incompatibility with Windows PhotoViewer. Added Turkish, Hungarian, Persian and Chinese translation.</Program_Change_Info>
+    <Program_Language>English,Chinese,ChineseSimplified,ChineseTraditional,French,German,Hebrew,Hungarian,Indonesian,Italian,Japanese,Korean,Persian,Polish,Portuguese,Russian,Spanish,Swedish,Turkish</Program_Language>
+    <Program_Change_Info>Added support for "Kind association". Fixed file properties enumeration. Fixed MIME registration (issue #57). Added Korean translation (by JunHyung Lee). Added Hebrew translation (by Nitsan Rozenberg).</Program_Change_Info>
     <Program_System_Requirements>About 5 Mb of disk space + additional space for cache</Program_System_Requirements>
     <Program_Category_Class>Graphic Apps::Viewers</Program_Category_Class>
     <File_Info>
-      <File_Size_Bytes>2140132</File_Size_Bytes>
-      <File_Size_K>2089</File_Size_K>
-      <File_Size_MB>2.04</File_Size_MB>
+      <File_Size_Bytes>2145893</File_Size_Bytes>
+      <File_Size_K>2095</File_Size_K>
+      <File_Size_MB>2.05</File_Size_MB>
       <Filename_Versioned></Filename_Versioned>
       <Filename_Previous></Filename_Previous>
       <Filename_Generic></Filename_Generic>
@@ -131,32 +156,10 @@
     <FacebookProductPage></FacebookProductPage>
     <GooglePlusProductPage></GooglePlusProductPage>
   </Program_Info>
-  <Web_Info>
-    <Application_URLs>
-      <Application_Info_URL>http://code.google.com/p/sagethumbs/</Application_Info_URL>
-      <Application_Order_URL>http://code.google.com/p/sagethumbs/</Application_Order_URL>
-      <Application_Screenshot_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs-context-menu.png</Application_Screenshot_URL>
-      <Application_Icon_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs-icon-32.gif</Application_Icon_URL>
-      <Application_XML_File_URL>http://sagethumbs.googlecode.com/svn/trunk/sagethumbs.xml</Application_XML_File_URL>
-      <Video_Link_1_URL>http://www.youtube.com/watch?v=akvRrxlP7wQ</Video_Link_1_URL>
-    </Application_URLs>
-    <Download_URLs>
-      <Primary_Download_URL>http://sagethumbs.googlecode.com/files/sagethumbs_2.0.0.16_setup.exe</Primary_Download_URL>
-      <Secondary_Download_URL></Secondary_Download_URL>
-      <Additional_Download_URL_1></Additional_Download_URL_1>
-      <Additional_Download_URL_2></Additional_Download_URL_2>
-    </Download_URLs>
-  </Web_Info>
   <Permissions>
     <Distribution_Permissions>SageThumbs has been released under the GNU General Public License.</Distribution_Permissions>
     <EULA>SageThumbs has been released under the GNU General Public License.</EULA>
   </Permissions>
-  <PAD_Certification_Promotion>
-    <Apply_For_Certification>N</Apply_For_Certification>
-  </PAD_Certification_Promotion>
-  <Dynamic_PAD>
-    <Dynamic_Distributive>N</Dynamic_Distributive>
-  </Dynamic_PAD>
   <AppStore>
     <AppStore_AppID></AppStore_AppID>
     <AppStore_Category></AppStore_Category>
