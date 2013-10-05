@@ -8,8 +8,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.5\n"
-"X-Poedit-SourceCharset: UTF-8\n"
+"X-Generator: Poedit 1.5.7\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -32,14 +31,24 @@ msgid "Enable context menu in Explorer"
 msgstr "Windows Gezgini'nde bağlam menüsünü etkinleştir"
 
 #. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr "Alt menüde önizleme göster"
+
+#. Dialog control
 #: DIALOGCONTROL.202.Button.212
 msgid "Enable thumbnails in Explorer"
-msgstr "Windows Gezgini'nde küçük resimleri etkinleştir"
+msgstr "Windows küçük resim önbelleğini etkinleştir"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.216
 msgid "Use thumbnails as icons in Explorer"
 msgstr "Windows Gezgini'nde simge olarak küçük resimleri kullan"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "Küçük resimler üzerindeki tür yerleşimini göster"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.217
@@ -57,16 +66,6 @@ msgid "Use Windows Image/Fax Viewer"
 msgstr "Windows Resim ve Faks Görüntüleyicisi'ni kullan"
 
 #. Dialog control
-#: DIALOGCONTROL.202.Button.210
-msgid "Select/Deselect all"
-msgstr "Tümünü seç / Hiçbirini seçme"
-
-#. Dialog control
-#: DIALOGCONTROL.202.Button.223
-msgid "Default"
-msgstr "Varsayılanlar"
-
-#. Dialog control
 #: DIALOGCONTROL.202.Button.213
 msgid "Clear..."
 msgstr "Temizle..."
@@ -75,6 +74,16 @@ msgstr "Temizle..."
 #: DIALOGCONTROL.202.Button.218
 msgid "Optimize"
 msgstr "En Uygun"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "Tümünü seç / Hiçbirini seçme"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "Varsayılan"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483649
@@ -104,7 +113,7 @@ msgstr "Desteklenen dosya türleri"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483654
 msgid "System-wide tweaks"
-msgstr "Sistem-geneli ilişkilendirme"
+msgstr "Sistem geneli ilişkilendirme"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483655
@@ -137,14 +146,9 @@ msgid "PNG compression (0 - lowest, 9 - best):"
 msgstr "PNG sıkıştırması (0 - en düşük, 9 - en iyi):"
 
 #. Dialog control
-#: DIALOGCONTROL.202.Button.225
-msgid "Show type overlay on thumbnails"
-msgstr "Küçük resimler üzerinde tür yerleşimini göster"
-
-#. Dialog control
-#: DIALOGCONTROL.202.Button.226
-msgid "Show preview in submenu"
-msgstr "Alt menüde önizleme göster"
+#: DIALOGCONTROL.202.Static.2147483662
+msgid "Custom file types (use spaces as delimiters):"
+msgstr "Özel dosya türü (ayırıcı olarak boşluk kullanın):"
 
 #. String resource
 #: STRING.100
@@ -154,7 +158,7 @@ msgstr "SageThumbs"
 #. String resource
 #: STRING.101
 msgid "Change various SageThumbs options"
-msgstr "Çeşitli SageThumbs seçeneklerini değiştirme"
+msgstr "Çeşitli SageThumbs seçeneklerini değiştir"
 
 #. String resource
 #: STRING.102
@@ -194,27 +198,27 @@ msgstr "Çözünürlük: "
 #. String resource
 #: STRING.109
 msgid "Can't open image file"
-msgstr "Resim dosyası açılamıyor"
+msgstr "Resim dosyası açılamadı"
 
 #. String resource
 #: STRING.110
 msgid "Can't save image file"
-msgstr "Resim dosyası kaydedilemiyor"
+msgstr "Resim dosyası kaydedilemedi"
 
 #. String resource
 #: STRING.111
 msgid "Can't send mail"
-msgstr "E-posta gönderilemiyor"
+msgstr "E-posta gönderilemedi"
 
 #. String resource
 #: STRING.112
 msgid "Nothing to send"
-msgstr "Göndermek için hiçbir şey yok"
+msgstr "Gönderilecek hiçbir şey yok"
 
 #. String resource
 #: STRING.113
 msgid "Can't open clipboard"
-msgstr "Pano açılamıyor"
+msgstr "Pano açılamadı"
 
 #. String resource
 #: STRING.114
@@ -234,12 +238,12 @@ msgstr "SageThumbs küçük resim önbelleği"
 #. String resource
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
-msgstr "SageThumbs küçük resim önbelleği temiz. Kullanıcı verileri etkilenecektir."
+msgstr "SageThumbs küçük resim önbelleği temiz. Kullanıcı verileri etkilenmeyecektir."
 
 #. String resource
 #: STRING.118
 msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
-msgstr "Tüm ayarları uygulanamadı. Lütfen SageThumbs'ı yönetici ayrıcalıklarına sahip hesap altında kullanın."
+msgstr "Tüm ayarlar uygulanamadı. Lütfen SageThumbs'ı yönetici ayrıcalıklarına sahip hesap altında kullanın."
 
 #. String resource
 #: STRING.119
@@ -315,4 +319,3 @@ msgstr "GIF'e dönüştür"
 #: STRING.212
 msgid "Convert to BMP"
 msgstr "BMP'ye dönüştür"
-
