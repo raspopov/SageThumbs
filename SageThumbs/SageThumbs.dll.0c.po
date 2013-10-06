@@ -8,9 +8,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Français\n"
-"X-Poedit-Country: France\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 1.5.7\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -33,6 +32,11 @@ msgid "Enable context menu in Explorer"
 msgstr "Activer le menu contextuel dans l'Explorateur"
 
 #. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr "Aperçu dans le menu contextuel"
+
+#. Dialog control
 #: DIALOGCONTROL.202.Button.212
 msgid "Enable thumbnails in Explorer"
 msgstr "Activer les miniatures dans l'Explorateur"
@@ -41,6 +45,11 @@ msgstr "Activer les miniatures dans l'Explorateur"
 #: DIALOGCONTROL.202.Button.216
 msgid "Use thumbnails as icons in Explorer"
 msgstr "Utiliser les miniatures comme icônes dans l'Explorateur"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "Incruster le type de fichier dans les miniatures"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.217
@@ -58,16 +67,6 @@ msgid "Use Windows Image/Fax Viewer"
 msgstr "Utiliser la visionneuse par défaut de Windows"
 
 #. Dialog control
-#: DIALOGCONTROL.202.Button.210
-msgid "Select/Deselect all"
-msgstr "Tous/aucun"
-
-#. Dialog control
-#: DIALOGCONTROL.202.Button.223
-msgid "Default"
-msgstr "Par défaut"
-
-#. Dialog control
 #: DIALOGCONTROL.202.Button.213
 msgid "Clear..."
 msgstr "Vider le cache"
@@ -76,6 +75,16 @@ msgstr "Vider le cache"
 #: DIALOGCONTROL.202.Button.218
 msgid "Optimize"
 msgstr "Optimiser le cache"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "Tous/aucun"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "Par défaut"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483649
@@ -138,14 +147,10 @@ msgid "PNG compression (0 - lowest, 9 - best):"
 msgstr "Compression PNG (0 = rapide, 9 = optimale) :"
 
 #. Dialog control
-#: DIALOGCONTROL.202.Button.225
-msgid "Show type overlay on thumbnails"
-msgstr "Incruster le type de fichier dans les miniatures"
-
-#. Dialog control
-#: DIALOGCONTROL.202.Button.226
-msgid "Show preview in submenu"
-msgstr "Aperçu dans le menu contextuel"
+#: DIALOGCONTROL.202.Static.2147483662
+msgid "Custom file types (use spaces as delimiters):"
+msgstr ""
+"Types de fichiers personnalisés (utilise des espaces comme séparateurs):"
 
 #. String resource
 #: STRING.100
@@ -155,7 +160,7 @@ msgstr "SageThumbs"
 #. String resource
 #: STRING.101
 msgid "Change various SageThumbs options"
-msgstr "Modifier les options de SageThumbs."
+msgstr "Modifier les diverses options de SageThumbs"
 
 #. String resource
 #: STRING.102
@@ -235,12 +240,18 @@ msgstr "Cache des miniatures de SageThumbs"
 #. String resource
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
-msgstr "Vide le cache des miniatures de SageThumbs. Aucune données personnelles ne sera affectées."
+msgstr ""
+"Vide le cache des miniatures de SageThumbs. Aucune données personnelles ne "
+"sera affectées."
 
 #. String resource
 #: STRING.118
-msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
-msgstr "Impossible d'appliquer tous les paramètres. Veuillez exécuter SageThumbs en tant qu'administrateur."
+msgid ""
+"Can not apply all settings. Please use SageThumbs under account with "
+"administrative privileges."
+msgstr ""
+"Impossible d'appliquer tous les paramètres. Veuillez exécuter SageThumbs en "
+"tant qu'administrateur."
 
 #. String resource
 #: STRING.119
@@ -280,17 +291,17 @@ msgstr "Copier dans le presse-papier"
 #. String resource
 #: STRING.205
 msgid "Set tiled wallpaper"
-msgstr "Choisir comme arrière-plan mosaïque du Bureau"
+msgstr "Définir comme arrière-plan mosaïque du Bureau"
 
 #. String resource
 #: STRING.206
 msgid "Set centered wallpaper"
-msgstr "Choisir comme arrière-plan centré du Bureau"
+msgstr "Définir comme arrière-plan centré du Bureau"
 
 #. String resource
 #: STRING.207
 msgid "Set stretched wallpaper"
-msgstr "Choisir comme arrière-plan étiré du Bureau"
+msgstr "Définir comme arrière-plan étiré du Bureau"
 
 #. String resource
 #: STRING.208
@@ -316,4 +327,3 @@ msgstr "Convertir en GIF"
 #: STRING.212
 msgid "Convert to BMP"
 msgstr "Convertir en BMP"
-
