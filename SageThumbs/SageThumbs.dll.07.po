@@ -3,17 +3,18 @@ msgstr ""
 "Project-Id-Version: SageThumbs.dll\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: \n"
+"Last-Translator: Murasame <dennis@murasame-music.com>\n"
 "Language-Team: \n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: German\n"
+"X-Generator: Poedit 1.5.7\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
 msgid "SageThumbs Options"
-msgstr "SageThumbs Optionen"
+msgstr "SageThumbs-Einstellungen"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.1
@@ -28,47 +29,47 @@ msgstr "Abbrechen"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.211
 msgid "Enable context menu in Explorer"
-msgstr "Shell-Erweiterung einschalten (Kontext-Menü Explorer)"
+msgstr "Explorer-Kontextmenü aktivieren"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr "Zeige Bildvorschau in Untermenü"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.212
 msgid "Enable thumbnails in Explorer"
-msgstr "Thumbnails einschalten (Miniaturansichten Explorer)"
+msgstr "Miniaturansichten im Explorer aktivieren"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.216
 msgid "Use thumbnails as icons in Explorer"
-msgstr "Thumbnails als Icons im Explorer verwenden"
+msgstr "Miniaturansichten anstelle von Symbolen anzeigen"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "Zeige Dateityp über Miniaturansicht an"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.217
 msgid "Enable Windows thumbnail cache"
-msgstr "Miniaturansichten zwischenspeichern (Windows)"
+msgstr "Erlaube Zwischenspeicher für Miniaturansicht"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.215
 msgid "Prefer image file embedded thumbnails"
-msgstr "Im Bild integrierte Thumbnails bevorzugen"
+msgstr "Bevorzuge eingebettete Miniaturansicht in Bilddateien"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.203
 msgid "Use Windows Image/Fax Viewer"
-msgstr "Windows Image/Fax Viewer verwenden"
-
-#. Dialog control
-#: DIALOGCONTROL.202.Button.210
-msgid "Select/Deselect all"
-msgstr "Alles/Nichts auswählen"
-
-#. Dialog control
-#: DIALOGCONTROL.202.Button.223
-msgid "Default"
-msgstr "Standard"
+msgstr "Windows-Fotoanzeige verwenden"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.213
 msgid "Clear..."
-msgstr "Bereinigen..."
+msgstr "Leeren..."
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.218
@@ -76,9 +77,19 @@ msgid "Optimize"
 msgstr "Optimieren"
 
 #. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "Alle auswählen/abwählen"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "Voreinstellung"
+
+#. Dialog control
 #: DIALOGCONTROL.202.Button.2147483649
 msgid "Context menu preview size"
-msgstr "Vorschau-Größe Kontext-Menü"
+msgstr "Größe Bildvorschau in Kontextmenü"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483650
@@ -98,12 +109,12 @@ msgstr "Pixel"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483653
 msgid "Supported file types"
-msgstr "Unterstützte Dateiformate"
+msgstr "Unterstützte Dateitypen"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483654
 msgid "System-wide tweaks"
-msgstr "Systemweite Tweaks"
+msgstr "Systemübergreifende Anpassung"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483655
@@ -113,7 +124,7 @@ msgstr "Sprache:"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483656
 msgid "Maximum size of image file:"
-msgstr "Max. unterstützte Bildgröße:"
+msgstr "Maximale Bilddateigröße:"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483657
@@ -123,27 +134,22 @@ msgstr "MB"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483658
 msgid "Convert options"
-msgstr "Konvertierungseinstellungen"
+msgstr "Umwandlungseinstellungen"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483659
 msgid "JPEG quality (0 - lowest, 100 - best):"
-msgstr "JPEG-Qualität (0 - geringste, 100 - höchste):"
+msgstr "JPEG-Qualität (0=niedrigste, 100=beste Qualität):"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483660
 msgid "PNG compression (0 - lowest, 9 - best):"
-msgstr "PNG-Kompression (0 - geringste, 9 - höchste):"
+msgstr "PNG-Kompression (0=keine, 9=beste Kompression):"
 
 #. Dialog control
-#: DIALOGCONTROL.202.Button.225
-msgid "Show type overlay on thumbnails"
-msgstr "Zeige Dateityp auf den Thumbnails"
-
-#. Dialog control
-#: DIALOGCONTROL.202.Button.226
-msgid "Show preview in submenu"
-msgstr "Vorschau in Untermenü anzeigen"
+#: DIALOGCONTROL.202.Static.2147483662
+msgid "Custom file types (use spaces as delimiters):"
+msgstr "Benutzerdefinierte Dateitypen (Leerzeichen zum Trennen verwenden):"
 
 #. String resource
 #: STRING.100
@@ -153,7 +159,7 @@ msgstr "SageThumbs"
 #. String resource
 #: STRING.101
 msgid "Change various SageThumbs options"
-msgstr "SageThumbs Optionen einstellen"
+msgstr "Diverse SageThumbs-Einstellungen ändern"
 
 #. String resource
 #: STRING.102
@@ -163,17 +169,17 @@ msgstr "Typ: "
 #. String resource
 #: STRING.103
 msgid "Sizes (pixels): "
-msgstr "Größe (Pixel): "
+msgstr "Bildgröße (Pixel): "
 
 #. String resource
 #: STRING.104
 msgid "Size (bytes): "
-msgstr "Größe (Bytes): "
+msgstr "Dateigröße (Bytes): "
 
 #. String resource
 #: STRING.105
 msgid "Modified: "
-msgstr "Geändert am: "
+msgstr "Geändert: "
 
 #. String resource
 #: STRING.106
@@ -193,17 +199,17 @@ msgstr "Auflösung: "
 #. String resource
 #: STRING.109
 msgid "Can't open image file"
-msgstr "Bild kann nicht geöffnet werden"
+msgstr "Kann Bild nicht öffnen"
 
 #. String resource
 #: STRING.110
 msgid "Can't save image file"
-msgstr "Bild kann nicht gespeichert werden"
+msgstr "Kann Bild nicht speichern"
 
 #. String resource
 #: STRING.111
 msgid "Can't send mail"
-msgstr "E-Mail kann nicht gesendet werden"
+msgstr "Kann E-Mail nicht versenden"
 
 #. String resource
 #: STRING.112
@@ -213,37 +219,42 @@ msgstr "Nichts zu senden"
 #. String resource
 #: STRING.113
 msgid "Can't open clipboard"
-msgstr "Zwischenablage kann nicht geöffnet werden"
+msgstr "Kann Zwischenablage nicht öffnen"
 
 #. String resource
 #: STRING.114
 msgid "Please confirm thumbnail cache clearing."
-msgstr "Bitte die Bereinigung der Datenbank bestätigen."
+msgstr "Leeren des Zwischenspeichers für Miniaturansichten bitte bestätigen."
 
 #. String resource
 #: STRING.115
 msgid "Thumbnail cache size: %u KB"
-msgstr "Größe Thumbnail-Cache: %u KB"
+msgstr "Zwischenspeicher der Miniaturansicht - Größe: %u KB"
 
 #. String resource
 #: STRING.116
 msgid "SageThumbs thumbnail cache"
-msgstr "SageThumbs Thumbnail-Cache"
+msgstr "SageThumbs Miniaturansicht-Zwischenspeicher"
 
 #. String resource
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
-msgstr "SageThumbs Thumbnail-Cache bereinigen. Benutzerdaten werden nicht gelöscht."
+msgstr ""
+"SageThumbs Zwischenspeicher bereinigen. Benutzerdaten bleiben bestehen."
 
 #. String resource
 #: STRING.118
-msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
-msgstr "Einstellungen können nicht gespeichert werden. Bitte SageThumbs mit administrativen Rechten verwenden."
+msgid ""
+"Can not apply all settings. Please use SageThumbs under account with "
+"administrative privileges."
+msgstr ""
+"Einstellungen können nicht übernommen werden. Bitte SageThumbs mit einem "
+"Administrator-Konto ausführen."
 
 #. String resource
 #: STRING.119
 msgid "Convert to PNG"
-msgstr "Konvertieren in PNG"
+msgstr "In PNG umwandeln"
 
 #. String resource
 #: STRING.120
@@ -258,60 +269,59 @@ msgstr "Senden..."
 #. String resource
 #: STRING.122
 msgid "Applying settings..."
-msgstr "Einstellungen anwenden..."
+msgstr "Einstellungen werden übernommen..."
 
 #. String resource
 #: STRING.123
 msgid "Updating..."
-msgstr "Aktualisierung..."
+msgstr "Aktualisiere..."
 
 #. String resource
 #: STRING.203
 msgid "SageThumbs Options..."
-msgstr "SageThumbs Optionen..."
+msgstr "SageThumbs-Einstellungen..."
 
 #. String resource
 #: STRING.204
 msgid "Copy to clipboard"
-msgstr "In die Zwischenablage kopieren"
+msgstr "In Zwischenablage kopieren"
 
 #. String resource
 #: STRING.205
 msgid "Set tiled wallpaper"
-msgstr "Als gekacheltes Hintergrundbild verwenden"
+msgstr "Als Hintergrundbild (nebeneinander)"
 
 #. String resource
 #: STRING.206
 msgid "Set centered wallpaper"
-msgstr "Als zentriertes Hintergrundbild verwenden"
+msgstr "Als Hintergrundbild (zentriert)"
 
 #. String resource
 #: STRING.207
 msgid "Set stretched wallpaper"
-msgstr "Als gestrecktes Hintergrundbild verwenden"
+msgstr "Als Hintergrundbild (gestreckt)"
 
 #. String resource
 #: STRING.208
 msgid "Send image by mail..."
-msgstr "Bild als E-Mail verschicken..."
+msgstr "Bild per E-Mail verschicken..."
 
 #. String resource
 #: STRING.209
 msgid "Send thumbnail by mail..."
-msgstr "Thumbnail als E-Mail verschicken..."
+msgstr "Miniaturansicht per E-Mail verschicken..."
 
 #. String resource
 #: STRING.210
 msgid "Convert to JPG"
-msgstr "Konvertieren in JPG"
+msgstr "In JPG umwandeln"
 
 #. String resource
 #: STRING.211
 msgid "Convert to GIF"
-msgstr "Konvertieren in GIF"
+msgstr "In GIF umwandeln"
 
 #. String resource
 #: STRING.212
 msgid "Convert to BMP"
-msgstr "Konvertieren in BMP"
-
+msgstr "In BMP umwandeln"
