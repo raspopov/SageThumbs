@@ -50,7 +50,6 @@
 #define IDC_ENABLE_THUMBS               212
 #define IDC_CLEAR                       213
 #define IDC_FILE_SIZE                   214
-#define IDR_PO1                         214
 #define IDC_EMBEDDED                    215
 #define IDC_ENABLE_ICONS                216
 #define IDC_ENABLE_WINCACHE             217

@@ -1,0 +1,323 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SageThumbs.dll\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Adisorn Aeksatean <npgamer_nott@hotmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+
+#. Dialog caption
+#: DIALOGCAPTION.202
+msgid "SageThumbs Options"
+msgstr "การตั้งค่า SageThumbs"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.1
+msgid "OK"
+msgstr "ตกลง"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2
+msgid "Cancel"
+msgstr "ยกเลิก"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.211
+msgid "Enable context menu in Explorer"
+msgstr "ใช้งานเป็นเมนูใน Explorer"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr "แสดงตัวอย่างใน Submenu"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.212
+msgid "Enable thumbnails in Explorer"
+msgstr "ใช้งานการแสดงภาพย่อใน Explorer"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.216
+msgid "Use thumbnails as icons in Explorer"
+msgstr "ใช้งานการแสดงภาพย่อเป็นไอคอนใน Explorer"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "แสดงนามสกุลไฟล์บนภาพย่อ"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.217
+msgid "Enable Windows thumbnail cache"
+msgstr "ใช้งานแคชการแสดงภาพย่อ"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.215
+msgid "Prefer image file embedded thumbnails"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.203
+msgid "Use Windows Image/Fax Viewer"
+msgstr "ใช้งาน Windows Image/Fax Viewer"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.213
+msgid "Clear..."
+msgstr "ล้าง..."
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.218
+msgid "Optimize"
+msgstr "ปรับแต่ง"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "เลือก/ยกเลิกการเลือกทั้งหมด"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "ค่าปริยาย"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483649
+msgid "Context menu preview size"
+msgstr "ขนาดการแสดงตัวอย่างในเมนู"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483650
+msgid "Width x Height:"
+msgstr "กว้าง x สูง:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483651
+msgid "X"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483652
+msgid "pixels"
+msgstr "พิกเซล"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483653
+msgid "Supported file types"
+msgstr "ไฟล์ที่รองรับ"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483654
+msgid "System-wide tweaks"
+msgstr "การปรับแต่งทั้งระบบ"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483655
+msgid "Language:"
+msgstr "ภาษา:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483656
+msgid "Maximum size of image file:"
+msgstr "ขนาดสูงสุดของไฟล์รูปภาพ"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483657
+msgid "MB"
+msgstr ""
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483658
+msgid "Convert options"
+msgstr "ตั้งค่าการแปลง"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483659
+msgid "JPEG quality (0 - lowest, 100 - best):"
+msgstr "คุณภาพ JPEG (0 - ต่ำสุด, 100 - ดีที่สุด)"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483660
+msgid "PNG compression (0 - lowest, 9 - best):"
+msgstr "การบีบอัด PNG (0 - ต่ำสุด, 9 - ดีที่สุด)"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483662
+msgid "Custom file types (use spaces as delimiters):"
+msgstr "รูปแบบไฟล์กำหนดเอง (ใช้งาน space เป็นตัวคั่น)"
+
+#. String resource
+#: STRING.100
+msgid "SageThumbs"
+msgstr ""
+
+#. String resource
+#: STRING.101
+msgid "Change various SageThumbs options"
+msgstr "เปลี่ยนแปลงตัวเลือกต่างๆ ของ SageThumbs"
+
+#. String resource
+#: STRING.102
+msgid "Type: "
+msgstr "ประเภท:"
+
+#. String resource
+#: STRING.103
+msgid "Sizes (pixels): "
+msgstr "ขนาด (พิกเซล):"
+
+#. String resource
+#: STRING.104
+msgid "Size (bytes): "
+msgstr "ขนาด (ไบต์):"
+
+#. String resource
+#: STRING.105
+msgid "Modified: "
+msgstr "แก้ไขล่าสุด:"
+
+#. String resource
+#: STRING.106
+msgid "Colors (bits): "
+msgstr "จำนวนสี (บิต):"
+
+#. String resource
+#: STRING.107
+msgid "Compression: "
+msgstr "การบีบอัด:"
+
+#. String resource
+#: STRING.108
+msgid "Resolution: "
+msgstr "ความละเอียด:"
+
+#. String resource
+#: STRING.109
+msgid "Can't open image file"
+msgstr "ไม่สามารถเปิดไฟล์ภาพได้"
+
+#. String resource
+#: STRING.110
+msgid "Can't save image file"
+msgstr "ไม่สามารถบันทึกภาพได้"
+
+#. String resource
+#: STRING.111
+msgid "Can't send mail"
+msgstr "ไม่สามารถส่งอีเมลได้"
+
+#. String resource
+#: STRING.112
+msgid "Nothing to send"
+msgstr "ไม่มีอะไรที่จะส่ง"
+
+#. String resource
+#: STRING.113
+msgid "Can't open clipboard"
+msgstr "ไม่สามารถเปิดคลิปบอร์ดได้"
+
+#. String resource
+#: STRING.114
+msgid "Please confirm thumbnail cache clearing."
+msgstr "กรุณายืนยันการล้างแคชภาพย่อ"
+
+#. String resource
+#: STRING.115
+msgid "Thumbnail cache size: %u KB"
+msgstr "ขนาดแคชภาพย่อ: %u KB"
+
+#. String resource
+#: STRING.116
+msgid "SageThumbs thumbnail cache"
+msgstr "แคชภาพย่อของ SageThumbs"
+
+#. String resource
+#: STRING.117
+msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
+msgstr "ล้างแคชภาพย่อของ SageThumbs. ข้อมูลของผู้ใช้จะไม่ได้รับผลกระทบใดๆ"
+
+#. String resource
+#: STRING.118
+msgid ""
+"Can not apply all settings. Please use SageThumbs under account with "
+"administrative privileges."
+msgstr "ไม่สามารถนำการตั้งค่าไปใช้ได้ กรุณาใช้งาน SageThumbs ในสถานะ Administrator"
+
+#. String resource
+#: STRING.119
+msgid "Convert to PNG"
+msgstr "แปลงเป็น PNG"
+
+#. String resource
+#: STRING.120
+msgid "Converting..."
+msgstr "กำลังทำการแปลง..."
+
+#. String resource
+#: STRING.121
+msgid "Sending..."
+msgstr "กำลังส่ง..."
+
+#. String resource
+#: STRING.122
+msgid "Applying settings..."
+msgstr "กำลังนำการตั้งค่าไปใช้..."
+
+#. String resource
+#: STRING.123
+msgid "Updating..."
+msgstr "กำลังอัพเดท..."
+
+#. String resource
+#: STRING.203
+msgid "SageThumbs Options..."
+msgstr "การตั้งค่า SageThumbs"
+
+#. String resource
+#: STRING.204
+msgid "Copy to clipboard"
+msgstr "คัดลอกไปยังคลิปบอร์ด"
+
+#. String resource
+#: STRING.205
+msgid "Set tiled wallpaper"
+msgstr "ตั้ง Wallpaper (เรียงภาพ)"
+
+#. String resource
+#: STRING.206
+msgid "Set centered wallpaper"
+msgstr "ตั้ง Wallpaper (กึ่งกลาง)"
+
+#. String resource
+#: STRING.207
+msgid "Set stretched wallpaper"
+msgstr "ตั้ง Wallpaper (ขยายเต็มหน้า)"
+
+#. String resource
+#: STRING.208
+msgid "Send image by mail..."
+msgstr "ส่งรูปภาพโดยอีเมล"
+
+#. String resource
+#: STRING.209
+msgid "Send thumbnail by mail..."
+msgstr "ส่งภาพตัวอย่างโดยอีเมล"
+
+#. String resource
+#: STRING.210
+msgid "Convert to JPG"
+msgstr "แปลงเป็น JPG"
+
+#. String resource
+#: STRING.211
+msgid "Convert to GIF"
+msgstr "แปลงเป็น GIF"
+
+#. String resource
+#: STRING.212
+msgid "Convert to BMP"
+msgstr "แปลงเป็น BMP"
