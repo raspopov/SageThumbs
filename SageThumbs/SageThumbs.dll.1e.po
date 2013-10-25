@@ -58,7 +58,7 @@ msgstr "ใช้งานแคชการแสดงภาพย่อ"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.215
 msgid "Prefer image file embedded thumbnails"
-msgstr ""
+msgstr "อ้างอิงจากภาพย่อของไฟล์รูปภาพ"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.203
