@@ -3,12 +3,13 @@ msgstr ""
 "Project-Id-Version: SageThumbs.dll\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Nikolay Raspopov <raspopov@cherubicsoft.com>\n"
+"Last-Translator: yxmline <yxmline@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Chinese\n"
+"Language: zh\n"
+"X-Generator: Poedit 1.6.3\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -143,7 +144,7 @@ msgstr "在缩略图上显示文件格式"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.226
 msgid "Show preview in submenu"
-msgstr ""
+msgstr "在子菜单中显示预览"
 
 #. String resource
 #: STRING.100
@@ -237,7 +238,9 @@ msgstr "清理 SageThumbs 缩略图缓存。用户数据不会被删除。"
 
 #. String resource
 #: STRING.118
-msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
+msgid ""
+"Can not apply all settings. Please use SageThumbs under account with "
+"administrative privileges."
 msgstr "无法应用所有设置，请确认在具有管理员权限的帐户下的运行SageThumbs。"
 
 #. String resource
@@ -314,4 +317,3 @@ msgstr "转换为 GIF 格式"
 #: STRING.212
 msgid "Convert to BMP"
 msgstr "转换为 BMP 格式"
-
