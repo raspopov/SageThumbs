@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2013.
+Copyright (C) Nikolay Raspopov, 2004-2014.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -76,8 +76,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include <shellapi.h>
 #include <shlobj.h>
 #include <sddl.h>
+#include <time.h>
 #include <thumbcache.h>
 #include <uxtheme.h>
+
+#include <list>
 
 // Windows 2000 compatibility
 
@@ -140,6 +143,8 @@ struct __declspec(uuid("E8025004-1C42-11D2-BE2C-00A0C9A83DA1")) IColumnProvider;
 
 // {889900c3-59f3-4c2f-ae21-a409ea01e605}
 DEFINE_GUID(CLSID_WindowsThumbnailer,0x889900c3,0x59f3,0x4c2f,0xae,0x21,0xa4,0x09,0xea,0x01,0xe6,0x05);
+// {6D748DE2-8D38-4CC3-AC60-F009B057C557}
+DEFINE_GUID(FMTID_RecordedTVSummaryInformation, 0x6D748DE2, 0x8D38, 0x4CC3, 0xAC, 0x60, 0xF0, 0x09, 0xB0, 0x57, 0xC5, 0x57);
 
 #define ShellImagePreview	_T("SystemFileAssociations\\image\\ShellEx\\ContextMenuHandlers\\ShellImagePreview")
 #define FileExts			_T("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\FileExts")
@@ -173,6 +178,126 @@ inline size_t lengthof(const CString& sString)
 {
 	return (size_t)( sString.GetLength() + 1 ) * sizeof( TCHAR );
 }
+
+
+template <class Base, const IID* piid, class T, class Copy, class CollType>
+class ATL_NO_VTABLE IEnumOnSTLImplExt : public Base
+{
+public:
+	inline HRESULT Init(IUnknown *pUnkForRelease, CollType& collection)
+	{
+		m_spUnk = pUnkForRelease;
+		m_collection = collection;
+		m_iter = m_collection.begin();
+		return S_OK;
+	}
+	inline STDMETHOD(Next)(ULONG celt, T* rgelt, ULONG* pceltFetched);
+	inline STDMETHOD(Skip)(ULONG celt);
+	inline STDMETHOD(Reset)(void)
+	{
+		m_iter = m_collection.begin();
+		return S_OK;
+	}
+	inline STDMETHOD(Clone)(Base** ppEnum);
+//Data
+	CComPtr<IUnknown> m_spUnk;
+	typename CollType m_collection;
+	typename CollType::const_iterator m_iter;
+};
+
+template <class Base, const IID* piid, class T, class Copy, class CollType>
+inline STDMETHODIMP IEnumOnSTLImplExt<Base, piid,
+	T, Copy, CollType>::Next(ULONG celt, T* rgelt, ULONG* pceltFetched)
+{
+	if (rgelt == NULL || (celt != 1 && pceltFetched == NULL))
+		return E_POINTER;
+
+	ULONG nActual = 0;
+	HRESULT hr = S_OK;
+	if ( ! m_collection.empty() )
+	{
+		T* pelt = rgelt;
+		while (SUCCEEDED(hr) && m_iter != m_collection.end() && nActual < celt)
+		{
+			hr = Copy::copy(pelt, &*m_iter);
+			if (FAILED(hr))
+			{
+				while (rgelt < pelt)
+					Copy::destroy(rgelt++);
+				nActual = 0;
+			}
+			else
+			{
+				pelt++;
+				m_iter++;
+				nActual++;
+			}
+		}
+	}
+	if (pceltFetched)
+		*pceltFetched = nActual;
+	if (SUCCEEDED(hr) && (nActual < celt))
+		hr = S_FALSE;
+	return hr;
+}
+
+template <class Base, const IID* piid, class T, class Copy, class CollType>
+inline STDMETHODIMP IEnumOnSTLImplExt<Base, piid, T, Copy, CollType>::Skip(ULONG celt)
+{
+	if ( m_collection.empty() )
+		return celt ? S_FALSE : S_OK;
+
+	HRESULT hr = S_OK;
+	while (celt--)
+	{
+		if (m_iter != m_collection.end())
+			m_iter++;
+		else
+		{
+			hr = S_FALSE;
+			break;
+		}
+	}
+	return hr;
+}
+
+template <class Base, const IID* piid, class T, class Copy, class CollType>
+inline STDMETHODIMP IEnumOnSTLImplExt<Base, piid, T, Copy, CollType>::Clone(Base** ppEnum)
+{
+	typedef CComObject<CComEnumOnSTL<Base, piid, T, Copy, CollType> > _class;
+	HRESULT hRes = E_POINTER;
+	if (ppEnum != NULL)
+	{
+		*ppEnum = NULL;
+		_class* p;
+		hRes = _class::CreateInstance(&p);
+		if (SUCCEEDED(hRes))
+		{
+			hRes = p->Init(m_spUnk, m_collection);
+			if (SUCCEEDED(hRes))
+			{
+				p->m_iter = m_iter;
+				hRes = p->_InternalQueryInterface(*piid, (void**)ppEnum);
+			}
+			if (FAILED(hRes))
+				delete p;
+		}
+	}
+	return hRes;
+}
+
+template <class Base, const IID* piid, class T, class Copy, class CollType, class ThreadModel = CComObjectThreadModel>
+class ATL_NO_VTABLE CComEnumOnSTLExt :
+	public IEnumOnSTLImplExt<Base, piid, T, Copy, CollType>,
+	public CComObjectRootEx< ThreadModel >
+{
+public:
+	typedef CComEnumOnSTLExt<Base, piid, T, Copy, CollType, ThreadModel > _CComEnum;
+	typedef IEnumOnSTLImplExt<Base, piid, T, Copy, CollType > _CComEnumBase;
+	BEGIN_COM_MAP(_CComEnum)
+		COM_INTERFACE_ENTRY_IID(*piid, _CComEnumBase)
+	END_COM_MAP()
+};
 
 #ifdef _UNICODE
 #if defined _M_IX86

@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2013.
+Copyright (C) Nikolay Raspopov, 2004-2014.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -128,8 +128,8 @@ class ATL_NO_VTABLE CThumb :
 	public IThumbnailProvider,
 	public IPropertyStoreCapabilities,
 	public IPropertyStore,
-//	public IPropertySetStorage,
-//	public IPropertyStorage,
+	public IPropertySetStorage,
+	public IPropertyStorage,
 //	public INamedPropertyStore,
 //	public IPreviewHandler,
 //	public IOleWindow,
@@ -170,8 +170,8 @@ public:
 		COM_INTERFACE_ENTRY(IThumbnailProvider)
 		COM_INTERFACE_ENTRY(IPropertyStoreCapabilities)
 		COM_INTERFACE_ENTRY(IPropertyStore)
-//		COM_INTERFACE_ENTRY(IPropertySetStorage)
-//		COM_INTERFACE_ENTRY(IPropertyStorage)
+		COM_INTERFACE_ENTRY(IPropertySetStorage)
+		COM_INTERFACE_ENTRY(IPropertyStorage)
 //		COM_INTERFACE_ENTRY(INamedPropertyStore)
 //		COM_INTERFACE_ENTRY(IPreviewHandler)
 //		COM_INTERFACE_ENTRY(IOleWindow)
@@ -272,58 +272,58 @@ public:
 	STDMETHOD(Commit)(void);
 
 // IPropertySetStorage
-	//STDMETHOD(Create)(
-	//	/* [in] */ __RPC__in REFFMTID rfmtid,
-	//	/* [unique][in] */ __RPC__in_opt const CLSID *pclsid,
-	//	/* [in] */ DWORD grfFlags,
-	//	/* [in] */ DWORD grfMode,
-	//	/* [out] */ __RPC__deref_out_opt IPropertyStorage **ppprstg);
-	//STDMETHOD(Open)(
-	//	/* [in] */ __RPC__in REFFMTID rfmtid,
-	//	/* [in] */ DWORD grfMode,
-	//	/* [out] */ __RPC__deref_out_opt IPropertyStorage **ppprstg);
-	//STDMETHOD(Delete)(
-	//	/* [in] */ __RPC__in REFFMTID rfmtid);
-	//STDMETHOD(Enum)(
-	//	/* [out] */ __RPC__deref_out_opt IEnumSTATPROPSETSTG **ppenum);
+	STDMETHOD(Create)(
+		/* [in] */ __RPC__in REFFMTID rfmtid,
+		/* [unique][in] */ __RPC__in_opt const CLSID *pclsid,
+		/* [in] */ DWORD grfFlags,
+		/* [in] */ DWORD grfMode,
+		/* [out] */ __RPC__deref_out_opt IPropertyStorage **ppprstg);
+	STDMETHOD(Open)(
+		/* [in] */ __RPC__in REFFMTID rfmtid,
+		/* [in] */ DWORD grfMode,
+		/* [out] */ __RPC__deref_out_opt IPropertyStorage **ppprstg);
+	STDMETHOD(Delete)(
+		/* [in] */ __RPC__in REFFMTID rfmtid);
+	STDMETHOD(Enum)(
+		/* [out] */ __RPC__deref_out_opt IEnumSTATPROPSETSTG **ppenum);
 
 // IPropertyStorage
-	//STDMETHOD(ReadMultiple)(
-	//	/* [in] */ ULONG cpspec,
-	//	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[  ],
-	//	/* [size_is][out] */ __RPC__out_ecount_full(cpspec) PROPVARIANT rgpropvar[  ]);
-	//STDMETHOD(WriteMultiple)(
-	//	/* [in] */ ULONG cpspec,
-	//	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[  ],
-	//	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPVARIANT rgpropvar[  ],
-	//	/* [in] */ PROPID propidNameFirst);
-	//STDMETHOD(DeleteMultiple)(
-	//	/* [in] */ ULONG cpspec,
-	//	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[  ]);
-	//STDMETHOD(ReadPropertyNames)(
-	//	/* [in] */ ULONG cpropid,
-	//	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID rgpropid[  ],
-	//	/* [size_is][out] */ __RPC__out_ecount_full(cpropid) LPOLESTR rglpwstrName[  ]);
-	//STDMETHOD(WritePropertyNames)(
-	//	/* [in] */ ULONG cpropid,
-	//	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID rgpropid[  ],
-	//	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const LPOLESTR rglpwstrName[  ]);
-	//STDMETHOD(DeletePropertyNames)(
-	//	/* [in] */ ULONG cpropid,
-	//	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID rgpropid[  ]);
-	//STDMETHOD(Commit)(
-	//	/* [in] */ DWORD grfCommitFlags);
-	//STDMETHOD(Revert)();
-	//STDMETHOD(Enum)(
-	//	/* [out] */ __RPC__deref_out_opt IEnumSTATPROPSTG **ppenum);
-	//STDMETHOD(SetTimes)(
-	//	/* [in] */ __RPC__in const FILETIME *pctime,
-	//	/* [in] */ __RPC__in const FILETIME *patime,
-	//	/* [in] */ __RPC__in const FILETIME *pmtime);
-	//STDMETHOD(SetClass)(
-	//	/* [in] */ __RPC__in REFCLSID clsid);
-	//STDMETHOD(Stat)(
-	//	/* [out] */ __RPC__out STATPROPSETSTG *pstatpsstg);
+	STDMETHOD(ReadMultiple)(
+		/* [in] */ ULONG cpspec,
+		/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[  ],
+		/* [size_is][out] */ __RPC__out_ecount_full(cpspec) PROPVARIANT rgpropvar[  ]);
+	STDMETHOD(WriteMultiple)(
+		/* [in] */ ULONG cpspec,
+		/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[  ],
+		/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPVARIANT rgpropvar[  ],
+		/* [in] */ PROPID propidNameFirst);
+	STDMETHOD(DeleteMultiple)(
+		/* [in] */ ULONG cpspec,
+		/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC rgpspec[  ]);
+	STDMETHOD(ReadPropertyNames)(
+		/* [in] */ ULONG cpropid,
+		/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID rgpropid[  ],
+		/* [size_is][out] */ __RPC__out_ecount_full(cpropid) LPOLESTR rglpwstrName[  ]);
+	STDMETHOD(WritePropertyNames)(
+		/* [in] */ ULONG cpropid,
+		/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID rgpropid[  ],
+		/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const LPOLESTR rglpwstrName[  ]);
+	STDMETHOD(DeletePropertyNames)(
+		/* [in] */ ULONG cpropid,
+		/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID rgpropid[  ]);
+	STDMETHOD(Commit)(
+		/* [in] */ DWORD grfCommitFlags);
+	STDMETHOD(Revert)();
+	STDMETHOD(Enum)(
+		/* [out] */ __RPC__deref_out_opt IEnumSTATPROPSTG **ppenum);
+	STDMETHOD(SetTimes)(
+		/* [in] */ __RPC__in const FILETIME *pctime,
+		/* [in] */ __RPC__in const FILETIME *patime,
+		/* [in] */ __RPC__in const FILETIME *pmtime);
+	STDMETHOD(SetClass)(
+		/* [in] */ __RPC__in REFCLSID clsid);
+	STDMETHOD(Stat)(
+		/* [out] */ __RPC__out STATPROPSETSTG *pstatpsstg);
 
 // INamedPropertyStore
 	//STDMETHOD(GetNamedValue)(

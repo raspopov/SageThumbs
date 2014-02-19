@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2013.
+Copyright (C) Nikolay Raspopov, 2004-2014.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,27 +23,29 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 class CSageThumbsModule;
 class CWaitCursor;
 
-// #define GFL_THREAD_SAFE	// When enabled GFL calls guarded by critical section
-// #define ISTREAM_ENABLED	// Enable support for IInitializeWithStream interface
+//#define GFL_THREAD_SAFE	// When enabled GFL calls guarded by critical section
+//#define ISTREAM_ENABLED	// Enable support for IInitializeWithStream interface
 
-//extern BitsDescriptionMap	_BitsMap;
-extern CSageThumbsModule	_Module;		// Application
+//extern BitsDescriptionMap		_BitsMap;
+extern CSageThumbsModule		_Module;		// Application
 
-#define LIB_GFL				"libgfl340.dll"	// Name of GFL library (case sensitive)
-#define LIB_GFLE			"libgfle340.dll"// Name of GFLe library (case sensitive)
-#define LIB_SQLITE			"sqlite3.dll"	// Name of SQLite library (case sensitive)
-#define CLSID_THUMB			_T("{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}")
-#define REG_SAGETHUMBS		_T("Software\\SageThumbs")
-#define REG_SAGETHUMBS_BAK	_T("SageThumbs.bak")
-#define REG_SAGETHUMBS_IMG	_T("SageThumbsImage")
-#define CUSTOM_TYPE			_T("SageThumbs Custom Type")
-#define JPEG_DEFAULT		85ul			// JPEG default quality (0-100)
-#define PNG_DEFAULT			6ul				// PNG default compression (0-9)
-#define THUMB_STORE_SIZE	256ul			// Minimum thumbnail size for database, pixels
-#define THUMB_MIN_SIZE		32ul			// Thumbnail minimum size, pixels
-#define THUMB_MAX_SIZE		512ul			// Thumbnail maximum size, pixels
-#define FILE_MAX_SIZE		10ul			// Default maximum file size, MB
-#define STANDARD_LANGID		0x09			// Default language ID - English
+#define LIB_GFL					"libgfl340.dll"	// Name of GFL library (case sensitive)
+#define LIB_GFLE				"libgfle340.dll"// Name of GFLe library (case sensitive)
+#define LIB_SQLITE				"sqlite3.dll"	// Name of SQLite library (case sensitive)
+#define CLSID_THUMB				_T("{4A34B3E3-F50E-4FF6-8979-7E4176466FF2}")
+#define REG_SAGETHUMBS			_T("Software\\SageThumbs")
+#define REG_SAGETHUMBS_BAK		_T("SageThumbs.bak")
+#define REG_SAGETHUMBS_IMG		_T("SageThumbsImage")
+#define CUSTOM_TYPE				_T("SageThumbs Custom Type")
+#define JPEG_DEFAULT			85ul			// JPEG default quality (0-100)
+#define PNG_DEFAULT				6ul				// PNG default compression (0-9)
+#define THUMB_STORE_SIZE		256ul			// Minimum thumbnail size for database, pixels
+#define THUMB_MIN_SIZE			32ul			// Thumbnail minimum size, pixels
+#define THUMB_MAX_SIZE			512ul			// Thumbnail maximum size, pixels
+#define THUMB_STORE_PNG_RATIO	9				// Compression ratio for PNG-thumbnail
+#define THUMB_STORE_JPG_RATIO	80				// Compression ration for JPG-thumbnail
+#define FILE_MAX_SIZE			10ul			// Default maximum file size, MB
+#define STANDARD_LANGID			0x09			// Default language ID - English
 
 // SQL для создания базы данных
 const LPCTSTR RECREATE_DATABASE =
@@ -87,6 +89,7 @@ typedef struct
 	bool	enabled;
 	bool	custom;
 	CString	info;
+	int		index;		// Format index (-1 - custom)
 } Ext;
 
 typedef CRBMap < CString, Ext > CExtMap;
@@ -131,16 +134,21 @@ public:
 	// Image extensions disabled by default
 	bool IsDisabledByDefault(LPCTSTR szExt) const;
 
-	HRESULT GetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info);
-	HRESULT LoadGFLBitmap(LPCTSTR filename, GFL_BITMAP **bitmap);
-	HRESULT LoadThumbnail(LPCTSTR filename, int width, int height, GFL_BITMAP **bitmap);
-	HRESULT LoadBitmapFromMemory(LPCVOID data, UINT data_length, GFL_BITMAP **bitmap);
-	HRESULT ConvertBitmap(const GFL_BITMAP* bitmap, HBITMAP* phBitmap);
-	HRESULT Resize(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height);
-	HRESULT FreeBitmap(GFL_BITMAP*& bitmap);
+	HRESULT LoadGFLBitmap(LPCTSTR filename, GFL_BITMAP **bitmap) throw();
+	HRESULT GetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info) throw();
+	HRESULT LoadThumbnail(LPCTSTR filename, int width, int height, GFL_BITMAP **bitmap) throw();
+#ifdef ISTREAM_ENABLED
+	HRESULT GetFileInformation(IStream* pStream, GFL_FILE_INFORMATION* info) throw();
+	HRESULT LoadThumbnail(IStream* pStream, int width, int height, GFL_BITMAP **bitmap) throw();
+#endif // ISTREAM_ENABLED
+	HRESULT LoadBitmapFromMemory(LPCVOID data, UINT data_length, GFL_BITMAP **bitmap) throw();
+	HRESULT ConvertBitmap(const GFL_BITMAP* bitmap, HBITMAP* phBitmap) throw();
+	HRESULT Resize(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height) throw();
+	HRESULT ResizeCanvas(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height) throw();
+	HRESULT FreeBitmap(GFL_BITMAP*& bitmap) throw();
 
 	// Проверка, что файл подходит для загрузки по всем параметрам
-	bool IsGoodFile(LPCTSTR szFilename, Ext* pdata = NULL, WIN32_FIND_DATA* pfd = NULL) const;
+	bool IsGoodFile(LPCTSTR szFilename, Ext* pdata = NULL) const;
 
 	// Add user-defined custom extensions from string
 	void AddCustomTypes(const CString& sCustom);
@@ -175,13 +183,13 @@ protected:
 
 #ifdef GFL_THREAD_SAFE
 	CComAutoCriticalSection m_pSection;
-	HRESULT GetFileInformationE(LPCTSTR filename, GFL_FILE_INFORMATION* info);
-	HRESULT LoadBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap);
-	HRESULT LoadThumbnailE(LPCTSTR filename, int width, int height, GFL_BITMAP **bitmap);
-	HRESULT LoadBitmapFromMemoryE(LPCVOID data, UINT data_length, GFL_BITMAP **bitmap);
-	HRESULT ConvertBitmapE(const GFL_BITMAP* bitmap, HBITMAP* phBitmap);
-	HRESULT ResizeE(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height);
-	HRESULT FreeBitmapE(GFL_BITMAP*& bitmap);
+	HRESULT GetFileInformationE(LPCTSTR filename, GFL_FILE_INFORMATION* info) throw();
+	HRESULT LoadBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap) throw();
+	HRESULT LoadThumbnailE(LPCTSTR filename, int width, int height, GFL_BITMAP **bitmap) throw();
+	HRESULT LoadBitmapFromMemoryE(LPCVOID data, UINT data_length, GFL_BITMAP **bitmap) throw()
+	HRESULT ConvertBitmapE(const GFL_BITMAP* bitmap, HBITMAP* phBitmap) throw();
+	HRESULT ResizeE(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height) throw();
+	HRESULT FreeBitmapE(GFL_BITMAP*& bitmap) throw();
 #endif // GFL_THREAD_SAFE
 };
 
@@ -239,8 +247,8 @@ LONG APIENTRY CPlApplet (HWND hwnd, UINT uMsg, LPARAM lParam1, LPARAM lParam2);
 class CWaitCursor
 {
 public:
-	CWaitCursor() : m_hCursor( SetCursor( LoadCursor( NULL, IDC_WAIT ) ) ) { }
-	~CWaitCursor() { SetCursor( m_hCursor ); }
+	inline CWaitCursor() : m_hCursor( SetCursor( LoadCursor( NULL, IDC_WAIT ) ) ) { }
+	inline ~CWaitCursor() { SetCursor( m_hCursor ); }
 
 protected:
 	HCURSOR m_hCursor;

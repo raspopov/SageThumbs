@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2013.
+Copyright (C) Nikolay Raspopov, 2004-2014.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -22,6 +22,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "SageThumbs.h"
 #include "Thumb.h"
 #include "OptionsDlg.h"
+#include "SQLite.h"
 
 //static BitsDescription	_Bits [] = {
 //	{_T("psd"),		2, "\xff\xff", "\x38\x42"},
@@ -147,24 +148,8 @@ CSageThumbsModule::CSageThumbsModule()
 	GetModuleFileName( _AtlBaseModule.GetModuleInstance(),
 		m_sModuleFileName.GetBuffer( MAX_LONG_PATH ), MAX_LONG_PATH );
 	m_sModuleFileName.ReleaseBuffer();
-	ATLTRACE( "Module path: %s\n", (LPCSTR)CT2A( m_sModuleFileName ) );
+	ATLTRACE( "CSageThumbsModule - Module path: %s\n", (LPCSTR)CT2A( m_sModuleFileName ) );
 	m_sHome = m_sModuleFileName.Left( m_sModuleFileName.ReverseFind( _T('\\') ) + 1 );
-
-	// Get database filename
-	m_sDatabase = GetRegValue( _T("Database"), CString() );
-	if ( m_sDatabase.IsEmpty() )
-	{
-		m_sDatabase = GetSpecialFolderPath( CSIDL_LOCAL_APPDATA );
-		if ( m_sDatabase.IsEmpty() )
-		{
-			GetWindowsDirectory( m_sDatabase.GetBuffer( MAX_LONG_PATH ), MAX_LONG_PATH );
-			m_sDatabase.ReleaseBuffer();
-		}
-		m_sDatabase.TrimRight (_T("\\"));
-		m_sDatabase += _T("\\SageThumbs.db3");
-		SetRegValue( _T("Database"), m_sDatabase );
-	}
-	ATLTRACE( "Database path: %s\n", (LPCSTR)CT2A( m_sDatabase ) );
 }
 
 BOOL CSageThumbsModule::DllMain(DWORD dwReason, LPVOID lpReserved) throw()
@@ -174,7 +159,7 @@ BOOL CSageThumbsModule::DllMain(DWORD dwReason, LPVOID lpReserved) throw()
 	switch ( dwReason )
 	{
 	case DLL_PROCESS_ATTACH:
-		ATLTRACE( "CThumb - DllMain::DLL_PROCESS_ATTACH\n" );
+		ATLTRACE( "CSageThumbsModule - DllMain(DLL_PROCESS_ATTACH)\n" );
 		DisableThreadLibraryCalls( _AtlBaseModule.GetModuleInstance() );
 		__try
 		{
@@ -183,29 +168,21 @@ BOOL CSageThumbsModule::DllMain(DWORD dwReason, LPVOID lpReserved) throw()
 		}
 		__except ( EXCEPTION_EXECUTE_HANDLER )
 		{
-			ATLTRACE( "Exception in CSageThumbsModule::Initialize()\n" );
+			ATLTRACE( "CSageThumbsModule - Exception in Initialize()\n" );
 			res = FALSE;
 		}
 		break;
 
 	case DLL_PROCESS_DETACH:
-		ATLTRACE( "CThumb - DllMain::DLL_PROCESS_DETACH\n" );
+		ATLTRACE( "CSageThumbsModule - DllMain(DLL_PROCESS_DETACH)\n" );
 		__try
 		{
 			UnInitialize();
 		}
 		__except ( EXCEPTION_EXECUTE_HANDLER )
 		{
-			ATLTRACE( "Exception in CSageThumbsModule::UnInitialize()\n" );
+			ATLTRACE( "CSageThumbsModule - Exception in UnInitialize()\n" );
 		}
-		break;
-
-	case DLL_THREAD_ATTACH:
-		ATLTRACE( "CThumb - DllMain::DLL_THREAD_ATTACH\n" );
-		break;
-
-	case DLL_THREAD_DETACH:
-		ATLTRACE( "CThumb - DllMain::DLL_THREAD_DETACH\n" );
 		break;
 	}
 
@@ -861,7 +838,7 @@ void CSageThumbsModule::FillExtMap()
 		GFL_ERROR err = gflGetFormatInformationByIndex (i, &info);
 		if ( err == GFL_NO_ERROR && ( info.Status & GFL_READ ) )
 		{
-			Ext data = { true, false, (LPCTSTR)CA2T( info.Description ) };
+			Ext data = { true, false, (LPCTSTR)CA2T( info.Description ), i };
 			for ( UINT j = 0; j < info.NumberOfExtension; ++j )
 			{
 				CString sExt = (LPCTSTR)CA2T( info.Extension [ j ] );
@@ -895,7 +872,7 @@ void CSageThumbsModule::FillExtMap()
 			Ext foo;
 			if ( ! m_oExtMap.Lookup( sExt, foo ) )
 			{
-				const Ext data = { true, true, CUSTOM_TYPE };
+				const Ext data = { true, true, CUSTOM_TYPE, -1 };
 				m_oExtMap.SetAt( sExt, data );
 			}
 		}
@@ -908,16 +885,17 @@ void CSageThumbsModule::FillExtMap()
 		CExtMap::CPair* p = m_oExtMap.GetNext (pos);
 
 		DWORD dwEnabled = GetRegValue( _T("Enabled"), 2ul, key + p->m_key );
-		if ( dwEnabled == 2 )
+		if ( dwEnabled != 1 && dwEnabled != 0 )
 		{
 			// No extension
-			dwEnabled = ( IsDisabledByDefault( p->m_key ) ? 0ul : 1ul );						// Use default
-			SetRegValue( _T("Enabled"), ( p->m_value.enabled ? 1ul : 0ul ), key + p->m_key );	// Explicit create key
+			dwEnabled = ( IsDisabledByDefault( p->m_key ) ? 0ul : 1ul );				// Use default
+			SetRegValue( _T("Enabled"), ( dwEnabled ? 1ul : 0ul ), key + p->m_key );	// Explicit create key
+			dwEnabled = GetRegValue( _T("Enabled"), 2ul, key + p->m_key );
 		}
-		p->m_value.enabled = ( dwEnabled != 0 );
+		p->m_value.enabled = ( dwEnabled == 1 );
 	}
 
-	ATLTRACE( "Loaded %d formats, %d extensions. ", count, m_oExtMap.GetCount() );
+	ATLTRACE( "CSageThumbsModule - Loaded %d formats, %d extensions. ", count, m_oExtMap.GetCount() );
 }
 
 void CSageThumbsModule::AddCustomTypes(const CString& sCustom)
@@ -955,7 +933,7 @@ void CSageThumbsModule::AddCustomTypes(const CString& sCustom)
 		else
 		{
 			// New custom extension
-			const Ext data = { true, true, CUSTOM_TYPE };
+			const Ext data = { true, true, CUSTOM_TYPE, -1 };
 			_Module.m_oExtMap.SetAt( sExt, data );
 		}
 		SetRegValue( _T("Enabled"), 1ul, key + sExt );
@@ -974,13 +952,27 @@ void CSageThumbsModule::AddCustomTypes(const CString& sCustom)
 
 BOOL CSageThumbsModule::Initialize()
 {
-	ATLTRACE ( "CSageThumbsModule::Initialize ()\n" );
+	TCHAR szParentPath[ MAX_LONG_PATH ] = {};
+	GetModuleFileName( NULL, szParentPath, _countof( szParentPath ) );
+	CString sParentFilename = PathFindFileName( szParentPath );
+	sParentFilename.MakeLower();
+	ATLTRACE( "CSageThumbsModule - Initialize() : We are inside \"%s\"\n", (LPCSTR)CT2A( (LPCTSTR)sParentFilename ) );
+
+	if ( sParentFilename == _T("procexp64.exe") ||			// SysInternals Process Explorer 64-bit
+		 sParentFilename == _T("procexp.exe")   ||			// SysInternals Process Explorer 32-bit
+		 sParentFilename == _T("devenv.exe")	||			// Microsoft Visual Studio
+		 sParentFilename == _T("taskmgr.exe")	||			// Windows Task Manager
+		 sParentFilename == _T("searchfilterhost.exe") )	// Windows Search (not supported yet)
+	{
+		ATLTRACE( "CSageThumbsModule - Initialize() : Blacklisted process!\n" );
+		return FALSE;
+	}
 
 #ifdef _DEBUG
-	TCHAR user_name [256] = { _T("[unknown]") };
+	TCHAR user_name[ 256 ] = {};
 	DWORD user_name_size = _countof( user_name );
 	GetUserName ( user_name, &user_name_size );
-	ATLTRACE( "Running under user: %s%s\n", (LPCSTR)CT2A( (LPCTSTR)user_name ), IsProcessElevated() ? " (Elevated)" : "" );
+	ATLTRACE( "CSageThumbsModule - Running under user: \"%s\"%s\n", (LPCSTR)CT2A( user_name ), IsProcessElevated() ? " (Elevated)" : "" );
 #endif
 
 	m_oLangs.Load( m_sModuleFileName );
@@ -1002,6 +994,22 @@ BOOL CSageThumbsModule::Initialize()
 	if ( ! m_hGFLe )
 		// Ошибка загрузки
 		return FALSE;
+		// Get database filename
+
+	m_sDatabase = GetRegValue( _T("Database"), CString() );
+	if ( m_sDatabase.IsEmpty() )
+	{
+		m_sDatabase = GetSpecialFolderPath( CSIDL_LOCAL_APPDATA );
+		if ( m_sDatabase.IsEmpty() )
+		{
+			GetWindowsDirectory( m_sDatabase.GetBuffer( MAX_LONG_PATH ), MAX_LONG_PATH );
+			m_sDatabase.ReleaseBuffer();
+		}
+		m_sDatabase.TrimRight (_T("\\"));
+		m_sDatabase += _T("\\SageThumbs.db3");
+		SetRegValue( _T("Database"), m_sDatabase );
+	}
+	ATLTRACE( "CSageThumbsModule - Database path: %s\n", (LPCSTR)CT2A( m_sDatabase ) );
 
 	// Get XnView folder
 #ifdef WIN64
@@ -1066,7 +1074,7 @@ BOOL CSageThumbsModule::Initialize()
 	{
 		SetRegValue( szPluginsKey, sPlugins );
 		gflSetPluginsPathnameT( sPlugins );
-		ATLTRACE( "gflSetPluginsPathnameW : %s=\"%s\"\n", (LPCSTR)CT2A( szPluginsKey ), (LPCSTR)CT2A( sPlugins ) );
+		ATLTRACE( "CSageThumbsModule - gflSetPluginsPathnameW : %s=\"%s\"\n", (LPCSTR)CT2A( szPluginsKey ), (LPCSTR)CT2A( sPlugins ) );
 	}
 
 	// Инициализация GFL
@@ -1077,7 +1085,7 @@ BOOL CSageThumbsModule::Initialize()
 
 	gflEnableLZW (GFL_TRUE);
 
-	ATLTRACE( "gflLibraryInit : GFL Version %s\n", gflGetVersion() );
+	ATLTRACE( "CSageThumbsModule - gflLibraryInit : GFL Version %s\n", gflGetVersion() );
 
 	FillExtMap ();
 
@@ -1085,37 +1093,65 @@ BOOL CSageThumbsModule::Initialize()
 	//for (int i = 0; _Bits [i].ext; ++i)
 	//	_BitsMap.SetAt (_Bits [i].ext, &_Bits [i]);
 
+	// Re-analyze database every day
+	CDatabase db( _Module.m_sDatabase );
+	if ( db )
+	{
+		const DWORD nLastUpdate = GetRegValue( _T("LastUpdate"), 0ul );
+		const DWORD nDays = (DWORD)( time( NULL ) / 86400 );
+		if ( nLastUpdate != nDays )
+		{
+			SetRegValue( _T("LastUpdate"), nDays );
+			if ( nLastUpdate )
+			{
+				db.Exec( _T("ANALYZE;") );						
+				ATLTRACE( "CSageThumbsModule - Database analyzed!\n" );
+			}
+		}
+	}
+
 	return TRUE;
 }
 
 void CSageThumbsModule::UnInitialize ()
 {
-	ATLTRACE ( "CSageThumbsModule::UnInitialize ()\n" );
+	ATLTRACE ( "CSageThumbsModule - UnInitialize ()\n" );
+
+	if ( m_hGFL )
+	{
+		__try
+		{
+			gflLibraryExit();
+		}
+		__except ( EXCEPTION_EXECUTE_HANDLER )
+		{
+			ATLTRACE( "CSageThumbsModule - Exception in gflLibraryExit()\n" );
+		}		
+	}
 
 	if ( m_hGFLe )
 	{
 		FreeLibrary( m_hGFLe );
 		m_hGFLe = NULL;
-		__FUnloadDelayLoadedDLL2( LIB_GFLE );
 	}
 
 	if ( m_hGFL )
 	{
-		gflLibraryExit();
-
 		FreeLibrary( m_hGFL );
 		m_hGFL = NULL;
-		__FUnloadDelayLoadedDLL2( LIB_GFL );
 	}
 
 	if ( m_hSQLite )
 	{
 		FreeLibrary( m_hSQLite );
 		m_hSQLite = NULL;
-		__FUnloadDelayLoadedDLL2( LIB_SQLITE );
 	}
 
 	m_oLangs.Empty();
+
+	__FUnloadDelayLoadedDLL2( LIB_GFLE );
+	__FUnloadDelayLoadedDLL2( LIB_GFL );
+	__FUnloadDelayLoadedDLL2( LIB_SQLITE );
 }
 
 extern "C" BOOL WINAPI DllMain(HINSTANCE /* hInstance */, DWORD dwReason, LPVOID lpReserved)
@@ -1126,26 +1162,28 @@ extern "C" BOOL WINAPI DllMain(HINSTANCE /* hInstance */, DWORD dwReason, LPVOID
 STDAPI DllCanUnloadNow(void)
 {
 	HRESULT hr = _Module.DllCanUnloadNow();
-	ATLTRACE( "CThumb - DllCanUnloadNow() : 0x%08x\n", hr );
+	ATLTRACE( "CSageThumbsModule - DllCanUnloadNow() : 0x%08x\n", hr );
 	return hr;
 }
 
 STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv)
 {
-	return _Module.DllGetClassObject( rclsid, riid, ppv );
+	HRESULT hr = _Module.DllGetClassObject( rclsid, riid, ppv );
+	ATLTRACE( "CSageThumbsModule - DllGetClassObject() : 0x%08x\n", hr );
+	return hr;
 }
 
 STDAPI DllRegisterServer(void)
 {
 	HRESULT hr = _Module.DllRegisterServer();
-	ATLTRACE( "CThumb - DllRegisterServer() : 0x%08x\n", hr );
+	ATLTRACE( "CSageThumbsModule - DllRegisterServer() : 0x%08x\n", hr );
 	return hr;
 }
 
 STDAPI DllUnregisterServer(void)
 {
 	HRESULT hr = _Module.DllUnregisterServer();
-	ATLTRACE( "CThumb - DllUnregisterServer() : 0x%08x\n", hr );
+	ATLTRACE( "CSageThumbsModule - DllUnregisterServer() : 0x%08x\n", hr );
 	return hr;
 }
 
@@ -1179,7 +1217,7 @@ STDAPI DllInstall(BOOL bInstall, LPCWSTR pszCmdLine)
 	return hr;
 }
 
-void CALLBACK Options (HWND hwnd, HINSTANCE /* hinst */, LPSTR /* lpszCmdLine */, int /* nCmdShow */)
+void CALLBACK Options(HWND hwnd, HINSTANCE /* hinst */, LPSTR /* lpszCmdLine */, int /* nCmdShow */)
 {
 	OleInitialize( NULL );
 
@@ -1193,7 +1231,7 @@ void CALLBACK Options (HWND hwnd, HINSTANCE /* hinst */, LPSTR /* lpszCmdLine */
 
 LONG APIENTRY CPlApplet(HWND hwnd, UINT uMsg, LPARAM /* lParam1 */, LPARAM lParam2)
 {
-	ATLTRACE( "Calling ::CPlApplet()...\n" );
+	ATLTRACE( "CSageThumbsModule - CPlApplet()\n" );
 
 	switch ( uMsg )
 	{
@@ -1267,7 +1305,7 @@ bool IsValidCLSID(const CString& sCLSID)
 		}
 	}
 
-	ATLTRACE( "IsValidCSID( %s ) detected %s CLSID path: \"%s\"\n", (LPCSTR)CT2A( sCLSID ), ( bIsValid ? "good" : "bad" ), (LPCSTR)CT2A( sPath ) );
+	ATLTRACE( "CSageThumbsModule - IsValidCSID( %s ) detected %s CLSID path: \"%s\"\n", (LPCSTR)CT2A( sCLSID ), ( bIsValid ? "good" : "bad" ), (LPCSTR)CT2A( sPath ) );
 	oCLSIDCache.SetAt( sCLSID, bIsValid );
 	return bIsValid;
 }
@@ -1326,7 +1364,7 @@ BOOL SetPrivilege(HANDLE hToken, LPCTSTR lpszPrivilege, BOOL bEnablePrivilege)
 	LUID luid = {};
 	if ( ! LookupPrivilegeValue( NULL, lpszPrivilege, &luid ) )
 	{
-		ATLTRACE( "Failed to Lookup Privilege Value for \"%s\"\n", (LPCSTR)CT2A( lpszPrivilege ) );
+		ATLTRACE( "CSageThumbsModule - Failed to Lookup Privilege Value for \"%s\"\n", (LPCSTR)CT2A( lpszPrivilege ) );
 		return FALSE;
 	}
 
@@ -1339,11 +1377,11 @@ BOOL SetPrivilege(HANDLE hToken, LPCTSTR lpszPrivilege, BOOL bEnablePrivilege)
 
 	if ( ! AdjustTokenPrivileges( hToken, FALSE, &tp, sizeof( TOKEN_PRIVILEGES ), NULL, NULL) || GetLastError() == ERROR_NOT_ALL_ASSIGNED )
 	{ 
-		ATLTRACE( "Failed to Adjust Token Privileges for \"%s\"\n", (LPCSTR)CT2A( lpszPrivilege ) );
+		ATLTRACE( "CSageThumbsModule - Failed to Adjust Token Privileges for \"%s\"\n", (LPCSTR)CT2A( lpszPrivilege ) );
 		return FALSE;
 	}
 
-	ATLTRACE( "Set privilege \"%s\" : %s\n", (LPCSTR)CT2A( lpszPrivilege ), bEnablePrivilege ? "Enabled" : "Disabled" );
+	ATLTRACE( "CSageThumbsModule - Set privilege \"%s\" : %s\n", (LPCSTR)CT2A( lpszPrivilege ), bEnablePrivilege ? "Enabled" : "Disabled" );
 
 	return TRUE;
 }
@@ -1390,7 +1428,7 @@ BOOL FixKeyRights(HKEY hRoot, LPCTSTR szKey)
 					// If denied rights present or administrative access rights absent
 					if ( sSSD.Find( _T("(D;") ) != -1 || sSSD.Find( _T("(A;ID;KA;;;BA)(A;CIIOID;GA;;;BA)") ) == -1 )
 					{
-						ATLTRACE( "Found bad rights of key: %s\\%s : %s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( (LPCTSTR)sSSD ) );
+						ATLTRACE( "CSageThumbsModule - Found bad rights of key: %s\\%s : %s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( (LPCTSTR)sSSD ) );
 
 						PSECURITY_DESCRIPTOR pNewSD = NULL;
 						if ( ConvertStringSecurityDescriptorToSecurityDescriptor( szGoodRights /*sSSD*/, SDDL_REVISION_1, &pNewSD, NULL ) )
@@ -1398,30 +1436,30 @@ BOOL FixKeyRights(HKEY hRoot, LPCTSTR szKey)
 							res = RegSetKeySecurity( hKey, si, pNewSD );
 							if ( res == ERROR_SUCCESS )
 							{
-								ATLTRACE( "Cleared bad rights of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
+								ATLTRACE( "CSageThumbsModule - Cleared bad rights of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
 								bOK = TRUE;
 							}							
 							else
-								ATLTRACE( "Failed to set security of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
+								ATLTRACE( "CSageThumbsModule - Failed to set security of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
 							LocalFree( pNewSD );
 						}
 						else
-							ATLTRACE( "Failed to convert security string of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
+							ATLTRACE( "CSageThumbsModule - Failed to convert security string of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
 					}
 					else
 					{
-						ATLTRACE( "Checked good rights of key: %s\\%s : %s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( (LPCTSTR)sSSD ) );
+						ATLTRACE( "CSageThumbsModule - Checked good rights of key: %s\\%s : %s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( (LPCTSTR)sSSD ) );
 						bOK = TRUE;
 					}
 				}
 				else
-					ATLTRACE( "Failed to convert security string of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
+					ATLTRACE( "CSageThumbsModule - Failed to convert security string of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
 			}
 			else
-				ATLTRACE( "Failed to get security of key: %s\\%s : %d\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), res );
+				ATLTRACE( "CSageThumbsModule - Failed to get security of key: %s\\%s : %d\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), res );
 		}
 		else
-			ATLTRACE( "Failed to get security of key: %s\\%s : %d\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), res );
+			ATLTRACE( "CSageThumbsModule - Failed to get security of key: %s\\%s : %d\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), res );
 
 		RegCloseKey( hKey );
 	}
@@ -1432,7 +1470,7 @@ BOOL FixKeyRights(HKEY hRoot, LPCTSTR szKey)
 	}
 	else
 	{
-		ATLTRACE( "Failed to open key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
+		ATLTRACE( "CSageThumbsModule - Failed to open key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
 	}
 
 	return bOK;
@@ -1479,7 +1517,7 @@ BOOL FixKey(__in HKEY hkey, __in_opt LPCTSTR pszSubKey)
 								SE_REGISTRY_KEY, OWNER_SECURITY_INFORMATION, pSIDAdmin, NULL, NULL, NULL );
 							if ( resSecurity == ERROR_SUCCESS )
 							{
-								ATLTRACE( "Setting new owner of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hkey ) ), (LPCSTR)CT2A( (LPCTSTR)strPartialKey ) );
+								ATLTRACE( "CSageThumbsModule - Setting new owner of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hkey ) ), (LPCSTR)CT2A( (LPCTSTR)strPartialKey ) );
 
 								// Second try
 								if ( ! FixKeyRights( hkey, strPartialKey ) )
@@ -1493,7 +1531,7 @@ BOOL FixKey(__in HKEY hkey, __in_opt LPCTSTR pszSubKey)
 							}
 							else
 							{
-								ATLTRACE( "Failed to set owner of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hkey ) ), (LPCSTR)CT2A( (LPCTSTR)strPartialKey ) );
+								ATLTRACE( "CSageThumbsModule - Failed to set owner of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hkey ) ), (LPCSTR)CT2A( (LPCTSTR)strPartialKey ) );
 								bOK = FALSE;
 							}
 						}
@@ -1502,7 +1540,7 @@ BOOL FixKey(__in HKEY hkey, __in_opt LPCTSTR pszSubKey)
 					FreeSid( pSIDAdmin );
 				}
 				else
-					ATLTRACE( "Failed to Allocate And Initialize Sid\n" );
+					ATLTRACE( "CSageThumbsModule - Failed to Allocate And Initialize Sid\n" );
 
 				SetPrivilege( hToken, SE_TAKE_OWNERSHIP_NAME, FALSE );
 			}
@@ -1511,7 +1549,7 @@ BOOL FixKey(__in HKEY hkey, __in_opt LPCTSTR pszSubKey)
 		CloseHandle( hToken );
 	}
 	else
-		ATLTRACE( "Failed to Open Process Token\n" );
+		ATLTRACE( "CSageThumbsModule - Failed to Open Process Token\n" );
 
 	return bOK;
 }
@@ -1551,11 +1589,11 @@ BOOL SetRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot)
 	LSTATUS res = SHSetValueForced( hRoot, szKey, szName, REG_NONE, NULL, 0 );
 	if ( res != ERROR_SUCCESS )
 	{
-		ATLTRACE( "Got %s during value setting: %s\\%s \"%s\"\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
+		ATLTRACE( "CSageThumbsModule - Got %s during value setting: %s\\%s \"%s\"\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
 		return FALSE;
 	}
 
-	ATLTRACE( "Set value: %s\\%s \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
+	ATLTRACE( "CSageThumbsModule - Set value: %s\\%s \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
 	return TRUE;
 }
 
@@ -1575,11 +1613,11 @@ BOOL SetRegValue(LPCTSTR szName, DWORD dwValue, LPCTSTR szKey, HKEY hRoot)
 	res = SHSetValueForced( hRoot, szKey, szName, REG_DWORD, &dwValue, sizeof( DWORD ) );
 	if ( res != ERROR_SUCCESS )
 	{
-		ATLTRACE( "Got %s during value setting: %s\\%s \"%s\" = %d\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), dwValue );
+		ATLTRACE( "CSageThumbsModule - Got %s during value setting: %s\\%s \"%s\" = %d\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), dwValue );
 		return FALSE;
 	}
 
-	ATLTRACE( "Set value: %s\\%s \"%s\" = %u\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), dwValue );
+	ATLTRACE( "CSageThumbsModule - Set value: %s\\%s \"%s\" = %u\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), dwValue );
 	return TRUE;
 }
 
@@ -1606,11 +1644,11 @@ BOOL SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey, HKEY hRoo
 			res = SHSetValueForced( hRoot, szKey, szName, REG_EXPAND_SZ, sCompact, (DWORD)lengthof( sCompact ) );
 			if ( res != ERROR_SUCCESS )
 			{
-				ATLTRACE( "Got %s during value setting: %s\\%s \"%s\" = \"%s\"\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sCompact ) );
+				ATLTRACE( "CSageThumbsModule - Got %s during value setting: %s\\%s \"%s\" = \"%s\"\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sCompact ) );
 				return FALSE;
 			}
 
-			ATLTRACE( "Set value: %s\\%s \"%s\" = \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sCompact ) );
+			ATLTRACE( "CSageThumbsModule - Set value: %s\\%s \"%s\" = \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sCompact ) );
 			return TRUE;
 		}
 	}
@@ -1618,11 +1656,11 @@ BOOL SetRegValue(LPCTSTR szName, const CString& sValue, LPCTSTR szKey, HKEY hRoo
 	res = SHSetValueForced( hRoot, szKey, szName, REG_SZ, sValue, (DWORD)lengthof( sValue ) );
 	if ( res != ERROR_SUCCESS )
 	{
-		ATLTRACE( "Got %s during value setting: %s\\%s \"%s\" = \"%s\"\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sValue ) );
+		ATLTRACE( "CSageThumbsModule - Got %s during value setting: %s\\%s \"%s\" = \"%s\"\n", ( ( res == ERROR_ACCESS_DENIED ) ? "\"Access Denied\"" : "error" ), (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sValue ) );
 		return FALSE;
 	}
 
-	ATLTRACE( "Set value: %s\\%s \"%s\" = \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sValue ) );
+	ATLTRACE( "CSageThumbsModule - Set value: %s\\%s \"%s\" = \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ), (LPCSTR)CT2A( sValue ) );
 	return TRUE;
 }
 
@@ -1637,7 +1675,7 @@ BOOL DeleteRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot)
 	res = SHDeleteValue( hRoot, szKey, szName );
 	if ( res == ERROR_SUCCESS )
 	{
-		ATLTRACE( "Deleted value: %s\\%s \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
+		ATLTRACE( "CSageThumbsModule - Deleted value: %s\\%s \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
 		res = SHDeleteValue( hRoot, szKey, szName );
 	}
 	if ( res != ERROR_ACCESS_DENIED )
@@ -1649,14 +1687,14 @@ BOOL DeleteRegValue(LPCTSTR szName, LPCTSTR szKey, HKEY hRoot)
 		res = SHDeleteValue( hRoot, szKey, szName );
 		if ( res == ERROR_SUCCESS )
 		{
-			ATLTRACE( "Deleted value: %s\\%s \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
+			ATLTRACE( "CSageThumbsModule - Deleted value: %s\\%s \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
 			res = SHDeleteValue( hRoot, szKey, szName );
 		}
 		if ( res != ERROR_ACCESS_DENIED )
 			return TRUE;
 	}
 
-	ATLTRACE( "Got \"Access Denied\" during value deletion: %s\\%s \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
+	ATLTRACE( "CSageThumbsModule - Got \"Access Denied\" during value deletion: %s\\%s \"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( szName ) );
 	return FALSE;
 }
 
@@ -1665,7 +1703,7 @@ BOOL DeleteRegKey(HKEY hRoot, LPCTSTR szSubKey)
 	LSTATUS res = SHDeleteKey( hRoot, szSubKey );		// HKCU
 	if ( res == ERROR_SUCCESS )
 	{
-		ATLTRACE( "Deleted key  : %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szSubKey ) );
+		ATLTRACE( "CSageThumbsModule - Deleted key  : %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szSubKey ) );
 		res = SHDeleteKey( hRoot, szSubKey );			// HKLM
 	}
 	return ( res != ERROR_ACCESS_DENIED );
@@ -1676,7 +1714,7 @@ BOOL DeleteEmptyRegKey(HKEY hRoot, LPCTSTR szSubKey)
 	LSTATUS res = SHDeleteEmptyKey( hRoot, szSubKey );	// HKCU
 	if ( res == ERROR_SUCCESS )
 	{
-		ATLTRACE( "Deleted key  : %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szSubKey ) );
+		ATLTRACE( "CSageThumbsModule - Deleted key  : %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szSubKey ) );
 		res = SHDeleteEmptyKey( hRoot, szSubKey );		// HKLM
 	}
 	return ( res != ERROR_ACCESS_DENIED );
@@ -1727,7 +1765,7 @@ BOOL RegisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue, L
 		if ( ! szBackupName && ! buf.IsEmpty() )
 		{
 			// Don't replace existing value
-			ATLTRACE( "Registration skipped due existing key : %s\\%s=\"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( buf ) );
+			ATLTRACE( "CSageThumbsModule - Registration skipped due existing key : %s\\%s=\"%s\"\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ), (LPCSTR)CT2A( buf ) );
 			return TRUE;
 		}
 
@@ -1779,43 +1817,13 @@ BOOL UnregisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue,
 	return bOK;
 }
 
-HRESULT CSageThumbsModule::GetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info)
-{
-#ifdef GFL_THREAD_SAFE
-	CLock oLock( m_pSection );
-	return GetFileInformationE( filename, info );
-}
-HRESULT CSageThumbsModule::GetFileInformationE(LPCTSTR filename, GFL_FILE_INFORMATION* info)
-{
-#endif // GFL_THREAD_SAFE
-	GFL_ERROR err;
-	HRESULT hr = E_FAIL;
-
-	__try
-	{
-		err = gflGetFileInformationT( filename, -1, info );
-		if ( err == GFL_NO_ERROR )
-			hr = S_OK;
-		else
-		{
-			ATLTRACE ("E_FAIL (gflGetFileInformationW) : %s\n", gflGetErrorString (err));
-		}
-	}
-	__except (EXCEPTION_EXECUTE_HANDLER)
-	{
-		ATLTRACE ("E_FAIL (gflGetFileInformationW exception)\n");
-	}
-
-	return hr;
-}
-
-HRESULT CSageThumbsModule::LoadGFLBitmap(LPCTSTR filename, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::LoadGFLBitmap(LPCTSTR filename, GFL_BITMAP **bitmap) throw()
 {
 #ifdef GFL_THREAD_SAFE
 	CLock oLock( m_pSection );
 	return LoadGFLBitmapE( filename, bitmap );
 }
-HRESULT CSageThumbsModule::LoadGFLBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::LoadGFLBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap) throw()
 {
 #endif // GFL_THREAD_SAFE
 	GFL_ERROR err;
@@ -1844,24 +1852,54 @@ HRESULT CSageThumbsModule::LoadGFLBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap)
 		}
 		else
 		{
-			ATLTRACE ("E_FAIL (gflLoadBitmapW) : %s\n", gflGetErrorString (err));
+			ATLTRACE ("CSageThumbsModule - LoadGFLBitmap() : Error %s\n", gflGetErrorString( err ) );
 		}
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
-		ATLTRACE ("E_FAIL (gflLoadBitmapW exception)\n");
+		ATLTRACE ("CSageThumbsModule - LoadGFLBitmap() : Exception\n");
 	}
 
 	return hr;
 }
 
-HRESULT CSageThumbsModule::LoadThumbnail(LPCTSTR filename, int width, int height, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::GetFileInformation(LPCTSTR filename, GFL_FILE_INFORMATION* info) throw()
+{
+#ifdef GFL_THREAD_SAFE
+	CLock oLock( m_pSection );
+	return GetFileInformationE( filename, info );
+}
+HRESULT CSageThumbsModule::GetFileInformationE(LPCTSTR filename, GFL_FILE_INFORMATION* info) throw()
+{
+#endif // GFL_THREAD_SAFE
+	GFL_ERROR err;
+	HRESULT hr = E_FAIL;
+
+	__try
+	{
+		err = gflGetFileInformationT( filename, -1, info );
+		if ( err == GFL_NO_ERROR )
+			hr = S_OK;
+		else
+		{
+			ATLTRACE ("CSageThumbsModule - gflGetFileInformation() : Error %s\n", gflGetErrorString( err ) );
+		}
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		ATLTRACE ("CSageThumbsModule - gflGetFileInformation() : Exception\n");
+	}
+
+	return hr;
+}
+
+HRESULT CSageThumbsModule::LoadThumbnail(LPCTSTR filename, int width, int height, GFL_BITMAP **bitmap) throw()
 {
 #ifdef GFL_THREAD_SAFE
 	CLock oLock( m_pSection );
 	return LoadThumbnailE( filename, width, height, bitmap );
 }
-HRESULT CSageThumbsModule::LoadThumbnailE(LPCTSTR filename, int width, int height, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::LoadThumbnailE(LPCTSTR filename, int width, int height, GFL_BITMAP **bitmap) throw()
 {
 #endif // GFL_THREAD_SAFE
 	GFL_ERROR err;
@@ -1894,24 +1932,120 @@ HRESULT CSageThumbsModule::LoadThumbnailE(LPCTSTR filename, int width, int heigh
 		}
 		else
 		{
-			ATLTRACE ("E_FAIL (gflLoadThumbnailW) : %s\n", gflGetErrorString (err));
+			ATLTRACE ("CSageThumbsModule - gflLoadThumbnail() : Error %s\n", gflGetErrorString( err ) );
 		}
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
-		ATLTRACE ("E_FAIL (gflLoadThumbnailW exception)\n");
+		ATLTRACE ("CSageThumbsModule - gflLoadThumbnail() : Exception\n");
 	}
 
 	return hr;
 }
 
-HRESULT CSageThumbsModule::LoadBitmapFromMemory(LPCVOID data, UINT data_length, GFL_BITMAP **bitmap)
+#ifdef ISTREAM_ENABLED
+
+HRESULT CSageThumbsModule::GetFileInformation(IStream* pStream, GFL_FILE_INFORMATION* info) throw()
+{
+#ifdef GFL_THREAD_SAFE
+	CLock oLock( m_pSection );
+	return GetFileInformationE( pStream, info );
+}
+HRESULT CSageThumbsModule::GetFileInformationE(IStream* pStream, GFL_FILE_INFORMATION* info) throw()
+{
+#endif // GFL_THREAD_SAFE
+	GFL_ERROR err;
+	HRESULT hr = E_FAIL;
+
+	__try
+	{
+		const LARGE_INTEGER zero = {};
+		pStream->Seek( zero, STREAM_SEEK_SET, NULL );
+
+		GFL_LOAD_CALLBACKS calls = { IStreamRead, IStreamTell, IStreamSeek };
+		err = gflGetFileInformationFromHandle( (GFL_HANDLE)pStream, -1, &calls, info );
+		if ( err == GFL_NO_ERROR )
+			hr = S_OK;
+		else
+		{
+			ATLTRACE ("CSageThumbsModule - gflGetFileInformation() : Error %s\n", gflGetErrorString( err ) );
+		}
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		ATLTRACE ("CSageThumbsModule - gflGetFileInformation() : Exception\n");
+	}
+
+	return hr;
+}
+
+HRESULT CSageThumbsModule::LoadThumbnail(IStream* pStream, int width, int height, GFL_BITMAP **bitmap) throw()
+{
+#ifdef GFL_THREAD_SAFE
+	CLock oLock( m_pSection );
+	return LoadThumbnailE( pStream, width, height, bitmap );
+}
+HRESULT CSageThumbsModule::LoadThumbnailE(IStream* pStream, int width, int height, GFL_BITMAP **bitmap) throw()
+{
+#endif // GFL_THREAD_SAFE
+	GFL_ERROR err;
+	HRESULT hr = E_FAIL;
+	__try
+	{
+		*bitmap = NULL;
+
+		const LARGE_INTEGER zero = {};
+		pStream->Seek( zero, STREAM_SEEK_SET, NULL );
+
+		GFL_LOAD_PARAMS params = {};
+		gflGetDefaultThumbnailParams( &params );
+		params.Flags =
+			GFL_LOAD_HIGH_QUALITY_THUMBNAIL |
+			( ( ::GetRegValue( _T("UseEmbedded"), 0ul ) != 0 ) ? GFL_LOAD_EMBEDDED_THUMBNAIL : 0 ) |
+			GFL_LOAD_PREVIEW_NO_CANVAS_RESIZE;
+		params.ColorModel = GFL_RGBA;
+		params.Callbacks.Read = IStreamRead;
+		params.Callbacks.Tell = IStreamTell;
+		params.Callbacks.Seek = IStreamSeek;
+		err = gflLoadThumbnailFromHandle( (GFL_HANDLE)pStream, width, height, bitmap, &params, NULL );
+		if ( err == GFL_ERROR_FILE_READ )
+		{
+			const LARGE_INTEGER zero = {};
+			pStream->Seek( zero, STREAM_SEEK_SET, NULL );
+
+			params.Flags |= GFL_LOAD_IGNORE_READ_ERROR;
+			err = gflLoadThumbnailFromHandle( (GFL_HANDLE)pStream, width, height, bitmap, &params, NULL );
+		}
+		if ( err == GFL_NO_ERROR )
+		{
+			if ( (*bitmap)->Type != GFL_RGBA )
+			{
+				Change_Color_Depth( *bitmap );
+			}
+			hr = S_OK;
+		}
+		else
+		{
+			ATLTRACE ("CSageThumbsModule - gflLoadThumbnail() : Error %s\n", gflGetErrorString( err ) );
+		}
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		ATLTRACE ("CSageThumbsModule - gflLoadThumbnail() : Exception\n");
+	}
+
+	return hr;
+}
+
+#endif // ISTREAM_ENABLED
+
+HRESULT CSageThumbsModule::LoadBitmapFromMemory(LPCVOID data, UINT data_length, GFL_BITMAP **bitmap) throw()
 {
 #ifdef GFL_THREAD_SAFE
 	CLock oLock( m_pSection );
 	return LoadBitmapFromMemoryE( data, data_length, bitmap );
 }
-HRESULT CSageThumbsModule::LoadBitmapFromMemoryE(LPCVOID data, UINT data_length, GFL_BITMAP **bitmap)
+HRESULT CSageThumbsModule::LoadBitmapFromMemoryE(LPCVOID data, UINT data_length, GFL_BITMAP **bitmap) throw()
 {
 #endif // GFL_THREAD_SAFE
 	GFL_ERROR err;
@@ -1940,24 +2074,24 @@ HRESULT CSageThumbsModule::LoadBitmapFromMemoryE(LPCVOID data, UINT data_length,
 		}
 		else
 		{
-			ATLTRACE ("E_FAIL (gflLoadBitmapFromMemory) : %s\n", gflGetErrorString (err));
+			ATLTRACE ("CSageThumbsModule - gflLoadBitmapFromMemory() : Error %s\n", gflGetErrorString( err ) );
 		}
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
-		ATLTRACE ("E_FAIL (gflLoadBitmapFromMemory exception)\n");
+		ATLTRACE ("CSageThumbsModule - gflLoadBitmapFromMemory() : Exception\n");
 	}
 
 	return hr;
 }
 
-HRESULT CSageThumbsModule::ConvertBitmap(const GFL_BITMAP *bitmap, HBITMAP *phBitmap)
+HRESULT CSageThumbsModule::ConvertBitmap(const GFL_BITMAP *bitmap, HBITMAP *phBitmap) throw()
 {
 #ifdef GFL_THREAD_SAFE
 	CLock oLock( m_pSection );
 	return ConvertBitmapE( bitmap, phBitmap );
 }
-HRESULT CSageThumbsModule::ConvertBitmapE(const GFL_BITMAP *bitmap, HBITMAP *phBitmap)
+HRESULT CSageThumbsModule::ConvertBitmapE(const GFL_BITMAP *bitmap, HBITMAP *phBitmap) throw()
 {
 #endif // GFL_THREAD_SAFE
 	GFL_ERROR err;
@@ -1965,33 +2099,28 @@ HRESULT CSageThumbsModule::ConvertBitmapE(const GFL_BITMAP *bitmap, HBITMAP *phB
 	__try
 	{
 		*phBitmap = NULL;
-
-		if ( ( err = gflConvertBitmapIntoDDB( bitmap, phBitmap ) ) == GFL_NO_ERROR )
-		{
-			hr = S_OK;
-		}
-		else if ( (err = gflConvertBitmapIntoDIBSection( bitmap, phBitmap ) ) == GFL_NO_ERROR )
+		if ( (err = gflConvertBitmapIntoDIBSection( bitmap, phBitmap ) ) == GFL_NO_ERROR )
 		{
 			hr = S_OK;
 		}
 		else
-			ATLTRACE ("E_FAIL (gflConvertBitmapIntoDDB) : %s\n", gflGetErrorString (err));
+			ATLTRACE ("CSageThumbsModule - gflConvertBitmapIntoDDB() : Error %s\n", gflGetErrorString( err ) );
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
-		ATLTRACE ("E_FAIL (gflConvertBitmapIntoDDB exception)\n");
+		ATLTRACE ("CSageThumbsModule - gflConvertBitmapIntoDDB() : Exception\n");
 	}
 
 	return hr;
 }
 
-HRESULT CSageThumbsModule::Resize(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height)
+HRESULT CSageThumbsModule::Resize(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height) throw()
 {
 #ifdef GFL_THREAD_SAFE
 	CLock oLock( m_pSection );
 	return ResizeE( src, dst, width, height );
 }
-HRESULT CSageThumbsModule::ResizeE(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height)
+HRESULT CSageThumbsModule::ResizeE(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height) throw()
 {
 #endif // GFL_THREAD_SAFE
 	GFL_ERROR err;
@@ -1999,32 +2128,64 @@ HRESULT CSageThumbsModule::ResizeE(GFL_BITMAP* src, GFL_BITMAP** dst, int width,
 	__try
 	{
 		*dst = NULL;
-
-		err = gflResize( src, dst, width, height, GFL_RESIZE_HERMITE, 0 );
+		err = gflResize( src, dst, width, height, GFL_RESIZE_BILINEAR, 0 );
 		if ( err == GFL_NO_ERROR )
 		{
 			hr = S_OK;
 		}
 		else
 		{
-			ATLTRACE ("E_FAIL (gflResize) : %s\n", gflGetErrorString (err));
+			ATLTRACE ("CSageThumbsModule - gflResize() : Error %s\n", gflGetErrorString( err ) );
 		}
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
-		ATLTRACE ("E_FAIL (gflResize exception)\n");
+		ATLTRACE ("CSageThumbsModule - gflResize() : Exception\n");
 	}
 
 	return hr;
 }
 
-HRESULT CSageThumbsModule::FreeBitmap(GFL_BITMAP*& bitmap)
+HRESULT CSageThumbsModule::ResizeCanvas(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height) throw()
+{
+#ifdef GFL_THREAD_SAFE
+	CLock oLock( m_pSection );
+	return ResizeCanvasE( src, dst, width, height );
+}
+HRESULT CSageThumbsModule::ResizeCanvasE(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height) throw()
+{
+#endif // GFL_THREAD_SAFE
+	GFL_ERROR err;
+	HRESULT hr = E_FAIL;
+	__try
+	{
+		*dst = NULL;
+		GFL_COLOR transparent = { 255, 255, 255, 0 };
+		err = gflResizeCanvas( src, dst, width, height, GFL_CANVASRESIZE_CENTER, &transparent );
+		if ( err == GFL_NO_ERROR )
+		{
+			hr = S_OK;
+		}
+		else
+		{
+			ATLTRACE ("CSageThumbsModule - gflResizeCanvas() : Error %s\n", gflGetErrorString( err ) );
+		}
+	}
+	__except (EXCEPTION_EXECUTE_HANDLER)
+	{
+		ATLTRACE ("CSageThumbsModule - gflResizeCanvas() : Exception\n");
+	}
+
+	return hr;
+}
+
+HRESULT CSageThumbsModule::FreeBitmap(GFL_BITMAP*& bitmap) throw()
 {
 #ifdef GFL_THREAD_SAFE
 	CLock oLock( m_pSection );
 	return FreeBitmapE( bitmap );
 }
-HRESULT CSageThumbsModule::FreeBitmapE(GFL_BITMAP*& bitmap)
+HRESULT CSageThumbsModule::FreeBitmapE(GFL_BITMAP*& bitmap) throw()
 {
 #endif // GFL_THREAD_SAFE
 	if ( ! bitmap )
@@ -2038,7 +2199,7 @@ HRESULT CSageThumbsModule::FreeBitmapE(GFL_BITMAP*& bitmap)
 	}
 	__except (EXCEPTION_EXECUTE_HANDLER)
 	{
-		ATLTRACE ("E_FAIL (gflFreeBitmap exception)\n");
+		ATLTRACE ("CSageThumbsModule - gflFreeBitmap() : Exception\n");
 	}
 
 	bitmap = NULL;
@@ -2046,7 +2207,7 @@ HRESULT CSageThumbsModule::FreeBitmapE(GFL_BITMAP*& bitmap)
 	return hr;
 }
 
-bool CSageThumbsModule::IsGoodFile(LPCTSTR szFilename, Ext* pdata, WIN32_FIND_DATA* pfd) const
+bool CSageThumbsModule::IsGoodFile(LPCTSTR szFilename, Ext* pdata) const
 {
 	CString sExt = PathFindExtension( szFilename );
 	if ( sExt.GetLength() < 2 )
@@ -2063,18 +2224,6 @@ bool CSageThumbsModule::IsGoodFile(LPCTSTR szFilename, Ext* pdata, WIN32_FIND_DA
 
 	if ( ! pdata->enabled )
 		// Disabled extension
-		return false;
-
-	WIN32_FIND_DATA foo_fd;
-	if ( ! pfd )
-		pfd = &foo_fd;
-	if ( ! GetFileAttributesEx( szFilename, GetFileExInfoStandard, pfd ) )
-		// File error
-		return false;
-
-	if ( ( pfd->dwFileAttributes & ( FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_DEVICE |
-		FILE_ATTRIBUTE_TEMPORARY | FILE_ATTRIBUTE_OFFLINE ) ) != 0 )
-		// Bad attributes
 		return false;
 
 	return true;

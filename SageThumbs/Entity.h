@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2012.
+Copyright (C) Nikolay Raspopov, 2004-2014.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -19,6 +19,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #pragma once
+
+enum TRI_STATE { TRI_UNKNOWN = -1, TRI_FALSE = 0, TRI_TRUE = 1 };
+
 
 class CEntity
 {
@@ -38,7 +41,7 @@ public:
 #endif // ISTREAM_ENABLED
 
 	// Получение битмэпа
-	HBITMAP GetImage(UINT cx, UINT cy);
+	HBITMAP GetImage(UINT cx, UINT cy, COLORREF nColor1 = RGB( 241, 241, 241 ), COLORREF nColor2 = RGB( 252, 252, 252 ));
 
 	// Получение иконки
 	HICON GetIcon(UINT cx);
@@ -50,7 +53,7 @@ public:
 
 	inline bool IsInfoAvailable() const
 	{
-		return m_bInfoLoaded;
+		return ( m_bInfoLoaded == TRI_TRUE );
 	}
 
 	inline UINT Width() const
@@ -118,8 +121,7 @@ public:
 protected:
 	GFL_FILE_INFORMATION	m_ImageInfo;		// Image info
 	WIN32_FIND_DATA			m_FileData;			// Image file info
-	volatile bool			m_bDatabaseUsed;	// Image info loaded from database
-	volatile bool			m_bInfoLoaded;		// Image info loaded successfully
+	volatile TRI_STATE		m_bInfoLoaded;		// Image info loaded successfully ( TRI_UNKNOWN - not loaded, TRI_FALSE - fail, TRI_TRUE - success )
 	GFL_BITMAP*				m_hGflBitmap;		// Loaded thumbnail
 	CComAutoCriticalSection m_pSection;
 };

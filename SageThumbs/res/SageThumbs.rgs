@@ -8,4 +8,18 @@ HKCR
 			val AppID = s '%APPID%'
 		}
 	}
+	NoRemove Interface
+	{
+		NoRemove {00000003-0000-0000-C000-000000000046} = s 'IMarshal'
+		NoRemove {00000018-0000-0000-C000-000000000046} = s 'IStdMarshalInfo'
+		NoRemove {00000019-0000-0000-C000-000000000046} = s 'IExternalConnection'
+		NoRemove {0000001B-0000-0000-C000-000000000046} = s 'IdentityUnmarshal'
+		NoRemove {000214E4-0000-0000-C000-000000000046} = s 'IContextMenu'
+		NoRemove {000214E8-0000-0000-C000-000000000046} = s 'IShellExtInit'
+		NoRemove {000214EB-0000-0000-C000-000000000046} = s 'IExtractIconA'
+		NoRemove {000214FA-0000-0000-C000-000000000046} = s 'IExtractIconW'
+		NoRemove {00021500-0000-0000-C000-000000000046} = s 'IQueryInfo'
+		NoRemove {1C733A30-2A1C-11CE-ADE5-00AA0044773D} = s 'ICallFactory'
+		NoRemove {85788D00-6807-11D0-B810-00C04FD706EC} = s 'IRunnableTask'
+	}
 }
