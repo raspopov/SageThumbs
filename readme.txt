@@ -63,6 +63,13 @@ SageThumbs can be easily translated to other languages.
 
 Versions:
 
+2.0.0.18
+  * Fixes for transparency
+  * Performance optimizations
+  * "Copy to clipboard" now copies thumbnail only
+  * Added Thai translation (by Adisorn Aeksatean)
+  * Updated translations
+
 2.0.0.17
   * Added support for "Kind association"
   * Fixed file properties enumeration
@@ -272,7 +279,7 @@ Copyrights:
 SageThumbs
 Copyright (C) Nikolay Raspopov, 2004-2013.
 E-Mail: raspopov@cherubicsoft.com
-Web site: http://www.cherubicsoft.com/projects/sagethumbs
+Web site: https://sourceforge.net/projects/sagethumbs/
 
 GFL Library, GFL SDK and XnView
 Copyright (C) Pierre-E Gougelet, 1991-2011.

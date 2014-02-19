@@ -1,8 +1,8 @@
 ﻿!define TITLE		"SageThumbs"
-!define VERSION		"2.0.0.17"
+!define VERSION		"2.0.0.18"
 !define COMPANY		"Cherubic Software"
 !define FILENAME	"sagethumbs_${VERSION}_setup.exe"
-!define COPYRIGHT	"Copyright © 2004-2013 Nikolay Raspopov"
+!define COPYRIGHT	"Copyright © 2004-2014 Nikolay Raspopov"
 !define URL			"http://www.cherubicsoft.com/"
 !define PAD			"http://sagethumbs.googlecode.com/svn/trunk/sagethumbs.xml"
 
