@@ -4,10 +4,13 @@ msgstr ""
 "POT-Creation-Date: 2012.08.06.\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Morva Kristóf <kristof92@gmail.com>\n"
-"Language-Team: ModBase\n"
+"Language-Team: SharpKode\n"
+"Language: hu_HU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.4\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -30,6 +33,11 @@ msgid "Enable context menu in Explorer"
 msgstr "Környezeti menü engedélyezése az Intézőben"
 
 #. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr "Előnézet megjelenítése az almenüben"
+
+#. Dialog control
 #: DIALOGCONTROL.202.Button.212
 msgid "Enable thumbnails in Explorer"
 msgstr "Miniatűrök engedélyezése az Intézőben"
@@ -38,6 +46,11 @@ msgstr "Miniatűrök engedélyezése az Intézőben"
 #: DIALOGCONTROL.202.Button.216
 msgid "Use thumbnails as icons in Explorer"
 msgstr "A miniatűrök ikonként való használata az Intézőben"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "Típus megjelenítése a miniatűrökön"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.217
@@ -55,16 +68,6 @@ msgid "Use Windows Image/Fax Viewer"
 msgstr "Windows Kép- és Faxmegjelenítő használata"
 
 #. Dialog control
-#: DIALOGCONTROL.202.Button.210
-msgid "Select/Deselect all"
-msgstr "Kijelöli/Visszajelöli mindet"
-
-#. Dialog control
-#: DIALOGCONTROL.202.Button.223
-msgid "Default"
-msgstr "Alapértelmezett"
-
-#. Dialog control
 #: DIALOGCONTROL.202.Button.213
 msgid "Clear..."
 msgstr "Törlés..."
@@ -73,6 +76,16 @@ msgstr "Törlés..."
 #: DIALOGCONTROL.202.Button.218
 msgid "Optimize"
 msgstr "Optimalizálás"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "Kijelöli/Visszajelöli mindet"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "Alapértelmezett"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483649
@@ -135,14 +148,9 @@ msgid "PNG compression (0 - lowest, 9 - best):"
 msgstr "PNG tömörítés (0 - min, 9 - max):"
 
 #. Dialog control
-#: DIALOGCONTROL.202.Button.225
-msgid "Show type overlay on thumbnails"
-msgstr "Típus megjelenítése a miniatűrökön"
-
-#. Dialog control
-#: DIALOGCONTROL.202.Button.226
-msgid "Show preview in submenu"
-msgstr "Előnézet megjelenítése az almenüben"
+#: DIALOGCONTROL.202.Static.2147483662
+msgid "Custom file types (use spaces as delimiters):"
+msgstr "Egyéni fájltípusok (szóközökkel elválasztva):"
 
 #. String resource
 #: STRING.100
@@ -217,7 +225,7 @@ msgstr "Nem lehet megnyitni a vágólap"
 #. String resource
 #: STRING.114
 msgid "Please confirm thumbnail cache clearing."
-msgstr "Kérlek erősítsd meg a gyorsítótár ürítését."
+msgstr "Kérlek, erősítsd meg a gyorsítótár ürítését."
 
 #. String resource
 #: STRING.115
@@ -241,7 +249,7 @@ msgid ""
 "Can not apply all settings. Please use SageThumbs under account with "
 "administrative privileges."
 msgstr ""
-"Nem lehet minden beállítást alkalmazni. Kérlek használd a SageThumbs "
+"Nem lehet minden beállítást alkalmazni. Kérlek, használd a SageThumbs "
 "alkalmazást rendszergazdai jogokkal."
 
 #. String resource
