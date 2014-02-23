@@ -67,7 +67,7 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
-            VALUE "Comments", "http://www.cherubicsoft.com/"
+            VALUE "Comments", "http://sagethumbs.sourceforge.net/"
             VALUE "CompanyName", "CherubicSoft"
             VALUE "FileDescription", "SageThumbs Shell Extension"
             VALUE "FileVersion", "2.0.0.18"

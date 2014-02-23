@@ -277,11 +277,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Copyrights:
 
 SageThumbs
-Copyright (C) Nikolay Raspopov, 2004-2013.
+Copyright (C) Nikolay Raspopov, 2004-2014.
 E-Mail: raspopov@cherubicsoft.com
-Web site: https://sourceforge.net/projects/sagethumbs/
+Web site: http://sagethumbs.sourceforge.net/
 
 GFL Library, GFL SDK and XnView
-Copyright (C) Pierre-E Gougelet, 1991-2011.
+Copyright (C) Pierre-E Gougelet, 1991-2014.
 E-Mail: webmaster@xnview.com
 Web site: http://www.xnview.com/

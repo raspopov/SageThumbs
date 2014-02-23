@@ -3,8 +3,8 @@
 !define COMPANY		"Cherubic Software"
 !define FILENAME	"repair.exe"
 !define COPYRIGHT	"Copyright © 2004-2014 Nikolay Raspopov"
-!define URL			"http://www.cherubicsoft.com/"
-!define PAD			"http://sagethumbs.googlecode.com/svn/trunk/sagethumbs.xml"
+!define URL			"http://sagethumbs.sourceforge.net/"
+!define PAD			"http://sagethumbs.sourceforge.net/pad/sagethumbs.xml"
 
 SetCompressor /SOLID lzma
 
