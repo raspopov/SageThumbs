@@ -63,6 +63,9 @@ SageThumbs can be easily translated to other languages.
 
 Versions:
 
+2.0.0.19
+  * Fixed too small thumbnail (ticket #74)
+
 2.0.0.18
   * Fixes for transparency
   * Performance optimizations

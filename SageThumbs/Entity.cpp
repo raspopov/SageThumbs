@@ -304,8 +304,8 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 
 	UINT dx, dy;
 	CalcSize( dx, dy,
-		max( GetRegValue( _T("Width"),  THUMB_STORE_SIZE ), THUMB_STORE_SIZE ),
-		max( GetRegValue( _T("Height"), THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) );
+		max( cx, max( GetRegValue( _T("Width"),  THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) ),
+		max( cy, max( GetRegValue( _T("Height"), THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) ) );
 
 	__int64 nPathID = 0;
 	CString sName = PathFindFileName( sFilename );
@@ -517,8 +517,8 @@ HRESULT CEntity::LoadImage(IStream* pStream, UINT cx, UINT cy)
 
 	UINT dx, dy;
 	CalcSize( dx, dy,
-		max( GetRegValue( _T("Width"),  THUMB_STORE_SIZE ), THUMB_STORE_SIZE ),
-		max( GetRegValue( _T("Height"), THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) );
+		max( cx, max( GetRegValue( _T("Width"),  THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) ),
+		max( cy, max( GetRegValue( _T("Height"), THUMB_STORE_SIZE ), THUMB_STORE_SIZE ) ) );
 
 	// Загрузка из файла
 	if ( FAILED( _Module.LoadThumbnail( pStream, (int)dx, (int)dy, &m_hGflBitmap ) ) || ! m_hGflBitmap )
