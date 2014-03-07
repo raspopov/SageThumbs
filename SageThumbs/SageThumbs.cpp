@@ -1912,7 +1912,7 @@ HRESULT CSageThumbsModule::LoadThumbnailE(LPCTSTR filename, int width, int heigh
 		gflGetDefaultThumbnailParams( &params );
 		params.Flags =
 			GFL_LOAD_HIGH_QUALITY_THUMBNAIL |
-			( ( ::GetRegValue( _T("UseEmbedded"), 0ul ) != 0 ) ? GFL_LOAD_EMBEDDED_THUMBNAIL : 0 ) |
+			( ( ::GetRegValue( _T("UseEmbedded"), 0ul ) != 0 && width < THUMB_EMBEDDED_MIN_SIZE && height < THUMB_EMBEDDED_MIN_SIZE ) ? GFL_LOAD_EMBEDDED_THUMBNAIL : 0 ) |
 			GFL_LOAD_PREVIEW_NO_CANVAS_RESIZE;
 		params.ColorModel = GFL_RGBA;
 		err = gflLoadThumbnailT( filename, width, height, bitmap, &params, NULL );
@@ -2001,7 +2001,7 @@ HRESULT CSageThumbsModule::LoadThumbnailE(IStream* pStream, int width, int heigh
 		gflGetDefaultThumbnailParams( &params );
 		params.Flags =
 			GFL_LOAD_HIGH_QUALITY_THUMBNAIL |
-			( ( ::GetRegValue( _T("UseEmbedded"), 0ul ) != 0 ) ? GFL_LOAD_EMBEDDED_THUMBNAIL : 0 ) |
+			( ( ::GetRegValue( _T("UseEmbedded"), 0ul ) != 0 && width < THUMB_EMBEDDED_MIN_SIZE && height < THUMB_EMBEDDED_MIN_SIZE ) ? GFL_LOAD_EMBEDDED_THUMBNAIL : 0 ) |
 			GFL_LOAD_PREVIEW_NO_CANVAS_RESIZE;
 		params.ColorModel = GFL_RGBA;
 		params.Callbacks.Read = IStreamRead;

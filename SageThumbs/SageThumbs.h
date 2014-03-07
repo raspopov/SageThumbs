@@ -44,6 +44,7 @@ extern CSageThumbsModule		_Module;		// Application
 #define THUMB_MAX_SIZE			512ul			// Thumbnail maximum size, pixels
 #define THUMB_STORE_PNG_RATIO	9				// Compression ratio for PNG-thumbnail
 #define THUMB_STORE_JPG_RATIO	80				// Compression ration for JPG-thumbnail
+#define THUMB_EMBEDDED_MIN_SIZE	96ul			// Embedded thumbnail minimum size, pixels
 #define FILE_MAX_SIZE			10ul			// Default maximum file size, MB
 #define STANDARD_LANGID			0x09			// Default language ID - English
 

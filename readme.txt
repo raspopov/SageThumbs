@@ -65,6 +65,7 @@ Versions:
 
 2.0.0.19
   * Fixed too small thumbnail (ticket #74)
+  * Added minimum size limit (96 pixels) for "Prefer image file embedded thumbnail" option
 
 2.0.0.18
   * Fixes for transparency
