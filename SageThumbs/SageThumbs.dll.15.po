@@ -3,13 +3,13 @@ msgstr ""
 "Project-Id-Version: SageThumbs.dll\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Krzysztof Cislo <krzysztof.cislo@gmail.com>\n"
+"Last-Translator: Ireneusz Chorosz <ichorosz@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Polish\n"
-"X-Poedit-Country: POLAND\n"
+"Language: pl_PL\n"
+"X-Generator: Poedit 1.6.4\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -54,7 +54,7 @@ msgstr "Preferuj wbudowane miniatury plików graficznych"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.203
 msgid "Use Windows Image/Fax Viewer"
-msgstr "Użytj podglądu Obrazu/Faksu"
+msgstr "Użyj podglądu Obrazu/Faksu"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.210
@@ -84,7 +84,7 @@ msgstr "Wielkość podglądu w menu kontekstowym"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483650
 msgid "Width x Height:"
-msgstr "Szer x Wys"
+msgstr "Szer. x Wys."
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483651
@@ -194,12 +194,12 @@ msgstr "Rozdzielczość:"
 #. String resource
 #: STRING.109
 msgid "Can't open image file"
-msgstr "Nie można otworzyć obrazu pliku"
+msgstr "Nie można otworzyć pliku obrazu"
 
 #. String resource
 #: STRING.110
 msgid "Can't save image file"
-msgstr "Nie można zapisać obrazu pliku"
+msgstr "Nie można zapisać pliku obrazu"
 
 #. String resource
 #: STRING.111
@@ -209,7 +209,7 @@ msgstr "Nie można wysłać maila"
 #. String resource
 #: STRING.112
 msgid "Nothing to send"
-msgstr "Nic nie ma do wysłania"
+msgstr "Nic do wysłania"
 
 #. String resource
 #: STRING.113
@@ -229,17 +229,23 @@ msgstr "Wielkość buforu miniatur: %u KB"
 #. String resource
 #: STRING.116
 msgid "SageThumbs thumbnail cache"
-msgstr "Buform miniatur SageThumbs"
+msgstr "Bufor miniatur SageThumbs"
 
 #. String resource
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
-msgstr "Wyczyść bufor miniatur SageThumbrs. Żadne dane użytkonika nie zostaną usunięte."
+msgstr ""
+"Wyczyść bufor miniatur SageThumbrs. Żadne dane użytkonika nie zostaną "
+"usunięte."
 
 #. String resource
 #: STRING.118
-msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
-msgstr "Nie można zastosować wszystkich ustawień. Proszę uruchomić SageThumbs z prawami administratora."
+msgid ""
+"Can not apply all settings. Please use SageThumbs under account with "
+"administrative privileges."
+msgstr ""
+"Nie można zastosować wszystkich ustawień. Proszę uruchomić SageThumbs z "
+"prawami administratora."
 
 #. String resource
 #: STRING.119
@@ -279,7 +285,7 @@ msgstr "Kopiuj do schowka"
 #. String resource
 #: STRING.205
 msgid "Set tiled wallpaper"
-msgstr "Ustaw jako tapetę w formie kafelek"
+msgstr "Ustaw jako tapetę w formie kafelków"
 
 #. String resource
 #: STRING.206
@@ -299,7 +305,7 @@ msgstr "Wyślij obrazek via email..."
 #. String resource
 #: STRING.209
 msgid "Send thumbnail by mail..."
-msgstr "Wyślij miniaturke przez email..."
+msgstr "Wyślij miniaturkę przez email..."
 
 #. String resource
 #: STRING.210
@@ -315,4 +321,3 @@ msgstr "Konwersja do formatu GIF"
 #: STRING.212
 msgid "Convert to BMP"
 msgstr "Konwersja do formatu BMP"
-
