@@ -1,5 +1,5 @@
 ﻿!define TITLE		"SageThumbs"
-!define VERSION		"2.0.0.19"
+!define VERSION		"2.0.0.20"
 !define COMPANY		"Cherubic Software"
 !define FILENAME	"sagethumbs_${VERSION}_setup.exe"
 !define COPYRIGHT	"Copyright © 2004-2014 Nikolay Raspopov"
@@ -49,16 +49,24 @@ Var STARTMENU_FOLDER
 	!insertmacro MUI_UNPAGE_INSTFILES
 	!insertmacro MUI_UNPAGE_FINISH
 	!insertmacro MUI_LANGUAGE "English"
-	!insertmacro MUI_LANGUAGE "Russian"
+	!insertmacro MUI_LANGUAGE "Czech"
 	!insertmacro MUI_LANGUAGE "French"
 	!insertmacro MUI_LANGUAGE "German"
-	!insertmacro MUI_LANGUAGE "Swedish"
+	!insertmacro MUI_LANGUAGE "Hebrew"
+	!insertmacro MUI_LANGUAGE "Hungarian"
+	!insertmacro MUI_LANGUAGE "Indonesian"
 	!insertmacro MUI_LANGUAGE "Italian"
+	!insertmacro MUI_LANGUAGE "Japanese"
+	!insertmacro MUI_LANGUAGE "Korean"
+	!insertmacro MUI_LANGUAGE "Polish"
 	!insertmacro MUI_LANGUAGE "PortugueseBR"
+	!insertmacro MUI_LANGUAGE "Russian"
 	!insertmacro MUI_LANGUAGE "SimpChinese"
 	!insertmacro MUI_LANGUAGE "Spanish"
-	!insertmacro MUI_LANGUAGE "Indonesian"
-	!insertmacro MUI_LANGUAGE "Japanese"
+	!insertmacro MUI_LANGUAGE "Swedish"
+	!insertmacro MUI_LANGUAGE "Thai"
+	!insertmacro MUI_LANGUAGE "TradChinese"
+	!insertmacro MUI_LANGUAGE "Turkish"
 	!insertmacro MUI_RESERVEFILE_LANGDLL
 
 !macro InstallSageThumb _SRC _DST

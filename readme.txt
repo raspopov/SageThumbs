@@ -63,6 +63,11 @@ SageThumbs can be easily translated to other languages.
 
 Versions:
 
+2.0.0.20
+  * Updated Polish translation (by Krzysztof Cislo)
+  * Added Czech translation (by jerry)
+  * Updated installer translations
+
 2.0.0.19
   * Fixed too small thumbnail (ticket #74)
   * Added minimum size limit (96 pixels) for "Prefer image file embedded thumbnail" option

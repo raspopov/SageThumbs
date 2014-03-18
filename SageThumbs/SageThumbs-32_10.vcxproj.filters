@@ -89,6 +89,9 @@
     <None Include="sagethumbs.dll.04.po_">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="sagethumbs.dll.05.po_">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="sagethumbs.dll.07.po_">
       <Filter>Resource Files</Filter>
     </None>
@@ -140,7 +143,6 @@
     <None Include="sagethumbs.dll.7c04.po_">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\sagethumbs.xml" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Entity.h">

@@ -304,7 +304,6 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)..\Localization\compress.exe" "
     <ClCompile Include="Thumb.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\sagethumbs.xml" />
     <None Include="..\SageThumbs Online.url" />
     <None Include="SageThumbs.def" />
     <None Include="res\SageThumbs.bmp" />
@@ -317,6 +316,7 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)..\Localization\compress.exe" "
     <None Include="..\license.txt" />
     <None Include="..\ReadMe.txt" />
     <None Include="sagethumbs.dll.04.po_" />
+    <None Include="sagethumbs.dll.05.po_" />
     <None Include="sagethumbs.dll.07.po_" />
     <None Include="sagethumbs.dll.0a.po_" />
     <None Include="sagethumbs.dll.0c.po_" />
