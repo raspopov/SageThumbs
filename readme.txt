@@ -64,7 +64,7 @@ SageThumbs can be easily translated to other languages.
 Versions:
 
 2.0.0.20
-  * Updated Polish translation (by Krzysztof Cislo)
+  * Updated Polish translation (by Ireneusz Chorosz)
   * Added Czech translation (by jerry)
   * Updated installer translations
 
