@@ -25,7 +25,7 @@ LANGUAGE LANG_NEUTRAL, SUBLANG_NEUTRAL
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,7,17,0
+ FILEVERSION 3,8,5,0
  PRODUCTVERSION 2,0,0,20
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
@@ -44,7 +44,7 @@ BEGIN
             VALUE "Comments", "http://www.cherubicsoft.com/"
             VALUE "CompanyName", "CherubicSoft"
             VALUE "FileDescription", "SQLite3 Library"
-            VALUE "FileVersion", "3.7.17.0"
+            VALUE "FileVersion", "3.8.5.0"
             VALUE "InternalName", "sqlite3"
             VALUE "LegalCopyright", "Copyright (C) 2004-2014 Nikolay Raspopov"
             VALUE "OriginalFilename", "sqlite3.dll"
