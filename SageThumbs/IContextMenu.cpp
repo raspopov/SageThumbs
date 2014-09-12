@@ -409,7 +409,7 @@ void CThumb::ConvertTo(HWND hWnd, int ext)
 				_Module.MsgBox( hWnd, IDS_ERR_SAVE );
 				break;
 			}
-			DeleteObject( hBitmap );
+			_Module.FreeBitmap( hBitmap );
 		}
 		else
 		{
@@ -454,7 +454,7 @@ void CThumb::SetWallpaper(HWND hWnd, WORD reason)
 		}
 		else
 			_Module.MsgBox( hWnd, IDS_ERR_SAVE );
-		DeleteObject( hBitmap );
+		_Module.FreeBitmap( hBitmap );
 	}
 	else
 		_Module.MsgBox( hWnd, IDS_ERR_OPEN );
