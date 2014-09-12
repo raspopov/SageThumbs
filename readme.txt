@@ -64,9 +64,12 @@ SageThumbs can be easily translated to other languages.
 Versions:
 
 2.0.0.20
+  * Updated Portuguese Brazilian translation (by Ricardo de Souza Pereira)
   * Updated Polish translation (by Ireneusz Chorosz)
   * Added Czech translation (by jerry)
   * Updated installer translations
+  * Fixed memory leaks in the file conversion operation
+  * Project converted to MS VS2013
 
 2.0.0.19
   * Fixed too small thumbnail (ticket #74)

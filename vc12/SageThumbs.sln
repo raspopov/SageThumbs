@@ -1,15 +1,15 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SageThumbs-64", "..\SageThumbs\SageThumbs-64_10.vcxproj", "{D63F7293-39CC-4B91-88A6-1C3855EE5DC3}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SageThumbs-64", "..\SageThumbs\SageThumbs-64_12.vcxproj", "{D63F7293-39CC-4B91-88A6-1C3855EE5DC3}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0A0B10C7-CDF6-4A48-8F7B-B66A88154AAE} = {0A0B10C7-CDF6-4A48-8F7B-B66A88154AAE}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqlite3-64", "..\sqlite3\sqlite3-64_10.vcxproj", "{0A0B10C7-CDF6-4A48-8F7B-B66A88154AAE}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqlite3-64", "..\sqlite3\sqlite3-64_12.vcxproj", "{0A0B10C7-CDF6-4A48-8F7B-B66A88154AAE}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "setup", "..\setup\setup_10.vcxproj", "{FB2891A0-17D9-46A1-AF30-634DE6EA99E9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "setup", "..\setup\setup_12.vcxproj", "{FB2891A0-17D9-46A1-AF30-634DE6EA99E9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{D63F7293-39CC-4B91-88A6-1C3855EE5DC3} = {D63F7293-39CC-4B91-88A6-1C3855EE5DC3}
 		{D63F7293-39CC-4B91-88A6-1C3855EE5DC4} = {D63F7293-39CC-4B91-88A6-1C3855EE5DC4}
@@ -17,9 +17,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "setup", "..\setup\setup_10.
 		{0A0B10C7-CDF6-4A48-8F7B-B66A88154AAF} = {0A0B10C7-CDF6-4A48-8F7B-B66A88154AAF}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqlite3-32", "..\sqlite3\sqlite3-32_10.vcxproj", "{0A0B10C7-CDF6-4A48-8F7B-B66A88154AAF}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sqlite3-32", "..\sqlite3\sqlite3-32_12.vcxproj", "{0A0B10C7-CDF6-4A48-8F7B-B66A88154AAF}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SageThumbs-32", "..\SageThumbs\SageThumbs-32_10.vcxproj", "{D63F7293-39CC-4B91-88A6-1C3855EE5DC4}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SageThumbs-32", "..\SageThumbs\SageThumbs-32_12.vcxproj", "{D63F7293-39CC-4B91-88A6-1C3855EE5DC4}"
 	ProjectSection(ProjectDependencies) = postProject
 		{0A0B10C7-CDF6-4A48-8F7B-B66A88154AAF} = {0A0B10C7-CDF6-4A48-8F7B-B66A88154AAF}
 	EndProjectSection
