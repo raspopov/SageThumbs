@@ -114,6 +114,7 @@ RequestExecutionLevel admin
 
 Section "Check for new version before install"
 
+	IfSilent end
 	SetOutPath $TEMP
 	${UpdatePad} "${PAD}" "${VERSION}" $0 $1
 	StrCmp $0 "" 0 new
