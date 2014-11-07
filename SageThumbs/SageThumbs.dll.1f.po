@@ -4,11 +4,14 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Emrah Güzeltaş <emrahguzeltas@gmail.com>\n"
-"Language-Team: \n"
+"Language-Team: Emrah Güzeltaş <emrahguzeltas@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.6.9\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: tr_TR\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -28,7 +31,7 @@ msgstr "İptal"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.211
 msgid "Enable context menu in Explorer"
-msgstr "Windows Gezgini'nde bağlam menüsünü etkinleştir"
+msgstr "Windows Gezgini'nde bağlam menüsünü göster"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.226
@@ -63,7 +66,7 @@ msgstr "Gömülü küçük resim görüntü dosyasına öncelik ver"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.203
 msgid "Use Windows Image/Fax Viewer"
-msgstr "Windows Resim ve Faks Görüntüleyicisi'ni kullan"
+msgstr "Windows Fotoğraf Görüntüleyicisi'ni kullan"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.213
@@ -73,7 +76,7 @@ msgstr "Temizle..."
 #. Dialog control
 #: DIALOGCONTROL.202.Button.218
 msgid "Optimize"
-msgstr "En Uygun"
+msgstr "En Uygun Yap"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.210
@@ -83,12 +86,12 @@ msgstr "Tümünü seç / Hiçbirini seçme"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.223
 msgid "Default"
-msgstr "Varsayılan"
+msgstr "Varsayılanlar"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483649
 msgid "Context menu preview size"
-msgstr "Bağlam menüsü önizleme boyutu"
+msgstr "Bağlam Menüsü Önizleme Boyutu"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483650
@@ -108,12 +111,12 @@ msgstr "piksel"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483653
 msgid "Supported file types"
-msgstr "Desteklenen dosya türleri"
+msgstr "Desteklenen Dosya Türleri"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483654
 msgid "System-wide tweaks"
-msgstr "Sistem geneli ilişkilendirme"
+msgstr "Sistem Geneli İlişkilendirme"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483655
@@ -123,7 +126,7 @@ msgstr "Dil:"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483656
 msgid "Maximum size of image file:"
-msgstr "Resmin en büyük boyutu:"
+msgstr "En büyük resim boyutu:"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483657
@@ -133,7 +136,7 @@ msgstr "MB"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483658
 msgid "Convert options"
-msgstr "Dönüştürme seçenekleri"
+msgstr "Dönüştürme Seçenekleri"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483659
@@ -228,7 +231,7 @@ msgstr "Lütfen küçük resim önbelleğini temizlemeyi onaylayın."
 #. String resource
 #: STRING.115
 msgid "Thumbnail cache size: %u KB"
-msgstr "Küçük resim önbelleği boyutu: %u KB"
+msgstr "Küçük Resim Önbelleği Boyutu: %u KB"
 
 #. String resource
 #: STRING.116
@@ -238,12 +241,17 @@ msgstr "SageThumbs küçük resim önbelleği"
 #. String resource
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
-msgstr "SageThumbs küçük resim önbelleği temiz. Kullanıcı verileri etkilenmeyecektir."
+msgstr ""
+"SageThumbs küçük resim önbelleği temiz. Kullanıcı verileri etkilenmeyecektir."
 
 #. String resource
 #: STRING.118
-msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
-msgstr "Tüm ayarlar uygulanamadı. Lütfen SageThumbs'ı yönetici ayrıcalıklarına sahip hesap altında kullanın."
+msgid ""
+"Can not apply all settings. Please use SageThumbs under account with "
+"administrative privileges."
+msgstr ""
+"Tüm ayarlar uygulanamadı. Lütfen SageThumbs'ı yönetici ayrıcalıklarına sahip "
+"hesap altında kullanın."
 
 #. String resource
 #: STRING.119
@@ -293,7 +301,7 @@ msgstr "Ortalanmış masaüstü arka planı olarak ayarla"
 #. String resource
 #: STRING.207
 msgid "Set stretched wallpaper"
-msgstr "Uzatılmış masaüstü arka planı olarak ayarla"
+msgstr "Genişletilmiş masaüstü arka planı olarak ayarla"
 
 #. String resource
 #: STRING.208
