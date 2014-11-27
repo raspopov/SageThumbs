@@ -1,7 +1,9 @@
-﻿!define TITLE		"SageThumbs"
-!define VERSION		"2.0.0.20"
-!define COMPANY		"Cherubic Software"
+﻿!getdllversion "..\Win32\release\SageThumbs.dll" VER_
+
+!define TITLE		"SageThumbs"
+!define VERSION		"${VER_1}.${VER_2}.${VER_3}.${VER_4}"
 !define FILENAME	"sagethumbs_${VERSION}_setup.exe"
+!define COMPANY		"Cherubic Software"
 !define COPYRIGHT	"Copyright © 2004-2014 Nikolay Raspopov"
 !define URL			"http://sagethumbs.sourceforge.net/"
 !define PAD			"http://sagethumbs.sourceforge.net/pad/sagethumbs.xml"
@@ -27,7 +29,9 @@ Var STARTMENU_FOLDER
 	!define MUI_ICON "install.ico"
 	!define MUI_UNICON "uninstall.ico"
 	!define MUI_HEADERIMAGE_BITMAP "install.bmp"
+	!define MUI_HEADERIMAGE_BITMAP_STRETCH FitControl
 	!define MUI_HEADERIMAGE_UNBITMAP "uninstall.bmp"
+	!define MUI_HEADERIMAGE_UNBITMAP_STRETCH FitControl
 	!define MUI_COMPONENTSPAGE_NODESC
 	!define MUI_FINISHPAGE_NOAUTOCLOSE
 	!define MUI_UNFINISHPAGE_NOAUTOCLOSE
@@ -52,6 +56,7 @@ Var STARTMENU_FOLDER
 	!insertmacro MUI_LANGUAGE "Czech"
 	!insertmacro MUI_LANGUAGE "French"
 	!insertmacro MUI_LANGUAGE "German"
+	!insertmacro MUI_LANGUAGE "Greek"
 	!insertmacro MUI_LANGUAGE "Hebrew"
 	!insertmacro MUI_LANGUAGE "Hungarian"
 	!insertmacro MUI_LANGUAGE "Indonesian"

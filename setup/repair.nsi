@@ -1,5 +1,7 @@
-﻿!define TITLE		"SageThumbs Repair Utility"
-!define VERSION		"2.0.0.20"
+﻿!getdllversion "..\Win32\release\SageThumbs.dll" VER_
+
+!define TITLE		"SageThumbs Repair Utility"
+!define VERSION		"${VER_1}.${VER_2}.${VER_3}.${VER_4}"
 !define COMPANY		"Cherubic Software"
 !define FILENAME	"repair.exe"
 !define COPYRIGHT	"Copyright © 2004-2014 Nikolay Raspopov"
