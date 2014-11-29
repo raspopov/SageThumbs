@@ -2,11 +2,14 @@
 
 !define TITLE		"SageThumbs"
 !define VERSION		"${VER_1}.${VER_2}.${VER_3}.${VER_4}"
-!define FILENAME	"sagethumbs_${VERSION}_setup.exe"
+!define FILENAME	"..\..\redist\sagethumbs_${VERSION}_setup.exe"
 !define COMPANY		"Cherubic Software"
 !define COPYRIGHT	"Copyright © 2004-2014 Nikolay Raspopov"
 !define URL			"http://sagethumbs.sourceforge.net/"
 !define PAD			"http://sagethumbs.sourceforge.net/pad/sagethumbs.xml"
+
+# Pack sources
+!execute "${__FILEDIR__}\pack_src.cmd ${VER_1}.${VER_2}.${VER_3}.${VER_4}"
 
 SetCompressor /SOLID lzma
 
