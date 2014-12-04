@@ -1,15 +1,16 @@
-﻿msgid ""
+msgid ""
 msgstr ""
 "Project-Id-Version: SageThumbs.dll\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: You-Cheng Hsieh\n"
-"Language-Team: Chinese (Traditional)\n"
+"Last-Translator: You-Cheng Hsieh <yochenhsieh@gmail.com>\n"
+"Language-Team: You-Cheng Hsieh <yochenhsieh@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.7\n"
-"Language: zh\n"
+"X-Generator: Poedit 1.7\n"
+"Language: zh_TW\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -320,4 +321,3 @@ msgstr "轉換成 GIF"
 #: STRING.212
 msgid "Convert to BMP"
 msgstr "轉換成 BMP"
-

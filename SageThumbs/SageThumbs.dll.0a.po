@@ -3,12 +3,14 @@ msgstr ""
 "Project-Id-Version: SageThumbs.dll\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Nikolay Raspopov <raspopov@cherubicsoft.com>\n"
-"Language-Team: \n"
+"Last-Translator: Baco Baco <bacoelgenuino@gmail.com>\n"
+"Language-Team: Baco Baco <bacoelgenuino@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: Spanish\n"
+"Language: es\n"
+"X-Generator: Poedit 1.7\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -314,4 +316,3 @@ msgstr "Convertir a GIF"
 #: STRING.212
 msgid "Convert to BMP"
 msgstr "Convertir a BMP"
-

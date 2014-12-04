@@ -4,11 +4,13 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: JunHyung Lee <pca03008@gmail.com>\n"
-"Language-Team: \n"
+"Language-Team: JunHyung Lee <pca03008@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.7\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: ko\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -239,7 +241,8 @@ msgstr "SageThumbs 썸네일 캐시"
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
 msgstr ""
-"SageThumbs 썸네일 캐시를 청소합니다. 사용자 데이터는 영향을 받지 않습니다."
+"SageThumbs 썸네일 캐시를 청소합니다. 사용자 데이터는 영향을 받지 않습"
+"니다."
 
 #. String resource
 #: STRING.118
@@ -247,8 +250,8 @@ msgid ""
 "Can not apply all settings. Please use SageThumbs under account with "
 "administrative privileges."
 msgstr ""
-"모든 설정을 적용 할 수 없습니다. 관리자 권한을 가진 계정으로 SageThumbs를 사"
-"용하십시오."
+"모든 설정을 적용 할 수 없습니다. 관리자 권한을 가진 계정으로 "
+"SageThumbs를 사용하십시오."
 
 #. String resource
 #: STRING.119

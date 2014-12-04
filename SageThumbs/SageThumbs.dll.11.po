@@ -4,12 +4,12 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Shoichi Ito <shoichi@nagano-nct.ac.jp>\n"
-"Language-Team: \n"
+"Language-Team: Shoichi Ito <shoichi@nagano-nct.ac.jp>\n"
 "Language: ja_JP\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.3\n"
+"X-Generator: Poedit 1.7\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #. Dialog caption
@@ -241,8 +241,8 @@ msgstr "SageThumbs サムネイルキャッシュ"
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
 msgstr ""
-"SageThumbs のサムネイルキャッシュを消去します。ユーザーデータには影響ありませ"
-"ん。"
+"SageThumbs のサムネイルキャッシュを消去します。ユーザーデータには影響"
+"ありません。"
 
 #. String resource
 #: STRING.118
@@ -250,8 +250,8 @@ msgid ""
 "Can not apply all settings. Please use SageThumbs under account with "
 "administrative privileges."
 msgstr ""
-"すべての設定を適用できませんでした。管理者権限を持つアカウントでご利用くださ"
-"い。"
+"すべての設定を適用できませんでした。管理者権限を持つアカウントでご利用"
+"ください。"
 
 #. String resource
 #: STRING.119

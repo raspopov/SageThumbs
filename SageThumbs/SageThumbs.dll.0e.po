@@ -4,13 +4,13 @@ msgstr ""
 "POT-Creation-Date: 2012.08.06.\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Morva Kristóf <kristof92@gmail.com>\n"
-"Language-Team: SharpKode\n"
+"Language-Team: SharpKode, Morva Kristóf <kristof92@gmail.com>\n"
 "Language: hu_HU\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.4\n"
+"X-Generator: Poedit 1.7\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202

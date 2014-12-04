@@ -4,11 +4,13 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: IRIman <iriman@chmail.ir>\n"
-"Language-Team: \n"
+"Language-Team: IRIman <iriman@chmail.ir>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.5\n"
+"X-Generator: Poedit 1.7\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: fa\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -234,17 +236,17 @@ msgstr "‫حافظه‌ی نهانِ تصاویر بندانگشتی برنام
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
 msgstr ""
-"‫حافظه‌ی نهانِ تصاویر بندانگشتی برنامه‌ی SageThumbs را پاک کن. این کار تأثیری بر "
-"اطلاعات کاربر ندارد."
+"‫حافظه‌ی نهانِ تصاویر بندانگشتی برنامه‌ی SageThumbs را پاک کن. این کار تأثیری بر اطلاعات "
+"کاربر ندارد."
 
 #. String resource
 #: STRING.118
 msgid ""
-"Can not apply all settings. Please use SageThumbs under account with "
-"administrative privileges."
+"Can not apply all settings. Please use SageThumbs under account with administrative "
+"privileges."
 msgstr ""
-"‫نمی‌توان همه‌ی تنظیمات را اِعمال کرد. لطفاً ‫برنامه‌ی ‫SageThumbs را تحت کاربری با "
-"سطح دسترسی مدیر اجرا ‫نمایید."
+"‫نمی‌توان همه‌ی تنظیمات را اِعمال کرد. لطفاً ‫برنامه‌ی ‫SageThumbs را تحت کاربری با سطح دسترسی "
+"مدیر اجرا ‫نمایید."
 
 #. String resource
 #: STRING.119
@@ -320,4 +322,3 @@ msgstr "‫تبدیل به GIF"
 #: STRING.212
 msgid "Convert to BMP"
 msgstr "‫تبدیل به BMP"
-

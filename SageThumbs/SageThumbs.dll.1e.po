@@ -4,11 +4,13 @@ msgstr ""
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: Adisorn Aeksatean <npgamer_nott@hotmail.com>\n"
-"Language-Team: \n"
+"Language-Team: Adisorn Aeksatean <npgamer_nott@hotmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 1.7\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: th\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -98,7 +100,7 @@ msgstr "กว้าง x สูง:"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483651
 msgid "X"
-msgstr ""
+msgstr "X"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483652
@@ -128,7 +130,7 @@ msgstr "ขนาดสูงสุดของไฟล์รูปภาพ"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483657
 msgid "MB"
-msgstr ""
+msgstr "MB"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483658
@@ -153,7 +155,7 @@ msgstr "รูปแบบไฟล์กำหนดเอง (ใช้งา�
 #. String resource
 #: STRING.100
 msgid "SageThumbs"
-msgstr ""
+msgstr "SageThumbs"
 
 #. String resource
 #: STRING.101
