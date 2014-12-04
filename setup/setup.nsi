@@ -57,6 +57,7 @@ Var STARTMENU_FOLDER
 	!insertmacro MUI_UNPAGE_FINISH
 	!insertmacro MUI_LANGUAGE "English"
 	!insertmacro MUI_LANGUAGE "Czech"
+	!insertmacro MUI_LANGUAGE "Dutch"
 	!insertmacro MUI_LANGUAGE "French"
 	!insertmacro MUI_LANGUAGE "German"
 	!insertmacro MUI_LANGUAGE "Greek"

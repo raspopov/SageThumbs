@@ -119,6 +119,9 @@
     <None Include="sagethumbs.dll.12.po_">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="sagethumbs.dll.13.po_">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="sagethumbs.dll.15.po_">
       <Filter>Resource Files</Filter>
     </None>
