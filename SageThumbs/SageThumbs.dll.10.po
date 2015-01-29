@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7\n"
+"X-Generator: Poedit 1.7.4\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -29,7 +29,7 @@ msgstr "Annulla"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.211
 msgid "Enable context menu in Explorer"
-msgstr "Attiva il menu contestuale in Explorer"
+msgstr "Abilita menu contestuale di Explorer"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.226
@@ -39,7 +39,7 @@ msgstr "Visualizza anteprima nel sottomenu"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.212
 msgid "Enable thumbnails in Explorer"
-msgstr "Attiva le miniature in Explorer"
+msgstr "Abilita le miniature in Explorer"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.216
@@ -255,7 +255,7 @@ msgstr ""
 #. String resource
 #: STRING.119
 msgid "Convert to PNG"
-msgstr "Convertire in PNG"
+msgstr "Converti in PNG"
 
 #. String resource
 #: STRING.120
