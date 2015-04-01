@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: id\n"
-"X-Generator: Poedit 1.7\n"
+"X-Generator: Poedit 1.7.5\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
@@ -139,12 +139,12 @@ msgstr "Kompresi PNG (0 - terendah, 9 - terbaik):"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.225
 msgid "Show type overlay on thumbnails"
-msgstr "Show type overlay on thumbnails"
+msgstr "Tampilkan tipe overlay pada thumbnail"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.226
 msgid "Show preview in submenu"
-msgstr ""
+msgstr "Tampilkan pratinjau di submenu"
 
 #. String resource
 #: STRING.100
@@ -229,7 +229,7 @@ msgstr "Ukuran cache thumbnail: %u KB"
 #. String resource
 #: STRING.116
 msgid "SageThumbs thumbnail cache"
-msgstr "SageThumbs cache thumbnail"
+msgstr "cache thumbnail SageThumbs"
 
 #. String resource
 #: STRING.117
