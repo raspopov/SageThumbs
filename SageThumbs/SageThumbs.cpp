@@ -23,7 +23,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Thumb.h"
 #include "OptionsDlg.h"
 #include "SQLite.h"
-#include "..\Localization\Localization.cpp"
 
 #include <InitGuid.h>
 
@@ -2516,3 +2515,5 @@ DWORD CRC32( const char *buf, int len )
 		crc = ( crc << 8 ) ^ crc32_table[ ( crc >> 24 ) ^ *p ];
 	return ~crc;
 }
+
+#include "..\Localization\Localization.cpp"
