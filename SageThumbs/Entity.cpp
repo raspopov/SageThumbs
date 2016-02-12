@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2014.
+Copyright (C) Nikolay Raspopov, 2004-2016.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -589,7 +589,7 @@ HBITMAP CEntity::GetImage(UINT cx, UINT cy, COLORREF nColor1, COLORREF nColor2)
 					{
 						for ( UINT x = 0; x < dx; x += step )
 						{
-							const RECT rc = { x, y, min( x + step, dx ), min( y + step, dy ) };
+							const RECT rc = { (LONG)x, (LONG)y, (LONG)min( x + step, dx ), (LONG)min( y + step, dy ) };
 							FillRect( hResultDC, &rc, ( ( x / step + ( y / step ) & 1 ) & 1 ) ? hBrush1 : hBrush2 );
 						}
 					}
@@ -647,8 +647,8 @@ HICON CEntity::GetIcon(UINT cx)
 		{
 			0,
 			0,
-			cx,
-			cx
+			(LONG)cx,
+			(LONG)cx
 		};
 		const LONG nx = ( cx - bm.bmWidth ) / 2;
 		const LONG ny = ( cx - bm.bmHeight ) / 2;

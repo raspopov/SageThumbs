@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2014.
+Copyright (C) Nikolay Raspopov, 2004-2016.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -171,7 +171,7 @@ LRESULT COptionsDialog::OnInitDialog(UINT /* uMsg */, WPARAM /* wParam */, LPARA
 	const bool bUseFax = GetRegValue( _T(""), CString(), ShellImagePreview, HKEY_CLASSES_ROOT ).CompareNoCase( CLSID_FAX ) == 0;
 	CheckDlgButton( IDC_USE_FAX, bUseFax ? BST_CHECKED : BST_UNCHECKED );
 
-	if ( _Module.m_OSVersion.dwMajorVersion >= 6 && ! IsProcessElevated() )
+	if ( ! IsWindowsXP() && ! IsProcessElevated() )
 		SendDlgItemMessage( IDOK, BCM_SETSHIELD, 0, 1 );
 
 	return TRUE;
@@ -295,7 +295,7 @@ LRESULT COptionsDialog::OnOK(WORD /* wNotifyCode */, WORD /* wID */, HWND /* hWn
 
 	if ( ! _Module.RegisterExtensions( m_hWnd ) )
 	{
-		if ( ( _Module.m_OSVersion.dwMajorVersion >= 6 && ! IsProcessElevated() ) ||
+		if ( ( ! IsWindowsXP() && ! IsProcessElevated() ) ||
 			_Module.MsgBox( m_hWnd, IDS_ACCESS_DENIED, MB_OKCANCEL | MB_ICONEXCLAMATION ) == IDOK )
 		{
 			// Run as admin

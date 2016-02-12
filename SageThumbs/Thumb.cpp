@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2014.
+Copyright (C) Nikolay Raspopov, 2004-2016.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -64,9 +64,9 @@ void CThumb::FinalRelease()
 
 // IShellExtInit
 
-STDMETHODIMP CThumb::Initialize(LPCITEMIDLIST, IDataObject* pDO, HKEY)
+STDMETHODIMP CThumb::Initialize( PCIDLIST_ABSOLUTE /*pidlFolder*/, IDataObject* pdtobj, HKEY /*hkeyProgID*/ )
 {
-	if ( ! pDO )
+	if ( ! pdtobj )
 	{
 		ATLTRACE( "CThumb - IShellExtInit::Initialize() : E_INVALIDARG (No data)\n" );
 		return E_INVALIDARG;
@@ -82,7 +82,7 @@ STDMETHODIMP CThumb::Initialize(LPCITEMIDLIST, IDataObject* pDO, HKEY)
 	// Получение данных о выделенных элементах
 	FORMATETC fe = { CF_HDROP, NULL, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
 	STGMEDIUM med = { TYMED_HGLOBAL, NULL, NULL };
-	HRESULT hr = pDO->GetData( &fe, &med );
+	HRESULT hr = pdtobj->GetData( &fe, &med );
 	if ( FAILED( hr ) )
 	{
 		ATLTRACE( "CThumb - IShellExtInit::Initialize() : E_INVALIDARG (No data)\n" );

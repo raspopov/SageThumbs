@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2014.
+Copyright (C) Nikolay Raspopov, 2004-2016.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -112,7 +112,6 @@ public:
 
 	CSageThumbsModule();
 
-	OSVERSIONINFO			m_OSVersion;			// OS version
 	CString					m_sModuleFileName;		// This module full filename
 	CString					m_sHome;				// Installation folder
 	CString					m_sDatabase;			// Database filename
@@ -129,7 +128,7 @@ public:
 	BOOL RegisterExtensions(HWND hWnd = NULL);
 	BOOL UnregisterExtensions();
 
-	// Обновление настроек Explorer'a
+	// Обновление настроек Explorer
 	void UpdateShell();
 
 	// Image extensions disabled by default
@@ -194,6 +193,8 @@ protected:
 #endif // GFL_THREAD_SAFE
 };
 
+BOOL IsWindowsXP();
+BOOL IsWindows8OrNewer();
 
 bool IsValidCLSID(const CString& sCLSID);
 BOOL GetRegValue(LPCTSTR szName, LPCTSTR szKey = REG_SAGETHUMBS, HKEY hRoot = HKEY_CURRENT_USER);
@@ -226,6 +227,16 @@ CString GetContentType(LPCTSTR szExt);
 BOOL IsKeyExists(HKEY hRoot, LPCTSTR szKey);
 
 BOOL SetPrivilege(HANDLE hToken, LPCTSTR lpszPrivilege, BOOL bEnablePrivilege);
+BOOL IsProcessElevated();
+
+void CleanWindowsCache();
+
+BOOL LoadIcon( LPCTSTR szFilename, HICON* phSmallIcon, HICON* phLargeIcon = NULL, HICON* phHugeIcon = NULL, int nIcon = 0 );
+
+DWORD CRC32( const char *buf, int len );
+
+// Get system folder path
+CString GetSpecialFolderPath( int csidl );
 
 // GFL callback functions for IStream handle
 #ifdef ISTREAM_ENABLED

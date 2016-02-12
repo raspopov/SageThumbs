@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2014.
+Copyright (C) Nikolay Raspopov, 2004-2016.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -23,6 +23,12 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #include "Thumb.h"
 #include "OptionsDlg.h"
 #include "SQLite.h"
+#include "..\Localization\Localization.cpp"
+
+#include <InitGuid.h>
+
+DEFINE_GUID( CLSID_WindowsThumbnailer, 0x889900c3, 0x59f3, 0x4c2f, 0xae, 0x21, 0xa4, 0x09, 0xea, 0x01, 0xe6, 0x05 );
+DEFINE_GUID( FMTID_RecordedTVSummaryInformation, 0x6D748DE2, 0x8D38, 0x4CC3, 0xAC, 0x60, 0xF0, 0x09, 0xB0, 0x57, 0xC5, 0x57 );
 
 //static BitsDescription	_Bits [] = {
 //	{_T("psd"),		2, "\xff\xff", "\x38\x42"},
@@ -137,14 +143,10 @@ LPCTSTR ContentViewModeForSearch =
 CSageThumbsModule		_Module;
 
 CSageThumbsModule::CSageThumbsModule()
-	: m_OSVersion	()
-	, m_hGFL		( NULL )
+	: m_hGFL		( NULL )
 	, m_hGFLe		( NULL )
 	, m_hSQLite		( NULL )
 {
-	m_OSVersion.dwOSVersionInfoSize = sizeof( m_OSVersion );
-	GetVersionEx( &m_OSVersion );
-
 	GetModuleFileName( _AtlBaseModule.GetModuleInstance(),
 		m_sModuleFileName.GetBuffer( MAX_LONG_PATH ), MAX_LONG_PATH );
 	m_sModuleFileName.ReleaseBuffer();
@@ -228,7 +230,7 @@ BOOL CSageThumbsModule::RegisterExtensions(HWND hWnd)
 	const bool bEnableThumbs = GetRegValue( _T("EnableThumbs"), 1ul ) != 0;
 	const bool bEnableIcons  = GetRegValue( _T("EnableIcons"),  1ul ) != 0;
 	// Enabled by default on Windows 2000 and Windows XP only
-	const bool bEnableInfo = GetRegValue( _T("EnableInfo"), ( m_OSVersion.dwMajorVersion < 6 ) ? 1ul : 0ul ) != 0;
+	const bool bEnableInfo = GetRegValue( _T("EnableInfo"), IsWindowsXP() ? 1ul : 0ul ) != 0;
 	const bool bEnableOverlay  = GetRegValue( _T("EnableOverlay"),  0ul ) != 0;
 
 	if ( bEnableOverlay )
@@ -319,7 +321,7 @@ void CSageThumbsModule::UpdateShell()
 bool CSageThumbsModule::IsDisabledByDefault(LPCTSTR szExt) const
 {
 	// Disable .png on Windows 8 due Metro bug
-	if ( m_OSVersion.dwMajorVersion >= 6 && m_OSVersion.dwMinorVersion >= 2 )
+	if ( IsWindows8OrNewer() )
 	{
 		if ( _tcsicmp( szExt, _T("png") ) == 0 )
 			return true;
@@ -1259,6 +1261,24 @@ LONG APIENTRY CPlApplet(HWND hwnd, UINT uMsg, LPARAM /* lParam1 */, LPARAM lPara
 	return FALSE;
 }
 
+BOOL IsWindowsXP()
+{
+	OSVERSIONINFOEX osvi = { sizeof( OSVERSIONINFOEX ), 5, 1 };
+	DWORDLONG mask = 0;
+	VER_SET_CONDITION( mask, VER_MAJORVERSION, VER_EQUAL );
+	VER_SET_CONDITION( mask, VER_MINORVERSION, VER_GREATER_EQUAL );
+	return VerifyVersionInfo( &osvi, VER_MAJORVERSION | VER_MINORVERSION, mask );
+}
+
+BOOL IsWindows8OrNewer()
+{
+	OSVERSIONINFOEX osvi = { sizeof( OSVERSIONINFOEX ), 6, 2 };
+	DWORDLONG mask = 0;
+	VER_SET_CONDITION( mask, VER_MAJORVERSION, VER_GREATER_EQUAL );
+	VER_SET_CONDITION( mask, VER_MINORVERSION, VER_GREATER_EQUAL );
+	return VerifyVersionInfo( &osvi, VER_MAJORVERSION | VER_MINORVERSION, mask );
+}
+
 bool IsValidCLSID(const CString& sCLSID)
 {
 	static CRBMap < CString, bool > oCLSIDCache;
@@ -1286,7 +1306,8 @@ bool IsValidCLSID(const CString& sCLSID)
 			}
 		}
 
-		if ( HMODULE hModule = LoadLibraryEx( sPath, NULL, LOAD_LIBRARY_AS_DATAFILE ) )
+		HMODULE hModule = LoadLibraryEx( sPath, NULL, LOAD_LIBRARY_AS_DATAFILE );
+		if ( hModule )
 		{
 			FreeLibrary( hModule );
 			bIsValid = true;
@@ -1297,7 +1318,8 @@ bool IsValidCLSID(const CString& sCLSID)
 			PathRemoveArgs( sPath.GetBuffer( MAX_PATH ) );
 			sPath.ReleaseBuffer();
 			sPath.Trim();
-			if ( HMODULE hModule = LoadLibraryEx( sPath, NULL, LOAD_LIBRARY_AS_DATAFILE ) )
+			hModule = LoadLibraryEx( sPath, NULL, LOAD_LIBRARY_AS_DATAFILE );
+			if ( hModule )
 			{
 				FreeLibrary( hModule );
 				bIsValid = true;
@@ -1478,7 +1500,7 @@ BOOL FixKeyRights(HKEY hRoot, LPCTSTR szKey)
 
 BOOL FixKey(__in HKEY hkey, __in_opt LPCTSTR pszSubKey)
 {
-	if ( hkey != HKEY_CLASSES_ROOT || ( _Module.m_OSVersion.dwMajorVersion >= 6 && ! IsProcessElevated() ) )
+	if ( hkey != HKEY_CLASSES_ROOT || ( ! IsWindowsXP() && ! IsProcessElevated() ) )
 		// Skip
 		return FALSE;
 
@@ -2367,3 +2389,130 @@ GFL_UINT32 GFLAPI IStreamSeek(GFL_HANDLE handle, GFL_INT32 offset, GFL_INT32 ori
 }
 
 #endif // ISTREAM_ENABLED
+
+CString GetSpecialFolderPath( int csidl )
+{
+	CString buf;
+
+	// Avoid SHGetSpecialFolderPath()
+	PIDLIST_ABSOLUTE pidl = NULL;
+	if ( SUCCEEDED( SHGetSpecialFolderLocation( GetDesktopWindow(), csidl, &pidl ) ) )
+	{
+		SHGetPathFromIDList( pidl, buf.GetBuffer( MAX_LONG_PATH ) );
+		buf.ReleaseBuffer();
+
+		CoTaskMemFree( pidl );
+	}
+
+	return buf;
+}
+
+BOOL IsProcessElevated()
+{
+	HANDLE hToken = NULL;
+	if ( ! OpenProcessToken( GetCurrentProcess(), TOKEN_QUERY, &hToken ) )
+	{
+		ATLTRACE( "OpenProcessToken error: %d\n", GetLastError() );
+		return FALSE;
+	}
+
+	TOKEN_ELEVATION elevation = {};
+	DWORD dwSize = 0;
+	if ( ! GetTokenInformation( hToken, TokenElevation, &elevation,
+		sizeof( elevation ), &dwSize ) )
+	{
+		ATLTRACE( "GetTokenInformation error: %d\n", GetLastError() );
+		CloseHandle( hToken );
+		return FALSE;
+	}
+
+	CloseHandle( hToken );
+	return ( elevation.TokenIsElevated != FALSE );
+}
+
+void CleanWindowsCache()
+{
+	CComPtr< IEmptyVolumeCache > pWindowsThumbnailer;
+	HRESULT hr = pWindowsThumbnailer.CoCreateInstance( CLSID_WindowsThumbnailer );
+	if ( SUCCEEDED( hr ) )
+	{
+		pWindowsThumbnailer->Purge( 0, NULL );
+	}
+}
+
+BOOL LoadIcon( LPCTSTR szFilename, HICON* phSmallIcon, HICON* phLargeIcon, HICON* phHugeIcon, int nIcon )
+{
+	CString strIcon( szFilename );
+
+	if ( phSmallIcon )
+		*phSmallIcon = NULL;
+	if ( phLargeIcon )
+		*phLargeIcon = NULL;
+	if ( phHugeIcon )
+		*phHugeIcon = NULL;
+
+	int nIndex = strIcon.ReverseFind( _T( ',' ) );
+	if ( nIndex != -1 )
+	{
+		if ( _stscanf_s( strIcon.Mid( nIndex + 1 ), _T( "%i" ), &nIcon ) == 1 )
+		{
+			strIcon = strIcon.Left( nIndex );
+		}
+	}
+	else
+		nIndex = 0;
+
+	if ( strIcon.GetLength() < 3 )
+		return FALSE;
+
+	if ( strIcon.GetAt( 0 ) == _T( '\"' ) &&
+		strIcon.GetAt( strIcon.GetLength() - 1 ) == _T( '\"' ) )
+		strIcon = strIcon.Mid( 1, strIcon.GetLength() - 2 );
+
+	if ( phSmallIcon )
+	{
+		UINT nLoadedID;
+		PrivateExtractIcons( strIcon, nIcon, 16, 16, phSmallIcon, &nLoadedID, 1, 0 );
+	}
+	if ( phLargeIcon )
+	{
+		UINT nLoadedID;
+		PrivateExtractIcons( strIcon, nIcon, 32, 32, phLargeIcon, &nLoadedID, 1, 0 );
+	}
+	if ( phHugeIcon )
+	{
+		UINT nLoadedID;
+		PrivateExtractIcons( strIcon, nIcon, 48, 48, phHugeIcon, &nLoadedID, 1, 0 );
+	}
+
+	return ( phLargeIcon && *phLargeIcon ) || ( phSmallIcon && *phSmallIcon ) || ( phHugeIcon && *phHugeIcon );
+}
+
+// CRC 32
+
+static DWORD crc32_table[ 256 ];
+
+class CCRC32
+{
+public:
+	inline CCRC32()
+	{
+		const DWORD CRC32_POLY = 0x04c11db7;	// AUTODIN II, Ethernet, & FDDI
+		for ( int i = 0; i < 256; ++i ) {
+			DWORD c = i << 24;
+			for ( int j = 8; j > 0; --j )
+				c = c & 0x80000000 ? ( c << 1 ) ^ CRC32_POLY : ( c << 1 );
+			crc32_table[ i ] = c;
+		}
+	}
+};
+
+static CCRC32 _CRC32;
+
+DWORD CRC32( const char *buf, int len )
+{
+	DWORD crc = 0xffffffff;
+	for ( const BYTE *p = (const BYTE *)buf; len > 0; ++p, --len )
+		crc = ( crc << 8 ) ^ crc32_table[ ( crc >> 24 ) ^ *p ];
+	return ~crc;
+}

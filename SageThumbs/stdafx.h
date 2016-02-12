@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2014.
+Copyright (C) Nikolay Raspopov, 2004-2016.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -20,11 +20,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #pragma once
 
-// Windows XP as target platform
-#define  _WIN32_WINNT	0x0600
-
-#include <SDKDDKVer.h>
-
 #define STRICT
 
 #ifndef _SECURE_ATL
@@ -32,7 +27,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #ifndef VC_EXTRALEAN
-#define VC_EXTRALEAN
+	#define VC_EXTRALEAN
 #endif
 
 #define WIN32_LEAN_AND_MEAN
@@ -43,7 +38,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define _ATL_CSTRING_NO_CRT
 #define _ATL_ALL_WARNINGS
 #define ATL_NO_ASSERT_ON_DESTROY_NONEXISTENT_WINDOW
-//#define _NTOSP_
+#define NO_PRINT
+#define STRICT_TYPED_ITEMIDS
 
 #ifdef _DEBUG
 	//#define _ATL_DEBUG_INTERFACES
@@ -51,6 +47,8 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #define ISOLATION_AWARE_ENABLED 1
+
+#include "targetver.h"
 
 #include "resource.h"
 
@@ -160,14 +158,6 @@ DEFINE_GUID(FMTID_RecordedTVSummaryInformation, 0x6D748DE2, 0x8D38, 0x4CC3, 0xAC
 using namespace ATL;
 
 typedef CComCritSecLock < CComAutoCriticalSection > CLock;
-
-BOOL IsProcessElevated();
-void CleanWindowsCache();
-BOOL LoadIcon(LPCTSTR szFilename, HICON* phSmallIcon, HICON* phLargeIcon = NULL, HICON* phHugeIcon = NULL, int nIcon = 0);
-DWORD CRC32(const char *buf, int len);
-
-// Get system folder path
-CString GetSpecialFolderPath(int csidl);
 
 inline size_t lengthof(LPCTSTR szString)
 {

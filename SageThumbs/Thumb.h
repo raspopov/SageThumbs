@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2014.
+Copyright (C) Nikolay Raspopov, 2004-2016.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -204,7 +204,13 @@ public:
 	}
 
 // IShellExtInit
-	STDMETHOD(Initialize)(LPCITEMIDLIST, LPDATAOBJECT pDO, HKEY);
+	STDMETHOD(Initialize)(
+		/* [annotation][unique][in] */
+		_In_opt_  PCIDLIST_ABSOLUTE pidlFolder,
+		/* [annotation][unique][in] */
+		_In_opt_  IDataObject* pdtobj,
+		/* [annotation][unique][in] */
+		_In_opt_  HKEY hkeyProgID );
 
 // IContextMenu
 	STDMETHOD(QueryContextMenu)(HMENU, UINT, UINT, UINT, UINT);
