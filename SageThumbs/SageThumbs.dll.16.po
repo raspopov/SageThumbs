@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "Language: pt_BR\n"
-"X-Generator: Poedit 1.7\n"
+"X-Generator: Poedit 1.8.5\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202

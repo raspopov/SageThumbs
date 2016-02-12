@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Language: sv\n"
-"X-Generator: Poedit 1.7\n"
+"X-Generator: Poedit 1.8.5\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
