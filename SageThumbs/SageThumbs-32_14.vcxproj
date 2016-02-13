@@ -137,7 +137,6 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)..\Localization\compress.exe" "
       <AdditionalDependencies>sqlite3.lib;version.lib;comCtl32.lib;libgfl.lib;libgfle.lib;propsys.lib;UxTheme.lib;Msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\gfl\libW;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(TargetName).def</ModuleDefinitionFile>
-      <DelayLoadDLLs>sqlite3.dll;libgfl340.dll;libgfle340.dll;advapi32.dll;lz32.dll;ole32.dll;oleaut32.dll;shlwapi.dll;shell32.dll;version.dll;msimg32.dll;uxtheme.dll</DelayLoadDLLs>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -184,7 +183,6 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)..\Localization\compress.exe" "
       <AdditionalDependencies>sqlite3.lib;version.lib;comCtl32.lib;libgfl.lib;libgfle.lib;propsys.lib;UxTheme.lib;Msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\gfl\lib64W;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(TargetName).def</ModuleDefinitionFile>
-      <DelayLoadDLLs>sqlite3.dll;libgfl340.dll;libgfle340.dll;advapi32.dll;lz32.dll;ole32.dll;oleaut32.dll;shlwapi.dll;shell32.dll;version.dll;msimg32.dll;uxtheme.dll</DelayLoadDLLs>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
@@ -235,7 +233,6 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)..\Localization\compress.exe" "
       <AdditionalDependencies>sqlite3.lib;version.lib;comCtl32.lib;libgfl.lib;libgfle.lib;propsys.lib;UxTheme.lib;Msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\gfl\libW;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(TargetName).def</ModuleDefinitionFile>
-      <DelayLoadDLLs>sqlite3.dll;libgfl340.dll;libgfle340.dll;advapi32.dll;lz32.dll;ole32.dll;oleaut32.dll;shlwapi.dll;shell32.dll;version.dll;msimg32.dll;uxtheme.dll</DelayLoadDLLs>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -288,7 +285,6 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)..\Localization\compress.exe" "
       <AdditionalDependencies>sqlite3.lib;version.lib;comCtl32.lib;libgfl.lib;libgfle.lib;propsys.lib;UxTheme.lib;Msimg32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\gfl\lib64W;$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>$(TargetName).def</ModuleDefinitionFile>
-      <DelayLoadDLLs>sqlite3.dll;libgfl340.dll;libgfle340.dll;advapi32.dll;lz32.dll;ole32.dll;oleaut32.dll;shlwapi.dll;shell32.dll;version.dll;msimg32.dll;uxtheme.dll</DelayLoadDLLs>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>

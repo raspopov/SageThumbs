@@ -37,15 +37,15 @@ extern CSageThumbsModule		_Module;		// Application
 #define REG_SAGETHUMBS_BAK		_T("SageThumbs.bak")
 #define REG_SAGETHUMBS_IMG		_T("SageThumbsImage")
 #define CUSTOM_TYPE				_T("SageThumbs Custom Type")
-#define JPEG_DEFAULT			85ul			// JPEG default quality (0-100)
-#define PNG_DEFAULT				6ul				// PNG default compression (0-9)
+#define JPEG_DEFAULT			90ul			// JPEG default quality (0-100)
+#define PNG_DEFAULT				9ul				// PNG default compression (0-9)
 #define THUMB_STORE_SIZE		256ul			// Minimum thumbnail size for database, pixels
 #define THUMB_MIN_SIZE			32ul			// Thumbnail minimum size, pixels
 #define THUMB_MAX_SIZE			512ul			// Thumbnail maximum size, pixels
 #define THUMB_STORE_PNG_RATIO	9				// Compression ratio for PNG-thumbnail
 #define THUMB_STORE_JPG_RATIO	80				// Compression ration for JPG-thumbnail
 #define THUMB_EMBEDDED_MIN_SIZE	96ul			// Embedded thumbnail minimum size, pixels
-#define FILE_MAX_SIZE			10ul			// Default maximum file size, MB
+#define FILE_MAX_SIZE			100ul			// Default maximum file size, MB
 #define STANDARD_LANGID			0x09			// Default language ID - English
 
 // SQL дл€ создани€ базы данных
@@ -247,14 +247,7 @@ GFL_UINT32 GFLAPI IStreamSeek(GFL_HANDLE handle, GFL_INT32 offset, GFL_INT32 ori
 
 #define Change_Color_Depth(x) gflChangeColorDepth( (x), NULL, GFL_MODE_TO_RGBA, GFL_MODE_ADAPTIVE )
 
-// Ёкспортируемые функции
-STDAPI DllCanUnloadNow(void);
-STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv);
-STDAPI DllRegisterServer(void);
-STDAPI DllUnregisterServer(void);
-STDAPI DllInstall(BOOL bInstall, LPCWSTR pszCmdLine);
-void CALLBACK Options (HWND hwnd, HINSTANCE hinst = NULL, LPSTR lpszCmdLine = NULL, int nCmdShow = 0);
-LONG APIENTRY CPlApplet (HWND hwnd, UINT uMsg, LPARAM lParam1, LPARAM lParam2);
+void CALLBACK Options(HWND hwnd, HINSTANCE hinst = NULL, LPSTR lpszCmdLine = NULL, int nCmdShow = 0);
 
 class CWaitCursor
 {

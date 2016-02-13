@@ -63,6 +63,9 @@ SageThumbs can be easily translated to other languages.
 
 Versions:
 
+2.0.0.23
+  * Project converted to MS VS2015
+
 2.0.0.22
   * Added Dutch translation (by Gaston Loos)
  

@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2014.
+Copyright (C) Nikolay Raspopov, 2004-2016.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -24,7 +24,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 // IExtractIconA
 
-STDMETHODIMP CThumb::GetIconLocation(UINT uFlags, LPSTR szIconFile, UINT cch, int* piIndex, UINT* pwFlags)
+STDMETHODIMP CThumb::GetIconLocation(UINT uFlags, __out_ecount( cch ) LPSTR szIconFile, UINT cch, __out int* piIndex, __out UINT* pwFlags)
 {
 	WCHAR szIconFileW[ MAX_LONG_PATH ] = {};
 	HRESULT hr = GetIconLocation( uFlags, szIconFileW, MAX_LONG_PATH, piIndex, pwFlags );
@@ -32,14 +32,14 @@ STDMETHODIMP CThumb::GetIconLocation(UINT uFlags, LPSTR szIconFile, UINT cch, in
 	return hr;
 }
 
-STDMETHODIMP CThumb::Extract(LPCSTR pszFile, UINT nIconIndex, HICON* phiconLarge, HICON* phiconSmall, UINT nIconSize)
+STDMETHODIMP CThumb::Extract(LPCSTR pszFile, UINT nIconIndex, __out_opt HICON* phiconLarge, __out_opt HICON* phiconSmall, UINT nIconSize)
 {
 	return Extract( (LPCWSTR)CA2W( pszFile ), nIconIndex, phiconLarge, phiconSmall,nIconSize );
 }
 
 // IExtractIconW
 
-STDMETHODIMP CThumb::GetIconLocation(UINT uFlags, LPWSTR szIconFile, UINT cch, int* piIndex, UINT* pwFlags)
+STDMETHODIMP CThumb::GetIconLocation(UINT uFlags, __out_ecount( cch ) LPWSTR szIconFile, UINT cch, __out int* piIndex, __out UINT* pwFlags)
 {
 	if ( ! pwFlags || ! piIndex )
 	{
@@ -89,7 +89,7 @@ STDMETHODIMP CThumb::GetIconLocation(UINT uFlags, LPWSTR szIconFile, UINT cch, i
 	return ( uFlags & GIL_DEFAULTICON ) ? S_FALSE : S_OK;
 }
 
-STDMETHODIMP CThumb::Extract(LPCWSTR pszFile, UINT nIconIndex, HICON* phiconLarge, HICON* phiconSmall, UINT nIconSize)
+STDMETHODIMP CThumb::Extract(LPCWSTR pszFile, UINT nIconIndex, __out_opt HICON* phiconLarge, __out_opt HICON* phiconSmall, UINT nIconSize)
 {
 	pszFile;
 	nIconIndex;

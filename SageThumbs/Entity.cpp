@@ -79,7 +79,7 @@ CString CEntity::GetMenuTipString() const
 
 	if ( m_ImageInfo.Xdpi )
 	{
-		tmp.Format (_T(", %s%d dpi"), (LPCTSTR)resolution, m_ImageInfo.Xdpi);
+		tmp.Format (_T(", %s%u dpi"), (LPCTSTR)resolution, m_ImageInfo.Xdpi);
 		sMenuTipString += tmp;
 	}
 

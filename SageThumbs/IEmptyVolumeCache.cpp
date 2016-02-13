@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2014.
+Copyright (C) Nikolay Raspopov, 2004-2016.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -37,7 +37,8 @@ STDMETHODIMP CThumb::Initialize(
 		CString foo = _Module.m_oLangs.LoadString( IDS_CACHE );
 		size_t len = ( foo.GetLength() + 1 ) * sizeof( TCHAR );
 		*ppwszDisplayName = (LPWSTR)CoTaskMemAlloc( len );
-		CopyMemory( *ppwszDisplayName, (LPCTSTR)foo, len );
+		if ( *ppwszDisplayName )
+			CopyMemory( *ppwszDisplayName, (LPCTSTR)foo, len );
 	}
 
 	if ( ppwszDescription )
@@ -45,7 +46,8 @@ STDMETHODIMP CThumb::Initialize(
 		CString foo = _Module.m_oLangs.LoadString( IDS_DESCRIPTION );
 		size_t len = ( foo.GetLength() + 1 ) * sizeof( TCHAR );
 		*ppwszDescription = (LPWSTR)CoTaskMemAlloc( len );
-		CopyMemory( *ppwszDescription, (LPCTSTR)foo, len );
+		if ( *ppwszDescription )
+			CopyMemory( *ppwszDescription, (LPCTSTR)foo, len );
 	}
 
 	m_bCleanup = ( _Module.m_sDatabase.GetAt( 0 ) == *pcwszVolume );
@@ -107,8 +109,9 @@ STDMETHODIMP CThumb::ShowProperties(
 }
 
 STDMETHODIMP CThumb::Deactivate(
-	/* [out] */ __RPC__out DWORD* /*pdwFlags*/)
+	/* [out] */ __RPC__out DWORD* pdwFlags)
 {
+	*pdwFlags = 0;
 	return S_OK;
 }
 

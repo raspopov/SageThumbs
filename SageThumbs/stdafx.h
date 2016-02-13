@@ -169,6 +169,10 @@ inline size_t lengthof(const CString& sString)
 	return (size_t)( sString.GetLength() + 1 ) * sizeof( TCHAR );
 }
 
+inline DWORD Span( DWORD cur, DWORD prev )
+{
+	return ( cur >= prev ) ? ( cur - prev ) : ( ( (DWORD)-1 - prev ) + 1 + cur );
+}
 
 template <class Base, const IID* piid, class T, class Copy, class CollType>
 class ATL_NO_VTABLE IEnumOnSTLImplExt : public Base

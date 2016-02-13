@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2008-2014.
+Copyright (C) Nikolay Raspopov, 2008-2016.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -196,8 +196,7 @@ bool CDatabase::Step(DWORD dwTimeout)
 		res = sqlite3_step( m_st );
 		if ( res != SQLITE_BUSY && res != SQLITE_LOCKED )
 			break;
-		const DWORD nNow = GetTickCount();
-		if ( nNow < nStart || nNow >= nStart + dwTimeout )
+		if ( Span( GetTickCount(), nStart ) > dwTimeout )
 			break;
 		Sleep( 10 );
 	}

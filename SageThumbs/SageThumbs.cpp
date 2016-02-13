@@ -344,7 +344,7 @@ BOOL CSageThumbsModule::RegisterExt(const CString& sExt, const CString& sInfo, b
 	const CString sType = _T(".") + sExt;
 	const CString sFileExt = FileExts _T("\\") + sType;
 	CString sDefaultKey = REG_SAGETHUMBS_IMG + sType;
-	const CString sDefaultType = GetDefaultType( sExt );
+	//const CString sDefaultType = GetDefaultType( sExt );
 
 	CAtlList< CString > oGoodProgIDs;
 	bOK = FindAndFixProgID( sExt, oGoodProgIDs ) && bOK;
@@ -1149,10 +1149,6 @@ void CSageThumbsModule::UnInitialize ()
 	}
 
 	m_oLangs.Empty();
-
-	__FUnloadDelayLoadedDLL2( LIB_GFLE );
-	__FUnloadDelayLoadedDLL2( LIB_GFL );
-	__FUnloadDelayLoadedDLL2( LIB_SQLITE );
 }
 
 extern "C" BOOL WINAPI DllMain(HINSTANCE /* hInstance */, DWORD dwReason, LPVOID lpReserved)
@@ -1167,7 +1163,8 @@ STDAPI DllCanUnloadNow(void)
 	return hr;
 }
 
-STDAPI DllGetClassObject(REFCLSID rclsid, REFIID riid, LPVOID* ppv)
+_Check_return_
+STDAPI DllGetClassObject( _In_ REFCLSID rclsid, _In_ REFIID riid, _Outptr_ LPVOID FAR* ppv)
 {
 	HRESULT hr = _Module.DllGetClassObject( rclsid, riid, ppv );
 	ATLTRACE( "CSageThumbsModule - DllGetClassObject() : 0x%08x\n", hr );
@@ -1189,7 +1186,7 @@ STDAPI DllUnregisterServer(void)
 }
 
 // DllInstall - Adds/Removes entries to the system registry per user per machine.
-STDAPI DllInstall(BOOL bInstall, LPCWSTR pszCmdLine)
+STDAPI DllInstall(BOOL bInstall, _In_opt_ LPCWSTR pszCmdLine)
 {
 	HRESULT hr = E_FAIL;
 	static const wchar_t szUserSwitch[] = L"user";
@@ -1580,7 +1577,7 @@ LSTATUS SHSetValueForced(__in HKEY hkey, __in_opt LPCTSTR pszSubKey, __in_opt LP
 	LSTATUS res;
 
 	// Remove wrong type value if any
-	if ( *pszValue )
+	if ( pszValue && *pszValue )
 		DeleteRegValue( pszValue, pszSubKey, hkey );
 
 	for ( int attempt = 0; ; ++attempt )
@@ -1855,6 +1852,7 @@ HRESULT CSageThumbsModule::LoadGFLBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap)
 
 		GFL_LOAD_PARAMS params = {};
 		gflGetDefaultLoadParams( &params );
+		params.Flags |= GFL_LOAD_ORIENTED;
 		params.ColorModel = GFL_RGBA;
 		err = gflLoadBitmapT( filename, bitmap, &params, NULL);
 		if ( err == GFL_ERROR_FILE_READ )
@@ -1931,10 +1929,8 @@ HRESULT CSageThumbsModule::LoadThumbnailE(LPCTSTR filename, int width, int heigh
 
 		GFL_LOAD_PARAMS params = {};
 		gflGetDefaultThumbnailParams( &params );
-		params.Flags =
-			GFL_LOAD_HIGH_QUALITY_THUMBNAIL |
-			( ( ::GetRegValue( _T("UseEmbedded"), 0ul ) != 0 && width < THUMB_EMBEDDED_MIN_SIZE && height < THUMB_EMBEDDED_MIN_SIZE ) ? GFL_LOAD_EMBEDDED_THUMBNAIL : 0 ) |
-			GFL_LOAD_PREVIEW_NO_CANVAS_RESIZE;
+		params.Flags = GFL_LOAD_HIGH_QUALITY_THUMBNAIL | GFL_LOAD_ORIENTED_THUMBNAIL | GFL_LOAD_PREVIEW_NO_CANVAS_RESIZE |
+			( ( ::GetRegValue( _T("UseEmbedded"), 0ul ) != 0 && width < THUMB_EMBEDDED_MIN_SIZE && height < THUMB_EMBEDDED_MIN_SIZE ) ? GFL_LOAD_EMBEDDED_THUMBNAIL : 0 );
 		params.ColorModel = GFL_RGBA;
 		err = gflLoadThumbnailT( filename, width, height, bitmap, &params, NULL );
 		if ( err == GFL_ERROR_FILE_READ )
@@ -2020,10 +2016,8 @@ HRESULT CSageThumbsModule::LoadThumbnailE(IStream* pStream, int width, int heigh
 
 		GFL_LOAD_PARAMS params = {};
 		gflGetDefaultThumbnailParams( &params );
-		params.Flags =
-			GFL_LOAD_HIGH_QUALITY_THUMBNAIL |
-			( ( ::GetRegValue( _T("UseEmbedded"), 0ul ) != 0 && width < THUMB_EMBEDDED_MIN_SIZE && height < THUMB_EMBEDDED_MIN_SIZE ) ? GFL_LOAD_EMBEDDED_THUMBNAIL : 0 ) |
-			GFL_LOAD_PREVIEW_NO_CANVAS_RESIZE;
+		params.Flags = GFL_LOAD_HIGH_QUALITY_THUMBNAIL | GFL_LOAD_ORIENTED_THUMBNAIL | GFL_LOAD_PREVIEW_NO_CANVAS_RESIZE |
+			( ( ::GetRegValue( _T("UseEmbedded"), 0ul ) != 0 && width < THUMB_EMBEDDED_MIN_SIZE && height < THUMB_EMBEDDED_MIN_SIZE ) ? GFL_LOAD_EMBEDDED_THUMBNAIL : 0 );
 		params.ColorModel = GFL_RGBA;
 		params.Callbacks.Read = IStreamRead;
 		params.Callbacks.Tell = IStreamTell;

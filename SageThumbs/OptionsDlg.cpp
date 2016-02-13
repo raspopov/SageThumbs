@@ -38,7 +38,8 @@ void COptionsDialog::ShowAbout()
 
 	// Загрузка информации о версии
 	DWORD handle = NULL;
-	if ( DWORD size = GetFileVersionInfoSize( _Module.m_sModuleFileName, &handle ) )
+	DWORD size = GetFileVersionInfoSize( _Module.m_sModuleFileName, &handle );
+	if ( size && handle )
 	{
 		if ( char* ver = (char*)GlobalAlloc( GPTR, size ) )
 		{
@@ -57,7 +58,7 @@ void COptionsDialog::ShowAbout()
 							(void**)&szLegalCopyright, &len ) && len )
 						{
 							CString sAbout;
-							sAbout.Format( _T("%s %d.%d.%d.%d\r\n%s"),
+							sAbout.Format( _T("%s %u.%u.%u.%u\r\n%s"),
 								szProductName,
 								HIWORD (fix->dwFileVersionMS),
 								LOWORD (fix->dwFileVersionMS),

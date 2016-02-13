@@ -51,15 +51,15 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,0,0,22
- PRODUCTVERSION 2,0,0,22
+ FILEVERSION 2,0,0,23
+ PRODUCTVERSION 2,0,0,23
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
 #else
  FILEFLAGS 0x0L
 #endif
- FILEOS 0x4L
+ FILEOS 0x40004L
  FILETYPE 0x2L
  FILESUBTYPE 0x0L
 BEGIN
@@ -70,12 +70,12 @@ BEGIN
             VALUE "Comments", "http://sagethumbs.sourceforge.net/"
             VALUE "CompanyName", "CherubicSoft"
             VALUE "FileDescription", "SageThumbs Shell Extension"
-            VALUE "FileVersion", "2.0.0.22"
+            VALUE "FileVersion", "2.0.0.23"
             VALUE "InternalName", "SageThumbs"
-            VALUE "LegalCopyright", "Copyright © 2004-2014 Nikolay Raspopov"
+            VALUE "LegalCopyright", "Copyright © 2004-2016 Nikolay Raspopov"
             VALUE "OriginalFilename", "SageThumbs.dll"
             VALUE "ProductName", "SageThumbs Shell Extension"
-            VALUE "ProductVersion", "2.0.0.22"
+            VALUE "ProductVersion", "2.0.0.23"
         END
     END
     BLOCK "VarFileInfo"
@@ -91,7 +91,9 @@ END
 //
 
 IDR_SAGETHUMBS          REGISTRY                ".\\res\\SageThumbs.rgs"
+
 IDR_THUMB               REGISTRY                ".\\res\\Thumb.rgs"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -101,6 +103,7 @@ IDR_THUMB               REGISTRY                ".\\res\\Thumb.rgs"
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_SAGETHUMBS          ICON                    ".\\res\\SageThumbs.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -194,32 +197,54 @@ END
 
 IDR_SAGETHUMBS          BITMAP                  ".\\res\\SageThumbs.bmp"
 
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // PO
 //
 
 4                       PO                      "sagethumbs.dll.04.po_"
+
 5                       PO                      "sagethumbs.dll.05.po_"
+
 7                       PO                      "sagethumbs.dll.07.po_"
+
 8                       PO                      "sagethumbs.dll.08.po_"
+
 10                      PO                      "sagethumbs.dll.0a.po_"
+
 12                      PO                      "sagethumbs.dll.0c.po_"
+
 13                      PO                      "sagethumbs.dll.0d.po_"
+
 14                      PO                      "sagethumbs.dll.0e.po_"
+
 16                      PO                      "sagethumbs.dll.10.po_"
+
 17                      PO                      "sagethumbs.dll.11.po_"
+
 18                      PO                      "sagethumbs.dll.12.po_"
+
 19                      PO                      "sagethumbs.dll.13.po_"
+
 21                      PO                      "sagethumbs.dll.15.po_"
+
 22                      PO                      "sagethumbs.dll.16.po_"
+
 25                      PO                      "sagethumbs.dll.19.po_"
+
 29                      PO                      "sagethumbs.dll.1d.po_"
+
 30                      PO                      "sagethumbs.dll.1e.po_"
+
 31                      PO                      "sagethumbs.dll.1f.po_"
+
 33                      PO                      "sagethumbs.dll.21.po_"
+
 41                      PO                      "sagethumbs.dll.29.po_"
+
 31748                   PO                      "sagethumbs.dll.7c04.po_"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

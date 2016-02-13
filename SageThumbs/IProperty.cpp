@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2014.
+Copyright (C) Nikolay Raspopov, 2004-2016.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -58,7 +58,8 @@ CStringA FormatName(REFFMTID fmtid)
 	
 	// {...}
 	LPOLESTR szGUID = NULL;
-	StringFromIID( fmtid, &szGUID );
+	if ( FAILED( StringFromIID( fmtid, &szGUID ) ) )
+		return CStringA();
 	CStringA name( (LPCSTR)CW2A( szGUID ) );
 	CoTaskMemFree( szGUID );
 	return name;
@@ -67,7 +68,7 @@ CStringA FormatName(REFFMTID fmtid)
 CStringA PropName(REFPROPERTYKEY key)
 {
 	CStringA sPropName;
-	sPropName.Format( "%d", key.pid );
+	sPropName.Format( "%u", key.pid );
 	/*CComPtr< IPropertyDescription > pDesc;
 	if ( SUCCEEDED( PSGetPropertyDescription( key, IID_PPV_ARGS( &pDesc ) ) ) )
 	{
@@ -215,7 +216,7 @@ STDMETHODIMP CThumb::GetValue(
 	else if ( IsEqualPropertyKey( key, PKEY_Image_Dimensions ) )
 	{
 		CString sDimensions;
-		sDimensions.Format( _T("%d x %d"), m_Preview.ImageWidth(), m_Preview.ImageHeight() );
+		sDimensions.Format( _T("%u x %u"), m_Preview.ImageWidth(), m_Preview.ImageHeight() );
 		pv->bstrVal = sDimensions.AllocSysString();
 	}
 	else if ( IsEqualPropertyKey( key, PKEY_Image_HorizontalSize ) )
@@ -451,41 +452,46 @@ STDMETHODIMP CThumb::ReadMultiple(
 }
 
 STDMETHODIMP CThumb::WriteMultiple(
-	/* [in] */ ULONG /* cpspec */,
+	/* [in] */ ULONG cpspec,
 	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC /* rgpspec */ [ ],
 	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPVARIANT /* rgpropvar */ [ ],
 	/* [in] */ PROPID /* propidNameFirst */)
 {
+	cpspec;
 	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::WriteMultiple()") );
 }
 
 STDMETHODIMP CThumb::DeleteMultiple(
-	/* [in] */ ULONG /* cpspec */,
+	/* [in] */ ULONG cpspec,
 	/* [size_is][in] */ __RPC__in_ecount_full(cpspec) const PROPSPEC /* rgpspec */ [])
 {
+	cpspec;
 	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::DeleteMultiple()") );
 }
 
 STDMETHODIMP CThumb::ReadPropertyNames(
-	/* [in] */ ULONG /* cpropid */,
+	/* [in] */ ULONG cpropid,
 	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID /* rgpropid */ [],
 	/* [size_is][out] */ __RPC__out_ecount_full(cpropid) LPOLESTR /* rglpwstrName */ [])
 {
+	cpropid;
 	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::ReadPropertyNames()") );
 }
 
 STDMETHODIMP CThumb::WritePropertyNames(
-	/* [in] */ ULONG /* cpropid */,
+	/* [in] */ ULONG cpropid,
 	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID /* rgpropid */ [],
 	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const LPOLESTR /* rglpwstrName */ [])
 {
+	cpropid;
 	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::WritePropertyNames()") );
 }
 
 STDMETHODIMP CThumb::DeletePropertyNames(
-	/* [in] */ ULONG /* cpropid */,
+	/* [in] */ ULONG cpropid,
 	/* [size_is][in] */ __RPC__in_ecount_full(cpropid) const PROPID /* rgpropid */ [])
 {
+	cpropid;
 	ATLTRACENOTIMPL( _T("CThumb - IPropertyStorage::DeletePropertyNames()") );
 }
 
