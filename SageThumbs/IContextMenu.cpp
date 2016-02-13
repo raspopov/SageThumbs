@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2014.
+Copyright (C) Nikolay Raspopov, 2004-2016.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -90,9 +90,9 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 	// Creating submenu items
 	HMENU hSubMenu = CreateMenu ();
 
-	// Clipboard operation items
 	if ( bSingleFile )
 	{
+		// Clipboard operation items
 		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_CLIPBOARD_ITEM, _Module.m_oLangs.LoadString( IDS_CLIPBOARD ) ) )
 		{
 			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
@@ -103,11 +103,8 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 			return E_FAIL;
 		}
-	}
 
-	// Wallpaper operation items
-	if ( bSingleFile )
-	{
+		// Wallpaper operation items
 		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_WALLPAPER_STRETCH_ITEM, _Module.m_oLangs.LoadString( IDS_WALLPAPER_STRETCH ) ) )
 		{
 			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
@@ -196,7 +193,7 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 			// Store the menu item's ID so we can check against it later when
 			// WM_MEASUREITEM/WM_DRAWITEM are sent.
 			m_uOurItemID = uidCmdFirst + ID_THUMBNAIL_ITEM;
-			if ( IsThemeActive() )
+			/*if ( IsThemeActive() )
 			{
 				HBITMAP hPreview = m_Preview.GetImage( width, height );
 				if ( ! InsertMenu( ( bPreviewInSubMenu ? hSubMenu : hMenu ), ( bPreviewInSubMenu ? 0 : uIndex++ ), MF_BYPOSITION | MF_BITMAP, m_uOurItemID, (LPCTSTR)hPreview ) )
@@ -205,7 +202,7 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 					return E_FAIL;
 				}
 			}
-			else
+			else*/
 			{
 				MENUITEMINFO mii = {};
 				mii.cbSize = sizeof (MENUITEMINFO);
