@@ -38,8 +38,7 @@ void COptionsDialog::ShowAbout()
 
 	// Загрузка информации о версии
 	DWORD handle = NULL;
-	DWORD size = GetFileVersionInfoSize( _Module.m_sModuleFileName, &handle );
-	if ( size && handle )
+	if ( DWORD size = GetFileVersionInfoSize( _Module.m_sModuleFileName, &handle ) )
 	{
 		if ( char* ver = (char*)GlobalAlloc( GPTR, size ) )
 		{
