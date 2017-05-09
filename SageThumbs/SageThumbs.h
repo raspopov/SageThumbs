@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2016.
+Copyright (C) Nikolay Raspopov, 2004-2017.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -153,20 +153,9 @@ public:
 	// Add user-defined custom extensions from string
 	void AddCustomTypes(const CString& sCustom);
 
-	inline CString GetAppName() const
-	{
-		return m_oLangs.LoadString( IDS_PROJNAME ) +
-#ifdef WIN64
-			_T(" 64-bit");
-#else
-			_T(" 32-bit");
-#endif
-	}
+	CString GetAppName() const;
 
-	inline int MsgBox(HWND hWnd, UINT nText, UINT nType = MB_OK | MB_ICONEXCLAMATION)
-	{
-		return MessageBox( hWnd, m_oLangs.LoadString( nText ), GetAppName(), nType );
-	}
+	int MsgBox( HWND hWnd, UINT nText, UINT nType = MB_OK | MB_ICONEXCLAMATION );
 
 protected:
 	HMODULE					m_hGFL;
@@ -249,7 +238,8 @@ GFL_UINT32 GFLAPI IStreamSeek(GFL_HANDLE handle, GFL_INT32 offset, GFL_INT32 ori
 
 void CALLBACK Options(HWND hwnd, HINSTANCE hinst = NULL, LPSTR lpszCmdLine = NULL, int nCmdShow = 0);
 
-class CWaitCursor
+// Wait cursor wrapper
+class ATL_NO_VTABLE CWaitCursor
 {
 public:
 	inline CWaitCursor() : m_hCursor( SetCursor( LoadCursor( NULL, IDC_WAIT ) ) ) { }
@@ -258,3 +248,9 @@ public:
 protected:
 	HCURSOR m_hCursor;
 };
+
+// Load localized string from resource
+inline CString LoadString( UINT nID )
+{
+	return _Module.m_oLangs.LoadString( nID );
+}

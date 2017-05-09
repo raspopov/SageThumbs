@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2016.
+Copyright (C) Nikolay Raspopov, 2004-2017.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -20,7 +20,9 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #pragma once
 
-#define STRICT
+#ifndef STRICT
+	#define STRICT
+#endif
 
 #ifndef _SECURE_ATL
 	#define _SECURE_ATL	1
@@ -31,14 +33,16 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #endif
 
 #define WIN32_LEAN_AND_MEAN
+#define NO_PRINT
 
 #define _ATL_FREE_THREADED
 #define _ATL_NO_AUTOMATIC_NAMESPACE
 #define _ATL_CSTRING_EXPLICIT_CONSTRUCTORS
 #define _ATL_CSTRING_NO_CRT
 #define _ATL_ALL_WARNINGS
+
 #define ATL_NO_ASSERT_ON_DESTROY_NONEXISTENT_WINDOW
-#define NO_PRINT
+
 #define STRICT_TYPED_ITEMIDS
 
 #ifdef _DEBUG
@@ -102,34 +106,20 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 	#define PERCEIVED_TYPE_IMAGE	2
 #endif
 
-#include "..\Localization\Localization.h"
+#include <sqlite3.h>
+#include <Localization.h>
+#include <gfl.h>
 
-#include "..\gfl\libgfl.h"
-#include "..\gfl\libgfle.h"
-
-#if UNICODE
-	#define gflLoadBitmapT			gflLoadBitmapW
-	#define gflSaveBitmapT			gflSaveBitmapW
-	#define gflLoadThumbnailT		gflLoadThumbnailW
-	#define gflSetPluginsPathnameT	gflSetPluginsPathnameW
-	#define gflGetFileInformationT	gflGetFileInformationW
-#else
-	#pragma warning( disable: 4127 )
-	#define gflLoadBitmapT			gflLoadBitmap
-	#define gflSaveBitmapT			gflSaveBitmap
-	#define gflLoadThumbnailT		gflLoadThumbnail
-	#define gflSetPluginsPathnameT	gflSetPluginsPathname
-	#define gflGetFileInformationT	gflGetFileInformation
-#endif
+typedef ULONG (FAR PASCAL *tMAPISendMail)(LHANDLE, ULONG_PTR, lpMapiMessage, FLAGS, ULONG);
+typedef UINT (WINAPI *tPrivateExtractIconsT)(LPCTSTR, int, int, int, HICON*, UINT*, UINT, UINT);
 
 #ifndef QWORD
 	typedef ULONGLONG QWORD;
 #endif
 
-typedef ULONG (FAR PASCAL *tMAPISendMail)(LHANDLE, ULONG_PTR, lpMapiMessage, FLAGS, ULONG);
-typedef UINT (WINAPI *tPrivateExtractIconsT)(LPCTSTR, int, int, int, HICON*, UINT*, UINT, UINT);
-
-#define MAKEQWORD(l,h) ((QWORD)(l)|((QWORD)(h)<<32))
+#ifndef MAKEQWORD
+	#define MAKEQWORD(l,h) ((QWORD)(l)|((QWORD)(h)<<32))
+#endif
 
 // SDK Fix
 struct __declspec(uuid("85788D00-6807-11D0-B810-00C04FD706EC")) IRunnableTask;

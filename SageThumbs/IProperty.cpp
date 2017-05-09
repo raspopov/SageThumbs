@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2016.
+Copyright (C) Nikolay Raspopov, 2004-2017.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -96,7 +96,7 @@ STDMETHODIMP CThumb::IsPropertyWritable(
 	/* [in] */ __RPC__in REFPROPERTYKEY key)
 {
 	key;
-	ATLTRACE( "CThumb - IPropertyStoreCapabilities::IsPropertyWritable(\"%s\") : S_FALSE\n", PropName( key ) );
+	ATLTRACE( "CThumb - IPropertyStoreCapabilities::IsPropertyWritable(\"%s\") : S_FALSE\n", (LPCSTR)PropName( key ) );
 	return S_FALSE;
 }
 
@@ -198,7 +198,7 @@ STDMETHODIMP CThumb::GetValue(
 
 	if ( ! m_Preview.IsInfoAvailable() )
 	{
-		ATLTRACE( "CThumb - IPropertyStore::GetValue(\"%s\") : S_OK (no info)\n", PropName( key ) );
+		ATLTRACE( "CThumb - IPropertyStore::GetValue(\"%s\") : S_OK (no info)\n", (LPCSTR)PropName( key ) );
 		return S_OK;
 	}
 
@@ -297,7 +297,7 @@ STDMETHODIMP CThumb::GetValue(
 	//	pv-> = CString( KIND_PICTURE ).AllocSysString();
 	//}
 
-	ATLTRACE( "CThumb - IPropertyStore::GetValue(\"%s\") : S_OK%s\n", PropName( key ), ( ( pv->vt == VT_EMPTY) ? " (empty)" : "" ) );
+	ATLTRACE( "CThumb - IPropertyStore::GetValue(\"%s\") : S_OK%s\n", (LPCSTR)PropName( key ), ( ( pv->vt == VT_EMPTY) ? " (empty)" : "" ) );
 	return S_OK;
 }
 
@@ -306,7 +306,7 @@ STDMETHODIMP CThumb::SetValue(
 	/* [in] */ __RPC__in REFPROPVARIANT /* propvar */)
 {
 	key;
-	ATLTRACE( "CThumb - IPropertyStore::SetValue(\"%s\") : E_INVALIDARG\n", PropName(key) );
+	ATLTRACE( "CThumb - IPropertyStore::SetValue(\"%s\") : E_INVALIDARG\n", (LPCSTR)PropName(key) );
 	return E_INVALIDARG;
 }
 
@@ -328,7 +328,7 @@ STDMETHODIMP CThumb::Create(
 {
 	rfmtid;
 
-	ATLTRACE( "CThumb - IPropertySetStorage::Create(\"%s\") : STG_E_ACCESSDENIED\n", FormatName( rfmtid ) );
+	ATLTRACE( "CThumb - IPropertySetStorage::Create(\"%s\") : STG_E_ACCESSDENIED\n", (LPCSTR)FormatName( rfmtid ) );
 	return STG_E_ACCESSDENIED;
 }
 
@@ -348,11 +348,11 @@ STDMETHODIMP CThumb::Open(
 
 	if ( IsEqualIID( rfmtid, FMTID_ImageSummaryInformation ) )
 	{
-		ATLTRACE( "CThumb - IPropertySetStorage::Open(\"%s\",0x%08x) : S_OK\n", FormatName( rfmtid ), grfMode );
+		ATLTRACE( "CThumb - IPropertySetStorage::Open(\"%s\",0x%08x) : S_OK\n", (LPCSTR)FormatName( rfmtid ), grfMode );
 		return QueryInterface( IID_IPropertyStorage, (void**)ppprstg );
 	}
 
-	ATLTRACE( "CThumb - IPropertySetStorage::Open(\"%s\",0x%08x) : STG_E_FILENOTFOUND\n", FormatName( rfmtid ), grfMode );
+	ATLTRACE( "CThumb - IPropertySetStorage::Open(\"%s\",0x%08x) : STG_E_FILENOTFOUND\n", (LPCSTR)FormatName( rfmtid ), grfMode );
 	return STG_E_FILENOTFOUND;
 }
 
@@ -361,7 +361,7 @@ STDMETHODIMP CThumb::Delete(
 {
 	rfmtid;
 
-	ATLTRACE( "CThumb - IPropertySetStorage::Delete(\"%s\") : STG_E_ACCESSDENIED\n", FormatName( rfmtid ) );
+	ATLTRACE( "CThumb - IPropertySetStorage::Delete(\"%s\") : STG_E_ACCESSDENIED\n", (LPCSTR)FormatName( rfmtid ) );
 	return STG_E_ACCESSDENIED;
 }
 

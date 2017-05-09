@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2016.
+Copyright (C) Nikolay Raspopov, 2004-2017.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -153,6 +153,21 @@ CSageThumbsModule::CSageThumbsModule()
 	m_sHome = m_sModuleFileName.Left( m_sModuleFileName.ReverseFind( _T('\\') ) + 1 );
 }
 
+CString CSageThumbsModule::GetAppName() const
+{
+	return LoadString( IDS_PROJNAME ) +
+#ifdef WIN64
+		_T( " 64-bit" );
+#else
+		_T( " 32-bit" );
+#endif
+}
+
+int CSageThumbsModule::MsgBox(HWND hWnd, UINT nText, UINT nType)
+{
+	return MessageBox( hWnd, LoadString( nText ), GetAppName(), nType );
+}
+
 BOOL CSageThumbsModule::DllMain(DWORD dwReason, LPVOID lpReserved) throw()
 {
 	BOOL res = CAtlDllModuleT< CSageThumbsModule >::DllMain( dwReason, lpReserved );
@@ -221,7 +236,7 @@ BOOL CSageThumbsModule::RegisterExtensions(HWND hWnd)
 		if ( SUCCEEDED( hr ) )
 		{
 			pProgress->SetTitle( _Module.GetAppName() );
-			pProgress->SetLine( 1, m_oLangs.LoadString( IDS_APPLYING ), FALSE, NULL );
+			pProgress->SetLine( 1, LoadString( IDS_APPLYING ), FALSE, NULL );
 			pProgress->StartProgressDialog( hWnd, NULL, PROGDLG_NORMAL | PROGDLG_NOCANCEL | PROGDLG_AUTOTIME, NULL );
 		}
 	}
@@ -264,7 +279,7 @@ BOOL CSageThumbsModule::RegisterExtensions(HWND hWnd)
 
 	if ( pProgress )
 	{
-		pProgress->SetLine( 2, m_oLangs.LoadString( IDS_UPDATING ), FALSE, NULL );
+		pProgress->SetLine( 2, LoadString( IDS_UPDATING ), FALSE, NULL );
 		pProgress->SetProgress( total, total );
 	}
 

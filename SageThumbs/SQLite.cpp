@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2008-2016.
+Copyright (C) Nikolay Raspopov, 2008-2017.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -19,7 +19,6 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
 #include "StdAfx.h"
-#include "../sqlite3/sqlite3.h"
 #include "SQLite.h"
 
 #ifdef _DEBUG

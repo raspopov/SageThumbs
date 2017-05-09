@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2016.
+Copyright (C) Nikolay Raspopov, 2004-2017.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -34,7 +34,7 @@ STDMETHODIMP CThumb::Initialize(
 {
 	if ( ppwszDisplayName )
 	{
-		CString foo = _Module.m_oLangs.LoadString( IDS_CACHE );
+		CString foo = LoadString( IDS_CACHE );
 		size_t len = ( foo.GetLength() + 1 ) * sizeof( TCHAR );
 		*ppwszDisplayName = (LPWSTR)CoTaskMemAlloc( len );
 		if ( *ppwszDisplayName )
@@ -43,7 +43,7 @@ STDMETHODIMP CThumb::Initialize(
 
 	if ( ppwszDescription )
 	{
-		CString foo = _Module.m_oLangs.LoadString( IDS_DESCRIPTION );
+		CString foo = LoadString( IDS_DESCRIPTION );
 		size_t len = ( foo.GetLength() + 1 ) * sizeof( TCHAR );
 		*ppwszDescription = (LPWSTR)CoTaskMemAlloc( len );
 		if ( *ppwszDescription )

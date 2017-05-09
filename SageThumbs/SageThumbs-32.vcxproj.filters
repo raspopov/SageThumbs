@@ -101,6 +101,9 @@
     <None Include="sagethumbs.dll.0a.po_">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="sagethumbs.dll.0b.po_">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="sagethumbs.dll.0c.po_">
       <Filter>Resource Files</Filter>
     </None>
@@ -179,6 +182,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gfl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

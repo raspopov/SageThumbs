@@ -1,10 +1,10 @@
-﻿!getdllversion "..\Win32\release\SageThumbs.dll" VER_
+﻿!getdllversion "..\release\SageThumbs.dll" VER_
 
 !define TITLE		"SageThumbs Repair Utility"
 !define VERSION		"${VER_1}.${VER_2}.${VER_3}.${VER_4}"
 !define COMPANY		"Cherubic Software"
 !define FILENAME	"repair.exe"
-!define COPYRIGHT	"Copyright © 2004-2014 Nikolay Raspopov"
+!define COPYRIGHT	"Copyright © 2004-2017 Nikolay Raspopov"
 !define URL			"http://sagethumbs.sourceforge.net/"
 !define PAD			"http://sagethumbs.sourceforge.net/pad/sagethumbs.xml"
 

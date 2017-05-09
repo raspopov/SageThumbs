@@ -26,7 +26,7 @@ Please read carefully the following information.
 
 System Requirements:
 
-  * Windows XP/2003/Vista/2008/7/2012/8/8.1 32/64-bit
+  * Windows XP/2003/Vista/2008/7/2012/8/8.1/10 32/64-bit
   * About 5 Mb of disk space + additional space for cache
 
 ========================================================================
@@ -64,7 +64,8 @@ SageThumbs can be easily translated to other languages.
 Versions:
 
 2.0.0.23
-  * Project converted to MS VS2015
+  * Added Finnish translation (by Ropsi)
+  * Project converted to MS VS2017
 
 2.0.0.22
   * Added Dutch translation (by Gaston Loos)
@@ -298,11 +299,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Copyrights:
 
 SageThumbs
-Copyright (C) Nikolay Raspopov, 2004-2014.
+Copyright (C) Nikolay Raspopov, 2004-2017.
 E-Mail: raspopov@cherubicsoft.com
 Web site: http://sagethumbs.sourceforge.net/
 
 GFL Library, GFL SDK and XnView
-Copyright (C) Pierre-E Gougelet, 1991-2014.
+Copyright (C) Pierre-E Gougelet, 1991-2017.
 E-Mail: webmaster@xnview.com
 Web site: http://www.xnview.com/

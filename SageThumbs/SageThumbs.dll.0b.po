@@ -1,0 +1,327 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SageThumbs.dll\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Nikolay Raspopov <raspopov@cherubicsoft.com>\n"
+"Language-Team: \n"
+"Language: fi_FI\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.1\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. Dialog caption
+#: DIALOGCAPTION.202
+msgid "SageThumbs Options"
+msgstr "SageThumbs vaihtoehdot"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.1
+msgid "OK"
+msgstr "OK"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2
+msgid "Cancel"
+msgstr "Peruuta"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.211
+msgid "Enable context menu in Explorer"
+msgstr "Käytä Tiedostonhallinnan pikavalikkoa"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr "Näytä esikatselu alivalikossa"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.212
+msgid "Enable thumbnails in Explorer"
+msgstr "Käytä pienoiskuvia Tiedostonhallinnassa"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.216
+msgid "Use thumbnails as icons in Explorer"
+msgstr "Käytä pienoiskuvia ikoneina Tiedostonhallinnassa"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "Näytä pienoiskuvissa tyyppipeittokuva"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.217
+msgid "Enable Windows thumbnail cache"
+msgstr "Käytä Windowsin pienoiskuvamuistia"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.215
+msgid "Prefer image file embedded thumbnails"
+msgstr "Käytä sulautettua kuvatiedoston pienoiskuvaa"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.203
+msgid "Use Windows Image/Fax Viewer"
+msgstr "Käytä Windowsin Kuva-Faxnäyttöä"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.213
+msgid "Clear..."
+msgstr "Tyhjennä..."
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.218
+msgid "Optimize"
+msgstr "Optimoi"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "Valitse kaikki/Poista kaikkien valinta"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "Oletus"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483649
+msgid "Context menu preview size"
+msgstr "Pikavalikon esikatselukoko"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483650
+msgid "Width x Height:"
+msgstr "Leveys x korkeus:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483651
+msgid "X"
+msgstr "X"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483652
+msgid "pixels"
+msgstr "pikseliä"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483653
+msgid "Supported file types"
+msgstr "Tuetut tiedostotyypit"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483654
+msgid "System-wide tweaks"
+msgstr "Järjestelmänlaajuiset säädöt"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483655
+msgid "Language:"
+msgstr "Kieli:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483656
+msgid "Maximum size of image file:"
+msgstr "Kuvatiedoston enimmäiskoko:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483657
+msgid "MB"
+msgstr "Mb"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483658
+msgid "Convert options"
+msgstr "Muunnosvaihtoehdot"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483659
+msgid "JPEG quality (0 - lowest, 100 - best):"
+msgstr "JPEG-laatu (0 - matalin, 100 paras):"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483660
+msgid "PNG compression (0 - lowest, 9 - best):"
+msgstr "PNG-pakkaus (0 - matalin, 9 - paras):"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483662
+msgid "Custom file types (use spaces as delimiters):"
+msgstr "Mukautetut tiedostomuodot (käytä välilyöntiä erotuksena):"
+
+#. String resource
+#: STRING.100
+msgid "SageThumbs"
+msgstr "SageThumbs"
+
+#. String resource
+#: STRING.101
+msgid "Change various SageThumbs options"
+msgstr "SageThumbsin vaihtoehtojen muuttaminen"
+
+#. String resource
+#: STRING.102
+msgid "Type: "
+msgstr "Tyyppi: "
+
+#. String resource
+#: STRING.103
+msgid "Sizes (pixels): "
+msgstr "Koot (pikseliä): "
+
+#. String resource
+#: STRING.104
+msgid "Size (bytes): "
+msgstr "Koko (tavua): "
+
+#. String resource
+#: STRING.105
+msgid "Modified: "
+msgstr "Muokattu: "
+
+#. String resource
+#: STRING.106
+msgid "Colors (bits): "
+msgstr "Värit (bittiä): "
+
+#. String resource
+#: STRING.107
+msgid "Compression: "
+msgstr "Pakkaus: "
+
+#. String resource
+#: STRING.108
+msgid "Resolution: "
+msgstr "Resoluutio: "
+
+#. String resource
+#: STRING.109
+msgid "Can't open image file"
+msgstr "Kuvatiedostoa ei voi avata"
+
+#. String resource
+#: STRING.110
+msgid "Can't save image file"
+msgstr "Kuvatiedostoa ei voi tallentaa"
+
+#. String resource
+#: STRING.111
+msgid "Can't send mail"
+msgstr "Sähköpostia ei voi lähettää"
+
+#. String resource
+#: STRING.112
+msgid "Nothing to send"
+msgstr "Ei mitään lähetettävää"
+
+#. String resource
+#: STRING.113
+msgid "Can't open clipboard"
+msgstr "Leikepöytää ei voi avata"
+
+#. String resource
+#: STRING.114
+msgid "Please confirm thumbnail cache clearing."
+msgstr "Vahvista pienoiskuvamuistin tyhjennys, ole hyvä."
+
+#. String resource
+#: STRING.115
+msgid "Thumbnail cache size: %u KB"
+msgstr "Pienoiskuvamuistin koko: %u Kb"
+
+#. String resource
+#: STRING.116
+msgid "SageThumbs thumbnail cache"
+msgstr "SageThumbsin pienoiskuvamuisti"
+
+#. String resource
+#: STRING.117
+msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
+msgstr "Tyhjennä SageThumbsin pienoiskuvamuisti. Käyttäjän data ei vahingoitu."
+
+#. String resource
+#: STRING.118
+msgid ""
+"Can not apply all settings. Please use SageThumbs under account with "
+"administrative privileges."
+msgstr ""
+"Kaikkia asetuksia ei voi ottaa käyttön. Käytä SageThumbsia "
+"järjestelmänvalvojana, ole hyvä."
+
+#. String resource
+#: STRING.119
+msgid "Convert to PNG"
+msgstr "Muunna PNG-muotoon"
+
+#. String resource
+#: STRING.120
+msgid "Converting..."
+msgstr "Muunnetaan..."
+
+#. String resource
+#: STRING.121
+msgid "Sending..."
+msgstr "Lähetetään..."
+
+#. String resource
+#: STRING.122
+msgid "Applying settings..."
+msgstr "Otetaan asetukset käyttöön..."
+
+#. String resource
+#: STRING.123
+msgid "Updating..."
+msgstr "Päivitetään..."
+
+#. String resource
+#: STRING.203
+msgid "SageThumbs Options..."
+msgstr "SageThumbs vaihtoehdot..."
+
+#. String resource
+#: STRING.204
+msgid "Copy to clipboard"
+msgstr "Kopioi leikepöydälle"
+
+#. String resource
+#: STRING.205
+msgid "Set tiled wallpaper"
+msgstr "Aseta ruudutettu taustakuva"
+
+#. String resource
+#: STRING.206
+msgid "Set centered wallpaper"
+msgstr "Aseta keskitetty taustakuva"
+
+#. String resource
+#: STRING.207
+msgid "Set stretched wallpaper"
+msgstr "Aseta venytetty taustakuva"
+
+#. String resource
+#: STRING.208
+msgid "Send image by mail..."
+msgstr "Lähetä kuva sähköpostilla..."
+
+#. String resource
+#: STRING.209
+msgid "Send thumbnail by mail..."
+msgstr "Lähetä pienoiskuva sähköpostilla..."
+
+#. String resource
+#: STRING.210
+msgid "Convert to JPG"
+msgstr "Muunna JPG-muotoon"
+
+#. String resource
+#: STRING.211
+msgid "Convert to GIF"
+msgstr "Muunna GIF-muotoon"
+
+#. String resource
+#: STRING.212
+msgid "Convert to BMP"
+msgstr "Muunna BMP-muotoon"

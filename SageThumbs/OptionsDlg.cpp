@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2016.
+Copyright (C) Nikolay Raspopov, 2004-2017.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -33,7 +33,7 @@ void COptionsDialog::ShowAbout()
 	WIN32_FILE_ATTRIBUTE_DATA wfadDatabase = {};
 	GetFileAttributesEx( _Module.m_sDatabase, GetFileExInfoStandard, &wfadDatabase );
 	CString sDatabaseSize;
-	sDatabaseSize.Format( _Module.m_oLangs.LoadString( IDS_DATABASE_SIZE ), ( wfadDatabase.nFileSizeLow >> 10 ) );
+	sDatabaseSize.Format( LoadString( IDS_DATABASE_SIZE ), ( wfadDatabase.nFileSizeLow >> 10 ) );
 	SetDlgItemText( IDC_CACHE_SIZE, sDatabaseSize );
 
 	// Загрузка информации о версии

@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2016.
+Copyright (C) Nikolay Raspopov, 2004-2017.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -59,13 +59,13 @@ CString CEntity::GetMenuTipString() const
 {
 	CString sMenuTipString;
 
-	const CString type = _Module.m_oLangs.LoadString( IDS_TYPE );
-	const CString dim = _Module.m_oLangs.LoadString( IDS_DIM );
-	const CString colors = _Module.m_oLangs.LoadString( IDS_COLORS );
-	const CString date = _Module.m_oLangs.LoadString( IDS_DATE );
-	const CString size = _Module.m_oLangs.LoadString( IDS_SIZE );
-	const CString resolution = _Module.m_oLangs.LoadString( IDS_RESOLUTION );
-	const CString compression = _Module.m_oLangs.LoadString( IDS_COMPRESSION );
+	const CString type = LoadString( IDS_TYPE );
+	const CString dim = LoadString( IDS_DIM );
+	const CString colors = LoadString( IDS_COLORS );
+	const CString date = LoadString( IDS_DATE );
+	const CString size = LoadString( IDS_SIZE );
+	const CString resolution = LoadString( IDS_RESOLUTION );
+	const CString compression = LoadString( IDS_COMPRESSION );
 
 	CString tmp = type;
 	tmp += (LPCTSTR)CA2T( m_ImageInfo.Description[ 0 ] ? m_ImageInfo.Description : m_ImageInfo.FormatName );

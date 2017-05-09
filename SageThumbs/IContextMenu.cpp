@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2016.
+Copyright (C) Nikolay Raspopov, 2004-2017.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -93,7 +93,7 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 	if ( bSingleFile )
 	{
 		// Clipboard operation items
-		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_CLIPBOARD_ITEM, _Module.m_oLangs.LoadString( IDS_CLIPBOARD ) ) )
+		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_CLIPBOARD_ITEM, LoadString( IDS_CLIPBOARD ) ) )
 		{
 			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 			return E_FAIL;
@@ -105,17 +105,17 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 		}
 
 		// Wallpaper operation items
-		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_WALLPAPER_STRETCH_ITEM, _Module.m_oLangs.LoadString( IDS_WALLPAPER_STRETCH ) ) )
+		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_WALLPAPER_STRETCH_ITEM, LoadString( IDS_WALLPAPER_STRETCH ) ) )
 		{
 			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 			return E_FAIL;
 		}
-		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_WALLPAPER_TILE_ITEM, _Module.m_oLangs.LoadString( IDS_WALLPAPER_TILE ) ) )
+		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_WALLPAPER_TILE_ITEM, LoadString( IDS_WALLPAPER_TILE ) ) )
 		{
 			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 			return E_FAIL;
 		}
-		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_WALLPAPER_CENTER_ITEM, _Module.m_oLangs.LoadString( IDS_WALLPAPER_CENTER ) ) )
+		if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_WALLPAPER_CENTER_ITEM, LoadString( IDS_WALLPAPER_CENTER ) ) )
 		{
 			ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 			return E_FAIL;
@@ -127,37 +127,12 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 		}
 	}
 
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_MAIL_IMAGE_ITEM, _Module.m_oLangs.LoadString( IDS_MAIL_IMAGE ) ) )
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_MAIL_IMAGE_ITEM, LoadString( IDS_MAIL_IMAGE ) ) )
 	{
 		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
 	}
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_MAIL_THUMBNAIL_ITEM, _Module.m_oLangs.LoadString( IDS_MAIL_THUMBNAIL ) ) )
-	{
-		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
-		return E_FAIL;
-	}
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
-	{
-		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
-		return E_FAIL;
-	}
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_CONVERT_JPG_ITEM, _Module.m_oLangs.LoadString( IDS_CONVERT_JPG ) ) )
-	{
-		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
-		return E_FAIL;
-	}
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,uidCmdFirst + ID_CONVERT_GIF_ITEM, _Module.m_oLangs.LoadString( IDS_CONVERT_GIF ) ) )
-	{
-		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
-		return E_FAIL;
-	}
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_CONVERT_BMP_ITEM, _Module.m_oLangs.LoadString( IDS_CONVERT_BMP ) ) )
-	{
-		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
-		return E_FAIL;
-	}
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_CONVERT_PNG_ITEM, _Module.m_oLangs.LoadString( IDS_CONVERT_PNG ) ) )
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_MAIL_THUMBNAIL_ITEM, LoadString( IDS_MAIL_THUMBNAIL ) ) )
 	{
 		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
@@ -167,7 +142,32 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
 	}
-	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_OPTIONS_ITEM, _Module.m_oLangs.LoadString( IDS_OPTIONS ) ) )
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_CONVERT_JPG_ITEM, LoadString( IDS_CONVERT_JPG ) ) )
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
+		return E_FAIL;
+	}
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING,uidCmdFirst + ID_CONVERT_GIF_ITEM, LoadString( IDS_CONVERT_GIF ) ) )
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
+		return E_FAIL;
+	}
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_CONVERT_BMP_ITEM, LoadString( IDS_CONVERT_BMP ) ) )
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
+		return E_FAIL;
+	}
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_CONVERT_PNG_ITEM, LoadString( IDS_CONVERT_PNG ) ) )
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
+		return E_FAIL;
+	}
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_SEPARATOR, 0, 0))
+	{
+		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
+		return E_FAIL;
+	}
+	if ( ! InsertMenu( hSubMenu, nPos++, MF_BYPOSITION | MF_STRING, uidCmdFirst + ID_OPTIONS_ITEM, LoadString( IDS_OPTIONS ) ) )
 	{
 		ATLTRACE( "CThumb - IContextMenu::QueryContextMenu() : E_FAIL (Failed to insert menu item %d)\n", nPos );
 		return E_FAIL;
@@ -225,7 +225,7 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 		}
 	}
 
-	CString sAppName = _Module.m_oLangs.LoadString( IDS_PROJNAME );
+	CString sAppName = LoadString( IDS_PROJNAME );
 	MENUITEMINFO mii = { sizeof( MENUITEMINFO ) };
 	mii.fMask  = MIIM_STRING | MIIM_SUBMENU | MIIM_ID | MIIM_CHECKMARKS;
 	mii.wID = uidCmdFirst + ID_SUBMENU_ITEM;
@@ -276,37 +276,37 @@ STDMETHODIMP CThumb::GetCommandString (
 			tmp = m_Preview.GetMenuTipString ();
 			break;
 		case ID_OPTIONS_ITEM:
-			tmp = _Module.m_oLangs.LoadString (IDS_OPTIONS_HELP);
+			tmp = LoadString (IDS_OPTIONS_HELP);
 			break;
 		case ID_CLIPBOARD_ITEM:
-			tmp = _Module.m_oLangs.LoadString (IDS_CLIPBOARD);
+			tmp = LoadString (IDS_CLIPBOARD);
 			break;
 		case ID_WALLPAPER_STRETCH_ITEM:
-			tmp = _Module.m_oLangs.LoadString (IDS_WALLPAPER_STRETCH);
+			tmp = LoadString (IDS_WALLPAPER_STRETCH);
 			break;
 		case ID_WALLPAPER_TILE_ITEM:
-			tmp = _Module.m_oLangs.LoadString (IDS_WALLPAPER_TILE);
+			tmp = LoadString (IDS_WALLPAPER_TILE);
 			break;
 		case ID_WALLPAPER_CENTER_ITEM:
-			tmp = _Module.m_oLangs.LoadString (IDS_WALLPAPER_CENTER);
+			tmp = LoadString (IDS_WALLPAPER_CENTER);
 			break;
 		case ID_MAIL_IMAGE_ITEM:
-			tmp = _Module.m_oLangs.LoadString (IDS_MAIL_IMAGE);
+			tmp = LoadString (IDS_MAIL_IMAGE);
 			break;
 		case ID_MAIL_THUMBNAIL_ITEM:
-			tmp = _Module.m_oLangs.LoadString (IDS_MAIL_THUMBNAIL);
+			tmp = LoadString (IDS_MAIL_THUMBNAIL);
 			break;
 		case ID_CONVERT_JPG_ITEM:
-			tmp = _Module.m_oLangs.LoadString (IDS_CONVERT_JPG);
+			tmp = LoadString (IDS_CONVERT_JPG);
 			break;
 		case ID_CONVERT_GIF_ITEM:
-			tmp = _Module.m_oLangs.LoadString (IDS_CONVERT_GIF);
+			tmp = LoadString (IDS_CONVERT_GIF);
 			break;
 		case ID_CONVERT_BMP_ITEM:
-			tmp = _Module.m_oLangs.LoadString (IDS_CONVERT_BMP);
+			tmp = LoadString (IDS_CONVERT_BMP);
 			break;
 		case ID_CONVERT_PNG_ITEM:
-			tmp = _Module.m_oLangs.LoadString (IDS_CONVERT_PNG);
+			tmp = LoadString (IDS_CONVERT_PNG);
 			break;
 		default:
 			ATLTRACE( "CThumb - IContextMenu::GetCommandString(%d, %d, 0x%08x \"%s\", %d) E_INVALIDARG\n", uCmd, uFlags, pszName, pszName, cchMax);
@@ -338,7 +338,7 @@ void CThumb::ConvertTo(HWND hWnd, int ext)
 	if ( SUCCEEDED( hr ) )
 	{
 		pProgress->SetTitle( _Module.GetAppName() );
-		pProgress->SetLine( 1, _Module.m_oLangs.LoadString( IDS_CONVERTING ), FALSE, NULL );
+		pProgress->SetLine( 1, LoadString( IDS_CONVERTING ), FALSE, NULL );
 		pProgress->StartProgressDialog( hWnd, NULL, PROGDLG_NORMAL | PROGDLG_AUTOTIME, NULL );
 	}
 	DWORD total = (DWORD)m_Filenames.GetCount(), counter = 0;
@@ -464,7 +464,7 @@ void CThumb::SendByMail(HWND hWnd, WORD reason)
 	if ( SUCCEEDED( hr ) )
 	{
 		pProgress->SetTitle( _Module.GetAppName() );
-		pProgress->SetLine( 1, _Module.m_oLangs.LoadString( IDS_SENDING ), FALSE, NULL );
+		pProgress->SetLine( 1, LoadString( IDS_SENDING ), FALSE, NULL );
 		pProgress->StartProgressDialog( hWnd, NULL, PROGDLG_NORMAL | PROGDLG_AUTOTIME, NULL );
 	}
 	DWORD total = (DWORD)m_Filenames.GetCount(), counter = 0;
