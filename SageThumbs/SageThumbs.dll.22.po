@@ -1,0 +1,331 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SageThumbs.dll\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2017-07-17 18:04+0300\n"
+"Last-Translator: \n"
+"Language-Team: Oleksiy Klanovets <a.klanovez+t@gmail.com>\n"
+"Language: uk_UA\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.2\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#. Dialog caption
+#: DIALOGCAPTION.202
+msgid "SageThumbs Options"
+msgstr "Налаштування SageThumbs"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.1
+msgid "OK"
+msgstr "OK"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2
+msgid "Cancel"
+msgstr "Скасувати"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.211
+msgid "Enable context menu in Explorer"
+msgstr "Увімкнути контекстне меню в Explorer"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr "Показати попередній перегляд в підменю"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.212
+msgid "Enable thumbnails in Explorer"
+msgstr "Увімкніть ескізи в Explorer"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.216
+msgid "Use thumbnails as icons in Explorer"
+msgstr "Використовувати ескізи як значки в Explorer"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "Показувати накладки з типом на мініатюрах"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.217
+msgid "Enable Windows thumbnail cache"
+msgstr "Дозволити системний кеш ескізів Windows"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.215
+msgid "Prefer image file embedded thumbnails"
+msgstr "Віддавати перевагу вбудованим ескізам зображень"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.203
+msgid "Use Windows Image/Fax Viewer"
+msgstr "Використовувати Windows Image/Fax Viewer"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.213
+msgid "Clear..."
+msgstr "Очистити..."
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.218
+msgid "Optimize"
+msgstr "Оптимізувати"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "Вибрати/Скасувати всі"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "За замовчуванням"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483649
+msgid "Context menu preview size"
+msgstr "Розмір ескізу в контекстному меню"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483650
+msgid "Width x Height:"
+msgstr "Ширина х Висота:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483651
+msgid "X"
+msgstr "X"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483652
+msgid "pixels"
+msgstr "пікселів"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483653
+msgid "Supported file types"
+msgstr "Підтримувані типи файлів"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483654
+msgid "System-wide tweaks"
+msgstr "Системні налаштування"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483655
+msgid "Language:"
+msgstr "Мова:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483656
+msgid "Maximum size of image file:"
+msgstr "Максимальний розмір файлу зображення:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483657
+msgid "MB"
+msgstr "MB"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483658
+msgid "Convert options"
+msgstr "Опції конвертування"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483659
+msgid "JPEG quality (0 - lowest, 100 - best):"
+msgstr "Якість JPEG (0 - гірша, 100 - найліпша):"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483660
+msgid "PNG compression (0 - lowest, 9 - best):"
+msgstr "Компресія PNG (0 - гірша, 9 - найліпша):"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483662
+msgid "Custom file types (use spaces as delimiters):"
+msgstr "Типи файлів користувача (використовуйте пробіли як роздільники):"
+
+#. String resource
+#: STRING.100
+msgid "SageThumbs"
+msgstr "SageThumbs"
+
+#. String resource
+#: STRING.101
+msgid "Change various SageThumbs options"
+msgstr "Змінити різні опції SageThumbs"
+
+#. String resource
+#: STRING.102
+msgid "Type: "
+msgstr "Тип: "
+
+#. String resource
+#: STRING.103
+msgid "Sizes (pixels): "
+msgstr "Розмір (пікселів): "
+
+#. String resource
+#: STRING.104
+msgid "Size (bytes): "
+msgstr "Розмір (байт): "
+
+#. String resource
+#: STRING.105
+msgid "Modified: "
+msgstr "Змінено: "
+
+#. String resource
+#: STRING.106
+msgid "Colors (bits): "
+msgstr "Кольори (біти): "
+
+#. String resource
+#: STRING.107
+msgid "Compression: "
+msgstr "Компресія: "
+
+#. String resource
+#: STRING.108
+msgid "Resolution: "
+msgstr "Роздільність: "
+
+#. String resource
+#: STRING.109
+msgid "Can't open image file"
+msgstr "Не вдалося відкрити файл зображення"
+
+#. String resource
+#: STRING.110
+msgid "Can't save image file"
+msgstr "Не вдалося зберегти файл зображення"
+
+#. String resource
+#: STRING.111
+msgid "Can't send mail"
+msgstr "Не вдалося надіслати поштою"
+
+#. String resource
+#: STRING.112
+msgid "Nothing to send"
+msgstr "Нічого надсилати"
+
+#. String resource
+#: STRING.113
+msgid "Can't open clipboard"
+msgstr "Не вдалося відкрити буфер обміну"
+
+#. String resource
+#: STRING.114
+msgid "Please confirm thumbnail cache clearing."
+msgstr "Підтвердіть вичищення кешу мініатюр."
+
+#. String resource
+#: STRING.115
+msgid "Thumbnail cache size: %u KB"
+msgstr "Розмір кешу мініатюр: %u KB"
+
+#. String resource
+#: STRING.116
+msgid "SageThumbs thumbnail cache"
+msgstr "Кеш мініатюр SageThumbs"
+
+#. String resource
+#: STRING.117
+msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
+msgstr ""
+"Очистити кеш ескізів SageThumbs. Жодних даних користувача не буде "
+"змінено."
+
+#. String resource
+#: STRING.118
+msgid ""
+"Can not apply all settings. Please use SageThumbs under account with "
+"administrative privileges."
+msgstr ""
+"Не можна застосувати всі параметри. Будь ласка, використовуйте "
+"SageThumbs під обліковим записом з правами адміністратора."
+
+#. String resource
+#: STRING.119
+msgid "Convert to PNG"
+msgstr "Перетворити в PNG"
+
+#. String resource
+#: STRING.120
+msgid "Converting..."
+msgstr "Перетворення..."
+
+#. String resource
+#: STRING.121
+msgid "Sending..."
+msgstr "Надсилаємо..."
+
+#. String resource
+#: STRING.122
+msgid "Applying settings..."
+msgstr "Застосування налаштувань..."
+
+#. String resource
+#: STRING.123
+msgid "Updating..."
+msgstr "Оновлення..."
+
+#. String resource
+#: STRING.203
+msgid "SageThumbs Options..."
+msgstr "Опції SageThumbs..."
+
+#. String resource
+#: STRING.204
+msgid "Copy to clipboard"
+msgstr "Копіювати в буфер обміну"
+
+#. String resource
+#: STRING.205
+msgid "Set tiled wallpaper"
+msgstr "Встановити фонові шпалери черепицею"
+
+#. String resource
+#: STRING.206
+msgid "Set centered wallpaper"
+msgstr "Встановити фонові шпалери по центру"
+
+#. String resource
+#: STRING.207
+msgid "Set stretched wallpaper"
+msgstr "Встановити розтягнені фонові шпалери"
+
+#. String resource
+#: STRING.208
+msgid "Send image by mail..."
+msgstr "Надіслати зображення поштою ..."
+
+#. String resource
+#: STRING.209
+msgid "Send thumbnail by mail..."
+msgstr "Надіслати ескіз поштою ..."
+
+#. String resource
+#: STRING.210
+msgid "Convert to JPG"
+msgstr "Перетворити в JPG"
+
+#. String resource
+#: STRING.211
+msgid "Convert to GIF"
+msgstr "Перетворити в GIF"
+
+#. String resource
+#: STRING.212
+msgid "Convert to BMP"
+msgstr "Перетворити в BMP"
