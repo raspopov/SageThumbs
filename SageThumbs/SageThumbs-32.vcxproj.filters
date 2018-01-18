@@ -125,6 +125,9 @@
     <None Include="sagethumbs.dll.13.po_">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="sagethumbs.dll.14.po_">
+      <Filter>Resource Files</Filter>
+    </None>
     <None Include="sagethumbs.dll.15.po_">
       <Filter>Resource Files</Filter>
     </None>
@@ -150,6 +153,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="sagethumbs.dll.29.po_">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="sagethumbs.dll.2a.po_">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="sagethumbs.dll.7c04.po_">

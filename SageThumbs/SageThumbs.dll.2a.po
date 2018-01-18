@@ -3,20 +3,20 @@ msgstr ""
 "Project-Id-Version: SageThumbs.dll\n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
-"Last-Translator: Nikolay Raspopov <raspopov@cherubicsoft.com>\n"
-"Language-Team: Nikolay Raspopov <raspopov@cherubicsoft.com>\n"
-"Language: ru\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.0.6\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 2.0.5\n"
+"Last-Translator: Huỳnh Phạm Duy Trường <huynhphamduytruong@hotmail."
+"com>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: vi_VN\n"
 
 #. Dialog caption
 #: DIALOGCAPTION.202
 msgid "SageThumbs Options"
-msgstr "Настройки SageThumbs"
+msgstr "Thiết lập SageThumbs"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.1
@@ -26,77 +26,77 @@ msgstr "OK"
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2
 msgid "Cancel"
-msgstr "Отменить"
+msgstr "Huỷ bỏ"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.211
 msgid "Enable context menu in Explorer"
-msgstr "Включить меню в Проводнике"
+msgstr "Kích hoạt trình đơn ngữ cảnh trên Explorer"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.226
 msgid "Show preview in submenu"
-msgstr "Показывать эскиз в подменю"
+msgstr "Hiển thị hình ảnh thu nhỏ trong trình đơn con"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.212
 msgid "Enable thumbnails in Explorer"
-msgstr "Включить эскизы в Проводнике"
+msgstr "Kích hoạt hình ảnh thu nhỏ trên Explorer"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.216
 msgid "Use thumbnails as icons in Explorer"
-msgstr "Использовать эскизы вместо иконок"
+msgstr "Sử dụng hình ảnh thu nhỏ như các biểu tượng trong Explorer"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.225
 msgid "Show type overlay on thumbnails"
-msgstr "Отображать тип файла на эскизе"
+msgstr "Hiển thị lớp phủ trên hình ảnh xem trước"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.217
 msgid "Enable Windows thumbnail cache"
-msgstr "Разрешить использовать системный кеш эскизов"
+msgstr "Kích hoạt bộ nhớ đệm cho hình ảnh xem trước trong Windows"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.215
 msgid "Prefer image file embedded thumbnails"
-msgstr "Предпочитать встроенные эскизы изображений"
+msgstr "Lựa chọn hình ảnh thu nhỏ của tệp ảnh"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.203
 msgid "Use Windows Image/Fax Viewer"
-msgstr "Использовать Windows Image/Fax Viewer"
+msgstr "Sử dụng Windows Image/Fax Viewer"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.213
 msgid "Clear..."
-msgstr "Очистить..."
+msgstr "Dọn dẹp..."
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.218
 msgid "Optimize"
-msgstr "Оптимизировать"
+msgstr "Tối ưu"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.210
 msgid "Select/Deselect all"
-msgstr "Выбрать/Очистить всё"
+msgstr "Chọn/Bỏ chọn tất cả"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.223
 msgid "Default"
-msgstr "По умолчанию"
+msgstr "Mặc định"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483649
 msgid "Context menu preview size"
-msgstr "Размер эскиза в меню"
+msgstr "Kích cỡ ảnh thu nhỏ trên tình đơn ngữ cảnh"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483650
 msgid "Width x Height:"
-msgstr "Ширина x Высота:"
+msgstr "Ngang x Cao:"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483651
@@ -106,52 +106,52 @@ msgstr "X"
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483652
 msgid "pixels"
-msgstr "точек"
+msgstr "pixels"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483653
 msgid "Supported file types"
-msgstr "Поддерживаемые типы файлов"
+msgstr "Loại tệp tin được hỗ trợ"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483654
 msgid "System-wide tweaks"
-msgstr "Системные настройки"
+msgstr "Tinh chỉnh Hệ thống"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483655
 msgid "Language:"
-msgstr "Язык:"
+msgstr "Ngôn ngữ:"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483656
 msgid "Maximum size of image file:"
-msgstr "Максимальный размер файла:"
+msgstr "Dung lượng tối đa của tệp ảnh:"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483657
 msgid "MB"
-msgstr "Мб"
+msgstr "MB"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Button.2147483658
 msgid "Convert options"
-msgstr "Настройки конвертирования"
+msgstr "Tuỳ chọn chuyển đổi"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483659
 msgid "JPEG quality (0 - lowest, 100 - best):"
-msgstr "JPEG качество (0 - хуже, 100 - лучше):"
+msgstr "Chất lượng ảnh JPEG (0 - thấp, 100 - tốt):"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483660
 msgid "PNG compression (0 - lowest, 9 - best):"
-msgstr "PNG сжатие (0 - хуже, 9 - лучше):"
+msgstr "Mức nén ảnh PNG (0 - thường, 9 - tốt):"
 
 #. Dialog control
 #: DIALOGCONTROL.202.Static.2147483662
 msgid "Custom file types (use spaces as delimiters):"
-msgstr "Пользовательские типы (разделители - пробелы):"
+msgstr "Loại tệp tin tuỳ chỉnh (dùng dấu cách làm dấu phân cách):"
 
 #. String resource
 #: STRING.100
@@ -161,88 +161,89 @@ msgstr "SageThumbs"
 #. String resource
 #: STRING.101
 msgid "Change various SageThumbs options"
-msgstr "Настроить различные параметры SageThumbs"
+msgstr "Thay đổi thiết lập SageThumbs"
 
 #. String resource
 #: STRING.102
 msgid "Type: "
-msgstr "Тип: "
+msgstr "Loại: "
 
 #. String resource
 #: STRING.103
 msgid "Sizes (pixels): "
-msgstr "Размеры (точки): "
+msgstr "Kích cỡ (pixels): "
 
 #. String resource
 #: STRING.104
 msgid "Size (bytes): "
-msgstr "Размер (байт): "
+msgstr "Dung lượng (byte): "
 
 #. String resource
 #: STRING.105
 msgid "Modified: "
-msgstr "Изменен: "
+msgstr "Ngày thay đổi: "
 
 #. String resource
 #: STRING.106
 msgid "Colors (bits): "
-msgstr "Цвета (бит): "
+msgstr "Màu (bits): "
 
 #. String resource
 #: STRING.107
 msgid "Compression: "
-msgstr "Сжатие: "
+msgstr "Mức nén: "
 
 #. String resource
 #: STRING.108
 msgid "Resolution: "
-msgstr "Разрешение: "
+msgstr "Độ phân giải: "
 
 #. String resource
 #: STRING.109
 msgid "Can't open image file"
-msgstr "Не могу открыть файл изображения"
+msgstr "Không thể mở tệp ảnh"
 
 #. String resource
 #: STRING.110
 msgid "Can't save image file"
-msgstr "Не могу сохранить файл изображения"
+msgstr "Không thể lưu tệp ảnh"
 
 #. String resource
 #: STRING.111
 msgid "Can't send mail"
-msgstr "Не могу отправить почту"
+msgstr "Không thể gửi mail"
 
 #. String resource
 #: STRING.112
 msgid "Nothing to send"
-msgstr "Нечего отправлять"
+msgstr "Không có gì để gửi"
 
 #. String resource
 #: STRING.113
 msgid "Can't open clipboard"
-msgstr "Не могу открыть буфер обмена"
+msgstr "Không thể mở Khay nhớ tạm (Clipboard)"
 
 #. String resource
 #: STRING.114
 msgid "Please confirm thumbnail cache clearing."
-msgstr "Пожалуйста подтвердите очистку кеша эскизов."
+msgstr "Bạn có muốn dọn dẹp bộ nhớ đệm hình ảnh thu nhỏ?"
 
 #. String resource
 #: STRING.115
 msgid "Thumbnail cache size: %u KB"
-msgstr "Размер кеша эскизов: %u Кб"
+msgstr "Dung lượng bộ nhớ đệm hình ảnh thu nhỏ: %u KB"
 
 #. String resource
 #: STRING.116
 msgid "SageThumbs thumbnail cache"
-msgstr "Кэш эскизов SageThumbs"
+msgstr "Bộ nhớ đệm hình ảnh thu nhỏ SageThumbs"
 
 #. String resource
 #: STRING.117
 msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
 msgstr ""
-"Очистка кеша эскизов SageThumbs. Пользовательские данные не будут затронуты."
+"Dọn dẹp bộ nhớ đệm hình ảnh thu nhỏ SageThumbs. Không có dữ liệu "
+"người dùng nào bị ảnh hưởng."
 
 #. String resource
 #: STRING.118
@@ -250,80 +251,80 @@ msgid ""
 "Can not apply all settings. Please use SageThumbs under account with "
 "administrative privileges."
 msgstr ""
-"Не могу применить настройки. Пожалуйста, используйте SageThumbs под "
-"аккаунтом с административными привилегиями."
+"Không thể áp dụng tất cả thiết lập. Hãy chạy SageThumbs dưới quyền "
+"Admin."
 
 #. String resource
 #: STRING.119
 msgid "Convert to PNG"
-msgstr "Конвертировать в PNG"
+msgstr "Chuyển đổi sang PNG"
 
 #. String resource
 #: STRING.120
 msgid "Converting..."
-msgstr "Конвертирование..."
+msgstr "Đang chuyển đổi..."
 
 #. String resource
 #: STRING.121
 msgid "Sending..."
-msgstr "Посылка..."
+msgstr "Đang gửi..."
 
 #. String resource
 #: STRING.122
 msgid "Applying settings..."
-msgstr "Применение настроек..."
+msgstr "Đang áp dụng các thiết lập..."
 
 #. String resource
 #: STRING.123
 msgid "Updating..."
-msgstr "Обновление..."
+msgstr "Đang cập nhật..."
 
 #. String resource
 #: STRING.203
 msgid "SageThumbs Options..."
-msgstr "Настройка SageThumbs..."
+msgstr "Thiết lập SageThumbs..."
 
 #. String resource
 #: STRING.204
 msgid "Copy to clipboard"
-msgstr "Копировать в буфер обмена"
+msgstr "Sao chép vào khay nhớ đệm (clipboard)"
 
 #. String resource
 #: STRING.205
 msgid "Set tiled wallpaper"
-msgstr "Установить фон рядами"
+msgstr "Đặt làm ảnh nền (lát gạch)"
 
 #. String resource
 #: STRING.206
 msgid "Set centered wallpaper"
-msgstr "Установить фон по-центру"
+msgstr "Đặt làm ảnh nền (chính giữa)"
 
 #. String resource
 #: STRING.207
 msgid "Set stretched wallpaper"
-msgstr "Установить фон растянутый"
+msgstr "Đặt làm ảnh nền (kéo dãn)"
 
 #. String resource
 #: STRING.208
 msgid "Send image by mail..."
-msgstr "Послать изображение по почте..."
+msgstr "Gửi ảnh qua mail..."
 
 #. String resource
 #: STRING.209
 msgid "Send thumbnail by mail..."
-msgstr "Послать эскиз по почте..."
+msgstr "Gửi ảnh thu nhỏ qua mail..."
 
 #. String resource
 #: STRING.210
 msgid "Convert to JPG"
-msgstr "Конвертировать в JPG"
+msgstr "Chuyển đổi sang JPG"
 
 #. String resource
 #: STRING.211
 msgid "Convert to GIF"
-msgstr "Конвертировать в GIF"
+msgstr "Chuyển đổi sang GIF"
 
 #. String resource
 #: STRING.212
 msgid "Convert to BMP"
-msgstr "Конвертировать в BMP"
+msgstr "Chuyển đổi sang BMP"

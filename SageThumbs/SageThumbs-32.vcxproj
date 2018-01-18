@@ -21,9 +21,8 @@
   <PropertyGroup Label="Globals">
     <ProjectName>SageThumbs-32</ProjectName>
     <ProjectGuid>{D63F7293-39CC-4B91-88A6-1C3855EE5DC4}</ProjectGuid>
-    <RootNamespace>SageThumbs-32</RootNamespace>
     <Keyword>AtlProj</Keyword>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -31,22 +30,26 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
+    <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
+    <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
+    <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v141</PlatformToolset>
+    <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -114,7 +117,6 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_ATL_XP_TARGETING;_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -124,6 +126,7 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
       <SDLCheck>true</SDLCheck>
       <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
       <AdditionalIncludeDirectories>..\;..\sqlite3;..\Localization</AdditionalIncludeDirectories>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -163,7 +166,6 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN64;_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -171,6 +173,7 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
       <SDLCheck>true</SDLCheck>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\;..\sqlite3;..\Localization</AdditionalIncludeDirectories>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -212,7 +215,6 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
       <OmitFramePointers>true</OmitFramePointers>
       <PreprocessorDefinitions>WIN32;_ATL_XP_TARGETING;_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -267,7 +269,6 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
       <OmitFramePointers>true</OmitFramePointers>
       <PreprocessorDefinitions>WIN64;_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -340,6 +341,7 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
     <None Include="sagethumbs.dll.11.po_" />
     <None Include="sagethumbs.dll.12.po_" />
     <None Include="sagethumbs.dll.13.po_" />
+    <None Include="sagethumbs.dll.14.po_" />
     <None Include="sagethumbs.dll.15.po_" />
     <None Include="sagethumbs.dll.16.po_" />
     <None Include="sagethumbs.dll.19.po_" />
@@ -349,6 +351,7 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
     <None Include="sagethumbs.dll.21.po_" />
     <None Include="sagethumbs.dll.22.po_" />
     <None Include="sagethumbs.dll.29.po_" />
+    <None Include="sagethumbs.dll.2a.po_" />
     <None Include="sagethumbs.dll.7c04.po_" />
   </ItemGroup>
   <ItemGroup>

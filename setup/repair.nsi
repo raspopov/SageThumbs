@@ -4,7 +4,7 @@
 !define VERSION		"${VER_1}.${VER_2}.${VER_3}.${VER_4}"
 !define COMPANY		"Cherubic Software"
 !define FILENAME	"repair.exe"
-!define COPYRIGHT	"Copyright © 2004-2017 Nikolay Raspopov"
+!define COPYRIGHT	"Copyright © 2004-2018 Nikolay Raspopov"
 !define URL			"http://sagethumbs.sourceforge.net/"
 !define PAD			"http://sagethumbs.sourceforge.net/pad/sagethumbs.xml"
 

@@ -63,6 +63,10 @@ SageThumbs can be easily translated to other languages.
 
 Versions:
 
+2.0.0.24
+  * Added Vietnamese translation (by Huỳnh Phạm Duy Trường)
+  * Added Norwegian translation (by Imre Kristoffer Eilertsen)
+
 2.0.0.23
   * Added Finnish translation (by Ropsi)
   * Project converted to MS VS2017
@@ -299,11 +303,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 Copyrights:
 
 SageThumbs
-Copyright (C) Nikolay Raspopov, 2004-2017.
+Copyright (C) Nikolay Raspopov, 2004-2018.
 E-Mail: raspopov@cherubicsoft.com
-Web site: http://sagethumbs.sourceforge.net/
+Web site: https://www.cherubicsoft.com/en/projects/sagethumbs
 
 GFL Library, GFL SDK and XnView
-Copyright (C) Pierre-E Gougelet, 1991-2017.
+Copyright (C) Pierre-E Gougelet, 1991-2018.
 E-Mail: webmaster@xnview.com
-Web site: http://www.xnview.com/
+Web site: https://www.xnview.com/en/

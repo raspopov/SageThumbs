@@ -4,7 +4,7 @@
 !define VERSION		"${VER_1}.${VER_2}.${VER_3}.${VER_4}"
 !define FILENAME	"..\..\redist\sagethumbs_${VERSION}_setup.exe"
 !define COMPANY		"Cherubic Software"
-!define COPYRIGHT	"Copyright © 2004-2017 Nikolay Raspopov"
+!define COPYRIGHT	"Copyright © 2004-2018 Nikolay Raspopov"
 !define URL			"http://sagethumbs.sourceforge.net/"
 !define PAD			"http://sagethumbs.sourceforge.net/pad/sagethumbs.xml"
 
@@ -341,7 +341,7 @@ ok64:
 	Delete /REBOOTOK "$APPDATA\SageThumbs.db3"
 	Delete /REBOOTOK "$WINDIR\SageThumbs.db3"
 	Delete /REBOOTOK "$INSTDIR\SageThumbs.db3"
-	
+
 # Delete start menu items
 	!insertmacro MUI_STARTMENU_GETFOLDER Application $STARTMENU_FOLDER
 	Delete "$SMPROGRAMS\$STARTMENU_FOLDER\${TITLE} 32-bit Options.lnk"
