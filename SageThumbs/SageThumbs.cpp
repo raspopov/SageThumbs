@@ -2237,6 +2237,59 @@ HRESULT CSageThumbsModule::FreeBitmapE(GFL_BITMAP*& bitmap) throw()
 	return hr;
 }
 
+HRESULT CSageThumbsModule::SaveBitmapIntoMemory( GFL_UINT8** data, GFL_UINT32* data_length, const GFL_BITMAP* bitmap, bool bPng ) throw()
+{
+#ifdef GFL_THREAD_SAFE
+	CLock oLock( m_pSection );
+	return SaveBitmapIntoMemoryE( data, data_length, bitmap, bPng );
+}
+HRESULT CSageThumbsModule::SaveBitmapIntoMemoryE( GFL_UINT8** data, GFL_UINT32* data_length, const GFL_BITMAP* bitmap, bool bPng ) throw()
+{
+#endif // GFL_THREAD_SAFE
+	if ( ! bitmap )
+		return S_FALSE;
+
+	GFL_ERROR err;
+	HRESULT hr = E_FAIL;
+	__try
+	{
+		GFL_SAVE_PARAMS params = {};
+		gflGetDefaultSaveParams( &params );
+		params.Flags = GFL_SAVE_ANYWAY;
+		params.CompressionLevel = THUMB_STORE_PNG_RATIO;
+		params.Quality = THUMB_STORE_JPG_RATIO;
+		params.OptimizeHuffmanTable = GFL_TRUE;
+		if ( bPng )
+		{
+			// Using PNG for images with alpha
+			params.FormatIndex = gflGetFormatIndexByName( "png" );
+		}
+		else
+		{
+			// Using JPEG for rest
+			params.FormatIndex = gflGetFormatIndexByName( "jpeg" );
+		}
+
+		err = gflSaveBitmapIntoMemory( data, data_length, bitmap, &params );
+		if ( err == GFL_NO_ERROR )
+		{
+			hr = S_OK;
+		}
+		else
+		{
+			ATLTRACE( "CSageThumbsModule - SaveBitmapIntoMemory() : gflSaveBitmapIntoMemory failed : %s\n", gflGetErrorString( err ) );
+		}
+	}
+	__except ( EXCEPTION_EXECUTE_HANDLER )
+	{
+		ATLTRACE( "CSageThumbsModule - SaveBitmapIntoMemory() : Exception\n" );
+	}
+
+	bitmap = NULL;
+
+	return hr;
+}
+
 bool CSageThumbsModule::IsGoodFile(LPCTSTR szFilename, Ext* pdata) const
 {
 	CString sExt = PathFindExtension( szFilename );

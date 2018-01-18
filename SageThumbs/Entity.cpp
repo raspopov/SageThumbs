@@ -372,26 +372,10 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 	}
 
 	// Save thumbnail image to database using best format
-	GFL_SAVE_PARAMS params = {};
-	gflGetDefaultSaveParams( &params );
-	params.Flags = GFL_SAVE_ANYWAY;
-	params.CompressionLevel = THUMB_STORE_PNG_RATIO;
-	params.Quality = THUMB_STORE_JPG_RATIO;
-	params.OptimizeHuffmanTable = GFL_TRUE;
-	if ( m_ImageInfo.ComponentsPerPixel > 3 )
-	{
-		// Using PNG for images with alpha
-		params.FormatIndex = gflGetFormatIndexByName( "png" );
-	}
-	else
-	{
-		// Using JPEG for rest
-		params.FormatIndex = gflGetFormatIndexByName( "jpeg" );
-	}
+
 	BYTE* data = NULL;
 	UINT data_length = 0;
-	GFL_ERROR err = gflSaveBitmapIntoMemory( &data, &data_length, m_hGflBitmap, &params );
-	if ( err == GFL_NO_ERROR )
+	if ( SUCCEEDED( _Module.SaveBitmapIntoMemory( &data, &data_length, m_hGflBitmap, ( m_ImageInfo.ComponentsPerPixel > 3 ) ) ) )
 	{
 		if ( nPathID )
 		{
@@ -420,10 +404,6 @@ HRESULT CEntity::LoadImage(const CString& sFilename, UINT cx, UINT cy)
 			ATLTRACE ( "CEntity - LoadImage(\"%s\",%u,%u) : Bad PathID\n", (LPCSTR)CT2A( sFilename ), cx, cy );
 		}
 		gflMemoryFree( data );
-	}
-	else
-	{
-		ATLTRACE( "CEntity - LoadImage(\"%s\",%u,%u) : gflSaveBitmapIntoMemory failed : %s\n", (LPCSTR)CT2A( sFilename ), cx, cy, gflGetErrorString( err ) );
 	}
 
 	ATLTRACE( "CEntity - LoadImage(\"%s\",%u,%u) : S_OK (from disk %dx%d)\n", (LPCSTR)CT2A( sFilename ), cx, cy, m_hGflBitmap->Width, m_hGflBitmap->Height );

@@ -146,6 +146,7 @@ public:
 	HRESULT Resize(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height) throw();
 	HRESULT ResizeCanvas(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height) throw();
 	HRESULT FreeBitmap(GFL_BITMAP*& bitmap) throw();
+	HRESULT SaveBitmapIntoMemory( GFL_UINT8** data, GFL_UINT32* data_length, const GFL_BITMAP* bitmap, bool bPng ) throw();
 
 	// Проверка, что файл подходит для загрузки по всем параметрам
 	bool IsGoodFile(LPCTSTR szFilename, Ext* pdata = NULL) const;
@@ -172,13 +173,16 @@ protected:
 
 #ifdef GFL_THREAD_SAFE
 	CComAutoCriticalSection m_pSection;
+	HRESULT LoadGFLBitmapE( LPCTSTR filename, GFL_BITMAP **bitmap ) throw();
 	HRESULT GetFileInformationE(LPCTSTR filename, GFL_FILE_INFORMATION* info) throw();
 	HRESULT LoadBitmapE(LPCTSTR filename, GFL_BITMAP **bitmap) throw();
 	HRESULT LoadThumbnailE(LPCTSTR filename, int width, int height, GFL_BITMAP **bitmap) throw();
-	HRESULT LoadBitmapFromMemoryE(LPCVOID data, UINT data_length, GFL_BITMAP **bitmap) throw()
+	HRESULT LoadBitmapFromMemoryE(LPCVOID data, UINT data_length, GFL_BITMAP **bitmap) throw();
 	HRESULT ConvertBitmapE(const GFL_BITMAP* bitmap, HBITMAP* phBitmap) throw();
 	HRESULT ResizeE(GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height) throw();
+	HRESULT ResizeCanvasE( GFL_BITMAP* src, GFL_BITMAP** dst, int width, int height ) throw();
 	HRESULT FreeBitmapE(GFL_BITMAP*& bitmap) throw();
+	HRESULT SaveBitmapIntoMemoryE( GFL_UINT8** data, GFL_UINT32* data_length, const GFL_BITMAP* bitmap, bool bPng ) throw();
 #endif // GFL_THREAD_SAFE
 };
 
