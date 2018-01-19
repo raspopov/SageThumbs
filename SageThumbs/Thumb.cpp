@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2016.
+Copyright (C) Nikolay Raspopov, 2004-2018.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -139,6 +139,12 @@ STDMETHODIMP CThumb::Load(LPCOLESTR wszFile, DWORD /*dwMode*/)
 		return E_POINTER;
 	}
 
+	//if ( !_Module.IsGoodFile( wszFile ) )
+	//{
+	//	ATLTRACE( "CThumb - IPersistFile::Load(\"%s\") : E_INVALIDARG (Disabled file)\n", (LPCSTR)CT2A( wszFile ) );
+	//	return E_INVALIDARG;
+	//}
+
 	m_sFilename = wszFile;
 
 	ATLTRACE( "CThumb - IPersistFile::Load(\"%s\") : S_OK\n", (LPCSTR)CW2A( wszFile ) );
@@ -219,7 +225,7 @@ STDMETHODIMP CThumb::Initialize(
 		return HRESULT_FROM_WIN32(ERROR_ALREADY_INITIALIZED);
 	}
 
-	if ( ! psi  )
+	if ( psi == NULL  )
 	{
 		ATLTRACE( "CThumb - IInitializeWithItem::Initialize() : E_POINTER\n" );
 		return E_POINTER;
@@ -229,9 +235,16 @@ STDMETHODIMP CThumb::Initialize(
 	HRESULT hr = psi->GetDisplayName( SIGDN_FILESYSPATH, &wszFile );
 	if ( FAILED( hr ) )
 	{
-		ATLTRACE( "CThumb - IInitializeWithItem::Initialize() : E_FAIL (Unknown path)\n" );
-		return E_FAIL;
+		ATLTRACE( "CThumb - IInitializeWithItem::Initialize() : E_FAIL (Unknown path) : 0x%08x\n", hr );
+		return hr;
 	}
+
+	//if ( !_Module.IsGoodFile( wszFile ) )
+	//{
+	//	ATLTRACE( "CThumb - IInitializeWithItem::Initialize(\"%s\") : E_INVALIDARG (Disabled file)\n", (LPCSTR)CT2A( wszFile ) );
+	//	CoTaskMemFree( wszFile );
+	//	return E_INVALIDARG;
+	//}
 
 	m_sFilename = wszFile;
 
@@ -252,11 +265,17 @@ STDMETHODIMP CThumb::Initialize(
 		return HRESULT_FROM_WIN32(ERROR_ALREADY_INITIALIZED);
 	}
 
-	if ( ! wszFile  )
+	if ( wszFile == NULL  )
 	{
 		ATLTRACE( "CThumb - IInitializeWithFile::Initialize() : E_POINTER\n" );
 		return E_POINTER;
 	}
+
+	//if ( !_Module.IsGoodFile( wszFile ) )
+	//{
+	//	ATLTRACE( "CThumb - IInitializeWithFile::Initialize(\"%s\") : E_INVALIDARG (Disabled file)\n", (LPCSTR)CT2A( wszFile ) );
+	//	return E_INVALIDARG;
+	//}
 
 	m_sFilename = wszFile;
 

@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2016.
+Copyright (C) Nikolay Raspopov, 2004-2018.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -47,6 +47,12 @@ STDMETHODIMP CThumb::GetIconLocation(UINT uFlags, __out_ecount( cch ) LPWSTR szI
 		return E_POINTER;
 	}
 
+	//if ( ! _Module.IsGoodFile( m_sFilename ) )
+	//{
+	//	ATLTRACE( "CThumb - IExtractIcon::GetIconLocation(\"%s\") : S_FALSE (Use default)\n", (LPCSTR)CT2A( (LPCTSTR)m_sFilename ) );
+	//	return S_FALSE;
+	//}
+
 	// Make it unique
 	LARGE_INTEGER count;
 	QueryPerformanceCounter( &count );
@@ -58,9 +64,7 @@ STDMETHODIMP CThumb::GetIconLocation(UINT uFlags, __out_ecount( cch ) LPWSTR szI
 
 		if ( ! m_sFilename.IsEmpty() )
 		{
-			CT2CW szFilenameW( m_sFilename );
-			DWORD len = min( (DWORD)( m_sFilename.GetLength() + 1 ), cch );
-			wcsncpy_s( szIconFile, cch, (LPCWSTR)szFilenameW, len );
+			wcsncpy_s( szIconFile, cch, (LPCWSTR)m_sFilename, _TRUNCATE );
 		}
 #ifdef ISTREAM_ENABLED
 		else if ( m_pStream )
@@ -93,6 +97,12 @@ STDMETHODIMP CThumb::Extract(LPCWSTR pszFile, UINT nIconIndex, __out_opt HICON* 
 {
 	pszFile;
 	nIconIndex;
+
+	//if ( !_Module.IsGoodFile( m_sFilename ) )
+	//{
+	//	ATLTRACE( "CThumb - IExtractIcon::Extract(\"%s\") : S_FALSE (Use default)\n", (LPCSTR)CT2A( (LPCTSTR)m_sFilename ) );
+	//	return S_FALSE;
+	//}
 
 	if ( phiconLarge ) *phiconLarge = NULL;
 	if ( phiconSmall ) *phiconSmall = NULL;

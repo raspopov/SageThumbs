@@ -15,12 +15,12 @@ Features:
   * Wallpaper selection support
   * Copy to clipboard support
 
-Please read carefully the following information. 
+Please read carefully the following information.
 	As SageThumbs is a Windows Explorer context menu extension,
 	there is no an executable file that you should launch to bring it up.
 	To use it, just open any folder with image files in Windows Explorer,
 	and then right-click a file you want to preview. You'll see the
-	thumbnail immediately in the context menu. 
+	thumbnail immediately in the context menu.
 
 ========================================================================
 
@@ -64,6 +64,7 @@ SageThumbs can be easily translated to other languages.
 Versions:
 
 2.0.0.24
+  * Fixed sometimes too big context menu preview
   * Added Vietnamese translation (by Huỳnh Phạm Duy Trường)
   * Added Norwegian translation (by Imre Kristoffer Eilertsen)
 
@@ -73,7 +74,7 @@ Versions:
 
 2.0.0.22
   * Added Dutch translation (by Gaston Loos)
- 
+
 2.0.0.21
   * Added Greek translation (by Chris Tsekouras)
 
@@ -232,7 +233,7 @@ Versions:
 1.0.0.10
   * Fixed installation procedure
   * Fixed shell registration
-  * Fixed "experimental ColumnHandler support in 1.0.0.9" bug 
+  * Fixed "experimental ColumnHandler support in 1.0.0.9" bug
   * Fixed "duplicate context menu item insertion in Explorer File menu" bug
   * Fixed "missing uppercase file extensions" bug
   * Fixed "right-click double selection" bug
@@ -253,13 +254,13 @@ Versions:
 
 1.0.0.7
   * GFL Library upgraded to version 2.20:
-  * Added GFL_ALLOCATEBITMAP_CALLBACK, GFL_PROGRESS_CALLBACK & GFL_WANTCANCEL_CALLBACK callback 
-  * Added gflSetIPTCValue & gflRemoveIPTCValue to change IPTC value 
-  * Added gflLoadIPTC, gflSaveIPTC, gflBitmapSetIPTC 
-  * Added gflJPEGGetComment, gflJPEGSetComment, gflPNGGetComment, gflPNGSetComment 
-  * Added Support of long pathname on Windows NT (with \\?\) 
-  * Added gflGetFileInformationFromMemory, gflLoadBitmapFromMemory, gflLoadThumbnailFromMemory 
-  * Fixed Many bugs & improved speed 
+  * Added GFL_ALLOCATEBITMAP_CALLBACK, GFL_PROGRESS_CALLBACK & GFL_WANTCANCEL_CALLBACK callback
+  * Added gflSetIPTCValue & gflRemoveIPTCValue to change IPTC value
+  * Added gflLoadIPTC, gflSaveIPTC, gflBitmapSetIPTC
+  * Added gflJPEGGetComment, gflJPEGSetComment, gflPNGGetComment, gflPNGSetComment
+  * Added Support of long pathname on Windows NT (with \\?\)
+  * Added gflGetFileInformationFromMemory, gflLoadBitmapFromMemory, gflLoadThumbnailFromMemory
+  * Fixed Many bugs & improved speed
 
 1.0.0.6
   * Added Russian language

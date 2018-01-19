@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2017.
+Copyright (C) Nikolay Raspopov, 2004-2018.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -47,7 +47,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 #ifdef _DEBUG
 	//#define _ATL_DEBUG_INTERFACES
-	#define _ATL_DEBUG_QI
+	//#define _ATL_DEBUG_QI
 #endif
 
 #define ISOLATION_AWARE_ENABLED 1

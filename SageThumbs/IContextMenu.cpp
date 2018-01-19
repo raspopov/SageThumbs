@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2017.
+Copyright (C) Nikolay Raspopov, 2004-2018.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -184,8 +184,9 @@ STDMETHODIMP CThumb::QueryContextMenu(HMENU hMenu, UINT uIndex, UINT uidCmdFirst
 	if ( bSingleFile )
 	{
 		// Загрузка файла
-		DWORD width = GetRegValue( _T("Width"), THUMB_STORE_SIZE );
-		DWORD height = GetRegValue( _T("Height"), THUMB_STORE_SIZE );
+		const DWORD width = max( THUMB_MIN_SIZE, min( THUMB_MAX_SIZE, GetRegValue( _T("Width"), THUMB_STORE_SIZE ) ) );
+		const DWORD height = max( THUMB_MIN_SIZE, min( THUMB_MAX_SIZE, GetRegValue( _T("Height"), THUMB_STORE_SIZE ) ) );
+
 		m_Preview.LoadImage( m_Filenames.GetHead(), width, height );
 
 		if ( m_Preview )
@@ -324,9 +325,9 @@ STDMETHODIMP CThumb::GetCommandString (
 	}
 
 	if ( uFlags & GCS_UNICODE )
-		wcsncpy_s( (LPWSTR)pszName, cchMax, (LPCWSTR)CT2W( tmp ), cchMax );
+		wcsncpy_s( (LPWSTR)pszName, cchMax, (LPCWSTR)tmp, _TRUNCATE );
 	else
-		strncpy_s( (LPSTR)pszName, cchMax, (LPCSTR)CT2A( tmp ), cchMax );
+		strncpy_s( (LPSTR)pszName, cchMax, (LPCSTR)CT2A( tmp ), _TRUNCATE );
 
 	return S_OK;
 }
@@ -590,7 +591,7 @@ void CThumb::CopyToClipboard(HWND hwnd)
 		if ( OpenClipboard ( hwnd ) )
 		{
 			EmptyClipboard();
-			
+
 			if ( SetClipboardData( CF_BITMAP, hBitmap ) )
 			{
 				// OK
@@ -726,8 +727,10 @@ STDMETHODIMP CThumb::OnMeasureItem(MEASUREITEMSTRUCT* pmis, LRESULT* pResult)
 	if ( ! m_Preview )
 		return S_OK;
 
-	pmis->itemWidth = m_Preview.Width();
-	pmis->itemHeight = m_Preview.Height();
+	pmis->itemWidth = min( m_Preview.Width(), min( THUMB_MAX_SIZE, GetRegValue( _T( "Width" ), THUMB_STORE_SIZE ) ) );
+	pmis->itemHeight = min( m_Preview.Height(), min( THUMB_MAX_SIZE, GetRegValue( _T( "Height" ), THUMB_STORE_SIZE ) ) );
+
+	ATLTRACE( "CThumb - OnMeasureItem() : %d x %d\n",  pmis->itemWidth, pmis->itemHeight );
 
 	*pResult = TRUE;
 
@@ -743,16 +746,21 @@ STDMETHODIMP CThumb::OnDrawItem(DRAWITEMSTRUCT* pdis, LRESULT* pResult)
 	const int width  = pdis->rcItem.right  - pdis->rcItem.left;
 	const int height = pdis->rcItem.bottom - pdis->rcItem.top;
 
+	ATLTRACE( "CThumb - OnDrawItem() : %d x %d\n", width, height );
+
 	if ( ( pdis->itemState & ODS_SELECTED ) )
 		FillRect( pdis->hDC, &pdis->rcItem, GetSysColorBrush( COLOR_HIGHLIGHT ) );
 	else
 		FillRect( pdis->hDC, &pdis->rcItem, GetSysColorBrush( COLOR_MENU ) );
 
-	if ( HBITMAP hBitmap = m_Preview.GetImage( width, height, ( pdis->itemState & ODS_SELECTED ) ? GetSysColor( COLOR_HIGHLIGHT ) : RGB( 241, 241, 241 ) ) )
+	const DWORD imgWidth = min( m_Preview.Width(), min( THUMB_MAX_SIZE, GetRegValue( _T( "Width" ), THUMB_STORE_SIZE ) ) );
+	const DWORD imgHeight = min( m_Preview.Height(), min( THUMB_MAX_SIZE, GetRegValue( _T( "Height" ), THUMB_STORE_SIZE ) ) );
+	const COLORREF clrColor1 = ( pdis->itemState & ODS_SELECTED ) ? GetSysColor( COLOR_HIGHLIGHT ) : GetSysColor( COLOR_MENU );
+	if ( HBITMAP hBitmap = m_Preview.GetImage( imgWidth, imgHeight, clrColor1 ) )
 	{
 		BITMAP bm = {};
 		GetObject( hBitmap, sizeof( BITMAP ), &bm );
-	
+
 		const int x = pdis->rcItem.left + ( width  - bm.bmWidth  ) / 2;
 		const int y = pdis->rcItem.top  + ( height - bm.bmHeight ) / 2;
 
@@ -770,5 +778,6 @@ STDMETHODIMP CThumb::OnDrawItem(DRAWITEMSTRUCT* pdis, LRESULT* pResult)
 	}
 
 	*pResult = TRUE;
+
 	return S_OK;
 }

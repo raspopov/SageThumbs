@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2014.
+Copyright (C) Nikolay Raspopov, 2004-2018.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -41,7 +41,7 @@ public:
 #endif // ISTREAM_ENABLED
 
 	// Получение битмэпа
-	HBITMAP GetImage(UINT cx, UINT cy, COLORREF nColor1 = RGB( 241, 241, 241 ), COLORREF nColor2 = RGB( 252, 252, 252 ));
+	HBITMAP GetImage(UINT cx, UINT cy, COLORREF nColor1 = GetSysColor( COLOR_BTNFACE ), COLORREF nColor2 = GetSysColor( COLOR_BTNHIGHLIGHT ) );
 
 	// Получение иконки
 	HICON GetIcon(UINT cx);

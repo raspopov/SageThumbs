@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2014.
+Copyright (C) Nikolay Raspopov, 2004-2018.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -64,9 +64,7 @@ STDMETHODIMP CThumb::GetLocation (
 
 		if ( ! m_sFilename.IsEmpty() )
 		{
-			CT2CW szFilenameW( m_sFilename );
-			DWORD len = min( (DWORD)( m_sFilename.GetLength() + 1 ), cch );
-			wcsncpy_s( pszPathBuffer, cch, (LPCWSTR)szFilenameW, len );
+			wcsncpy_s( pszPathBuffer, cch, (LPCWSTR)m_sFilename, _TRUNCATE );
 		}
 #ifdef ISTREAM_ENABLED
 		else if ( m_pStream )
