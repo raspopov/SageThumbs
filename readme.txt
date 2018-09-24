@@ -68,6 +68,7 @@ Versions:
   * Added Vietnamese translation (by Huỳnh Phạm Duy Trường)
   * Added Norwegian translation (by Imre Kristoffer Eilertsen)
   * Added Arabic (Iraq) translation (by Ahmed Badee)
+  * Updated Spanish translation (by Víctor González Fraile)
 
 2.0.0.23
   * Added Finnish translation (by Ropsi)
