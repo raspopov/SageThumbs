@@ -22,7 +22,6 @@
     <ProjectName>SageThumbs-64</ProjectName>
     <ProjectGuid>{D63F7293-39CC-4B91-88A6-1C3855EE5DC3}</ProjectGuid>
     <Keyword>AtlProj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -350,6 +349,7 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
     <None Include="sagethumbs.dll.1f.po_" />
     <None Include="sagethumbs.dll.21.po_" />
     <None Include="sagethumbs.dll.22.po_" />
+    <None Include="sagethumbs.dll.24.po_" />
     <None Include="sagethumbs.dll.29.po_" />
     <None Include="sagethumbs.dll.2a.po_" />
     <None Include="sagethumbs.dll.0801.po_" />

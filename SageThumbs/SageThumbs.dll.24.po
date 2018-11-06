@@ -1,0 +1,322 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: SageThumbs.dll\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: dr. Vinko Kastelic <dr.vinko@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: sl\n"
+"X-Generator: Poedit 2.1.1\n"
+
+#. Dialog caption
+#: DIALOGCAPTION.202
+msgid "SageThumbs Options"
+msgstr "Možnosti SageThumbs"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.1
+msgid "OK"
+msgstr "V redu"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2
+msgid "Cancel"
+msgstr "Prekliči"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.211
+msgid "Enable context menu in Explorer"
+msgstr "Omogoči kontekstni meni v Raziskovalcu"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.226
+msgid "Show preview in submenu"
+msgstr "Pokaži predogled v podmeniju"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.212
+msgid "Enable thumbnails in Explorer"
+msgstr "Omogoči sličice v Raziskovalcu"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.216
+msgid "Use thumbnails as icons in Explorer"
+msgstr "Uporabi sličice kot ikone v Raziskovalcu"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.225
+msgid "Show type overlay on thumbnails"
+msgstr "Prikaži preklop nad sličico"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.217
+msgid "Enable Windows thumbnail cache"
+msgstr "Omogoči predpomnilnik sličic sistema Windows"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.215
+msgid "Prefer image file embedded thumbnails"
+msgstr "Preferiraj slikovno datoteko vdelane sličice"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.203
+msgid "Use Windows Image/Fax Viewer"
+msgstr "Uporabi Windows Image/Fax Viewer"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.213
+msgid "Clear..."
+msgstr "Počisti..."
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.218
+msgid "Optimize"
+msgstr "Optimiraj"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.210
+msgid "Select/Deselect all"
+msgstr "Označi/Odznači vse"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.223
+msgid "Default"
+msgstr "Privzeto"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483649
+msgid "Context menu preview size"
+msgstr "Velikost kontekstnega menija predogleda"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483650
+msgid "Width x Height:"
+msgstr "Širina x Višina:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483651
+msgid "X"
+msgstr "X"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483652
+msgid "pixels"
+msgstr "zaslonskih pik"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483653
+msgid "Supported file types"
+msgstr "Podprte vrste datotek"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483654
+msgid "System-wide tweaks"
+msgstr "Spremembe sistema"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483655
+msgid "Language:"
+msgstr "Jezik:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483656
+msgid "Maximum size of image file:"
+msgstr "Največja velikost slikovne datoteke:"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483657
+msgid "MB"
+msgstr "MB"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Button.2147483658
+msgid "Convert options"
+msgstr "Možnosti pretvorbe"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483659
+msgid "JPEG quality (0 - lowest, 100 - best):"
+msgstr "Kakovost JPEG (0 - najnižja, 100 - najboljša):"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483660
+msgid "PNG compression (0 - lowest, 9 - best):"
+msgstr "Stiskanje PNG (0 - najnižje, 9 - najboljše):"
+
+#. Dialog control
+#: DIALOGCONTROL.202.Static.2147483662
+msgid "Custom file types (use spaces as delimiters):"
+msgstr "Vrste datotek po meri (uporabite presledke kot ločila):"
+
+#. String resource
+#: STRING.100
+msgid "SageThumbs"
+msgstr "SageThumbs"
+
+#. String resource
+#: STRING.101
+msgid "Change various SageThumbs options"
+msgstr "Sprememba različnih možnosti SageThumbs"
+
+#. String resource
+#: STRING.102
+msgid "Type: "
+msgstr "Vrsta: "
+
+#. String resource
+#: STRING.103
+msgid "Sizes (pixels): "
+msgstr "Velikosti (pik): "
+
+#. String resource
+#: STRING.104
+msgid "Size (bytes): "
+msgstr "Velikost (bajtov): "
+
+#. String resource
+#: STRING.105
+msgid "Modified: "
+msgstr "Spremenjeno: "
+
+#. String resource
+#: STRING.106
+msgid "Colors (bits): "
+msgstr "Barve (bitov): "
+
+#. String resource
+#: STRING.107
+msgid "Compression: "
+msgstr "Stiskanje: "
+
+#. String resource
+#: STRING.108
+msgid "Resolution: "
+msgstr "Ločljivost: "
+
+#. String resource
+#: STRING.109
+msgid "Can't open image file"
+msgstr "Slikovne datoteke ni mogoče odpreti"
+
+#. String resource
+#: STRING.110
+msgid "Can't save image file"
+msgstr "Slikovne datoteke ni mogoče shraniti"
+
+#. String resource
+#: STRING.111
+msgid "Can't send mail"
+msgstr "Pošte ni mogoče poslati"
+
+#. String resource
+#: STRING.112
+msgid "Nothing to send"
+msgstr "Nič za pošiljanje"
+
+#. String resource
+#: STRING.113
+msgid "Can't open clipboard"
+msgstr "Odložišča ni mogoče odpreti"
+
+#. String resource
+#: STRING.114
+msgid "Please confirm thumbnail cache clearing."
+msgstr "Potrdite izbris predpomnilnika sličic."
+
+#. String resource
+#: STRING.115
+msgid "Thumbnail cache size: %u KB"
+msgstr "Velikost predpomnilnika sličic: %u KB"
+
+#. String resource
+#: STRING.116
+msgid "SageThumbs thumbnail cache"
+msgstr "SageThumbs predpomnilnik sličic"
+
+#. String resource
+#: STRING.117
+msgid "Clean SageThumbs thumbnail cache. No user data will be affected."
+msgstr "Očisti SageThumbs predpomnilnik sličic. To ne bo vplivalo na nobenega uporabnika podatkov."
+
+#. String resource
+#: STRING.118
+msgid "Can not apply all settings. Please use SageThumbs under account with administrative privileges."
+msgstr "Vse nastavitve ni mogoče uporabiti. Uporabite SageThumbs pod računom z administrativnimi pravicami."
+
+#. String resource
+#: STRING.119
+msgid "Convert to PNG"
+msgstr "Pretvori v PNG"
+
+#. String resource
+#: STRING.120
+msgid "Converting..."
+msgstr "Pretvorba..."
+
+#. String resource
+#: STRING.121
+msgid "Sending..."
+msgstr "Pošiljanje..."
+
+#. String resource
+#: STRING.122
+msgid "Applying settings..."
+msgstr "Uporaba nastavitev..."
+
+#. String resource
+#: STRING.123
+msgid "Updating..."
+msgstr "Posodabljanje..."
+
+#. String resource
+#: STRING.203
+msgid "SageThumbs Options..."
+msgstr "Možnosti SageThumbs..."
+
+#. String resource
+#: STRING.204
+msgid "Copy to clipboard"
+msgstr "Kopiraj v odložišče"
+
+#. String resource
+#: STRING.205
+msgid "Set tiled wallpaper"
+msgstr "Nastavi ozadje kot ploščice"
+
+#. String resource
+#: STRING.206
+msgid "Set centered wallpaper"
+msgstr "Nastavi ozadje na sredino"
+
+#. String resource
+#: STRING.207
+msgid "Set stretched wallpaper"
+msgstr "Nastavi raztegnjeno ozadje"
+
+#. String resource
+#: STRING.208
+msgid "Send image by mail..."
+msgstr "Pošlji sliko po pošti..."
+
+#. String resource
+#: STRING.209
+msgid "Send thumbnail by mail..."
+msgstr "Pošlji sličico po pošti..."
+
+#. String resource
+#: STRING.210
+msgid "Convert to JPG"
+msgstr "Pretvori v JPG"
+
+#. String resource
+#: STRING.211
+msgid "Convert to GIF"
+msgstr "Pretvori v GIF"
+
+#. String resource
+#: STRING.212
+msgid "Convert to BMP"
+msgstr "Pretvori v BMP"
