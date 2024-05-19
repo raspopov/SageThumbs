@@ -83,9 +83,7 @@
     <None Include="res\Thumb.rgs">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\license.txt" />
     <None Include="..\ReadMe.txt" />
-    <None Include="..\SageThumbs Online.url" />
     <None Include="sagethumbs.dll.04.po_">
       <Filter>Resource Files</Filter>
     </None>

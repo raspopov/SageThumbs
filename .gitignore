@@ -1,0 +1,8 @@
+.vs
+/build
+Release
+Debug
+*.aps
+*.po_
+*.user
+*.po_

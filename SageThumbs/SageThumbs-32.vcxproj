@@ -28,26 +28,26 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -98,7 +98,7 @@
     <PreBuildEvent>
       <Message>Copy DLLs...</Message>
       <Command>copy /b /y "$(SolutionDir)gfl\libW\*.dll" "$(OutDir)"
-for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i" "%%i_"</Command>
+for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\src\compress.exe" "%%i" "%%i_"</Command>
     </PreBuildEvent>
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -113,19 +113,16 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
       <ProxyFileName>SageThumbs_p.c</ProxyFileName>
     </Midl>
     <ClCompile>
-      <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_ATL_XP_TARGETING;_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <SDLCheck>true</SDLCheck>
       <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>..\;..\sqlite3;..\Localization</AdditionalIncludeDirectories>
-      <MinimalRebuild>false</MinimalRebuild>
+      <AdditionalIncludeDirectories>..\;..\sqlite3;..\Localization\src</AdditionalIncludeDirectories>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -147,7 +144,7 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
     <PreBuildEvent>
       <Message>Copy DLLs...</Message>
       <Command>copy /b /y "$(SolutionDir)gfl\lib64W\*.dll" "$(OutDir)"
-for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i" "%%i_"</Command>
+for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\src\compress.exe" "%%i" "%%i_"</Command>
     </PreBuildEvent>
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -162,17 +159,14 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
       <ProxyFileName>SageThumbs_p.c</ProxyFileName>
     </Midl>
     <ClCompile>
-      <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN64;_WINDOWS;_DEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\;..\sqlite3;..\Localization</AdditionalIncludeDirectories>
-      <MinimalRebuild>false</MinimalRebuild>
+      <AdditionalIncludeDirectories>..\;..\sqlite3;..\Localization\src</AdditionalIncludeDirectories>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -192,7 +186,7 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
     <PreBuildEvent>
       <Message>Copy DLLs...</Message>
       <Command>copy /b /y "$(SolutionDir)gfl\libW\*.dll" "$(OutDir)"
-for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i" "%%i_"</Command>
+for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\src\compress.exe" "%%i" "%%i_"</Command>
     </PreBuildEvent>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -207,22 +201,16 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
       <ProxyFileName>SageThumbs_p.c</ProxyFileName>
     </Midl>
     <ClCompile>
-      <Optimization>Full</Optimization>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <OmitFramePointers>true</OmitFramePointers>
       <PreprocessorDefinitions>WIN32;_ATL_XP_TARGETING;_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
       <DebugInformationFormat>None</DebugInformationFormat>
       <SDLCheck>true</SDLCheck>
       <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalIncludeDirectories>..\;..\sqlite3;..\Localization</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\sqlite3;..\Localization\src</AdditionalIncludeDirectories>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -246,7 +234,7 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
     <PreBuildEvent>
       <Message>Copy DLLs...</Message>
       <Command>copy /b /y "$(SolutionDir)gfl\lib64W\*.dll" "$(OutDir)"
-for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i" "%%i_"</Command>
+for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\src\compress.exe" "%%i" "%%i_"</Command>
     </PreBuildEvent>
     <Midl>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -261,20 +249,14 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
       <ProxyFileName>SageThumbs_p.c</ProxyFileName>
     </Midl>
     <ClCompile>
-      <Optimization>Full</Optimization>
-      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <OmitFramePointers>true</OmitFramePointers>
       <PreprocessorDefinitions>WIN64;_WINDOWS;NDEBUG;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
-      <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>None</DebugInformationFormat>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\;..\sqlite3;..\Localization</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\;..\sqlite3;..\Localization\src</AdditionalIncludeDirectories>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -316,7 +298,6 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
     <ClCompile Include="Thumb.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\SageThumbs Online.url" />
     <None Include="SageThumbs.def" />
     <None Include="res\SageThumbs.bmp" />
     <None Include="res\SageThumbs.ico" />
@@ -325,7 +306,6 @@ for %%i in ($(ProjectDir)*.po) do "$(SolutionDir)Localization\compress.exe" "%%i
     </None>
     <None Include="res\SageThumbs.rgs" />
     <None Include="res\Thumb.rgs" />
-    <None Include="..\license.txt" />
     <None Include="..\ReadMe.txt" />
     <None Include="sagethumbs.dll.04.po_" />
     <None Include="sagethumbs.dll.05.po_" />

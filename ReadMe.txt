@@ -50,14 +50,14 @@ SageThumbs can be easily translated to other languages.
 
   * Download and install PoEdit: http://www.poedit.net/download.php
   * Copy "SageThumbs.dll.pot" file (can be found in SageThumbs installation
-    folder) under new name "SageThumbs.dll.XX.po" near original files i.e. near
-    "32\SageThumbs.dll" and "64\SageThumbs.dll". Where "XX" is 2-digit (or 4-digit) hexadecimal
-    code of language, see: http://msdn.microsoft.com/en-us/library/windows/desktop/dd318693.aspx
-    For example Russian has code 0x19 so it's a "SageThumbs.dll.19.po".
+	folder) under new name "SageThumbs.dll.XX.po" near original files i.e. near
+	"32\SageThumbs.dll" and "64\SageThumbs.dll". Where "XX" is 2-digit (or 4-digit) hexadecimal
+	code of language, see: http://msdn.microsoft.com/en-us/library/windows/desktop/dd318693.aspx
+	For example Russian has code 0x19 so it's a "SageThumbs.dll.19.po".
   * Open new file in PoEdit, translate and save as UTF-8 (its by default)
   * Open SageThumbs options and select new language in it
   * E-mail file to me: raspopov@cherubicsoft.com
-    It will be definitely included in next version.
+	It will be definitely included in next version.
 
 ========================================================================
 

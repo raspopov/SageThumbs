@@ -1,7 +1,7 @@
 /*
 SageThumbs - Thumbnail image shell extension.
 
-Copyright (C) Nikolay Raspopov, 2004-2017.
+Copyright (C) Nikolay Raspopov, 2004-2024.
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -796,7 +796,7 @@ BOOL CSageThumbsModule::FindAndFixProgID(const CString& sExt, CAtlList< CString 
 			// Clean unused ProgID
 			DeleteRegValue( sProgID, sType + _T("\\OpenWithProgids"), HKEY_CLASSES_ROOT );
 			DeleteRegValue( sProgID, sFileExt + _T("\\OpenWithProgids"), HKEY_CURRENT_USER );
-			
+
 			// Clean unused UserChoice
 			if ( sUserChoice.CompareNoCase( sProgID ) == 0 )
 				DeleteRegValue( _T("Progid"), sFileExt + _T("\\UserChoice"), HKEY_CURRENT_USER );
@@ -867,7 +867,7 @@ void CSageThumbsModule::FillExtMap()
 					sExt = _T("pspframe");
 				else if ( sExt == _T("pspimag") )	// PaintShopPro Image
 					sExt = _T("pspimage");
-				
+
 				m_oExtMap.SetAt( sExt, data );
 			}
 		}
@@ -1120,7 +1120,7 @@ BOOL CSageThumbsModule::Initialize()
 			SetRegValue( _T("LastUpdate"), nDays );
 			if ( nLastUpdate )
 			{
-				db.Exec( _T("ANALYZE;") );						
+				db.Exec( _T("ANALYZE;") );
 				ATLTRACE( "CSageThumbsModule - Database analyzed!\n" );
 			}
 		}
@@ -1142,7 +1142,7 @@ void CSageThumbsModule::UnInitialize ()
 		__except ( EXCEPTION_EXECUTE_HANDLER )
 		{
 			ATLTRACE( "CSageThumbsModule - Exception in gflLibraryExit()\n" );
-		}		
+		}
 	}
 
 	if ( m_hGFLe )
@@ -1391,7 +1391,7 @@ CString GetRegValue(LPCTSTR szName, const CString& sDefault, LPCTSTR szKey, HKEY
 	return sDefault;
 }
 
-BOOL SetPrivilege(HANDLE hToken, LPCTSTR lpszPrivilege, BOOL bEnablePrivilege) 
+BOOL SetPrivilege(HANDLE hToken, LPCTSTR lpszPrivilege, BOOL bEnablePrivilege)
 {
 	TOKEN_PRIVILEGES tp = {};
 	LUID luid = {};
@@ -1409,7 +1409,7 @@ BOOL SetPrivilege(HANDLE hToken, LPCTSTR lpszPrivilege, BOOL bEnablePrivilege)
 		tp.Privileges[ 0 ].Attributes = 0;
 
 	if ( ! AdjustTokenPrivileges( hToken, FALSE, &tp, sizeof( TOKEN_PRIVILEGES ), NULL, NULL) || GetLastError() == ERROR_NOT_ALL_ASSIGNED )
-	{ 
+	{
 		ATLTRACE( "CSageThumbsModule - Failed to Adjust Token Privileges for \"%s\"\n", (LPCSTR)CT2A( lpszPrivilege ) );
 		return FALSE;
 	}
@@ -1428,7 +1428,7 @@ BOOL FixKeyRights(HKEY hRoot, LPCTSTR szKey)
 	{
 		const SECURITY_INFORMATION si = DACL_SECURITY_INFORMATION;
 		LPCTSTR szGoodRights = _T("D:AI(A;ID;KR;;;BU)(A;CIIOID;GR;;;BU)(A;ID;KA;;;BA)(A;CIIOID;GA;;;BA)(A;ID;KA;;;SY)(A;CIIOID;GA;;;SY)(A;CIIOID;GA;;;CO)");
-		
+
 		CString sSSD;
 		DWORD dwSize = 0;
 		res = RegGetKeySecurity( hKey, si, NULL, &dwSize );
@@ -1471,7 +1471,7 @@ BOOL FixKeyRights(HKEY hRoot, LPCTSTR szKey)
 							{
 								ATLTRACE( "CSageThumbsModule - Cleared bad rights of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
 								bOK = TRUE;
-							}							
+							}
 							else
 								ATLTRACE( "CSageThumbsModule - Failed to set security of key: %s\\%s\n", (LPCSTR)CT2A( GetKeyName( hRoot ) ), (LPCSTR)CT2A( szKey ) );
 							LocalFree( pNewSD );
@@ -1517,7 +1517,7 @@ BOOL FixKey(__in HKEY hkey, __in_opt LPCTSTR pszSubKey)
 
 	BOOL bOK = FALSE;
 	HANDLE hToken = NULL;
-	if ( OpenProcessToken( GetCurrentProcess(), TOKEN_ALL_ACCESS, &hToken ) ) 
+	if ( OpenProcessToken( GetCurrentProcess(), TOKEN_ALL_ACCESS, &hToken ) )
 	{
 		if ( SetPrivilege( hToken, SE_SECURITY_NAME, TRUE ) )
 		{
@@ -1526,7 +1526,7 @@ BOOL FixKey(__in HKEY hkey, __in_opt LPCTSTR pszSubKey)
 				// Create a SID for the BUILTIN\Administrators group.
 				PSID pSIDAdmin = NULL;
 				SID_IDENTIFIER_AUTHORITY SIDAuthNT = SECURITY_NT_AUTHORITY;
-				if ( AllocateAndInitializeSid( &SIDAuthNT, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &pSIDAdmin ) ) 
+				if ( AllocateAndInitializeSid( &SIDAuthNT, 2, SECURITY_BUILTIN_DOMAIN_RID, DOMAIN_ALIAS_RID_ADMINS, 0, 0, 0, 0, 0, 0, &pSIDAdmin ) )
 				{
 					bOK = TRUE;
 
@@ -1541,7 +1541,7 @@ BOOL FixKey(__in HKEY hkey, __in_opt LPCTSTR pszSubKey)
 						if ( ! strPartialKey.IsEmpty() )
 							strPartialKey += _T("\\");
 						strPartialKey += strSubKey;
-					
+
 						// First try
 						if ( ! FixKeyRights( hkey, strPartialKey ) )
 						{
@@ -1755,38 +1755,30 @@ BOOL DeleteEmptyRegKey(HKEY hRoot, LPCTSTR szSubKey)
 
 LPCTSTR GetKeyName(HKEY hRoot)
 {
-	switch ( (DWORD_PTR)hRoot )
-	{
-	case HKEY_CLASSES_ROOT:
+	if ( hRoot == HKEY_CLASSES_ROOT )
 		return _T("HKEY_CLASSES_ROOT");
-	case HKEY_CURRENT_USER:
+	if ( hRoot == HKEY_CURRENT_USER )
 		return _T("HKEY_CURRENT_USER");
-	case HKEY_LOCAL_MACHINE:
+	if ( hRoot == HKEY_LOCAL_MACHINE )
 		return _T("HKEY_LOCAL_MACHINE");
-	case HKEY_USERS:
+	if ( hRoot == HKEY_USERS )
 		return _T("HKEY_USERS");
-	case HKEY_CURRENT_CONFIG:
+	if ( hRoot == HKEY_CURRENT_CONFIG )
 		return _T("HKEY_CURRENT_CONFIG");
-	default:
-		return _T("{custom}");
-	}
+	return _T("{custom}");
 }
 
 LPCTSTR GetShortKeyName(HKEY hRoot)
 {
-	switch ( (DWORD_PTR)hRoot )
-	{
-	case HKEY_CLASSES_ROOT:
+	if ( hRoot == HKEY_CLASSES_ROOT )
 		return _T("CLASSES_ROOT");
-	case HKEY_CURRENT_USER:
+	if ( hRoot == HKEY_CURRENT_USER )
 		return _T("CURRENT_USER");
-	case HKEY_LOCAL_MACHINE:
+	if ( hRoot == HKEY_LOCAL_MACHINE )
 		return _T("MACHINE");
-	case HKEY_USERS:
+	if ( hRoot == HKEY_USERS )
 		return _T("USERS");
-	default:
-		return _T("");
-	}
+	return _T("");
 }
 
 BOOL RegisterValue(HKEY hRoot, LPCTSTR szKey, LPCTSTR szName, LPCTSTR szValue, LPCTSTR szBackupName)
@@ -2578,4 +2570,4 @@ DWORD CRC32( const char *buf, int len )
 	return ~crc;
 }
 
-#include "..\Localization\Localization.cpp"
+#include "Localization.cpp"
